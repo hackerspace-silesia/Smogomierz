@@ -10,7 +10,8 @@ import machine
 #i2c = machine.I2C(scl=machine.Pin(5), sda=machine.Pin(4))
 #bme = bme280.BME280(i2c=i2c)
 
-class pms7003():
+
+class PMS7003():
     def __init__(self):
         self.serial = UART(0, 9600)
         self.serial(9600, bits=8, parity=None, stop=1)
@@ -49,22 +50,24 @@ class pms7003():
         PM25 = int(self.data[6] * 256 + self.data[7])
         PM10 = int(self.data[8] * 256 + self.data[9])
         #Czasami wyniki moga byc szalone - sprawdzenie czy odczyt nie pokazuje czegos dziwnego. Jesli tak to zerowanie pomiaru
-        if PM25 == 0 and PM10>5000:
+        if PM25 == 0 and PM10 > 5000:
             PM1 = 0
             PM25 = 0
             PM10 = 0
-        elif PM25 >5000 and PM10 == 0:
+        elif PM25 > 5000 and PM10 == 0:
             PM1 = 0
             PM25 = 0
             PM10 = 0
         return PM1, PM25, PM10
 
-print ("Uruchamianie...")
 
-while True:
-    #print(bme.values)
-    read_data()
-    print('PM1: %d ug/m3' % round(PM1))
-    print('PM2.5: %d ug/m3' % round(PM25))
-    print('PM10: %d ug/m3' % round(PM10))
-    time.sleep(5)
+if __name__ == "__main__":
+    print ("Uruchamianie...")
+
+    while True:
+        #print(bme.values)
+        read_data()
+        print('PM1: %d ug/m3' % round(PM1))
+        print('PM2.5: %d ug/m3' % round(PM25))
+        print('PM10: %d ug/m3' % round(PM10))
+        time.sleep(5)

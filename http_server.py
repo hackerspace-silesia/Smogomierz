@@ -2,10 +2,19 @@
 
 import usocket as socket
 
+SELFNAME = 'http_server.py'
+
 CONTENT = """\
 HTTP/1.0 200 OK
 
 Hello #{} from MicroPython!
+
+"""
+
+HTTPMSG = """\
+HTTP/1.0 200 OK
+
+{}
 
 """
 
@@ -26,10 +35,14 @@ while True:
     print("Request:")
     req = client_s.recv(4096)
     print(req)
-    client_s.send(bytes(CONTENT.format(counter), "ascii"))
-    client_s.close()
     parts = req.decode('ascii').split(' ')
-    if parts[1] == '/exit':
-      break
+    if parts[1] == '/self':
+      f = open(SELFNAME, 'r')
+      client_s.send(bytes(HTTPMSG.format(f.read()), "ascii"))
+      f.close()
+      client_s.close()
+    else:
+      client_s.send(bytes(CONTENT.format(counter), "ascii"))
+      client_s.close()
     counter += 1
 

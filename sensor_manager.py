@@ -93,7 +93,7 @@ class SensorManager:
             'sensor': SENSOR_MODEL,
         }
 
-        resp = urequests.post(
+        urequests.post(
             URL_API,
             timeout=10,
             data=data,

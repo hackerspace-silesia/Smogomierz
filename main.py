@@ -10,7 +10,8 @@ if __name__ == "__main__":
     while True:
         loop = uasyncio.get_event_loop()
 
-        loop.create_task(app.get_and_send_data())
+        loop.create_task(sensor_manager.execute())
+        # todo: loop.create_task(webapp.run())
 
         loop.run_forever()
         loop.close()

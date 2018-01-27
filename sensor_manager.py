@@ -1,8 +1,16 @@
 from bme280 import BME280
 from pms7003 import PMS7003
 from machine import Pin, I2C
+from datetime import datetime
 
-from uasyncio import sleep
+from uasyncio import sleep, gather
+
+import ujson
+import urequests
+
+
+URL_API = 'http://api.airmonitor.pl:5000/api'
+SENSOR_MODEL = 'PMS7003'
 
 
 class SensorManager:
@@ -34,7 +42,7 @@ class SensorManager:
                 temperature - [°C]
                 pressure - [hPa]
                 humidity - [%]
-                
+                date - YYYY-MM-DD hh:mm:ss
         """
         pm1, pm25, pm10 = self.pms7003.read_data()
         temp, press, hum = self.bmp280.read_compensated_data()
@@ -45,9 +53,49 @@ class SensorManager:
             'temperature': temp / 100.0,
             'pressure': (press // 256) / 100.0,
             'humidity': hum / 1024.0,
+            'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         }
 
-    async def get_and_send_data(self):
+    async def execute(self):
         while True:
-            data = self.get_data()
-            await sleep(60)
+            gather(
+                self.get_and_send_data,
+                sleep(60),
+            )
+
+    async def get_and_send_data(self):
+        data = self.get_data()
+
+        gather(
+            save_data_to_file(data),
+            upload_to_airmonitor(data),
+        )
+
+
+    async def save_data_to_file(self, data):
+        with open('data', 'a') as f:
+            f.write(ujson.dumps(data) + '\n')
+
+    async def upload_to_airmonitor(self, data):
+        # todo: get lat & long from config
+        config_lat = 50.2639
+        config_long = 18.9957
+
+        air_data = {
+            'lat': lat,
+            'long': long,
+            'pressure': data['pressure'],
+            'temperature': data['temperature'],
+            'humidity': data['humidity'],
+            'pm1': data['pm1'],
+            'pm25': data['pm25'],
+            'pm10': data['pm10'],
+            'sensor': SENSOR_MODEL,
+        }
+
+        resp = urequests.post(
+            URL_API,
+            timeout=10,
+            data=data,
+            headers={"Content-Type": "application/json"},
+        )

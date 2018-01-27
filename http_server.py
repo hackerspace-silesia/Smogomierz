@@ -1,6 +1,7 @@
 # based on https://github.com/cswiger/wipy/blob/master/http-server.py
 
 import usocket as socket
+import machine
 
 SELFNAME = 'http_server.py'
 
@@ -40,6 +41,9 @@ while True:
       f = open(SELFNAME, 'r')
       client_s.send(bytes(HTTPMSG.format(f.read()), "ascii"))
       f.close()
+      client_s.close()
+    elif parts[1] == '/time':
+      client_s.send(bytes(HTTPMSG.format(machine.RTC().datetime()), "ascii"))
       client_s.close()
     else:
       client_s.send(bytes(CONTENT.format(counter), "ascii"))

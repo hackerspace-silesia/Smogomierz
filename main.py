@@ -1,19 +1,17 @@
 from sensor_manager import SensorManager
-from webapp import routes
+from webapp import webapp
 from ntptime import settime, loop_set_time
 
 import uasyncio
 import picoweb
 
 
-
-def do_webapp(loop, routes):
-    webapp = picoweb.WebApp('webapp', routes)
+def do_webapp():
     webapp.debug = False
     webapp.init()
     for mount in webapp.mounts:
         mount.init()
-    loop.create_task(asyncio.start_server(webapp._handle, '0.0.0.0', 80))
+    return asyncio.start_server(webapp._handle, '0.0.0.0', 80)
 
 
 if __name__ == "__main__":
@@ -27,8 +25,8 @@ if __name__ == "__main__":
 
         loop.create_task(sensor_manager.execute())
         loop.create_task(loop_set_time())
-        do_webapp(loop, routes)
-
+        loop.create_task(do_webapp(routes))
+        
         loop.run_forever()
         loop.close()
 

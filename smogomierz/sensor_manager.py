@@ -58,7 +58,7 @@ class SensorManager:
             'temperature': temp / 100.0,
             'pressure': (press // 256) / 100.0,
             'humidity': hum / 1024.0,
-            'date': self.get_date(),
+            'date': self._get_date(),
         }
 
     def get_fake_data(self):
@@ -71,7 +71,7 @@ class SensorManager:
             'temperature': 20,
             'pressure': 20,
             'humidity': 100,
-            'date': self.get_date(),
+            'date': self._get_date(),
         }
 
     @staticmethod
@@ -91,12 +91,12 @@ class SensorManager:
 
     async def execute(self, loop):
         while True:
-            loop.create_task(self.get_and_send_data())
+            loop.create_task(self.get_and_send_data(loop))
             await sleep(60)
 
     async def get_and_send_data(self, loop):
         if self.fake_data:
-            data = self.fake_get_data()
+            data = self.get_fake_data()
         else:
             data = self.get_data()
 

@@ -3,11 +3,15 @@ import ujson
 
 webapp = picoweb.WebApp(None)
 
+TABLE_ROWS = (
+    'date', 'pm1', 'pm25', 'pm10', 'temperature', 'pressure', 'humidity'
+)
+
 
 def read_lines(filename):
     try:
         with open(filename) as f:
-            with line in f.readlines():
+            for line in f:
                 yield ujson.loads(line)
     except FileNotFoundError:
         pass
@@ -15,10 +19,27 @@ def read_lines(filename):
 
 @webapp.route('/')
 async def index(req, resp):
-    args = (read_lines('data'),)
-
     await picoweb.start_response(resp)
-    await webapp.render_template(resp, "index.tpl", args)
+    await resp.awrite('<table>')
+    await resp.awrite('<thead><tr>')
+    await resp.awrite('<th>DATE</th>')
+    await resp.awrite('<th>PM1</th>')
+    await resp.awrite('<th>PM25</th>')
+    await resp.awrite('<th>PM10</th>')
+    await resp.awrite('<th>TEMPERATURE</th>')
+    await resp.awrite('<th>PRESSURE</th>')
+    await resp.awrite('<th>HUMIDITY</th>')
+    await resp.awrite('</tr></thead>')
+    await resp.awrite('<tbody>')
+
+    for obj in read_lines('data'):
+        await resp.awrite('<tr>')
+        for row in TABLE_ROWS:
+            await resp.awrite('<td>%s</td>' % obj.get(row))
+        await resp.awrite('</tr>')
+
+    await resp.awrite('</tbody>')
+    await resp.awrite('</table>')
 
 
 def striped_str(value):

@@ -1,5 +1,6 @@
 import picoweb
 import ujson
+import gc
 
 webapp = picoweb.WebApp(None)
 
@@ -13,51 +14,91 @@ def read_lines(filename):
         with open(filename) as f:
             for line in f:
                 yield ujson.loads(line)
-    except FileNotFoundError:
+    except OSError:
         pass
 
 
 @webapp.route('/')
 async def index(req, resp):
     await picoweb.start_response(resp)
-    await resp.awrite('<table>')
-    await resp.awrite('<thead><tr>')
-    await resp.awrite('<th>DATE</th>')
-    await resp.awrite('<th>PM1</th>')
-    await resp.awrite('<th>PM25</th>')
-    await resp.awrite('<th>PM10</th>')
-    await resp.awrite('<th>TEMPERATURE</th>')
-    await resp.awrite('<th>PRESSURE</th>')
-    await resp.awrite('<th>HUMIDITY</th>')
-    await resp.awrite('</tr></thead>')
-    await resp.awrite('<tbody>')
+    w = resp.awrite
+    
+    await w('<title>Smogomierz by Hackerspace</title>')
+    await w('<a href="/config">CONFIG!</a>')
+
+    await w('<table>')
+    await w('<thead><tr>')
+    await w('<th>DATE</th>')
+    await w('<th>PM1.0 <small>[&micro;g/m&sup3;]</small></th>')
+    await w('<th>PM2.5 <small>[&micro;g/m&sup3;]</small></th>')
+    await w('<th>PM10.0 <small>[&micro;g/m&sup3;]</small></th>')
+    await w('<th>TEMPERATURE <small>[&deg;C]</small></th>')
+    await w('<th>PRESSURE <small>[hPa]</small></th>')
+    await w('<th>HUMIDITY <small>[%]</small></th>')
+    await w('</tr></thead>')
+    await w('<tbody>')
 
     for obj in read_lines('data'):
-        await resp.awrite('<tr>')
+        await w('<tr>')
         for row in TABLE_ROWS:
-            await resp.awrite('<td>%s</td>' % obj.get(row))
-        await resp.awrite('</tr>')
+            await w('<td>%s</td>' % obj.get(row))
+        await w('</tr>')
 
-    await resp.awrite('</tbody>')
-    await resp.awrite('</table>')
+    await w('</tbody>')
+    await w('</table>')
 
 
 def striped_str(value):
     return value.strip()[:128]
 
 
+def get_input(name, label, value):
+    tmp = ( 
+        '<div class="group">'
+        '<label for="{name}">{label}</label>'
+        '<input type="text" id="{name}" name="{name}" value="{value}"/>'
+        '</div>'
+    )
+
+    value = str(value).replace("'", "\\'")
+    return tmp.format(
+        name=name,
+        label=label,
+        value=value,
+    )
+
+
+def get_cord_input(name, label, value):
+    tmp = ( 
+        '<div class="group">'
+        '<label for="{name}">{label}</label>'
+        '<input type="number" step="0.0001" id="{name}" name="{name}" value="{value}"/>'
+        '</div>'
+    )
+
+    value = str(value).replace("'", "\\'")
+    return tmp.format(
+        name=name,
+        label=label,
+        value=value,
+    )
+
 @webapp.route('/config')
 async def config(req, resp):
-    with open('config') as f:
-        config = ujson.load(f)
+    try:
+        with open('config') as f:
+            config = ujson.load(f)
+    except OSError:
+        config = {}
 
     if req.method == 'POST':
+        gc.collect()
         await req.read_form_data()
 
         def update_element(key, cls=striped_str):
             try:
-                value = cls(req.form[key])
-            except (KeyError, ValueError):
+                value = cls(req.form[key][0])
+            except (IndexError, KeyError, ValueError):
                 pass
             else:
                 config[key] = value
@@ -66,16 +107,27 @@ async def config(req, resp):
         update_element('wifi_password')
         update_element('airmonitor_lat', float)
         update_element('airmonitor_long', float)
-        update_element('save_time_minutes', int)
 
+        req.form = None  # remove useless memory
+        gc.collect()
         with open('config', 'w') as f:
-            f.write(ujson.dump(config))
+            f.write(ujson.dumps(config))
 
+        gc.collect()
         updated = True
     else:
         updated = None
 
-    args = (config, updated)
+    w = resp.awrite
 
     await picoweb.start_response(resp)
-    await webapp.render_template(resp, "config.tpl", args)
+    await w('<title>Smogomierz by Hackerspace</title>')
+    if updated is True:
+        await w('<strong>Config updated!</strong>')
+    await w('<form method="POST" action="/config">')
+    await w(get_input('wifi_essid', 'ESSID', config.get('wifi_essid', '-')))
+    await w(get_input('wifi_password', 'PASSWORD', config.get('wifi_password', '-')))
+    await w(get_cord_input('airmonitor_lat', 'LATITUDE', config.get('airmonitor_lat', '0.0000')))
+    await w(get_cord_input('airmonitor_long', 'LONGITUDE', config.get('airmonitor_long', '0.0000')))
+    await w('<button type="submit"> UPDATE </button>')
+    await w('</form>')

@@ -1,6 +1,7 @@
 from sensor_manager import SensorManager
 from webapp import webapp
 from ntptime import settime
+from machine import reset
 
 import uasyncio
 import picoweb
@@ -29,15 +30,18 @@ if __name__ == "__main__":
     sensor_manager = SensorManager(fake_data=True, send_to_airmonitor=False)
     #sensor_manager.setup()
 
-    while True:
+    try:
+        gc.collect()
         loop = uasyncio.get_event_loop()
 
         loop.create_task(sensor_manager.execute(loop))
         if not ap_if.active():
             loop.create_task(loop_set_time())
         loop.create_task(do_webapp())
-        gc.collect()
         
         loop.run_forever()
-        loop.close()
+    except KeyboardInterrupt:
+        loop.close() 
+    except Exception as e:
+        reset()
 

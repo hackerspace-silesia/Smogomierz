@@ -2,6 +2,7 @@
 <!doctype html>
 <meta charset="UTF-8" />
 <title>Smogomierz by Hackerspace</title>
+<a href='/config' >CONFIG!</a>
 <table>
     <thead><tr>
         <th>TIME</th>

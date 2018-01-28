@@ -6,16 +6,23 @@ import gc
 #webrepl.start()
 gc.collect()
 
+
 def do_connect():
+    from utime import sleep
     import network
+    import esp
+
     sta_if = network.WLAN(network.STA_IF)
+    ap_if = network.WLAN(network.AP_IF)
+    # todo - get jumper to one PIN
+    ap_if.active(False)
     if not sta_if.isconnected():
         print('connecting to network...')
         sta_if.active(True)
-        sta_if.connect('NazwaSieciWiFi', 'HasloDoSieciWiFi')
+        sta_if.connect('essid', 'passwd')
         while not sta_if.isconnected():
             pass
-    print('network config:', sta_if.ifconfig())
+        print('network config:', sta_if.ifconfig())
 
 do_connect()
 

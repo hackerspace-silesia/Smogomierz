@@ -1,13 +1,16 @@
 import picoweb
 import ujson
 
-webapp = picoweb.WebApp('')
+webapp = picoweb.WebApp(None)
 
 
 def read_lines(filename):
-    with open(filename) as f:
-        with line in f.readlines():
-            yield ujson.loads(line)
+    try:
+        with open(filename) as f:
+            with line in f.readlines():
+                yield ujson.loads(line)
+    except FileNotFoundError:
+        pass
 
 
 @webapp.route('/')
@@ -33,7 +36,7 @@ async def config(req, resp):
         def update_element(key, cls=striped_str):
             try:
                 value = cls(req.form[key])
-            except KeyError, ValueError:
+            except (KeyError, ValueError):
                 pass
             else:
                 config[key] = value

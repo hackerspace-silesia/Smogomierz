@@ -4,6 +4,7 @@ from ntptime import settime, loop_set_time
 
 import uasyncio
 import picoweb
+import network
 
 
 def do_webapp():
@@ -15,17 +16,20 @@ def do_webapp():
 
 
 if __name__ == "__main__":
-    sensor_manager = SensorManager()
-    sensor_manager.setup()
+    ap_if = network.WLAN(network.AP_IF)
+    if not ap_if.active():
+        settime()
 
-    settime()
+    sensor_manager = SensorManager(fake_data=True, send_to_airmonitor=False)
+    #sensor_manager.setup()
 
     while True:
         loop = uasyncio.get_event_loop()
 
-        loop.create_task(sensor_manager.execute())
-        loop.create_task(loop_set_time())
-        loop.create_task(do_webapp(routes))
+        loop.create_task(sensor_manager.execute(loop))
+        if not ap_if.active():
+            loop.create_task(loop_set_time())
+        loop.create_task(do_webapp())
         
         loop.run_forever()
         loop.close()

@@ -3,6 +3,7 @@ from pms7003 import PMS7003
 from machine import Pin, I2C, RTC
 
 from uasyncio import sleep
+from ustruct import pack
 
 import ujson
 import urequests
@@ -20,8 +21,10 @@ class SensorManager:
 
     bme280 = None  # type: BME280
     pms7003 = None  # type: PMS7003
+    db = None  # type: list
     
-    def __init__(self, fake_data=False, send_to_airmonitor=True):
+    def __init__(self, db, fake_data=False, send_to_airmonitor=True):
+        self.db = db
         self.fake_data = fake_data
         self.send_to_airmonitor = send_to_airmonitor
 
@@ -58,12 +61,10 @@ class SensorManager:
             'temperature': temp / 100.0,
             'pressure': (press // 256) / 100.0,
             'humidity': hum / 1024.0,
-            'date': self._get_date(),
+            'date': utime.time(),
         }
 
     def get_fake_data(self):
-        now = utime.time()
-        year, month, day, hour, minute, second, *_ = utime.localtime(now)
         return {
             'pm1': 5,
             'pm25': 5,
@@ -71,23 +72,8 @@ class SensorManager:
             'temperature': 20,
             'pressure': 20,
             'humidity': 100,
-            'date': self._get_date(),
+            'date': utime.time(),
         }
-
-    @staticmethod
-    def _get_date():
-        now = utime.time()
-        year, month, day, hour, minute, second, *_ = utime.localtime(now)
-        fmt = '{year}-{month}-{day} {hour}:{minute}:{second}'
-
-        return fmt.format(
-            year=year,
-            month=month,
-            day=day,
-            hour=hour,
-            minute=minute,
-            second=second,
-        )
 
     async def execute(self, loop):
         while True:
@@ -100,23 +86,37 @@ class SensorManager:
         else:
             data = self.get_data()
 
-        loop.create_task(self.save_data_to_file(data))
+        loop.create_task(self.save_data(data))
         loop.create_task(self.upload_to_airmonitor(data))
 
-    async def save_data_to_file(self, data):
-        with open('data', 'a') as f:
-            f.write(ujson.dumps(data) + '\n')
+    async def save_data(self, data):
+        obj = pack(
+            'iffffff',
+            data['date'],
+            data['pm1'],
+            data['pm25'],
+            data['pm10'],
+            data['temperature'],
+            data['pressure'],
+            data['humidity'],
+        )
+        self.db.insert(0, obj)
+        if len(self.db) > 96:
+            self.db.pop()
 
     async def upload_to_airmonitor(self, data):
         if not self.send_to_airmonitor:
             return
-        # todo: get lat & long from config
-        config_lat = 50.2639
-        config_long = 18.9957
+
+        try:
+            with open('config') as f:
+                config = ujson.load(f)
+        except OSError:
+            return
 
         air_data = {
-            'lat': lat,
-            'long': long,
+            'lat': config['airmonitor_lat'],
+            'long': config['airmonitor_long'],
             'pressure': data['pressure'],
             'temperature': data['temperature'],
             'humidity': data['humidity'],

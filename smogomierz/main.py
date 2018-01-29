@@ -1,5 +1,5 @@
 from sensor_manager import SensorManager
-from webapp import webapp
+from webapp import webapp, db
 from ntptime import settime
 from machine import reset
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     if not ap_if.active():
         settime()
 
-    sensor_manager = SensorManager(fake_data=True, send_to_airmonitor=False)
+    sensor_manager = SensorManager(db, fake_data=True, send_to_airmonitor=False)
     #sensor_manager.setup()
 
     try:

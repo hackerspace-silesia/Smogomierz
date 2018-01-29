@@ -1,21 +1,48 @@
+from ustructk import unpack
+
 import picoweb
 import ujson
 import gc
 
 webapp = picoweb.WebApp(None)
 
+db = []
+
 TABLE_ROWS = (
-    'date', 'pm1', 'pm25', 'pm10', 'temperature', 'pressure', 'humidity'
+    'pm1', 'pm25', 'pm10', 'temperature', 'pressure', 'humidity', 'date',
 )
 
+DATE_FMT = '{year}-{month:02}-{day:02} {hour:02}:{minute:02}:{second:02}'
 
-def read_lines(filename):
-    try:
-        with open(filename) as f:
-            for line in f:
-                yield ujson.loads(line)
-    except OSError:
-        pass
+
+def _get_date(time):
+    year, month, day, hour, minute, second, *_ = utime.localtime(time)
+    del now
+    del _
+
+    return DATE_FMT.format(
+        year=year,
+        month=month,
+        day=day,
+        hour=hour,
+        minute=minute,
+        second=second,
+    )
+
+
+def read_data(filename):
+    for obj in db:
+        data = unpack('iffffff', obj)
+        time, pm1, pm25, pm10, temperature, pressure, humidity = data
+        yield {
+            'pm1': pm1,
+            'pm25': pm25,
+            'pm10': pm10,
+            'temperature': temperature,
+            'pressure': pressure,
+            'humidity': humidity,
+            'date': _get_date(time),
+        }
 
 
 @webapp.route('/')
@@ -82,6 +109,7 @@ def get_cord_input(name, label, value):
         label=label,
         value=value,
     )
+
 
 @webapp.route('/config')
 async def config(req, resp):

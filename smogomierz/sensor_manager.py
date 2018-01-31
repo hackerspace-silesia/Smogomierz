@@ -36,7 +36,7 @@ class SensorManager:
         """
         i2c = I2C(scl=Pin(5), sda=Pin(4)) 
         self.bme280 = BME280(i2c=i2c)
-        self.pms7003 = PMS7003()
+        #self.pms7003 = PMS7003()
 
     def get_data(self):
         """
@@ -51,8 +51,9 @@ class SensorManager:
                 humidity - [%]
                 date - YYYY-MM-DD hh:mm:ss
         """
-        pm1, pm25, pm10 = self.pms7003.read_data()
-        temp, press, hum = self.bmp280.read_compensated_data()
+        #pm1, pm25, pm10 = self.pms7003.read_data()
+        pm1, pm25, pm10 = 0, 0, 0
+        temp, press, hum = self.bme280.read_compensated_data()
 
         return {
             'pm1': pm1,
@@ -78,7 +79,7 @@ class SensorManager:
     async def execute(self, loop):
         while True:
             loop.create_task(self.get_and_send_data(loop))
-            await sleep(60)
+            await sleep(1800)
 
     async def get_and_send_data(self, loop):
         if self.fake_data:
@@ -101,7 +102,7 @@ class SensorManager:
             data['humidity'],
         )
         self.db.insert(0, obj)
-        if len(self.db) > 96:
+        if len(self.db) > 24 * 4:
             self.db.pop()
 
     async def upload_to_airmonitor(self, data):
@@ -126,9 +127,11 @@ class SensorManager:
             'sensor': SENSOR_MODEL,
         }
 
-        urequests.post(
+        resp = urequests.post(
             URL_API,
             timeout=10,
-            data=data,
+            data=air_data,
             headers={"Content-Type": "application/json"},
         )
+
+        resp.close()

@@ -6,17 +6,34 @@ import gc
 #webrepl.start()
 gc.collect()
 
+debug_mode = False
+
 
 def do_connect():
+    global debug_mode
     from utime import sleep
     import ujson
     import network
-    import esp
-
+    import machine
+    import ustruct
 
     sta_if = network.WLAN(network.STA_IF)
     ap_if = network.WLAN(network.AP_IF)
-    # todo - get jumper to one PIN
+
+    pin = machine.Pin(14, machine.Pin.IN, machine.Pin.PULL_UP)
+    sleep(0.1)
+    if not pin.value():
+        machine_id = ustruct.unpack("<L", machine.unique_id())[0]
+        sta_if.active(False)
+        ap_if.active(True)
+        sleep(1)
+        ap_if.config(essid='Smogomierz %d' % machine_id)
+        print (ap_if.ifconfig())
+        print ('DEBUG MODE')
+        debug_mode = True
+        sleep(3)
+        return
+
     ap_if.active(False)
 
     try:
@@ -27,9 +44,9 @@ def do_connect():
         return
 
     if not sta_if.isconnected():
-        print('connecting to network...')
+        print('connecting to network %s...' % config['wifi_essid'])
         sta_if.active(True)
-        sta_if.connect(config['wifi_essid'], config['wifi_passwd'])
+        sta_if.connect(config['wifi_essid'], config['wifi_password'])
         while not sta_if.isconnected():
             pass
         print('network config:', sta_if.ifconfig())

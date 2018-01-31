@@ -1,17 +1,26 @@
-all:
+MPY_FILES=bme280 pms7003 sensor_manager webapp
+PY_FILES=boot main
+PROJECT_DIR=smogomierz
+PORT=/dev/ttyUSB0
 
-lib: requirements.txt
-	micropython -m upip install -p lib -r requirements.txt
+DEPLOYED_MPY_FILES=$(foreach file,$(MPY_FILES),deployed/$(file).mpy)
+DEPLOYED_PY_FILES=$(foreach file,$(PY_FILES),deployed/$(file).py)
 
-build:
-	mpy_cross_all.py lib/picoweb -o mpy/lib/picoweb
-	mpy-cross lib/pkg_resources.py -o mpy/lib/pkg_resources.mpy
-	mpy_cross_all.py smogomierz -o mpy
+all: deploy
 
-deploy:
-	ampy -p /dev/ttyUSB0 rmdir lib
-	ampy -p /dev/ttyUSB0 put mpy/lib /lib
-	ampy -p /dev/ttyUSB0 put mpy/bme280.mpy 
-	ampy -p /dev/ttyUSB0 put mpy/pms7003.mpy 
-	ampy -p /dev/ttyUSB0 put mpy/webapp.mpy 
-	ampy -p /dev/ttyUSB0 put mpy/sensor_manager.mpy 
+mpy/%.mpy: $(PROJECT_DIR)/%.py
+	mpy-cross $< -o $@
+
+deployed/%.mpy: mpy/%.mpy
+	ampy -p $(PORT) put $<
+	@cp $< $@
+
+deployed/%.py: $(PROJECT_DIR)/%.py
+	ampy -p $(PORT) put $<
+	@cp $< $@
+
+deploy: $(DEPLOYED_MPY_FILES) $(DEPLOYED_PY_FILES)
+
+clean:
+	rm -rf mpy/*
+	rm -rf deployed/*

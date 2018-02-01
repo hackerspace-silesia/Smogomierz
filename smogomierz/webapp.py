@@ -25,13 +25,8 @@ DEFAULT_STYLE = (
 async def serve(reader, writer):
     try:
         await _serve(reader, writer)
-    except KeyboardInterrupt:
-        raise
-    except MemoryError:
-        raise
     except Exception as e:
-        with open('error', 'w') as f:
-            sys.print_exception(e, f)
+        sys.print_exception(e)
     finally:
         try:
             await writer.aclose()

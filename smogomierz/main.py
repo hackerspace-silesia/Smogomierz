@@ -26,24 +26,23 @@ if __name__ == "__main__":
     gc.collect()
     try:
         loop = uasyncio.get_event_loop()
+
+        if debug_mode:
+            loop.create_task(do_webapp())
+
         if not debug_mode:
-            settime()
+            #settime()
             sensor_manager.setup()
 
         if not debug_mode:
             loop.create_task(sensor_manager.execute(loop))
-            loop.create_task(loop_set_time())
-        loop.create_task(do_webapp())
+            #loop.create_task(loop_set_time())
         
         loop.run_forever()
     except KeyboardInterrupt:
         loop.close() 
     except Exception as e:
-        with open('error', 'w') as f:
-            if debug_mode:
-                sys.print_exception(e)
-            else:
-                sys.print_exception(e, f)
+        sys.print_exception(e)
 
         utime.sleep(1)
         reset()

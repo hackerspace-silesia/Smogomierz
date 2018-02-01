@@ -37,7 +37,6 @@ class SensorManager:
         i2c = I2C(scl=Pin(5), sda=Pin(4)) 
         self.bme280 = BME280(i2c=i2c)
         self.pms7003 = PMS7003()
-        self.pms7003.setIdel()
 
     @staticmethod
     def _avg(a, b):
@@ -59,13 +58,9 @@ class SensorManager:
         avg = self._avg
 
         # get two results and compute avg
-
-        self.pms7003.setNormal()
-        await sleep(0.05)
         _1pm1, _1pm25, _1pm10 = self.pms7003.read_data()
         await sleep(0.05)
         _2pm1, _2pm25, _2pm10 = self.pms7003.read_data()
-        self.pms7003.setIdel()
 
         pm1 = avg(_1pm1, _2pm1)
         pm25 = avg(_1pm25, _2pm25)
@@ -103,7 +98,7 @@ class SensorManager:
     async def execute(self, loop):
         while True:
             loop.create_task(self.get_and_send_data(loop))
-            await sleep(1800)
+            await sleep(15)
 
     async def get_and_send_data(self, loop):
         if self.fake_data:
@@ -126,7 +121,7 @@ class SensorManager:
             data['humidity'],
         )
         self.db.insert(0, obj)
-        if len(self.db) > 24 * 4:
+        if len(self.db) > 48:
             self.db.pop()
 
     async def upload_to_airmonitor(self, data):
@@ -139,21 +134,22 @@ class SensorManager:
         except OSError:
             return
 
-        air_data = {
-            'lat': config['airmonitor_lat'],
-            'long': config['airmonitor_long'],
-            'pressure': data['pressure'],
-            'temperature': data['temperature'],
-            'humidity': data['humidity'],
-            'pm1': data['pm1'],
-            'pm25': data['pm25'],
-            'pm10': data['pm10'],
-            'sensor': SENSOR_MODEL,
-        }
+        air_data = ''
+        air_data += '{'
+        air_data += '"lat":%0.4f,' % config.pop('airmonitor_lat')
+        air_data += '"long":%0.4f,' % config.pop('airmonitor_long')
+        del config
+        air_data += '"pressure":%0.2f,' % data['pressure']
+        air_data += '"temperature":%0.2f,' % data['temperature']
+        air_data += '"humidity":%0.2f,' % data['humidity']
+        air_data += '"pm1":%0.2f,' % data['pm1']
+        air_data += '"pm25":%0.2f,' % data['pm25']
+        air_data += '"pm10":%0.2f,' % data['pm10']
+        air_data += '"sensor":"%s"' % SENSOR_MODEL
+        air_data += '}'
 
         resp = urequests.post(
             URL_API,
-            timeout=10,
             data=air_data,
             headers={"Content-Type": "application/json"},
         )

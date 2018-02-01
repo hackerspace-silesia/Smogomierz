@@ -13,11 +13,11 @@ mpy/%.mpy: $(PROJECT_DIR)/%.py
 
 deployed/%.mpy: mpy/%.mpy
 	ampy -p $(PORT) put $<
-	@cp $< $@
+	@touch $@
 
 deployed/%.py: $(PROJECT_DIR)/%.py
 	ampy -p $(PORT) put $<
-	@cp $< $@
+	@touch $@
 
 deploy: $(DEPLOYED_MPY_FILES) $(DEPLOYED_PY_FILES)
 

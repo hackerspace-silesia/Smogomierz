@@ -36,9 +36,14 @@ class SensorManager:
         """
         i2c = I2C(scl=Pin(5), sda=Pin(4)) 
         self.bme280 = BME280(i2c=i2c)
-        #self.pms7003 = PMS7003()
+        self.pms7003 = PMS7003()
+        self.pms7003.setIdel()
 
-    def get_data(self):
+    @staticmethod
+    def _avg(a, b):
+        return (a + b) / 2
+
+    async def get_data(self):
         """
             returns a dict with data
             :return: dict with keys::
@@ -51,9 +56,28 @@ class SensorManager:
                 humidity - [%]
                 date - YYYY-MM-DD hh:mm:ss
         """
-        #pm1, pm25, pm10 = self.pms7003.read_data()
-        pm1, pm25, pm10 = 0, 0, 0
-        temp, press, hum = self.bme280.read_compensated_data()
+        avg = self._avg
+
+        # get two results and compute avg
+
+        self.pms7003.setNormal()
+        await sleep(0.05)
+        _1pm1, _1pm25, _1pm10 = self.pms7003.read_data()
+        await sleep(0.05)
+        _2pm1, _2pm25, _2pm10 = self.pms7003.read_data()
+        self.pms7003.setIdel()
+
+        pm1 = avg(_1pm1, _2pm1)
+        pm25 = avg(_1pm25, _2pm25)
+        pm10 = avg(_1pm10, _2pm10)
+        
+        _1temp, _1press, _1hum = self.bme280.read_compensated_data()
+        await sleep(0.05)
+        _2temp, _2press, _2hum = self.bme280.read_compensated_data()
+
+        temp = avg(_1temp, _2temp)
+        press = avg(_1press, _2press)
+        hum = avg(_1hum, _2hum)
 
         return {
             'pm1': pm1,
@@ -65,7 +89,7 @@ class SensorManager:
             'date': utime.time(),
         }
 
-    def get_fake_data(self):
+    async def get_fake_data(self):
         return {
             'pm1': 5,
             'pm25': 5,
@@ -83,9 +107,9 @@ class SensorManager:
 
     async def get_and_send_data(self, loop):
         if self.fake_data:
-            data = self.get_fake_data()
+            data = await self.get_fake_data()
         else:
-            data = self.get_data()
+            data = await self.get_data()
 
         loop.create_task(self.save_data(data))
         loop.create_task(self.upload_to_airmonitor(data))

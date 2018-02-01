@@ -1,9 +1,7 @@
 # This file is executed on every boot (including wake-boot from deepsleep)
-#import esp
-#esp.osdebug(None)
+import esp
+esp.osdebug(None)
 import gc
-#import webrepl
-#webrepl.start()
 gc.collect()
 
 debug_mode = False
@@ -50,6 +48,7 @@ def do_connect():
         while not sta_if.isconnected():
             pass
         print('network config:', sta_if.ifconfig())
+        sleep(2)
 
 do_connect()
 

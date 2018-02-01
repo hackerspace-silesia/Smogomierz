@@ -30,7 +30,8 @@ async def serve(reader, writer):
     except MemoryError:
         raise
     except Exception as e:
-        sys.print_exception(e)
+        with open('error', 'w') as f:
+            sys.print_exception(e, f)
     finally:
         try:
             await writer.aclose()
@@ -108,6 +109,7 @@ async def index(writer):
     await w('<th>PRESSURE <small>[hPa]</small></th>')
     await w('<th>HUMIDITY <small>[%]</small></th>')
     await w('</tr></thead>')
+
     await w('<tbody>')
 
     for obj in read_data():

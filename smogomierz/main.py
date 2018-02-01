@@ -21,16 +21,16 @@ async def loop_set_time():
 
 if __name__ == "__main__":
     ap_if = network.WLAN(network.AP_IF)
-    sensor_manager = SensorManager(db, send_to_airmonitor=False)
+    sensor_manager = SensorManager(db, send_to_airmonitor=True)
 
     gc.collect()
     try:
         loop = uasyncio.get_event_loop()
-        if not ap_if.active():
+        if not debug_mode:
             settime()
             sensor_manager.setup()
 
-        if not ap_if.active():
+        if not debug_mode:
             loop.create_task(sensor_manager.execute(loop))
             loop.create_task(loop_set_time())
         loop.create_task(do_webapp())
@@ -39,7 +39,12 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         loop.close() 
     except Exception as e:
-        sys.print_exception(e)
+        with open('error', 'w') as f:
+            if debug_mode:
+                sys.print_exception(e)
+            else:
+                sys.print_exception(e, f)
+
         utime.sleep(1)
         reset()
 

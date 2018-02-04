@@ -1,4 +1,4 @@
-# Smogomierz-LUA_version
+# Smogomierz - Arduino version
 
 **BME280** – VIN - 3V; GND - G; SCL - D4; SDA - D3
 
@@ -6,6 +6,8 @@
 
 Tested on:
 
-ArdinoIDE 1.8.5
+ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 
 nodemcu-master-16-modules-2018-01-14-09-39-20-float - https://www.dropbox.com/s/rxtoz876kscjvb2/nodemcu-master-16-modules-2018-01-14-09-39-20-float.bin
+
+NodeMCU custom builds – https://nodemcu-build.com

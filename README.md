@@ -19,6 +19,7 @@ NodeMCU custom builds – https://nodemcu-build.com
 - [x] BME280 support
 - [x] Display current data on Webbapp on ESP8266
 - [ ] Send data from PMS7003 and BME280 to http://mapa.airmonitor.pl
+- [ ] Get time from NTP server
 - [ ] Storage data
 - [ ] Display old data on Webbapp on ESP8266
 - [ ] Change Latitude and Longitude on Webbapp on ESP8266

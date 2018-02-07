@@ -4,6 +4,8 @@
 
 **PMS7003** – White/5V - VU; Black/GND - G; Green/TX - D1; Blue/RX - D2
 
+![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/Arduino/schemat.png)
+
 Tested on:
 
 ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software

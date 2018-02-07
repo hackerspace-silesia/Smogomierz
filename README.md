@@ -1,8 +1,13 @@
 # Smogomierz - Arduino version
 
+## Parts / Potrzebne części
+
+
+## Connection / Podłączenia
+
 **BME280** – VIN - 3V; GND - G; SCL - D4; SDA - D3
 
-**PMS7003** – White/5V - VU; Black/GND - G; Green/TX - D1; Blue/RX - D2
+**PMS7003** – White/Biały/5V - VIN/5V; Black/Czarny/GND - G; Green/Zielony/TX - D1; Blue/Niebieski/RX - D2
 
 ![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/Arduino/schemat.png)
 

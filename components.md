@@ -14,4 +14,6 @@
 
 **Goldpiny** – http://allegro.pl/wtyk-szpilkowy-goldpin-arduino-avr-pic-80szt-fv-i6846674238.html 
 
+Dwa element umożliwiający przepływ powietrza przez obudowę do wydrukowania na drukarce 3D / Two 3D printed parts – 
+
 Lutownica(wraz z cyną) oraz pistolet do kleju na gorąco oraz nóż do tapet, do zlutowania, sklejenia i wycięcia niektórych z wymienionych wyżej elementów. 

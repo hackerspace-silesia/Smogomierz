@@ -2,8 +2,9 @@
 
 ## Parts / Potrzebne części
 
+https://github.com/hackerspace-silesia/Smogomierz/blob/Arduino/components.md
 
-## Connection / Podłączenia
+## Connection / Podłączenie
 
 **BME280** – VIN - 3V; GND - G; SCL - D4; SDA - D3
 

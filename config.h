@@ -9,6 +9,8 @@
 
 const float LATITUDE = 50.2639;
 const float LONGITUDE = 18.9957;
+
+const float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
 #define AIRMONITOR_ON true
 
 /*

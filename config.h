@@ -35,4 +35,4 @@ Koniec konfiguracji
 
 End of configuration :) 
 */
-#define DEBUG true
+#define DEBUG false

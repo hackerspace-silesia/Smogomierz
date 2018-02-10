@@ -70,14 +70,14 @@ void loop() {
   counter1++;
   //execute every ~minute
   if (counter1 == 5000){
+    WiFiClient client;
     ThingSpeak.begin(client);
     ThingSpeak.setField(1,calib1*(data.PM_AE_UG_1_0));
     ThingSpeak.setField(2,calib1*(data.PM_AE_UG_2_5));
     ThingSpeak.setField(3,calib1*(data.PM_AE_UG_10_0));
     ThingSpeak.writeFields(THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY); 
-    
+
     counter1 = 0;  
-    
     sendDataToAirMonitor();
   }   
 

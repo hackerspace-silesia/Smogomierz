@@ -9,6 +9,7 @@
 
 #ifndef BME280_T_h
 #define BME280_T_h
+#include <Wire.h>
 
 #include <inttypes.h>
 #include <Arduino.h>

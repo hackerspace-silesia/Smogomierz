@@ -1,9 +1,10 @@
 #include "webserver.h"
 #include "config.h"
-#include "WiFiManager.h"
+#include "pms.h" // https://github.com/fu-hsi/PMS
+#include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 
 
-void showHtml(WifiClient &client, const BME280<> &bme, const PMS::DATA &pms) {
+void showHtml(WiFiClient &client, BME280<BME280_C, BME280_ADDRESS> &BMESensor, const PMS::DATA &pms) {
     client.println("<!DOCTYPE HTML>");
     client.println("<html>");
     client.println("<head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\" ><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">"
@@ -15,7 +16,7 @@ void showHtml(WifiClient &client, const BME280<> &bme, const PMS::DATA &pms) {
     client.println(" °C</h3>");
       
     client.println("<h3>Ciśnienie: ");
-    client.println((BMESensor.seaLevelForAltitude(MYALTITUDE)) / 100.0F);
+    client.println(BMESensor.seaLevelForAltitude(MYALTITUDE) / 100.0F);
     client.println(" hPa</h3>");
       
     client.println("<h3>Wilgotność: ");
@@ -28,22 +29,22 @@ void showHtml(WifiClient &client, const BME280<> &bme, const PMS::DATA &pms) {
 
     client.println("<p><h2>Pomiary zanieczyszczeń:</h2>");
     client.println("<h3>PM1: ");
-    client.println(int(calib1 * data.PM_AE_UG_1_0));
+    client.println(int(calib1 * pms.PM_AE_UG_1_0));
     client.println(" µg/m³</h3>");
 
     client.println("<h3>PM2.5: ");
-    client.println(int(calib1 * data.PM_AE_UG_2_5));
+    client.println(int(calib1 * pms.PM_AE_UG_2_5));
     client.println(" µg/m³</h3>");
 
     client.println("<h3>PM10: ");
-    client.println(int(calib1 * data.PM_AE_UG_10_0));
+    client.println(int(calib1 * pms.PM_AE_UG_10_0));
     client.println(" µg/m3</h3>");
 
     client.println("</center></body></html>"); 
 }
 
 
-void webserverShowSite(WifiServer &server, const BME280<> &bme, const PMS::DATA &pms) { 
+void webserverShowSite(WiFiServer &server, BME280<BME280_C, BME280_ADDRESS> &BMESensor, const PMS::DATA &pms) { 
   WiFiClient client = server.available();
   
   if (client) {
@@ -60,7 +61,7 @@ void webserverShowSite(WifiServer &server, const BME280<> &bme, const PMS::DATA 
           client.println("Content-Type: text/html");
           client.println("Connection: close");
           client.println();
-          showHtml(client, bme, pms);
+          showHtml(client, BMESensor, pms);
           break;
         }
         if (c == '\n') {

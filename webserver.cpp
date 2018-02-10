@@ -50,6 +50,15 @@ if(THINGSPEAK_ON == true){
     client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
     client.print(THINGSPEAK_CHANNEL_ID);
     client.print("/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");
+    client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
+    client.print(THINGSPEAK_CHANNEL_ID);
+    client.print("/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");
+    client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
+    client.print(THINGSPEAK_CHANNEL_ID);
+    client.print("/charts/5?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");
+    client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
+    client.print(THINGSPEAK_CHANNEL_ID);
+    client.print("/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");
     client.println("</center></body></html>"); 
   }
 }

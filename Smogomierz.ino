@@ -66,7 +66,7 @@ void loop() {
 
   counter1++;
   //execute every ~minute
-  if (counter1 == 5000){
+  if (counter1 >= 50000){
     sendDataToThingSpeak(BMESensor, data);
     sendDataToAirMonitor(BMESensor, data);
     counter1 = 0;  

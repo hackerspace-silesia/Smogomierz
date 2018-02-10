@@ -43,7 +43,7 @@ void sendJson(JsonObject& json) {
     client.stop();
 }
 
-JsonObject& buildPMSJson(const PMS::DATA &pms) {
+void sendPMSData(const PMS::DATA &pms) {
     StaticJsonBuffer<400> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
@@ -52,11 +52,10 @@ JsonObject& buildPMSJson(const PMS::DATA &pms) {
     json["pm25"] = int(calib1 * pms.PM_AE_UG_2_5);
     json["pm10"] = int(calib1 * pms.PM_AE_UG_10_0);
     json["sensor"] = "PMS7003";
-
-    return json;
+    sendJson(json);
 }
 
-JsonObject& buildBMEJson(BME280<BME280_C, BME280_ADDRESS> &bme) {
+void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
     StaticJsonBuffer<400> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
@@ -66,16 +65,6 @@ JsonObject& buildBMEJson(BME280<BME280_C, BME280_ADDRESS> &bme) {
     json["humidity"] = float(bme.humidity);
     json["sensor"] = "BME280";
 
-    return json;
-}
-
-void sendPMSData(const PMS::DATA &pms) {
-    JsonObject& json = buildPMSJson(pms);
-    sendJson(json);
-}
-
-void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
-    JsonObject& json = buildBMEJson(bme);
     sendJson(json);
 }
 

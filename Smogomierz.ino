@@ -35,7 +35,6 @@ BME280<> BMESensor;
 SoftwareSerial mySerial(5, 4); // Change TX - D1 and RX - D2 pins 
 PMS pms(mySerial);
 PMS::DATA data;
-float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
 
 static char device_name[20];
 
@@ -45,27 +44,25 @@ int counter1 = 0;
 WiFiServer server(80);
 
 void setup() {
+    Serial.begin(115200);
+    mySerial.begin(9600); 
 
-Serial.begin(115200);
-mySerial.begin(9600); 
+    Wire.begin(0,2);
+    BMESensor.begin(); 
 
-Wire.begin(0,2);
-BMESensor.begin(); 
+    // get ESP id
+    sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
+    Serial.print("Device name: ");
+    Serial.println(device_name);
 
-// get ESP id
-sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
-Serial.print("Device name: ");
-Serial.println(device_name);
+    WiFiManager wifiManager;
+    wifiManager.autoConnect(device_name);
 
-WiFiManager wifiManager;
-wifiManager.autoConnect(device_name);
-
-server.begin();
-delay(300);
+    server.begin();
+    delay(300);
 }
 
 void loop() {
-  // web page begine!
   //wdt_reset();
   pms.read(data);
   BMESensor.refresh();
@@ -87,7 +84,7 @@ void loop() {
   jsondatatph["humidity"] = float(BMESensor.humidity);
   jsondatatph["sensor"] = "BME280";
   
-  webserverShowSite();
+  webserverShowSite(server, BMESensor, data);
   delay(10);
 
   if (!(AIRMONITOR_ON)) {

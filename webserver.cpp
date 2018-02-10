@@ -38,7 +38,7 @@ void showHtml(WiFiClient &client, BME280<BME280_C, BME280_ADDRESS> &BMESensor, c
 
     client.println("<h3>PM10: ");
     client.println(int(calib1 * pms.PM_AE_UG_10_0));
-    client.println(" µg/m3</h3>");
+    client.println(" µg/m³</h3>");
 
 if(THINGSPEAK_ON == true){
     client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");

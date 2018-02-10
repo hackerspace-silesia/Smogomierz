@@ -26,8 +26,8 @@ const float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
  */
 
 
-#define THINGSPEAK_ON false 
-#define THINGSPEAK_API_KEY "-"
+#define THINGSPEAK_ON false
+#define THINGSPEAK_API_KEY "API_KEY"
 #define THINGSPEAK_CHANNEL_ID 0
 
 /*
@@ -35,4 +35,4 @@ Koniec konfiguracji
 
 End of configuration :) 
 */
-#define DEBUG true
+#define DEBUG false

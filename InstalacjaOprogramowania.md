@@ -48,7 +48,7 @@ Po zainstalowaniu ArduinoIDE, musimy dodać w nim obsługę płytek ESP8266.
 3. Otworzy się nam okienko programu ArduinoIDE z kodem naszej aplikacji Smogomierza.  
 ![ArduinoIDE7](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/Arduino/screeny/ArduinoIDE7.jpg)
 
-	1. Sprawdzenie poprawności oprogramowania
-	2. Wgranie oprogramowania na płytkę
-	3. Postęp weryfikacji/wgrywania oprogramowania i ewentualne błędy
-	4. Płytka oraz port, które mamy ustawione
+1. Sprawdzenie poprawności oprogramowania
+2. Wgranie oprogramowania na płytkę
+3. Postęp weryfikacji/wgrywania oprogramowania i ewentualne błędy
+4. Płytka oraz port, które mamy ustawione

@@ -8,6 +8,8 @@
 #include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 #include <ArduinoJson.h>
 
+#include "config.h"
+
 /*
   Podłączenie czujnikow:
   BME280: VIN - 3V; GND - G; SCL - D4; SDA - D3
@@ -16,24 +18,6 @@
   Connection of sensors:
   BME280: VIN - 3V; GND - G; SCL - D4; SDA - D3
   PMS7003:/White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D1
-*/
-
-
-/*
-  Dlugosc i szerokosc geograficzna do sprawdzenia na stronie: https://www.wspolrzedne-gps.pl
-  Obecnie podane wspolrzedne - Hackerspace Silesia, ul. Ondraszka 17, Katowice, Polska
-
-  Location from https://www.wspolrzedne-gps.pl
-  Current location – Hackerspace Silesia, Ondraszka 17, Katowice, Poland
-*/
-float Latitude = 50.263;        // 50.2639
-float Longitude = 18.995;       // 18.9957
-#define MYALTITUDE  260.00      // Wysokosc nad poziomem morza(metry) / altitude(meters)
-
-/*
-Koniec konfiguracji
-
-End of configuration :) 
 */
 
 // BME280 config
@@ -48,8 +32,8 @@ PMS::DATA data;
 float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
 
 // AirMonitor config
-const char *  serverName= "api.airmonitor.pl/api";
-const uint16_t port = 5000;
+const char *airMonitorServerName = "api.airmonitor.pl";
+const uint16_t airMonitorPort = 5000;
 int counter1 = 0;
 
 static char device_name[20];
@@ -85,8 +69,8 @@ void loop() {
   
   StaticJsonBuffer<400> jsonBuffer;
   JsonObject& jsondatadust = jsonBuffer.createObject();
-  jsondatadust["lat"] = ""+String(Latitude, 4)+"";
-  jsondatadust["long"] = ""+String(Longitude, 4)+"";
+  jsondatadust["lat"] = ""+String(LATITUDE, 4)+"";
+  jsondatadust["long"] = ""+String(LONGITUDE, 4)+"";
   jsondatadust["pm1"] = int(calib1*(data.PM_AE_UG_1_0));
   jsondatadust["pm25"] = int(calib1*(data.PM_AE_UG_2_5));
   jsondatadust["pm10"] = int(calib1*(data.PM_AE_UG_10_0));
@@ -169,15 +153,20 @@ void loop() {
     Serial.println("Client disconnected.");
   }   
   delay(10);
+
+  if (AIRMONITOR_ON) {
+    return;
+  }
   counter1++;
   //execute every ~minute
   if (counter1 == 5000){
     counter1 = 0;  
+
     Serial.print("\nconnecting to ");
-    Serial.println(serverName);
+    Serial.println(airMonitorServerName);
     WiFiClient client;
 
-    if (!client.connect(serverName, port)) {
+    if (!client.connect(airMonitorServerName, airMonitorPort)) {
         Serial.println("connection failed");
         Serial.println("wait 3 sec...\n");
         delay(3000);

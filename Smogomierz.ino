@@ -1,17 +1,15 @@
 #include <Wire.h>
 #include <ESP8266WiFi.h>
-#include <DNSServer.h>
-#include <ESP8266WebServer.h>
 #include <SoftwareSerial.h>
 #include "WiFiManager.h" // https://github.com/tzapu/WiFiManager
 #include "pms.h" // https://github.com/fu-hsi/PMS
 #include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
-#include "ThingSpeak.h"
 
 #include "config.h"
 
 #include "webserver.h"
 #include "airmonitor.h"
+#include "thing_speak.h"
 
 
 /*
@@ -69,14 +67,8 @@ void loop() {
   counter1++;
   //execute every ~minute
   if (counter1 == 5000){
-    WiFiClient client;
-    ThingSpeak.begin(client);
-    ThingSpeak.setField(1,calib1*(data.PM_AE_UG_1_0));
-    ThingSpeak.setField(2,calib1*(data.PM_AE_UG_2_5));
-    ThingSpeak.setField(3,calib1*(data.PM_AE_UG_10_0));
-    ThingSpeak.writeFields(THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY); 
-
-    sendDataToAirMonitor();
+    sendDataToThingSpeak(BMESensor, data);
+    sendDataToAirMonitor(BMESensor, data);
     counter1 = 0;  
   }   
 

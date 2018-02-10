@@ -8,7 +8,7 @@
 const char *airMonitorServerName = "api.airmonitor.pl";
 const uint16_t airMonitorPort = 5000;
 
-void sendDataToAirMonitor(BME280<> &bme, const PMS::DATA &pms) {
+void sendDataToAirMonitor(BME280<BME280_C, BME280_ADDRESS> &bme, const PMS::DATA &pms) {
     if (!(AIRMONITOR_ON)) {
         return;
     }
@@ -22,7 +22,7 @@ void sendPMSData(const PMS::DATA &pms) {
     sendJson(json);
 }
 
-void sendBMEData(BME280<> &bme) {
+void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
     JsonObject& json = buildBMEJson(bme);
     sendJson(json);
 }
@@ -75,7 +75,7 @@ JsonObject& buildPMSJson(const PMS::DATA &pms) {
     return json;
 }
 
-JsonObject& buildBMEJson(BME280<> &bme) {
+JsonObject& buildBMEJson(BME280<BME280_C, BME280_ADDRESS> &bme) {
     StaticJsonBuffer<400> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);

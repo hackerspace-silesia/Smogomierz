@@ -8,25 +8,6 @@
 const char *airMonitorServerName = "api.airmonitor.pl";
 const uint16_t airMonitorPort = 5000;
 
-void sendDataToAirMonitor(BME280<BME280_C, BME280_ADDRESS> &bme, const PMS::DATA &pms) {
-    if (!(AIRMONITOR_ON)) {
-        return;
-    }
-
-    sendPMSData(pms);
-    sendBMEData(bme);
-}
-
-void sendPMSData(const PMS::DATA &pms) {
-    JsonObject& json = buildPMSJson(pms);
-    sendJson(json);
-}
-
-void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
-    JsonObject& json = buildBMEJson(bme);
-    sendJson(json);
-}
-
 void sendJson(JsonObject& json) {
     WiFiClient client;
     Serial.print("\nconnecting to ");
@@ -59,14 +40,14 @@ void sendJson(JsonObject& json) {
         Serial.println(line);
     }
 
-    client.close();
+    client.stop();
 }
 
 JsonObject& buildPMSJson(const PMS::DATA &pms) {
     StaticJsonBuffer<400> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
-    json["long"] = String(LONGITUDE, 4)
+    json["long"] = String(LONGITUDE, 4);
     json["pm1"] = int(calib1 * pms.PM_AE_UG_1_0);
     json["pm25"] = int(calib1 * pms.PM_AE_UG_2_5);
     json["pm10"] = int(calib1 * pms.PM_AE_UG_10_0);
@@ -87,4 +68,25 @@ JsonObject& buildBMEJson(BME280<BME280_C, BME280_ADDRESS> &bme) {
 
     return json;
 }
+
+void sendPMSData(const PMS::DATA &pms) {
+    JsonObject& json = buildPMSJson(pms);
+    sendJson(json);
+}
+
+void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
+    JsonObject& json = buildBMEJson(bme);
+    sendJson(json);
+}
+
+void sendDataToAirMonitor(BME280<BME280_C, BME280_ADDRESS> &bme, const PMS::DATA &pms) {
+    if (!(AIRMONITOR_ON)) {
+        return;
+    }
+
+    sendPMSData(pms);
+    sendBMEData(bme);
+}
+
+
 

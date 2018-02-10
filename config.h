@@ -9,6 +9,7 @@
 
 const float LATITUDE = 50.2639;
 const float LONGITUDE = 18.9957;
+const float MYALTITUDE = 260;
 #define AIRMONITOR_ON true
 
 /*

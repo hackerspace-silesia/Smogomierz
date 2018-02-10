@@ -6,7 +6,8 @@
 #include "WiFiManager.h" // https://github.com/tzapu/WiFiManager
 #include "pms.h" // https://github.com/fu-hsi/PMS
 #include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
-#include <ArduinoJson.h>
+#include "ArduinoJson.h"
+#include "ThingSpeak.h"
 
 #include "config.h"
 
@@ -77,8 +78,8 @@ void loop() {
   jsondatadust["sensor"] = "PMS7003";
 
   JsonObject& jsondatatph = jsonBuffer.createObject();
-  jsondatatph["lat"] = ""+String(Latitude, 4)+"";
-  jsondatatph["long"] = ""+String(Longitude, 4)+"";
+  jsondatatph["lat"] = ""+String(LATITUDE, 4)+"";
+  jsondatatph["long"] = ""+String(LONGITUDE, 4)+"";
   jsondatatph["pressure"] = float((BMESensor.seaLevelForAltitude(MYALTITUDE)) / 100.0F);
   jsondatatph["temperature"] = float(BMESensor.temperature);
   jsondatatph["humidity"] = float(BMESensor.humidity);
@@ -160,8 +161,13 @@ void loop() {
   counter1++;
   //execute every ~minute
   if (counter1 == 5000){
+    ThingSpeak.begin(client);
+    ThingSpeak.setField(1,calib1*(data.PM_AE_UG_1_0));
+    ThingSpeak.setField(2,calib1*(data.PM_AE_UG_2_5));
+    ThingSpeak.setField(3,calib1*(data.PM_AE_UG_10_0));
+    ThingSpeak.writeFields(THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY); 
+    
     counter1 = 0;  
-
     Serial.print("\nconnecting to ");
     Serial.println(airMonitorServerName);
     WiFiClient client;

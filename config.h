@@ -9,7 +9,7 @@
 
 const float LATITUDE = 50.2639;
 const float LONGITUDE = 18.9957;
-const float MYALTITUDE = 260;
+const float MYALTITUDE = 260.00;
 
 const float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
 #define AIRMONITOR_ON true
@@ -27,8 +27,8 @@ const float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
 
 
 #define THINGSPEAK_ON false 
-const char *THINGSPEAK_API_KEY  = "-";
-unsigned long THINGSPEAK_CHANNEL_ID = 0;
+#define THINGSPEAK_API_KEY "-"
+#define THINGSPEAK_CHANNEL_ID 0
 
 /*
 Koniec konfiguracji

@@ -1,10 +1,10 @@
 # Smogomierz - instalacja orpgoramowania
 
-Poniższy opis ktok po kroku, przeprowadzi Was przez procedurę intalacji oprogramowania wymaganego do wgrania nowego systemu na mierniki smogu. Całe oprogramowanie jest w pełni darmowe, a jego pobranie nie wymaga żadnej rejestracji i podawania swoich danych.
+Poniższy opis krok po kroku, przeprowadzi Was przez procedurę instalacji oprogramowania wymaganego do wgrania nowego systemu na mierniki smogu. Całe oprogramowanie jest w pełni darmowe, a jego pobranie nie wymaga żadnej rejestracji i podawania swoich danych.
 
 ## Arduino - instalacja
 
-Na początku musimy ponrać program ArduinoIDE. Pozwala on na programowanie płytek z rodziny Arduino. W późniejszym kroku, dodamy do niego obsługę płytki ESP8266. To właśnie na nich oparte są nasze mierniki smogu.
+Na początku musimy pobrać program ArduinoIDE. Pozwala on na programowanie płytek z rodziny Arduino. W późniejszym kroku, dodamy do niego obsługę płytki ESP8266. To właśnie na nich oparte są nasze mierniki smogu.
 
 1. Pobieramy oprogramowanie ze strony https://www.arduino.cc/en/Main/Software. W tym celu musimy wybrać jaki system operacyjny mamy zainstalowany na komputerze, a następnie kliknąć na napis "Download the Arduino IDE".
 ![ArduinoIDE1](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/Arduino/screens/ArduinoIDE1.jpg)
@@ -12,7 +12,7 @@ Na początku musimy ponrać program ArduinoIDE. Pozwala on na programowanie pły
 2. Klikamy napis "JUST DOWNLOAD". W tym momencie rozpocznie się pobieranie instalatora ArduinoIDE.
 ![ArduinoIDE2](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/Arduino/screens/ArduinoIDE2.jpg)
 
-3. Instalujemy pbrany porogram. W przypadku Windowsa klikamy na niego 2 razy i instalujemy. W systemie macOS przenosimy do foldery Aplikacje. Na Linuksie uruchamiamy skrypt install.sh.
+3. Instalujemy pobrany program. W przypadku Windowsa klikamy na niego 2 razy i instalujemy. W systemie macOS przenosimy do foldery Aplikacje. Na Linuksie uruchamiamy skrypt install.sh.
 
 ## Arduino - konfiguracja
 
@@ -55,4 +55,3 @@ Po zainstalowaniu ArduinoIDE, musimy dodać w nim obsługę płytek ESP8266.
 3 – Postęp weryfikacji/wgrywania oprogramowania i ewentualne błędy
 
 4 – Płytka oraz port, które mamy ustawione
-

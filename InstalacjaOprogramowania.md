@@ -49,6 +49,10 @@ Po zainstalowaniu ArduinoIDE, musimy dodać w nim obsługę płytek ESP8266.
 ![ArduinoIDE7](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/Arduino/screens/ArduinoIDE7.jpg)
 
 1 – Sprawdzenie poprawności oprogramowania
+
 2 – Wgranie oprogramowania na płytkę
+
 3 – Postęp weryfikacji/wgrywania oprogramowania i ewentualne błędy
+
 4 – Płytka oraz port, które mamy ustawione
+

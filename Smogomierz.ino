@@ -45,16 +45,17 @@ BME280<> BMESensor;
 SoftwareSerial mySerial(5, 4); // Change TX - D1 and RX - D2 pins 
 PMS pms(mySerial);
 PMS::DATA data;
+float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
 
 // AirMonitor config
-char serverName[] = "api.airmonitor.pl:5000/api";
+const char *  serverName= "api.airmonitor.pl/api";
+const uint16_t port = 5000;
 int counter1 = 0;
 
 static char device_name[20];
 
 // Web Server on port 80
 WiFiServer server(80);
-WiFiClient airmonitor;
 
 void setup() {
 
@@ -82,30 +83,22 @@ void loop() {
   pms.read(data);
   BMESensor.refresh();
   
-  StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& jsondata = jsonBuffer.createObject();
-  jsondata["lat"] = ""+String(Latitude, 3)+"";
-  jsondata["long"] = ""+String(Longitude, 3)+"";
-  jsondata["pm1"] = int(1.6*(data.PM_AE_UG_1_0)); // 1.6* for more accurate data, sort of calibration
-  jsondata["pm25"] = int(1.6*(data.PM_AE_UG_2_5));
-  jsondata["pm10"] = int(1.6*(data.PM_AE_UG_10_0));
-  jsondata["sensor"] = "PMS7003";
-  //jsondata.prettyPrintTo(Serial);
-  
-  /*
-  Serial.println("Connected to server");
-  // Make the HTTP request
-  String request = String("POST ") +"api.airmonitor.pl:5000/api HTTP/1.1\r\n" +
-                 "Host: api.airmonitor.pl \r\n" +
-                 "User-Agent: ESP826/NodeMCU 1.0\r\n" +
-                 "\"lat\" : "+ String(Latitude) + ",\r\n"
-                 "\"long\" : "+ String(Longitude) + ",\r\n"
-                 "\"pm1\" : "+ String(data.PM_AE_UG_1_0) + ",\r\n"
-                 "\"pm25\" : "+ String(data.PM_AE_UG_2_5) + ",\r\n"
-                 "\"pm10\" : "+ String(data.PM_AE_UG_10_0) + ",\r\n"
-                 "\"sensor\" : \"""PMS7003""\r\n";
-  Serial.println(request);
-  */
+  StaticJsonBuffer<400> jsonBuffer;
+  JsonObject& jsondatadust = jsonBuffer.createObject();
+  jsondatadust["lat"] = ""+String(Latitude, 4)+"";
+  jsondatadust["long"] = ""+String(Longitude, 4)+"";
+  jsondatadust["pm1"] = int(calib1*(data.PM_AE_UG_1_0));
+  jsondatadust["pm25"] = int(calib1*(data.PM_AE_UG_2_5));
+  jsondatadust["pm10"] = int(calib1*(data.PM_AE_UG_10_0));
+  jsondatadust["sensor"] = "PMS7003";
+
+  JsonObject& jsondatatph = jsonBuffer.createObject();
+  jsondatatph["lat"] = ""+String(Latitude, 4)+"";
+  jsondatatph["long"] = ""+String(Longitude, 4)+"";
+  jsondatatph["pressure"] = float((BMESensor.seaLevelForAltitude(MYALTITUDE)) / 100.0F);
+  jsondatatph["temperature"] = float(BMESensor.temperature);
+  jsondatatph["humidity"] = float(BMESensor.humidity);
+  jsondatatph["sensor"] = "BME280";
   
   WiFiClient client = server.available();
   if (client) {
@@ -147,15 +140,15 @@ void loop() {
           
           client.println("<p><h2>Pomiary zanieczyszczeń:</h2>");
           client.println("<h3>PM1: ");
-          client.println(int(1.6*(data.PM_AE_UG_1_0)));
+          client.println(int(calib1*(data.PM_AE_UG_1_0)));
           client.println(" ug/m3</h3>");
           
           client.println("<h3>PM2.5: ");
-          client.println(int(1.6*(data.PM_AE_UG_2_5)));
+          client.println(int(calib1*(data.PM_AE_UG_2_5)));
           client.println(" ug/m3</h3>");
           
           client.println("<h3>PM10: ");
-          client.println(int(1.6*(data.PM_AE_UG_10_0)));
+          client.println(int(calib1*(data.PM_AE_UG_10_0)));
           client.println(" ug/m3</h3>");
           
           client.println("</center></body></html>"); 
@@ -179,12 +172,46 @@ void loop() {
   counter1++;
   //execute every ~minute
   if (counter1 == 5000){
-    char dane = 0;
     counter1 = 0;  
-    dane = jsondata.prettyPrintTo(Serial); 
-    airmonitor.connect(serverName,80);
-    airmonitor.println(dane);
-    Serial.println(dane);
+    Serial.print("\nconnecting to ");
+    Serial.println(serverName);
+    WiFiClient client;
+
+    if (!client.connect(serverName, port)) {
+        Serial.println("connection failed");
+        Serial.println("wait 3 sec...\n");
+        delay(3000);
+        return;
+    }
+
+    delay(100); 
+    
+    // send PMS7003 data to airmonitor.pl
+    client.println("POST /api HTTP/1.1");
+    client.println("Content-Type: application/json");
+    jsondatadust.prettyPrintTo(client);
+    client.println();
+    
+    // send BME280 data to airmonitor.pl
+    client.println("POST /api HTTP/1.1");
+    client.println("Content-Type: application/json");
+    jsondatatph.prettyPrintTo(client);
+    client.println();
+    
+    // print response from airmonitor.pl
+    String line = client.readStringUntil('\r');
+    Serial.println(line);
+    
+    // print data from PMS7003 to serial
+    Serial.println("POST /api HTTP/1.1");
+    Serial.println("Content-Type: application/json");
+    jsondatadust.prettyPrintTo(Serial);
+    Serial.println();
+    
+    // print data from BME280 to serial
+    Serial.println("POST /api HTTP/1.1");
+    Serial.println("Content-Type: application/json");
+    jsondatatph.prettyPrintTo(Serial);
     Serial.println();
   }   
 }

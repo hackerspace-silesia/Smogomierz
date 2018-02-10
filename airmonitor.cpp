@@ -67,9 +67,9 @@ JsonObject& buildPMSJson(const PMS::DATA &pms) {
     JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
     json["long"] = String(LONGITUDE, 4)
-    json["pm1"] = int(calib1 * data.PM_AE_UG_1_0);
-    json["pm25"] = int(calib1 * data.PM_AE_UG_2_5);
-    json["pm10"] = int(calib1 * data.PM_AE_UG_10_0);
+    json["pm1"] = int(calib1 * pms.PM_AE_UG_1_0);
+    json["pm25"] = int(calib1 * pms.PM_AE_UG_2_5);
+    json["pm10"] = int(calib1 * pms.PM_AE_UG_10_0);
     json["sensor"] = "PMS7003";
 
     return json;
@@ -80,9 +80,9 @@ JsonObject& buildBMEJson(BME280<> &bme) {
     JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
     json["long"] = String(LONGITUDE, 4);
-    json["pressure"] = float(BMESensor.seaLevelForAltitude(MYALTITUDE) / 100.0F);
-    json["temperature"] = float(BMESensor.temperature);
-    json["humidity"] = float(BMESensor.humidity);
+    json["pressure"] = float(bme.seaLevelForAltitude(MYALTITUDE) / 100.0F);
+    json["temperature"] = float(bme.temperature);
+    json["humidity"] = float(bme.humidity);
     json["sensor"] = "BME280";
 
     return json;

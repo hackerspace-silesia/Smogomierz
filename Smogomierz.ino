@@ -53,8 +53,7 @@ void setup() {
     Serial.print("Device name: ");
     Serial.println(device_name);
 
-    WiFiManager wifiManager;
-    wifiManager.autoConnect(device_name);
+    WiFiManager wifiManager; wifiManager.autoConnect(device_name);
 
     server.begin();
     delay(300);
@@ -77,8 +76,8 @@ void loop() {
     ThingSpeak.setField(3,calib1*(data.PM_AE_UG_10_0));
     ThingSpeak.writeFields(THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY); 
 
-    counter1 = 0;  
     sendDataToAirMonitor();
+    counter1 = 0;  
   }   
 
 }

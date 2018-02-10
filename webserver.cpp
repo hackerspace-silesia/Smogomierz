@@ -40,7 +40,18 @@ void showHtml(WiFiClient &client, BME280<BME280_C, BME280_ADDRESS> &BMESensor, c
     client.println(int(calib1 * pms.PM_AE_UG_10_0));
     client.println(" µg/m3</h3>");
 
+if(THINGSPEAK_ON == true){
+    client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
+    client.print(THINGSPEAK_CHANNEL_ID);
+    client.print("/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");    
+    client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
+    client.print(THINGSPEAK_CHANNEL_ID);
+    client.print("/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");
+    client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
+    client.print(THINGSPEAK_CHANNEL_ID);
+    client.print("/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");
     client.println("</center></body></html>"); 
+  }
 }
 
 

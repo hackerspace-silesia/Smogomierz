@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "PMS.h"
+#include "pms.h"
 
 PMS::PMS(Stream& stream)
 {

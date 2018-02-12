@@ -10,8 +10,9 @@ Całościowy schemat podłączenia:
 
 Główny element miernika. To właśnie na tę płytkę wgrywamy oprogramowanie. Ma ona wbudowany moduł WiFi, który pozwala na tworzenie sieci bezprzewodowej i wysyłanie danych z pozostałych czujników.
 
-ZDJĘCIE ESP8266
-SCHEMAT PINOUT ESP8266
+![ESP8266 NodeMCU V3 Pinout](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/nodemcu_pins.png)
+
+![ESP8266 calosc](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/ESP8266_Calosc.jpg)
 
 ## BME280 - miernik temperatury, wilgotności i ciśnienia powietrza
 
@@ -50,5 +51,3 @@ ZDJECIE ZASILANIA
 Obudowę miernika smogu stanowi puszka natynkowa IP55. Daje ona dobre zabezpieczenie przeciwko niekorzystnym warunkom atmosferycznym. Puszka ma wymiary 86x86mm i posiada 6 gumowych zatyczek. W miejsce dwóch z nich wkleiliśmy klejem na gorąco elementy wydrukowane na drukarce 3D. Pozwalają one na lepszy przepływ powietrza w obudowie. Można dodać do obudowy niewielki wiatraczek zasilany przez 5V.
 
 ZDJĘCIA OBUDOWY
-
-Projekt elementu wydrukowanego na drukarce 3D - https://github.com/hackerspace-silesia/Smogomierz/blob/master/80x80x40mm.stl

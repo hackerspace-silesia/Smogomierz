@@ -23,14 +23,8 @@ const float MYALTITUDE = 271.00;
  * 2) set api key and channel
  */
 
-<<<<<<< HEAD
-#define THINGSPEAK_ON false 
-#define THINGSPEAK_API_KEY "-"
-=======
-
 #define THINGSPEAK_ON false
 #define THINGSPEAK_API_KEY "API_KEY"
->>>>>>> origin/master
 #define THINGSPEAK_CHANNEL_ID 0
 
 /*

@@ -43,7 +43,6 @@ Wszystkie elementy urządzenia zasilamy poprzez 5V. Źródłem jest pin 5V wypro
 Podobnie robimy z GND. Jednak w tym wypadku nie musimy ręcznie rozdzielać masy. Wystarczy ją podłączyć do pinu G na ESP8266. GND z miernika PMS7003(czarny kabelek) podpinamy do G na ESP8266. GND z BME280 również łączymy z G na płytce ESP8266.
 
 ![Zasilanie Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/Zasilanie_Schemat.png)
-![Zasilanie](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Zasilanie1.jpg)
 
 ## Obudowa
 

@@ -4,15 +4,15 @@ Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powi
 
 ## Instrukcje
 
-Instrukcja instalacji wymaganego oprogramowania: https://github.com/hackerspace-silesia/Smogomierz/instrukcje/blob/software.md
+Instrukcja instalacji wymaganego oprogramowania: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md
 
 
-Instrukcja podłączenia elektroniki: https://github.com/hackerspace-silesia/Smogomierz/instrukcje/blob/hardware.md
+Instrukcja podłączenia elektroniki: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/blob/hardware.md
 
 
 ## Parts / Potrzebne części
 
-https://github.com/hackerspace-silesia/Smogomierz/blob/components.md
+https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 
 ## Connection / Podłączenie
 
@@ -20,7 +20,7 @@ https://github.com/hackerspace-silesia/Smogomierz/blob/components.md
 
 **PMS7003** – White/Biały/5V - VIN/5V; Black/Czarny/GND - G; Green/Zielony/TX - D1; Blue/Niebieski/RX - D2
 
-![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/schemat.png)
+![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/schemat.png)
 
 ### Tested on:
 
@@ -35,4 +35,5 @@ NodeMCU custom builds – https://nodemcu-build.com
 - [ ] OTA Update – http://esp8266.github.io/Arduino/versions/2.0.0/doc/ota_updates/ota_updates.html#arduino-ide
 
 
-Projekt finansowany ze środków programu ramowego Unii Europejskiej w zakresie badań naukowych i innowacji „Horyzont 2020” na podstawie umowy o udzielenie dotacji nr 709443.
+
+"Projekt finansowany ze środków programu ramowego Unii Europejskiej w zakresie badań naukowych i innowacji „Horyzont 2020” na podstawie umowy o udzielenie dotacji nr 709443."

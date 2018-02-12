@@ -1,10 +1,10 @@
 # Smogomierz - podłączenie elektroniki
 
-Poniższy opis krok po kroku, przeprowadzi Was przez procedurę podłączenia wszystkich czujników obsługiwanych przez nasz miernik smogu. Listę części, wraz z linkami do przykładowych sklepów, gdzie można je kupić znajdziecie pod adresem: https://github.com/hackerspace-silesia/Smogomierz/blob/components.md
+Poniższy opis krok po kroku, przeprowadzi Was przez procedurę podłączenia wszystkich czujników obsługiwanych przez nasz miernik smogu. Listę części, wraz z linkami do przykładowych sklepów, gdzie można je kupić znajdziecie pod adresem: https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 
 Całościowy schemat podłączenia:
 
-![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/schemat.png)
+![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/schemat.png)
 
 ## ESP8266 - NodeMCU V3
 
@@ -46,4 +46,4 @@ Obudowę miernika smogu stanowi puszka natynkowa IP55. Daje ona dobre zabezpiecz
 
 ZDJĘCIA OBUDOWY
 
-Projekt elementu wydrukowanego na drukarce 3D - https://github.com/hackerspace-silesia/Smogomierz/80x80x40mmstl
+Projekt elementu wydrukowanego na drukarce 3D - https://github.com/hackerspace-silesia/Smogomierz/master/80x80x40mmstl

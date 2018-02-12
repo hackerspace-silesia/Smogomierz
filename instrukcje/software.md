@@ -49,7 +49,7 @@ Po zainstalowaniu ArduinoIDE, musimy dodać w nim obsługę płytek ESP8266.
 1. Wchodzimy na stronę projektu Smogomierz w serwisie github i pobieramy pliki: https://github.com/hackerspace-silesia/Smogomierz/
 ![Github1](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/Github1.jpg)
 
-2. Rozpakowujemy pobraną paczkę i otwieramy plik Smogomierz.ino.
+2. Rozpakowujemy pobraną paczkę. Zmieniamy nazwę folderu ze "Smogomierz-master" na "Smogomierz" i otwieramy plik Smogomierz.ino, który znajduje się w środku.
 
 3. Otworzy się nam okienko programu ArduinoIDE z kodem naszej aplikacji Smogomierza.  
 ![ArduinoIDE7](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE7.jpg)

@@ -7,7 +7,7 @@ Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powi
 Instrukcja instalacji wymaganego oprogramowania: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md
 
 
-Instrukcja podłączenia elektroniki: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/blob/hardware.md
+Instrukcja podłączenia elektroniki: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/hardware.md
 
 
 ## Parts / Potrzebne części
@@ -35,5 +35,6 @@ NodeMCU custom builds – https://nodemcu-build.com
 - [ ] OTA Update – http://esp8266.github.io/Arduino/versions/2.0.0/doc/ota_updates/ota_updates.html#arduino-ide
 
 
+### Dodatkowe informacje
 
 "Projekt finansowany ze środków programu ramowego Unii Europejskiej w zakresie badań naukowych i innowacji „Horyzont 2020” na podstawie umowy o udzielenie dotacji nr 709443."

@@ -30,7 +30,6 @@ Plantower PMS7003 to laserowy miernik pyłu zawieszonego w powietrzu, który pod
 
 PMS7003 zasilamy bezpośrednio z pinu 5V wyprowadzonego z portu microUSB w obudowie urządzenia. Piny GND podpinamy do dowolnego pinu G na płytce ESP8266. Pin TX(Pin 9 w PMS7003; zielony kabelek) podpinamy do pinu D1 na płytce ESP8266. Pin RX(Pin 7 w PMS7003; niebieski kabelek) podpinamy do pinu D2 na ESP8266.
 
-LINK DO DOKUMENTACJI PMS7003
 ![PMS7003 Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/PMS7003_schemat.png)
 ![PMS7003](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/PMS7003_1.jpg)
 ![PMS7003](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/PMS7003_2.jpg)
@@ -55,7 +54,7 @@ Obudowę miernika smogu stanowi puszka natynkowa IP55. Daje ona dobre zabezpiecz
 
 ## Połączenie całości
 
-Zgodnie ze schmeatem na początku instrukcji, łączymy wszystkie elementy ze sobą. Z **BME280** pin VIN podpinamy do 3V na ESP8266; GND do G; SCL do D4; SDA do D3. W przypadku **PMS7003** kable 5V/Biały łączymy z płytką z 3 pinami(pozostałe podpinamy do VIN na ESP8266 oraz VSUB w obudowie miernika); Czarny/GND do G na ESP8266; Zielony/TX do D1; Niebieski/RX do D2. Na koniec pin G z obudowy miernika wpinamy do G na ESP8266.
+Zgodnie ze schmeatem na początku instrukcji, łączymy wszystkie elementy ze sobą. Z **BME280** pin VIN podpinamy do 3V na ESP8266; GND do G; SCL do D4; SDA do D3. W przypadku **PMS7003** kable 5V/Biały łączymy z płytką z 3 pinami(pozostałe podpinamy do VIN na ESP8266 oraz VBUS w obudowie miernika); Czarny/GND do G na ESP8266; Zielony/TX do D1; Niebieski/RX do D2. Na koniec pin G z obudowy miernika wpinamy do G na ESP8266.
 
 ![ESP8266_polaczenia](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/ESP8266_polaczenia.jpg)
 ![Calosc2](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Calosc2.jpg)

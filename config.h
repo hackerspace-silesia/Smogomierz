@@ -7,12 +7,10 @@
   Current location – Hackerspace Silesia, Ondraszka 17, Katowice, Poland
 */
 
+#define AIRMONITOR_ON true
 const float LATITUDE = 50.2639;
 const float LONGITUDE = 18.9957;
-const float MYALTITUDE = 260.00;
-
-const float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
-#define AIRMONITOR_ON true
+const float MYALTITUDE = 271.00;
 
 /*
  * THINGSPEAK
@@ -25,7 +23,6 @@ const float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration
  * 2) set api key and channel
  */
 
-
 #define THINGSPEAK_ON false 
 #define THINGSPEAK_API_KEY "-"
 #define THINGSPEAK_CHANNEL_ID 0
@@ -35,4 +32,6 @@ Koniec konfiguracji
 
 End of configuration :) 
 */
+
 #define DEBUG false
+const float calib1 = 1.6; // 1.6* for more accurate data, sort of calibration

@@ -1,8 +1,18 @@
-# Smogomierz - Arduino version
+# Smogomierz
+
+Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
+
+## Instrukcje
+
+Instrukcja instalacji wymaganego oprogramowania: https://github.com/hackerspace-silesia/Smogomierz/instrukcje/blob/software.md
+
+
+Instrukcja podłączenia elektroniki: https://github.com/hackerspace-silesia/Smogomierz/instrukcje/blob/hardware.md
+
 
 ## Parts / Potrzebne części
 
-https://github.com/hackerspace-silesia/Smogomierz/blob/Arduino/components.md
+https://github.com/hackerspace-silesia/Smogomierz/blob/components.md
 
 ## Connection / Podłączenie
 
@@ -10,9 +20,9 @@ https://github.com/hackerspace-silesia/Smogomierz/blob/Arduino/components.md
 
 **PMS7003** – White/Biały/5V - VIN/5V; Black/Czarny/GND - G; Green/Zielony/TX - D1; Blue/Niebieski/RX - D2
 
-![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/Arduino/schemat.png)
+![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/schemat.png)
 
-Tested on:
+### Tested on:
 
 ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 
@@ -22,13 +32,7 @@ NodeMCU custom builds – https://nodemcu-build.com
 
 ### TODO
 
-- [x] WiFi config
-- [x] PMS7003 support
-- [x] BME280 support
-- [x] Display current data on Webbapp on ESP8266
-- [ ] Send data from PMS7003 and BME280 to http://mapa.airmonitor.pl
-- [ ] Get time from NTP server
-- [ ] Storage data
-- [ ] Display old data on Webbapp on ESP8266
-- [ ] Change Latitude and Longitude on Webbapp on ESP8266
 - [ ] OTA Update – http://esp8266.github.io/Arduino/versions/2.0.0/doc/ota_updates/ota_updates.html#arduino-ide
+
+
+Projekt finansowany ze środków programu ramowego Unii Europejskiej w zakresie badań naukowych i innowacji „Horyzont 2020” na podstawie umowy o udzielenie dotacji nr 709443.

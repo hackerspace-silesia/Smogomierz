@@ -4,10 +4,11 @@ Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powi
 
 ## Instrukcje
 
-Instrukcja instalacji wymaganego oprogramowania: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md
+1. [Instrukcja instalacji wymaganego oprogramowania](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md)
 
+2. [Rejestracja i tworzenie nowego kanału w serwisie ThingSpeak](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/thingspeak.md)
 
-Instrukcja podłączenia elektroniki: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/hardware.md
+3. [Instrukcja podłączenia elektroniki](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/hardware.md)
 
 
 ## Parts / Potrzebne części

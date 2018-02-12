@@ -10,7 +10,8 @@ Całościowy schemat podłączenia:
 
 Główny element miernika. To właśnie na tę płytkę wgrywamy oprogramowanie. Ma ona wbudowany moduł WiFi, który pozwala na tworzenie sieci bezprzewodowej i wysyłanie danych z pozostałych czujników.
 
-OPIS ESP8266
+ZDJĘCIE ESP8266
+SCHEMAT PINOUT ESP8266
 
 ## BME280 - miernik temperatury, wilgotności i ciśnienia powietrza
 
@@ -20,6 +21,7 @@ BME280 można podłączyć na dwa sposoby. W naszym przypadku skorzystamy z I2C.
 
 BME280 zasilamy z pinu 3V na ESP8266. Podpinamy go do VIN na BME280. GND łączymy z dowolnym G na ESP8266. SCL podpinamy do pinu D4, SDA do D3 na ESP8266.
 
+ZDJĘCIE BME280
 SCHEMAT PODŁĄCZENIA BME280
 
 ## PMS7003 - laserowy miernik pyłu
@@ -28,6 +30,8 @@ Plantower PMS7003 to laserowy miernik pyłu zawieszonego w powietrzu, który pod
 
 PMS7003 zasilamy bezpośrednio z pinu 5V wyprowadzonego z portu microUSB w obudowie urządzenia. Piny GND podpinamy do dowolnego pinu G na płytce ESP8266. Pin TX(Pin 9 w PMS7003; zielony kabelek) podpinamy do pinu D1 na płytce ESP8266. Pin RX(Pin 7 w PMS7003; niebieski kabelek) podpinamy do pinu D2 na ESP8266.
 
+LINK DO DOKUMENTACJI PMS7003
+ZDJĘCIE PMS7003
 SCHEMAT PODŁĄCZENIA PMS7003
 
 ## Zasilanie
@@ -39,6 +43,7 @@ Wszystkie elementy urządzenia zasilamy poprzez 5V. Źródłem jest pin 5V wypro
 Podobnie robimy z GND. Jednak w tym wypadku nie musimy ręcznie rozdzielać masy. Wystarczy ją podłączyć do pinu G na ESP8266. GND z miernika PMS7003(czarny kabelek) podpinamy do G na ESP8266. GND z BME280 również łączymy z G na płytce ESP8266.
 
 SCHEMAT ZASILANIA
+ZDJECIE ZASILANIA
 
 ## Obudowa
 
@@ -46,4 +51,4 @@ Obudowę miernika smogu stanowi puszka natynkowa IP55. Daje ona dobre zabezpiecz
 
 ZDJĘCIA OBUDOWY
 
-Projekt elementu wydrukowanego na drukarce 3D - https://github.com/hackerspace-silesia/Smogomierz/master/80x80x40mmstl
+Projekt elementu wydrukowanego na drukarce 3D - https://github.com/hackerspace-silesia/Smogomierz/blob/master/80x80x40mm.stl

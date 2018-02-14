@@ -15,11 +15,11 @@
 /*
   Podłączenie czujnikow:
   BME280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  PMS7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D1
+  PMS7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
 
   Connection of sensors:
   BME280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  PMS7003:/White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D1
+  PMS7003:/White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
 */
 
 // BME280 config

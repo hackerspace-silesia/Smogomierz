@@ -10,7 +10,7 @@
 #include "webserver.h"
 #include "airmonitor.h"
 #include "thing_speak.h"
-
+#include "influxdb.h"
 
 /*
   Podłączenie czujnikow:
@@ -50,7 +50,7 @@ void setup() {
     sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
     Serial.print("Device name: ");
     Serial.println(device_name);
-
+    
     WiFiManager wifiManager; wifiManager.autoConnect(device_name);
 
     server.begin();
@@ -65,10 +65,12 @@ void loop() {
   delay(10);
 
   counter1++;
-  //execute every ~minute
+  //execute every ~10 minutes
   if (counter1 >= 50000){
     sendDataToThingSpeak(BMESensor, data);
     sendDataToAirMonitor(BMESensor, data);
+    sendDataToInfluxDB(BMESensor, data);
+    
     counter1 = 0;  
   }   
 

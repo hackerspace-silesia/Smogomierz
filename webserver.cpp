@@ -28,6 +28,19 @@ void showHtml(WiFiClient &client, BME280<BME280_C, BME280_ADDRESS> &BMESensor, c
     client.println(" °C</h3>");
 
     client.println("<p><h2>Pomiary zanieczyszczeń:</h2>");
+    if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60){
+    client.println("<h3>PM1: ");
+    client.println(int(calib2 * pms.PM_AE_UG_1_0));
+    client.println(" µg/m³</h3>");
+
+    client.println("<h3>PM2.5: ");
+    client.println(int(calib2 * pms.PM_AE_UG_2_5));
+    client.println(" µg/m³</h3>");
+
+    client.println("<h3>PM10: ");
+    client.println(int(calib2 * pms.PM_AE_UG_10_0));
+    client.println(" µg/m³</h3>");
+    }else{
     client.println("<h3>PM1: ");
     client.println(int(calib1 * pms.PM_AE_UG_1_0));
     client.println(" µg/m³</h3>");
@@ -39,7 +52,7 @@ void showHtml(WiFiClient &client, BME280<BME280_C, BME280_ADDRESS> &BMESensor, c
     client.println("<h3>PM10: ");
     client.println(int(calib1 * pms.PM_AE_UG_10_0));
     client.println(" µg/m³</h3>");
-
+    }
 if(THINGSPEAK_ON == true){
     client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
     client.print(THINGSPEAK_CHANNEL_ID);

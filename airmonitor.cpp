@@ -43,15 +43,24 @@ void sendJson(JsonObject& json) {
     client.stop();
 }
 
-void sendPMSData(const PMS::DATA &pms) {
+void sendPMSData(const PMS::DATA &pms, BME280<BME280_C, BME280_ADDRESS> &bme) {
     StaticJsonBuffer<400> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
+    if (int(bme.temperature) < 5 or int(bme.humidity) > 60){
+    json["lat"] = String(LATITUDE, 4);
+    json["long"] = String(LONGITUDE, 4);
+    json["pm1"] = int(calib2 * pms.PM_AE_UG_1_0);
+    json["pm25"] = int(calib2 * pms.PM_AE_UG_2_5);
+    json["pm10"] = int(calib2 * pms.PM_AE_UG_10_0);
+    json["sensor"] = "PMS7003";
+    }else{
     json["lat"] = String(LATITUDE, 4);
     json["long"] = String(LONGITUDE, 4);
     json["pm1"] = int(calib1 * pms.PM_AE_UG_1_0);
     json["pm25"] = int(calib1 * pms.PM_AE_UG_2_5);
     json["pm10"] = int(calib1 * pms.PM_AE_UG_10_0);
-    json["sensor"] = "PMS7003";
+    json["sensor"] = "PMS7003";      
+    }
     sendJson(json);
 }
 
@@ -73,7 +82,7 @@ void sendDataToAirMonitor(BME280<BME280_C, BME280_ADDRESS> &bme, const PMS::DATA
         return;
     }
 
-    sendPMSData(pms);
+    sendPMSData(pms, bme);
     sendBMEData(bme);
 }
 

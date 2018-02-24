@@ -24,8 +24,8 @@ const float MYALTITUDE = 271.00;
  */
 
 #define THINGSPEAK_ON false
-#define THINGSPEAK_API_KEY "8WTM0P7HYP5286G0"
-#define THINGSPEAK_CHANNEL_ID 424479
+#define THINGSPEAK_API_KEY "API_KEY"
+#define THINGSPEAK_CHANNEL_ID 0
 
 /*
  * InfluxDB config 

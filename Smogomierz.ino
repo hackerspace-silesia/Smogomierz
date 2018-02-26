@@ -1,7 +1,9 @@
 #include <Wire.h>
 #include <ESP8266WiFi.h>
 #include <SoftwareSerial.h>
-#include "WiFiManager.h" // https://github.com/tzapu/WiFiManager
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>  
+#include "WiFiManager.h" // https://github.com/jakerabid/WiFiManager
 #include "pms.h" // https://github.com/fu-hsi/PMS
 #include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 

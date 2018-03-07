@@ -12,7 +12,6 @@
 #include "webserver.h"
 #include "airmonitor.h"
 #include "thing_speak.h"
-#include "influxdb.h"
 
 /*
   Podłączenie czujnikow:
@@ -71,7 +70,6 @@ void loop() {
   if (counter1 >= 50000){
     sendDataToThingSpeak(BMESensor, data);
     sendDataToAirMonitor(BMESensor, data);
-    sendDataToInfluxDB(BMESensor, data);
     
     counter1 = 0;  
   }   

@@ -53,7 +53,24 @@ void showHtml(WiFiClient &client, BME280<BME280_C, BME280_ADDRESS> &BMESensor, c
     client.println(int(calib1 * pms.PM_AE_UG_10_0));
     client.println(" µg/m³</h3>");
     }
-if(THINGSPEAK_ON == true){
+
+if(AIRMONITOR_GRAPH_ON == true){
+    client.println("<hr>");
+    client.print("<iframe src=\"http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude=");
+    client.print(String(LATITUDE, 4));
+    client.print("&var-longitude=");
+    client.print(String(LONGITUDE, 4));
+    client.print("&refresh=1m&panelId=14\" width=\"450\" height=\"510\" frameborder=\"0\"></iframe>");
+    
+    client.print("<iframe src=\"http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude=");
+    client.print(String(LATITUDE, 4));
+    client.print("&var-longitude=");
+    client.print(String(LONGITUDE, 4));
+    client.print("&refresh=1m&panelId=13\" width=\"450\" height=\"510\" frameborder=\"0\"></iframe>");
+}
+
+if(THINGSPEAK_GRAPH_ON == true){
+    client.println("<hr>");
     client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
     client.print(THINGSPEAK_CHANNEL_ID);
     client.print("/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");    
@@ -72,8 +89,8 @@ if(THINGSPEAK_ON == true){
     client.print("<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\"https://thingspeak.com/channels/");
     client.print(THINGSPEAK_CHANNEL_ID);
     client.print("/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15\"></iframe>");
-    client.println("</center></body></html>"); 
   }
+  client.println("</center></body></html>"); 
 }
 
 

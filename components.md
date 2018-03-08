@@ -18,7 +18,7 @@ Do wyboru mamy dwie możliwości. Polecamy zastosowanie obudowy **IP56**. Nie wy
 
 + **Obudowa IP55**, minimum 86x86 mm – http://allegro.pl/puszka-natynkowa-czarna-ep-lux-ip55-0226-02-86x86x-i7038770485.html 
 
-	⋅⋅⋅ Dwa element umożliwiający przepływ powietrza przez obudowę do wydrukowania na drukarce 3D / Two 3D printed parts – https://github.com/hackerspace-silesia/Smogomierz/blob/master/80x80x40mm.stl
+	Dwa element umożliwiający przepływ powietrza przez obudowę do wydrukowania na drukarce 3D / Two 3D printed parts – https://github.com/hackerspace-silesia/Smogomierz/blob/master/80x80x40mm.stl
 
 + **Obudowa IP56**, 120x80x50mm – http://allegro.pl/puszka-hermetyczna-ip56-120x80x50mm-przezroczysta-i6661288346.html
 

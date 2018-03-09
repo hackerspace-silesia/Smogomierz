@@ -4,6 +4,14 @@
 #include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 
 
+
+
+/* Old Webserver 
+
+#define REQ_BUF_SZ   40
+char HTTP_req[REQ_BUF_SZ] = {0};
+char req_index = 0;
+
 void showHtml(WiFiClient &client, BME280<BME280_C, BME280_ADDRESS> &BMESensor, const PMS::DATA &pms) {
     client.println("<!DOCTYPE HTML>");
     client.println("<html>");
@@ -105,14 +113,17 @@ void webserverShowSite(WiFiServer &server, BME280<BME280_C, BME280_ADDRESS> &BME
     while (client.connected()) {
       if (client.available()) {
         char c = client.read();
-        
-        if (c == '\n' && blank_line) {
-          client.println("HTTP/1.1 200 OK");
-          client.println("Content-Type: text/html");
-          client.println("Connection: close");
-          client.println();
-          showHtml(client, BMESensor, pms);
-          break;
+        if (req_index < (REQ_BUF_SZ - 1)) {
+                    HTTP_req[req_index] = c;          // save HTTP request character
+                    req_index++;
+                }
+          if (c == '\n' && blank_line) {
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-Type: text/html");
+            client.println("Connection: close");
+            client.println();
+            showHtml(client, BMESensor, pms);
+            break;
         }
         if (c == '\n') {
           // when starts reading a new line
@@ -129,3 +140,4 @@ void webserverShowSite(WiFiServer &server, BME280<BME280_C, BME280_ADDRESS> &BME
     Serial.println("Client disconnected.");
   }  
 }
+*/

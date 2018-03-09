@@ -1,4 +1,8 @@
 #pragma once
+
+#define DEVICENAME_AUTO true
+#define DEVICENAME "Smogomierz1" // Bez polskich znaków!!
+
 /*
  * Jeżeli chcemy wysłać dane na mapę AirMonitor:
  * 1) Długość i szerokość geograficzna do sprawdzenia na stronie: https://www.wspolrzedne-gps.pl
@@ -21,7 +25,7 @@
  */
 
 #define AIRMONITOR_ON false
-#define AIRMONITOR_GRAPH_ON false
+#define AIRMONITOR_GRAPH_ON true
 const float LATITUDE = 50.2639;
 const float LONGITUDE = 18.9957;
 const float MYALTITUDE = 271.00;
@@ -45,7 +49,6 @@ const float MYALTITUDE = 271.00;
 #define THINGSPEAK_GRAPH_ON false
 #define THINGSPEAK_API_KEY "API_KEY"
 #define THINGSPEAK_CHANNEL_ID 0
-
 
 /*
  * Koniec konfiguracji

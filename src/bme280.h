@@ -10,6 +10,7 @@
 #ifndef BME280_T_h
 #define BME280_T_h
 #include <Wire.h>
+#include "../config.h"
 
 #include <inttypes.h>
 #include <Arduino.h>
@@ -262,7 +263,8 @@ public:
   };
   
  // float seaLevelForAltitude(float altitude = 150.50, float atmospheric) {
-  float seaLevelForAltitude(float altitude = 150.50) {
+  //float seaLevelForAltitude(float altitude = 150.50) {
+  float seaLevelForAltitude(float altitude = MYALTITUDE) {
     ////float atmospheric = pressure / 100.0F;    //hPa
     //float atmospheric = pressure;               //Pa    
     //return pow((altitude/44330.0) + 1.0, 5.255F) * atmospheric;

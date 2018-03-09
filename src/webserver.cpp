@@ -1,5 +1,5 @@
 #include "webserver.h"
-#include "config.h"
+#include "../config.h"
 #include "pms.h" // https://github.com/fu-hsi/PMS
 #include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 

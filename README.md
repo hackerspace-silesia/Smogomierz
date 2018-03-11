@@ -1,8 +1,25 @@
+### TODO
+
+- [X] OTA Update – [Dokumentacja](http://esp8266.github.io/Arduino/versions/2.0.0/doc/ota_updates/ota_updates.html#arduino-ide)
+- [ ] Przeniesienie webserver ze Smogomierz.ino do webserver.h i webserver.cpp 
+- [ ] Edytowanie ustawień(a pliku config.h) przez przeglądarkę(zakładka Config) 
+- [ ] Kolory dla wartości pomiarów PM10 i PM2.5 w zależności od przekroczenia normy zanieczyszczeń 
+- [ ] Uśrednianie wyników pomiarów - wynik z np. 10 pomiarów, a nie bierzącego 
+- [ ] Wysyłanie danych do InfluxDB 
+- [ ] Obsługa Homebridge 
+- [ ] Wyświetlanie danych pomiarowych z najbliższej stacji Airly - https://developer.airly.eu/docs
+
 # Smogomierz
 
 Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
 
 Miernik wysyła dane na stronę - [mapa.airmonitor.pl](http://mapa.airmonitor.pl) oraz ma możliwość przesyłania pomiarów do serwisu [ThingSpeak](https://thingspeak.com).
+
+Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogomierz-deviceName". "deviceName" generowane jest na podstawie unikalnego numeru Chip ID płytki ESP8266. Na początku pliku Config.h, możemy zmienić wartość "DEVICENAME_AUTO" z "true" na "false". Wówczas zamiast unikalnego numery Chip ID używana będzie nazwa z paramatru "DEVICENAME" w pliku Config.h. 
+
+Smogomierz obsługuje Zeroconf(Bonjour). Pozwala on na połączenie się z miernikiem będącym w naszej sieci, bez znajomości jego adresu IP. Po połączeniu miernika smogu z naszą siecią WiFi, możemy otworzyć przeglądarkę internetową i wpisać adres: "Smogomierz-deviceName.local". Zeroconf do działania potrzebuje doinstalowania na komputerze z Windowsem aplikacji [Bonjour](https://support.apple.com/kb/DL999?locale=pl_PL), a pod Linuksem – Avahi. 
+
+Zakładka Update w panelu Smogomierza pozwala na wgrywanie plików .bin z nową wersją oprgramowania dla miernika. Plik bin można stworzyć samemu z kodu dostępnego w tym repozytorium. Do zrobienia tego potrzebne jest ArduinoIDE – [Instrukcja instalacji wymaganego oprogramowania](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md). W "Plik > Preferencje" lub "Arduino > Preferences…" zaznaczamy przy "Pokaż szczegółowe informacje podczas:" opcję "Kompilacji". W czasie kompilowania naszego kodu, na dole ekranu ArduinoIDE pojawią się adresy(coś w stylu "/var/folders/k9/tbv_kmpn1dj5fl5spjk209480000gn/T/arduino_build_795090/Smogomierz.ino.bin"), gdzie zostanie zapisany plik Smogomierz.ino.bin. Plik ten to właśnie paczka z naszym oprogramowaniem, które możemy wgrać przez kartę Update w panelu Smogomierza.
 
 ## Instrukcje
 
@@ -17,13 +34,8 @@ Miernik wysyła dane na stronę - [mapa.airmonitor.pl](http://mapa.airmonitor.pl
 
 https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 
-## Connection / Podłączenie
-
-**BME280** – VIN - 3V; GND - G; SCL - D4; SDA - D3
-
-**PMS7003** – White/Biały/5V - VIN/5V; Black/Czarny/GND - G; Green/Zielony/TX - D1; Blue/Niebieski/RX - D2
-
 ![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/schemat.png)
+
 
 ### Tested on:
 
@@ -32,10 +44,6 @@ ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 nodemcu-master-16-modules-2018-01-14-09-39-20-float - https://www.dropbox.com/s/rxtoz876kscjvb2/nodemcu-master-16-modules-2018-01-14-09-39-20-float.bin
 
 NodeMCU custom builds – https://nodemcu-build.com
-
-### TODO
-
-- [ ] OTA Update – http://esp8266.github.io/Arduino/versions/2.0.0/doc/ota_updates/ota_updates.html#arduino-ide
 
 
 ### Dodatkowe informacje

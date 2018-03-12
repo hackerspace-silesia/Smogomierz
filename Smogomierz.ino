@@ -3,15 +3,15 @@
 #include <SoftwareSerial.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
-#include "WiFiManager.h" // https://github.com/jakerabid/WiFiManager
-#include "pms.h" // https://github.com/fu-hsi/PMS
-#include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
+#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager
+#include "src/pms.h" // https://github.com/fu-hsi/PMS
+#include "src/bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 
 #include "config.h"
 
-#include "webserver.h"
-#include "airmonitor.h"
-#include "thing_speak.h"
+#include "src/webserver.h"
+#include "src/airmonitor.h"
+#include "src/thing_speak.h"
 
 /*
   Podłączenie czujnikow:
@@ -116,7 +116,7 @@ void handle_root() {            //Handler for the handle_root
     message += " °C</h3>";
       
     message += "<h3>Ciśnienie: ";
-    message += (BMESensor.seaLevelForAltitude(MYALTITUDE) / 100.0F);
+    message += (BMESensor.pressure  / 100.0F);
     message += " hPa</h3>";
       
     message += "<h3>Wilgotność: ";
@@ -234,8 +234,8 @@ void handle_config() {            //Handler for the handle_config
   message += String(LATITUDE, 4);
   message += "<br><b>Długość(longitude): </b>";
   message += String(LONGITUDE, 4);
-  message += "<br><b>Wysokość: </b>";
-  message += (MYALTITUDE);
+  //message += "<br><b>Wysokość: </b>";
+  //message += (MYALTITUDE);
   message += "<br><br>";
   
   message += "<b>Wysyłanie danych do serwisu ThingSpeak: </b>";

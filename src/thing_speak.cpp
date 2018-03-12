@@ -17,7 +17,7 @@ void sendDataToThingSpeak(BME280<> &BMESensor, const PMS::DATA &pms) {
     ThingSpeak.setField(2, calib2 * pms.PM_AE_UG_2_5);
     ThingSpeak.setField(3, calib2 * pms.PM_AE_UG_10_0);
     ThingSpeak.setField(4, BMESensor.temperature);
-    ThingSpeak.setField(5, BMESensor.seaLevelForAltitude(MYALTITUDE) / 100.0F);
+    ThingSpeak.setField(5, BMESensor.pressure  / 100.0F);
     ThingSpeak.setField(6, BMESensor.humidity);
     ThingSpeak.writeFields(THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY);
     }else{
@@ -25,7 +25,7 @@ void sendDataToThingSpeak(BME280<> &BMESensor, const PMS::DATA &pms) {
     ThingSpeak.setField(2, calib1 * pms.PM_AE_UG_2_5);
     ThingSpeak.setField(3, calib1 * pms.PM_AE_UG_10_0);
     ThingSpeak.setField(4, BMESensor.temperature);
-    ThingSpeak.setField(5, BMESensor.seaLevelForAltitude(MYALTITUDE) / 100.0F);
+    ThingSpeak.setField(5, BMESensor.pressure  / 100.0F);
     ThingSpeak.setField(6, BMESensor.humidity);
     ThingSpeak.writeFields(THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY);  
     }

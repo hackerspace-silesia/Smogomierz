@@ -28,7 +28,7 @@ const bool AIRMONITOR_ON = false;
 const bool AIRMONITOR_GRAPH_ON = true;
 const float LATITUDE = 50.2639;
 const float LONGITUDE = 18.9957;
-const float MYALTITUDE = 271.00;
+//const float MYALTITUDE = 271.00;
 
 /*
  * THINGSPEAK

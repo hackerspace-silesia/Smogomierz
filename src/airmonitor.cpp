@@ -69,7 +69,7 @@ void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
     JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
     json["long"] = String(LONGITUDE, 4);
-    json["pressure"] = float(bme.seaLevelForAltitude(MYALTITUDE) / 100.0F);
+    json["pressure"] = float(bme.pressure  / 100.0F);
     json["temperature"] = float(bme.temperature);
     json["humidity"] = float(bme.humidity);
     json["sensor"] = "BME280";

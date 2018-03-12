@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <ESP8266WiFi.h>
 #include <SoftwareSerial.h>
-#include <DNSServer.h>
+//#include <DNSServer.h>
 #include <ESP8266WebServer.h>  
 #include "WiFiManager.h" // https://github.com/jakerabid/WiFiManager
 #include "pms.h" // https://github.com/fu-hsi/PMS

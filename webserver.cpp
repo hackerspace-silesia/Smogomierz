@@ -16,7 +16,7 @@ void showHtml(WiFiClient &client, BME280<BME280_C, BME280_ADDRESS> &BMESensor, c
     client.println(" °C</h3>");
       
     client.println("<h3>Ciśnienie: ");
-    client.println(BMESensor.seaLevelForAltitude(MYALTITUDE) / 100.0F);
+    client.println(BMESensor.pressure  / 100.0F);
     client.println(" hPa</h3>");
       
     client.println("<h3>Wilgotność: ");

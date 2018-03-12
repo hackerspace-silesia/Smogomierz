@@ -283,8 +283,12 @@ void handle_update() {            //Handler for the handle_update
   message += "<center><h1>Smogomierz - Update</h1></center><br><br>";
   message += "<div class='input-group mb-3'><div class='custom-file'><input type='file' accept='.bin' class='custom-file-input' id='inputGroupFile04' name='update'><label class='custom-file-label' for='inputGroupFile04'>Wybierz plik .bin</label></div><div class='input-group-append'><button class='btn btn-danger' type='submit'>Update!</button></div></div>";
   //message += "<div class='form-group'><button type='button' class='btn btn-Primary' onclick='window.location.href='/''>Powrót</button></div>";
+  message += "<br><br>";
+  message += "Aktualna wersja oprogramowania: <b>";
+  message += SOFTWAREVERSION;
+  message += "</b><br>";
+  message += "Najnowszą wersję oprogramowania znajdziesz zawsze <b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>tutaj</a></b>.";
   message += "</form></div>";
-  
   message += "</main></body></html>";
   WebServer.send(200, "text/html", message);
 }

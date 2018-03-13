@@ -9,7 +9,6 @@
 - [ ] Uśrednianie wyników pomiarów - np. wyświetlenie i wysyłanie wyników z 10 pomiarów, a nie bierzącego 
 - [ ] Wysyłanie danych do InfluxDB 
 - [ ] Obsługa Homebridge 
-- [ ] Wyświetlanie danych pomiarowych z najbliższej stacji Airly - https://developer.airly.eu/docs
 
 # Smogomierz
 

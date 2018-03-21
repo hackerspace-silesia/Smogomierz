@@ -314,17 +314,15 @@ void handle_api() {
     StaticJsonBuffer<400> jsonBuffer;
       JsonObject& json = jsonBuffer.createObject();
 
-         json["DEVICENAME"] = device_name;
-      // json["pm25"] = int(calib1 * data.PM_AE_UG_2_5);
-      // json["pm10"] = int(calib1 * data.PM_AE_UG_10_0);
-
-      /*
-       * Fake data
-       */
-
-         json["pm25"] = 25;
-         json["pm10"] = 31;     
-
+        json["device_name"] = device_name;
+        json["pm1"] = int(calib1 * data.PM_AE_UG_1_0);
+        json["pm25"] = int(calib1 * data.PM_AE_UG_2_5);
+        json["pm10"] = int(calib1 * data.PM_AE_UG_10_0);
+        json["temperature"] = float(BMESensor.temperature);
+        json["pressure"] = int(BMESensor.pressure  / 100.0F);
+        json["humidity"] = int(BMESensor.humidity);
+        json["dewpoint"] = int(BMESensor.temperature-((100-BMESensor.humidity)/5));
+        
       json.prettyPrintTo(message);
     WebServer.send(200, "text/json", message);
   }

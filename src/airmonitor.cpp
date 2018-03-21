@@ -3,7 +3,7 @@
 #include "pms.h"
 #include "bme280.h"
 
-#include "../config.h"
+#include "config.h"
 
 const char *airMonitorServerName = "api.airmonitor.pl";
 const uint16_t airMonitorPort = 5000;

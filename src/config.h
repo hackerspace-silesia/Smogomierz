@@ -25,7 +25,7 @@ const bool DEVICENAME_AUTO = true;
  */
 
 const bool AIRMONITOR_ON = false;
-const bool AIRMONITOR_GRAPH_ON = false;
+const bool AIRMONITOR_GRAPH_ON = true;
 const float LATITUDE = 50.2639;
 const float LONGITUDE = 18.9957;
 const float MYALTITUDE = 271.00;
@@ -47,7 +47,7 @@ const float MYALTITUDE = 271.00;
 
 const bool THINGSPEAK_ON = false;
 const bool THINGSPEAK_GRAPH_ON = false;
-#define THINGSPEAK_API_KEY "API_KEY"
+#define THINGSPEAK_API_KEY "API-KEY"
 const int THINGSPEAK_CHANNEL_ID = 0;
 
 /*
@@ -60,4 +60,4 @@ const bool DEBUG = false;
 const float calib1 = 1.6; // 1.6* for more accurate data in high temp and low humi
 const float calib2 = 0.55; // 0.55 - 0.65* for more accurate data in low temp and high humi
 
-#define SOFTWAREVERSION "0.2 build 14:30_12.03.2018"
+#define SOFTWAREVERSION "0.2.6 build 15:30_21.03.2018"

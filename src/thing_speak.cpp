@@ -3,7 +3,7 @@
 #include "pms.h"
 #include "bme280.h"
 
-#include "../config.h"
+#include "config.h"
 
 void sendDataToThingSpeak(BME280<> &BMESensor, const PMS::DATA &pms) {
     if (!(THINGSPEAK_ON)) {

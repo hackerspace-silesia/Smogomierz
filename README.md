@@ -8,7 +8,7 @@
 - [ ] Kolory dla wartości pomiarów PM10 i PM2.5 w zależności od przekroczenia normy zanieczyszczeń 
 - [ ] Uśrednianie wyników pomiarów - np. wyświetlenie i wysyłanie wyników z 10 pomiarów, a nie bierzącego 
 - [ ] Wysyłanie danych do InfluxDB 
-- [ ] Obsługa Homebridge 
+- [X] Obsługa Homebridge 
 
 # Smogomierz
 

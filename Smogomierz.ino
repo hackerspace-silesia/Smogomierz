@@ -76,6 +76,8 @@ void setup() {
       WebServer.on("/update", HTTP_GET, handle_update);
       WebServer.on("/api", HTTP_GET, handle_api);
       WebServer.onNotFound(handle_root);
+
+      httpUpdater.setup(&WebServer, "/update");
     //  WebServer Config - End 
 
   // Check if config.h exist in ESP data folder

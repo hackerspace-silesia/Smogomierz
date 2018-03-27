@@ -35,10 +35,10 @@ SoftwareSerial mySerial(5, 4); // Change TX - D1 and RX - D2 pins
 PMS pms(mySerial);
 PMS::DATA data;
 
-static char device_name[20];
+char device_name[20];
 
 int counter1 = 0;
-int l1 = 1;
+float calib = 1;
 
 ESP8266WebServer WebServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
@@ -46,22 +46,26 @@ ESP8266HTTPUpdateServer httpUpdater;
 void setup() {
     Serial.begin(115200);
     mySerial.begin(9600);
-
+    
     Wire.begin(0,2);
     BMESensor.begin(); 
 
+    //deleteConfigDataJSON();
+    fs_start();
+    
     // get ESP id
     if (DEVICENAME_AUTO){
     sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
     }else{
     strncpy(device_name, DEVICENAME, 20);
     }
+    
     Serial.print("Device name: ");
     Serial.println(device_name);
     
     WiFiManager wifiManager; 
     wifiManager.autoConnect(device_name);
-    
+
     delay(250);
     if(!wifiManager.autoConnect(device_name)) {
       Serial.println("failed to connect...");
@@ -81,10 +85,6 @@ void setup() {
     //  WebServer Config - End 
 
   // Check if config.h exist in ESP data folder
-  if(l1 == 1){
-    fs_start();
-    l1 = 0;
-  }
     WebServer.begin();
 
     MDNS.begin(device_name);
@@ -95,18 +95,20 @@ void setup() {
 }
 
 void loop() {
-  pms.read(data);
   BMESensor.refresh();
-  
+  pm_calibration();
+  pms.read(data);
+  delay(10);
+
   //webserverShowSite(WebServer, BMESensor, data);
   WebServer.handleClient(); 
-  
   delay(10);
+  
   counter1++;
   //execute every ~10 minutes(dokładniej jakieś 9:45) - 50000
   if (counter1 >= 50000){
-    sendDataToThingSpeak(BMESensor, data);
-    sendDataToAirMonitor(BMESensor, data);
+    sendDataToThingSpeak(BMESensor, data, calib);
+    sendDataToAirMonitor(BMESensor, data, calib);
     Serial.println("Licznik!11\n");
     counter1 = 0;  
   }
@@ -123,50 +125,83 @@ void handle_root() {            //Handler for the handle_root
       message += "<a href='/update' class='navbar-brand'>Update</a>";
       message += "</div></nav>";
       message += "<main role='main' class='container'><div class='jumbotron'>";
-      message += "<center><h1>Smogomierz</h1><br><br>";
+      message += "<center><h1>Smogomierz</h1><br>";
+
+      if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
+        Serial.println("Brak pomiarow z BME280!\n");
+      }else{
       message += "<h2>Pogoda:</h2>";
       message += "<h3>Temperatura: ";
       message += (BMESensor.temperature);
       message += " °C</h3>";
-      
       message += "<h3>Ciśnienie: ";
       message += (BMESensor.pressure  / 100.0F);
       message += " hPa</h3>";
-      
       message += "<h3>Wilgotność: ";
       message += (BMESensor.humidity);
       message += " %</h3>";
-
       message += "<h3>Punkt rosy: ";
       message += (BMESensor.temperature-((100-BMESensor.humidity)/5));
       message += " °C</h3>";
-
-      message += "<p><h2>Pomiary zanieczyszczeń:</h2>";
-      if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60){
-        message += "<h3>PM1: ";
-        message += (int(calib2 * data.PM_AE_UG_1_0));
-        message += " µg/m³</h3>";
-  
-        message += "<h3>PM2.5: ";
-        message += (int(calib2 * data.PM_AE_UG_2_5));
-        message += " µg/m³</h3>";
-  
-        message += "<h3>PM10: ";
-        message += (int(calib2 * data.PM_AE_UG_10_0));
-        message += " µg/m³</h3>";
-      }else{
-        message += "<h3>PM1: ";
-        message += (int(calib1 * data.PM_AE_UG_1_0));
-        message += " µg/m³</h3>";
-  
-        message += "<h3>PM2.5: ";
-        message += (int(calib1 * data.PM_AE_UG_2_5));
-        message += " µg/m³</h3>";
-  
-        message += "<h3>PM10: ";
-        message += (int(calib1 * data.PM_AE_UG_10_0));
-        message += " µg/m³</h3>";
       }
+      message += "<p><h2>Pomiary zanieczyszczeń:</h2>";
+      
+        
+        message += "<h3>PM1: ";
+        message += (int(calib * data.PM_AE_UG_1_0));
+        message += " µg/m³</h3>";
+        
+        message += "<h3>PM2.5: ";
+        if (int(calib * data.PM_AE_UG_2_5) <= 10){
+          message += "<font color='#61EEE4'>";
+          message += (int(calib * data.PM_AE_UG_2_5));
+          message += " µg/m³</h3></font>";
+        } else if (int(calib * data.PM_AE_UG_2_5) > 10 && int(calib * data.PM_AE_UG_2_5) <= 20){
+          message += "<font color='#5BCAAA'>";
+          message += (int(calib * data.PM_AE_UG_2_5));
+          message += " µg/m³</h3></font>";
+        } else if (int(calib * data.PM_AE_UG_2_5) > 20 && int(calib * data.PM_AE_UG_2_5) <= 25){
+          message += "<font color='#EEE25D'>";
+          message += (int(calib * data.PM_AE_UG_2_5));
+          message += " µg/m³</h3></font>";
+        } else if (int(calib * data.PM_AE_UG_2_5) > 25 && int(calib * data.PM_AE_UG_2_5) <= 50){
+          message += "<font color='#F95459'>";
+          message += (int(calib * data.PM_AE_UG_2_5));
+          message += " µg/m³</h3></font>";
+        } else if (int(calib * data.PM_AE_UG_2_5) > 50){
+          message += "<font color='#920736'>";
+          message += (int(calib * data.PM_AE_UG_2_5));
+          message += " µg/m³</h3></font>";
+        } else {
+          message += (int(calib * data.PM_AE_UG_2_5));
+          message += " µg/m³</h3>";
+        }
+        
+        message += "<h3>PM10: ";
+        if (int(calib * data.PM_AE_UG_10_0) <= 20){
+          message += "<font color='#61EEE4'>";
+          message += (int(calib * data.PM_AE_UG_10_0));
+          message += " µg/m³</h3></font>";
+        } else if (int(calib * data.PM_AE_UG_10_0) > 20 && int(calib * data.PM_AE_UG_10_0) <= 35){
+          message += "<font color='#5BCAAA'>";
+          message += (int(calib * data.PM_AE_UG_10_0));
+          message += " µg/m³</h3></font>";
+        } else if (int(calib * data.PM_AE_UG_10_0) > 35 && int(calib * data.PM_AE_UG_10_0) <= 50){
+          message += "<font color='#EEE25D'>";
+          message += (int(calib * data.PM_AE_UG_10_0));
+          message += " µg/m³</h3></font>";
+        } else if (int(calib * data.PM_AE_UG_10_0) > 50 && int(calib * data.PM_AE_UG_10_0) <= 100){
+          message += "<font color='#F95459'>";
+          message += (int(calib * data.PM_AE_UG_10_0));
+          message += " µg/m³</h3></font>";
+        } else if (int(calib * data.PM_AE_UG_10_0) > 100){
+          message += "<font color='#920736'>";
+          message += (int(calib * data.PM_AE_UG_10_0));
+          message += " µg/m³</h3></font>";
+        } else {
+          message += (int(calib * data.PM_AE_UG_10_0));
+          message += " µg/m³</h3>";
+        }      
 
   if(AIRMONITOR_GRAPH_ON){
       message += ("<hr>");
@@ -184,39 +219,43 @@ void handle_root() {            //Handler for the handle_root
   }
   if(THINGSPEAK_GRAPH_ON){
       message += ("<hr>");
+      
       message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
       message += (THINGSPEAK_CHANNEL_ID);
-      message += ("/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15'></iframe>");
+      message += ("/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM1&type=line&yaxis=ug%2Fm3&update=15'></iframe>");
+      message += (" ");
+      
+      message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
+      message += (THINGSPEAK_CHANNEL_ID);
+      message += ("/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM2.5&type=line&yaxis=ug%2Fm3&update=15'></iframe>");
       message += (" ");
       message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
       message += (THINGSPEAK_CHANNEL_ID);
-      message += ("/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15'></iframe>");
+      message += ("/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM10&type=line&yaxis=ug%2Fm3&update=15'></iframe>");
+      message += (" ");
+      if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
+        Serial.println("Brak pomiarow z BME280!\n");
+      }else{
+      message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
+      message += (THINGSPEAK_CHANNEL_ID);
+      message += ("/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Temperatura&type=line&update=15'></iframe>");
       message += (" ");
       message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
       message += (THINGSPEAK_CHANNEL_ID);
-      message += ("/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15'></iframe>");
+      message += ("/charts/5?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Ci%C5%9Bnienie&type=line&update=15'></iframe>");
       message += (" ");
       message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
       message += (THINGSPEAK_CHANNEL_ID);
-      message += ("/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15'></iframe>");
-      message += (" ");
-      message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
-      message += (THINGSPEAK_CHANNEL_ID);
-      message += ("/charts/5?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15'></iframe>");
-      message += (" ");
-      message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
-      message += (THINGSPEAK_CHANNEL_ID);
-      message += ("/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15'></iframe>");
+      message += ("/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Wilgotno%C5%9B%C4%87&type=line&update=15'></iframe>");
+      }
     }
 
     message += "</form></div>";
-  
     message += "</center></main></body></html>";
     WebServer.send(200, "text/html", message);
   }
 
 void handle_config() {            //Handler for the handle_config
-    //readConfigDataJSON();
     String message = "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
     message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
     message += "</head><body>";
@@ -248,9 +287,9 @@ void handle_config() {            //Handler for the handle_config
     message += String(LATITUDE, 4);
     message += "<br><b>Długość(longitude): </b>";
     message += String(LONGITUDE, 4);
-    //message += "<br><b>Wysokość: </b>";
-    //message += (MYALTITUDE);
-    message += "<br><br>";
+    message += "<br><b>Wysokość: </b>";
+    message += (int(MYALTITUDE));
+    message += " m.n.p.m<br><br>";
   
     message += "<b>Wysyłanie danych do serwisu ThingSpeak: </b>";
     message += (THINGSPEAK_ON);
@@ -284,7 +323,6 @@ void handle_config() {            //Handler for the handle_config
   
     message += "</main></body></html>";
     WebServer.send(200, "text/html", message);
-  
   }
 
 void handle_update() {            //Handler for the handle_update
@@ -300,7 +338,6 @@ void handle_update() {            //Handler for the handle_update
     message += "<center><h1>Smogomierz - Update</h1></center><br><br>";
     message += "<div class='input-group mb-3'><div class='custom-file'><input type='file' accept='.bin' class='custom-file-input' id='inputGroupFile04' name='update'><label class='custom-file-label' for='inputGroupFile04'>Wybierz plik .bin</label></div><div class='input-group-append'><button class='btn btn-danger' type='submit'>Update!</button></div></div>";
     message += "</form>";
-    //message += "<div class='form-group'><button type='button' class='btn btn-Primary' onclick='window.location.href='/''>Powrót</button></div>";
     message += "<br><br>";
     message += "Aktualna wersja oprogramowania: <b>";
     message += SOFTWAREVERSION;
@@ -317,15 +354,23 @@ void handle_api() {
       JsonObject& json = jsonBuffer.createObject();
 
         json["device_name"] = device_name;
-        json["pm1"] = int(calib1 * data.PM_AE_UG_1_0);
-        json["pm25"] = int(calib1 * data.PM_AE_UG_2_5);
-        json["pm10"] = int(calib1 * data.PM_AE_UG_10_0);
+        json["pm1"] = int(calib * data.PM_AE_UG_1_0);
+        json["pm25"] = int(calib * data.PM_AE_UG_2_5);
+        json["pm10"] = int(calib * data.PM_AE_UG_10_0);
         json["temperature"] = float(BMESensor.temperature);
         json["pressure"] = int(BMESensor.pressure  / 100.0F);
         json["humidity"] = int(BMESensor.humidity);
-        json["dewpoint"] = int(BMESensor.temperature-((100-BMESensor.humidity)/5));
-        
+        json["dewpoint"] = int(BMESensor.temperature-((100-BMESensor.humidity)/5));    
+
       json.prettyPrintTo(message);
     WebServer.send(200, "text/json", message);
   }
-  
+
+void pm_calibration(){
+  if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60){
+    calib = calib2;
+    } else {
+    calib = calib1;
+    }
+}
+

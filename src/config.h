@@ -1,7 +1,7 @@
 #pragma once
 
 const bool DEVICENAME_AUTO = true;
-#define DEVICENAME "Smogomierz1" // Bez polskich znaków!!
+const char DEVICENAME[20] = "smogomierz1"; // Bez polskich znaków!!
 
 /*
  * Jeżeli chcemy wysłać dane na mapę AirMonitor:
@@ -60,4 +60,4 @@ const bool DEBUG = false;
 const float calib1 = 1.6; // 1.6* for more accurate data in high temp and low humi
 const float calib2 = 0.55; // 0.55 - 0.65* for more accurate data in low temp and high humi
 
-#define SOFTWAREVERSION "0.2.6 build 15:30_21.03.2018"
+const char SOFTWAREVERSION[40] = "0.2.7 build 14:05_27.03.2018";

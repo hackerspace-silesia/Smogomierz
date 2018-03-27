@@ -10,7 +10,6 @@ String conf[20];
 // FS config end
 
 void createConfigDataJSON() {
-	//#include "config.h"
     StaticJsonBuffer<400> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
 
@@ -70,45 +69,45 @@ void readConfigDataJSON() {
       */
     }
     if (conf[0]){
-       bool DEVICENAME_AUTO = true;
+       const bool DEVICENAME_AUTO = true;
     }else{
-       bool DEVICENAME_AUTO = false;
+       const bool DEVICENAME_AUTO = false;
     }
-    #define DEVICENAME conf[1]
+    //const char DEVICENAME[20] = conf[1];
     if (conf[2]){
-       bool AIRMONITOR_ON = true;
+       const bool AIRMONITOR_ON = true;
     }else{
-       bool AIRMONITOR_ON = false;
+       const bool AIRMONITOR_ON = false;
     }
     if (conf[3]){
-       bool AIRMONITOR_GRAPH_ON = true;
+       const bool AIRMONITOR_GRAPH_ON = true;
     }else{
-       bool AIRMONITOR_GRAPH_ON = false;
+       const bool AIRMONITOR_GRAPH_ON = false;
     }
-     float LATITUDE = conf[4].toFloat();
-     float LONGITUDE = conf[5].toFloat();
-     float MYALTITUDE = conf[6].toFloat();
+     const float LATITUDE = conf[4].toFloat();
+     const float LONGITUDE = conf[5].toFloat();
+     const int MYALTITUDE = conf[6].toFloat();
     if (conf[7]){
-       bool THINGSPEAK_ON = true;
+       const bool THINGSPEAK_ON = true;
     }else{
-       bool THINGSPEAK_ON = false;
+       const bool THINGSPEAK_ON = false;
     }
     if (conf[8]){
-       bool THINGSPEAK_GRAPH_ON = true;
+       const bool THINGSPEAK_GRAPH_ON = true;
     }else{
-       bool THINGSPEAK_GRAPH_ON = false;
+       const bool THINGSPEAK_GRAPH_ON = false;
     }
-    #define THINGSPEAK_API_KEY conf[9]
+    //const char THINGSPEAK_API_KEY[20] = conf[9];
     const int THINGSPEAK_CHANNEL_ID = conf[10].toInt();
     if (conf[11]){
-       bool DEBUG = true;
+       const bool DEBUG = true;
     }else{
-       bool DEBUG = false;
+       const bool DEBUG = false;
     }
-     float calib1 = conf[12].toFloat();
-     float calib2 = conf[13].toFloat();
-    #define SOFTWAREVERSION conf[14]
-
+    const float calib1 = conf[12].toFloat();
+    const float calib2 = conf[13].toFloat();
+   	//const char SOFTWAREVERSION[40] = conf[14];
+	 
     Serial.print("\nDane z pliku config.h:\n");
     Serial.print("DEVICENAME_AUTO = ");
     Serial.print(DEVICENAME_AUTO);
@@ -144,6 +143,7 @@ void readConfigDataJSON() {
     Serial.print("\nSOFTWAREVERSION = ");
     Serial.print(SOFTWAREVERSION);
     Serial.print("\n");
+	 
 }
 
 void deleteConfigDataJSON() {
@@ -170,7 +170,7 @@ void fs_start() {
 
 	    }else{
     
-	    Serial.println("\nconfig.h istnieje!\n");
+		Serial.println("\nconfig.h istnieje!\n");
     
 	    readConfigDataJSON();
 		

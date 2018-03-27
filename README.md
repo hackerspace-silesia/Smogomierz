@@ -5,7 +5,7 @@
 - [ ] Sprawdzenie czy plik config.h istnieje
 - [ ] Przegranie zawartości config.h do pliku w ESP - przykład https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WebServer/examples/FSBrowser/FSBrowser.ino
 - [ ] Możliwość edycji pliku Config w pamięci ESP poprzez przeglądarkę(zakładka Config w panelu miernika)
-- [ ] Kolory dla wartości pomiarów PM10 i PM2.5 w zależności od przekroczenia normy zanieczyszczeń 
+- [X] Kolory dla wartości pomiarów PM10 i PM2.5 w zależności od przekroczenia normy zanieczyszczeń 
 - [ ] Uśrednianie wyników pomiarów - np. wyświetlenie i wysyłanie wyników z 10 pomiarów, a nie bierzącego 
 - [ ] Wysyłanie danych do InfluxDB 
 - [X] Podstrona /api z bierzącymi danymi pomiarowymi jako JSON

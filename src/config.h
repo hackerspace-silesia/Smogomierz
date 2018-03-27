@@ -47,7 +47,7 @@ const float MYALTITUDE = 271.00;
 
 const bool THINGSPEAK_ON = false;
 const bool THINGSPEAK_GRAPH_ON = false;
-#define THINGSPEAK_API_KEY "API-KEY"
+const char THINGSPEAK_API_KEY[20] = "API-KEY";
 const int THINGSPEAK_CHANNEL_ID = 0;
 
 /*

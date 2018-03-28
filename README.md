@@ -2,8 +2,8 @@
 
 - [X] OTA Update – [Dokumentacja](http://esp8266.github.io/Arduino/versions/2.0.0/doc/ota_updates/ota_updates.html#arduino-ide)
 - [ ] Przeniesienie webserver ze Smogomierz.ino do webserver.h i webserver.cpp 
-- [ ] Sprawdzenie czy plik config.h istnieje
-- [ ] Przegranie zawartości config.h do pliku w ESP - przykład https://github.com/esp8266/Arduino/blob/master/libraries/esp8266/examples/ConfigFile/ConfigFile.ino
+- [X] Sprawdzenie czy plik config.h istnieje
+- [X] Przegranie zawartości config.h do pliku w ESP - przykład https://github.com/esp8266/Arduino/blob/master/libraries/esp8266/examples/ConfigFile/ConfigFile.ino
 - [ ] Możliwość edycji pliku Config w pamięci ESP poprzez przeglądarkę(zakładka Config w panelu miernika)
 - [X] Kolory dla wartości pomiarów PM10 i PM2.5 w zależności od przekroczenia normy zanieczyszczeń 
 - [ ] Uśrednianie wyników pomiarów - np. wyświetlenie i wysyłanie wyników z 10 pomiarów, a nie bierzącego 

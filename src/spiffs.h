@@ -1,6 +1,6 @@
 #pragma once
 
-void fs_start();
-void createConfigDataJSON();
-void readConfigDataJSON();
-void deleteConfigDataJSON();
+bool loadConfig();
+bool saveConfig();
+void fs_setup();
+void deleteConfig();

@@ -1,180 +1,176 @@
 #include "ArduinoJson.h"
 #include "FS.h"
-#include "config.h"
 
-// FS config
-String path = "/config.h";
-char json;
-String ustawienia;
-String conf[20];
-// FS config end
+#include "../config.h"
 
-void createConfigDataJSON() {
-    StaticJsonBuffer<400> jsonBuffer;
-    JsonObject& json = jsonBuffer.createObject();
+bool loadConfig() {
+  File configFile = SPIFFS.open("/config.json", "r");
+  if (!configFile) {
+    Serial.println("Failed to open config file");
+    return false;
+  }
 
-    json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
-    json["DEVICENAME"] = DEVICENAME;
-    
-    json["AIRMONITOR_ON"] = AIRMONITOR_ON;
-    json["AIRMONITOR_GRAPH_ON"] = AIRMONITOR_GRAPH_ON;
-    json["LATITUDE"] = LATITUDE;
-    json["LONGITUDE"] = LONGITUDE;
-    json["MYALTITUDE"] = MYALTITUDE;
-    
-    json["THINGSPEAK_ON"] = THINGSPEAK_ON;
-    json["THINGSPEAK_GRAPH_ON"] = THINGSPEAK_GRAPH_ON;
-    json["THINGSPEAK_API_KEY"] = THINGSPEAK_API_KEY;
-    json["THINGSPEAK_CHANNEL_ID"] = THINGSPEAK_CHANNEL_ID;
-    
-    json["DEBUG"] = DEBUG;
-    json["calib1"] = calib1;
-    json["calib2"] = calib2;
-    json["SOFTWAREVERSION"] = SOFTWAREVERSION;
+  size_t size = configFile.size();
+  if (size > 1024) {
+    Serial.println("Config file size is too large");
+    return false;
+  }
 
-    json.printTo(ustawienia);
-    
-    //json.printTo(Serial); // wyświetlenie stowrzonego jsona
+  // Allocate a buffer to store contents of the file.
+  std::unique_ptr<char[]> buf(new char[size]);
+
+  // We don't use String here because ArduinoJson library requires the input
+  // buffer to be mutable. If you don't use ArduinoJson, you may as well
+  // use configFile.readString instead.
+  configFile.readBytes(buf.get(), size);
+
+  StaticJsonBuffer<600> jsonBuffer;
+  JsonObject& json = jsonBuffer.parseObject(buf.get());
+
+  if (!json.success()) {
+    Serial.println("Failed to parse config file");
+    return false;
+  }
+  
+  const char* DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
+  const char* DEVICENAME = json["DEVICENAME"];
+  const char* DISPLAY_PM1 = json["DISPLAY_PM1"];
+  const char* AIRMONITOR_ON = json["AIRMONITOR_ON"];
+  const char* AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
+  const char* LATITUDE = json["LATITUDE"];
+  const char* LONGITUDE = json["LONGITUDE"];
+  const char* MYALTITUDE = json["MYALTITUDE"];
+  
+  const char* THINGSPEAK_ON = json["THINGSPEAK_ON"];
+  const char* THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
+  const char* THINGSPEAK_API_KEY = json["THINGSPEAK_API_KEY"];
+  const char* THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
+  
+  const char* INFLUXDB_ON = json["INFLUXDB_ON"];
+  const char* INFLUXDB_HOST = json["INFLUXDB_HOST"];
+  const char* INFLUXDB_PORT = json["INFLUXDB_PORT"];
+  const char* DATABASE = json["DATABASE"];
+  const char* DB_USER = json["DB_USER"];
+  const char* DB_PASSWORD = json["DB_PASSWORD"];
+  
+  const char* DEBUG = json["DEBUG"];
+  const char* calib1 = json["calib1"];
+  const char* calib2 = json["calib2"];
+  const char* SOFTWAREVERSION = json["SOFTWAREVERSION"];
+  
+  // Real world application would store these values in some variables for
+  // later use.
+  if(DEBUG){
+  Serial.print("Loaded DEVICENAME_AUTO: ");
+  Serial.println(DEVICENAME_AUTO);
+  Serial.print("Loaded DISPLAY_PM1: ");
+  Serial.println(DISPLAY_PM1);
+  Serial.print("Loaded DEVICENAME: ");
+  Serial.println(DEVICENAME);
+  Serial.print("Loaded AIRMONITOR_ON: ");
+  Serial.println(AIRMONITOR_ON);
+  Serial.print("Loaded AIRMONITOR_GRAPH_ON: ");
+  Serial.println(AIRMONITOR_GRAPH_ON);
+  Serial.print("Loaded LATITUDE: ");
+  Serial.println(LATITUDE);
+  Serial.print("Loaded LONGITUDE: ");
+  Serial.println(LONGITUDE);
+  Serial.print("Loaded MYALTITUDE: ");
+  Serial.println(MYALTITUDE);
+  
+  Serial.print("Loaded THINGSPEAK_ON: ");
+  Serial.println(THINGSPEAK_ON);
+  Serial.print("Loaded THINGSPEAK_GRAPH_ON: ");
+  Serial.println(THINGSPEAK_GRAPH_ON);
+  Serial.print("Loaded THINGSPEAK_API_KEY: ");
+  Serial.println(THINGSPEAK_API_KEY);
+  Serial.print("Loaded THINGSPEAK_CHANNEL_ID: ");
+  Serial.println(THINGSPEAK_CHANNEL_ID);
+  
+  Serial.print("Loaded INFLUXDB_ON: ");
+  Serial.println(INFLUXDB_ON);
+  Serial.print("Loaded INFLUXDB_HOST: ");
+  Serial.println(INFLUXDB_HOST);
+  Serial.print("Loaded INFLUXDB_PORT: ");
+  Serial.println(INFLUXDB_PORT);
+  Serial.print("Loaded DATABASE: ");
+  Serial.println(DATABASE);
+  Serial.print("Loaded DB_USER: ");
+  Serial.println(DB_USER);
+  Serial.print("Loaded DB_PASSWORD: ");
+  Serial.println(DB_PASSWORD);
+  
+  Serial.print("Loaded DEBUG: ");
+  Serial.println(DEBUG);
+  Serial.print("Loaded calib1: ");
+  Serial.println(calib1);
+  Serial.print("Loaded calib2: ");
+  Serial.println(calib2);
+  Serial.print("Loaded SOFTWAREVERSION: ");
+  Serial.println(SOFTWAREVERSION);
+  Serial.println("\n");
+}
+  return true;
 }
 
-void readConfigDataJSON() {
-    char copy[400];
-    int ind[20];
-    
-    File UserConfig = SPIFFS.open(path, "r");
-    String s = UserConfig.readString();
-    s.toCharArray(copy, 400);
-    
-    for(int i = 1; i < 16; i++) {
-      ind[i] = s.indexOf(',', ind[i-1]+1 );
-      conf[i] = s.substring(ind[i-1]+1, ind[i]);
+bool saveConfig() {
+  StaticJsonBuffer<600> jsonBuffer;
+  JsonObject& json = jsonBuffer.createObject();
+  json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
+  json["DEVICENAME"] = DEVICENAME;
+  json["DISPLAY_PM1"] = DISPLAY_PM1;
+  
+  json["AIRMONITOR_ON"] = AIRMONITOR_ON;
+  json["AIRMONITOR_GRAPH_ON"] = AIRMONITOR_GRAPH_ON;
+  json["LATITUDE"] = LATITUDE;
+  json["LONGITUDE"] = LONGITUDE;
+  json["MYALTITUDE"] = MYALTITUDE;
+  
+  json["THINGSPEAK_ON"] = THINGSPEAK_ON;
+  json["THINGSPEAK_GRAPH_ON"] = THINGSPEAK_GRAPH_ON;
+  json["THINGSPEAK_API_KEY"] = THINGSPEAK_API_KEY;
+  json["THINGSPEAK_CHANNEL_ID"] = THINGSPEAK_CHANNEL_ID;
+  
+  json["INFLUXDB_ON"] = INFLUXDB_ON;
+  json["INFLUXDB_HOST"] = INFLUXDB_HOST;
+  json["INFLUXDB_PORT"] = INFLUXDB_PORT;
+  json["DATABASE"] = DATABASE;
+  json["DB_USER"] = DB_USER;
+  json["DB_PASSWORD"] = DB_PASSWORD;
+  
+  json["DEBUG"] = DEBUG;
+  json["calib1"] = calib1;
+  json["calib2"] = calib2;
+  json["SOFTWAREVERSION"] = SOFTWAREVERSION;
 
-      // Serial.println(conf[i]);
-    }
-    UserConfig.close();
+  File configFile = SPIFFS.open("/config.json", "w");
+  if (!configFile) {
+    Serial.println("Failed to open config file for writing");
+    return false;
+  }
 
-    for(int i = 0; i < 15; i++) {
-      ind[i] = conf[i+1].indexOf(':');
-      if (i==14) {
-        conf[i] = conf[i+1].substring(ind[i]+1, conf[i+1].length() - 3);
-      }else{
-        conf[i] = conf[i+1].substring(ind[i]+1, conf[i+1].length() - 0);
-      }
-    /*  
-      Serial.print("conf[");
-      Serial.print(i);
-      Serial.print("] - ");
-      Serial.print(conf[i]);
-      Serial.print("\n");
-      */
-    }
-    if (conf[0]){
-       const bool DEVICENAME_AUTO = true;
-    }else{
-       const bool DEVICENAME_AUTO = false;
-    }
-    //const char DEVICENAME[20] = conf[1];
-    if (conf[2]){
-       const bool AIRMONITOR_ON = true;
-    }else{
-       const bool AIRMONITOR_ON = false;
-    }
-    if (conf[3]){
-       const bool AIRMONITOR_GRAPH_ON = true;
-    }else{
-       const bool AIRMONITOR_GRAPH_ON = false;
-    }
-     const float LATITUDE = conf[4].toFloat();
-     const float LONGITUDE = conf[5].toFloat();
-     const int MYALTITUDE = conf[6].toFloat();
-    if (conf[7]){
-       const bool THINGSPEAK_ON = true;
-    }else{
-       const bool THINGSPEAK_ON = false;
-    }
-    if (conf[8]){
-       const bool THINGSPEAK_GRAPH_ON = true;
-    }else{
-       const bool THINGSPEAK_GRAPH_ON = false;
-    }
-    //const char THINGSPEAK_API_KEY[20] = conf[9];
-    const int THINGSPEAK_CHANNEL_ID = conf[10].toInt();
-    if (conf[11]){
-       const bool DEBUG = true;
-    }else{
-       const bool DEBUG = false;
-    }
-    const float calib1 = conf[12].toFloat();
-    const float calib2 = conf[13].toFloat();
-   	//const char SOFTWAREVERSION[40] = conf[14];
-	 
-    Serial.print("\nDane z pliku config.h:\n");
-    Serial.print("DEVICENAME_AUTO = ");
-    Serial.print(DEVICENAME_AUTO);
-    Serial.print("\nDEVICENAME = ");
-    Serial.print(DEVICENAME);
-    
-    Serial.print("\nAIRMONITOR_ON = ");
-    Serial.print(AIRMONITOR_ON);
-    Serial.print("\nAIRMONITOR_GRAPH_ON = ");
-    Serial.print(AIRMONITOR_GRAPH_ON);
-    Serial.print("\nLATITUDE = ");
-    Serial.print(String(LATITUDE, 4));
-    Serial.print("\nLONGITUDE = ");
-    Serial.print(String(LONGITUDE, 4));
-    Serial.print("\nMYALTITUDE = ");
-    Serial.print(int(MYALTITUDE));
-    
-    Serial.print("\nTHINGSPEAK_ON = ");
-    Serial.print(THINGSPEAK_ON);
-    Serial.print("\nTHINGSPEAK_GRAPH_ON = ");
-    Serial.print(THINGSPEAK_GRAPH_ON);
-    Serial.print("\nTHINGSPEAK_API_KEY = ");
-    Serial.print(THINGSPEAK_API_KEY);
-    Serial.print("\nTHINGSPEAK_CHANNEL_ID = ");
-    Serial.print(THINGSPEAK_CHANNEL_ID);
-    
-    Serial.print("\nDEBUG = ");
-    Serial.print(DEBUG);
-    Serial.print("\ncalib1 = ");
-    Serial.print(calib1);
-    Serial.print("\ncalib2 = ");
-    Serial.print(calib2);
-    Serial.print("\nSOFTWAREVERSION = ");
-    Serial.print(SOFTWAREVERSION);
-    Serial.print("\n");
-	 
+  json.printTo(configFile);
+  return true;
 }
 
-void deleteConfigDataJSON() {
-	SPIFFS.remove(path); 
+void fs_setup() {
+  delay(10);
+  Serial.println("Mounting FS...");
+
+  if (!SPIFFS.begin()) {
+    Serial.println("Failed to mount file system");
+    return;
+  }
+
+  if (!loadConfig()) {
+    Serial.println("Failed to load config");
+	Serial.println("Saving the current config...");
+	saveConfig();
+  } else {
+    Serial.println("Config loaded");
+  }
 }
 
-void fs_start() {
-    
-	if (!SPIFFS.exists(path)){
-	    Serial.println("\nconfig.h NIE istnieje!\n");
-	    SPIFFS.format();
-    
-	    Serial.println("Tworzenie pliku config.h!");
-	    File UserConfig = SPIFFS.open(path, "w");
-    
-	    Serial.println("Zapisywanie danych do config.h...");
-
-	    createConfigDataJSON();
-	    UserConfig.println(ustawienia);
-	    UserConfig.close();
-	    Serial.println("\nDane zapisane :)\n");
-
-	    readConfigDataJSON();
-
-	    }else{
-    
-		Serial.println("\nconfig.h istnieje!\n");
-    
-	    readConfigDataJSON();
-		
-	    //Serial.println("\nKasowanie pliku config.h!\n");
-		//deleteConfigDataJSON();
-	}
+void deleteConfig() {
+	SPIFFS.remove("/config.json"); 
 }

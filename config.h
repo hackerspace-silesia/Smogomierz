@@ -2,6 +2,7 @@
 
 const bool DEVICENAME_AUTO = true;
 const char DEVICENAME[20] = "smogomierz1"; // Bez polskich znaków!!
+const bool DISPLAY_PM1 = false;
 
 /*
  * Jeżeli chcemy wysłać dane na mapę AirMonitor:
@@ -51,13 +52,25 @@ const char THINGSPEAK_API_KEY[20] = "API-KEY";
 const int THINGSPEAK_CHANNEL_ID = 0;
 
 /*
+ * InfluxDB - Config
+ */
+
+const bool INFLUXDB_ON = false;
+const char INFLUXDB_HOST[20] = "INFLUXDB_ADRESS";
+const uint16_t INFLUXDB_PORT = 8086;
+
+const char DATABASE[20] = "mydb";
+const char DB_USER[20] = "username";
+const char DB_PASSWORD[20] = "password";
+
+/*
  * Koniec konfiguracji
  * 
  * End of configuration :) 
  */
 
-const bool DEBUG = false;
+const bool DEBUG = true;
 const float calib1 = 1.6; // 1.6* for more accurate data in high temp and low humi
 const float calib2 = 0.55; // 0.55 - 0.65* for more accurate data in low temp and high humi
 
-const char SOFTWAREVERSION[40] = "0.2.7 build 14:05_27.03.2018";
+const char SOFTWAREVERSION[40] = "0.2.7 build 17:35_28.03.2018";

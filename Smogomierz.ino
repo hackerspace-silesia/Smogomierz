@@ -3,17 +3,19 @@
 #include <SoftwareSerial.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
+#include "FS.h"
 #include "ArduinoJson.h"
 #include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager
 #include "src/pms.h" // https://github.com/fu-hsi/PMS
 #include "src/bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 
-#include "src/config.h"
-
 //#include "src/webserver.h"
+#include "src/spiffs.h"
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
-#include "src/spiffs.h"
+#include "src/ESPinfluxdb.h"
+
+#include "config.h"
 
 /*
   Podłączenie czujnikow:
@@ -37,21 +39,25 @@ PMS::DATA data;
 
 char device_name[20];
 
-int counter1 = 0;
+int counter1, counter2 = 0;
 float calib = 1;
 
 ESP8266WebServer WebServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 
+Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
+
 void setup() {
     Serial.begin(115200);
     mySerial.begin(9600);
+    delay(10);
     
     Wire.begin(0,2);
     BMESensor.begin(); 
 
-    //deleteConfigDataJSON();
-    fs_start();
+    //deleteConfig(); // Kasowanie pliku config.json!
+    fs_setup();
+    delay(10);
     
     // get ESP id
     if (DEVICENAME_AUTO){
@@ -72,6 +78,12 @@ void setup() {
       delay(1000);
       ESP.reset(); //reset and try again
       delay(5000);
+    }
+    
+    if (INFLUXDB_ON){
+      if (influxdb.opendb(DATABASE)!=DB_SUCCESS) {
+        Serial.println("Opend database failed");
+      }
     }
 
     //  WebServer config - Start
@@ -103,14 +115,43 @@ void loop() {
   //webserverShowSite(WebServer, BMESensor, data);
   WebServer.handleClient(); 
   delay(10);
-  
+
+  yield();
   counter1++;
-  //execute every ~10 minutes(dokładniej jakieś 9:45) - 50000
-  if (counter1 >= 50000){
+  //execute every ~10 minutes(dokładniej około 8:50) - 25000
+  if (counter1 >= 25000){
     sendDataToThingSpeak(BMESensor, data, calib);
     sendDataToAirMonitor(BMESensor, data, calib);
-    Serial.println("Licznik!11\n");
+    if(DEBUG){
+      Serial.println("10 minut!\n");
+    }
     counter1 = 0;  
+  }
+  counter2++;
+  //execute every ~1 minutes(dokładniej około 56 sekund) - 2500
+  if(counter2 >= 2500){
+    if (INFLUXDB_ON){
+      dbMeasurement row(device_name);
+      row.addField("pm1", (int(calib * data.PM_AE_UG_1_0)));
+      row.addField("pm25", (int(calib * data.PM_AE_UG_2_5)));
+      row.addField("pm10", (int(calib * data.PM_AE_UG_10_0)));
+      if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
+        Serial.println("Brak pomiarow z BME280!\n");
+      }else{
+      row.addField("temperature", (BMESensor.temperature));
+      row.addField("pressure", (BMESensor.pressure  / 100.0F));
+      row.addField("humidity", (BMESensor.humidity));
+      }
+      // sprawdzić czy bez debug też wysyła dane!!
+      if(DEBUG){
+      Serial.println(influxdb.write(row) == DB_SUCCESS ? "Dane wyslane do InfluxDB": "Blad wysylania danych do InfluxDB");
+      }
+      row.empty();
+    }
+    if(DEBUG){
+      Serial.println("1 minuta!\n");
+    }
+    counter2 = 0;  
   }
 }
 
@@ -146,11 +187,11 @@ void handle_root() {            //Handler for the handle_root
       }
       message += "<p><h2>Pomiary zanieczyszczeń:</h2>";
       
-        
-        message += "<h3>PM1: ";
-        message += (int(calib * data.PM_AE_UG_1_0));
-        message += " µg/m³</h3>";
-        
+        if (DISPLAY_PM1){
+          message += "<h3>PM1: ";
+          message += (int(calib * data.PM_AE_UG_1_0));
+          message += " µg/m³</h3>";
+        }
         message += "<h3>PM2.5: ";
         if (int(calib * data.PM_AE_UG_2_5) <= 10){
           message += "<font color='#61EEE4'>";
@@ -219,12 +260,13 @@ void handle_root() {            //Handler for the handle_root
   }
   if(THINGSPEAK_GRAPH_ON){
       message += ("<hr>");
-      
-      message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
-      message += (THINGSPEAK_CHANNEL_ID);
-      message += ("/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM1&type=line&yaxis=ug%2Fm3&update=15'></iframe>");
-      message += (" ");
-      
+      /*
+      if (DISPLAY_PM1) {
+        message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
+        message += (THINGSPEAK_CHANNEL_ID);
+        message += ("/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM1&type=line&yaxis=ug%2Fm3&update=15'></iframe>");
+        message += (" ");
+      }*/
       message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
       message += (THINGSPEAK_CHANNEL_ID);
       message += ("/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM2.5&type=line&yaxis=ug%2Fm3&update=15'></iframe>");
@@ -273,6 +315,10 @@ void handle_config() {            //Handler for the handle_config
 
     message += "<b>Automatyczne generowanie nazwy: </b>";
     message += (DEVICENAME_AUTO);
+    message += "<br>";
+    
+    message += "<b>Wyświetlanie pomiarów PM1: </b>";
+    message += (DISPLAY_PM1);
     message += "<br><br>";
   
     message += "<b>Wysyłanie danych do serwisu AirMonitor: </b>";
@@ -305,6 +351,20 @@ void handle_config() {            //Handler for the handle_config
     message += (THINGSPEAK_CHANNEL_ID);
     message += "<br><br>";
 
+    message += "<b>Wysyłanie danych do InfluxDB: </b>";
+    message += (INFLUXDB_ON);
+    message += "<br><b>Adres bazy danych InfluxDB: </b>";
+    message += (INFLUXDB_HOST);
+    message += "<br><b>Port InfluxDB: </b>";
+    message += (INFLUXDB_PORT);
+    message += "<br><b>Nazwa bazy danych: </b>";
+    message += (DATABASE);
+    message += "<br><b>Użytkownik bazy danych: </b>";
+    message += (DB_USER);
+    message += "<br><b>Hasło do bazy danych: </b>";
+    message += (DB_PASSWORD);
+    message += "<br><br>";
+
     message += "<b>Debug: </b>";
     message += (DEBUG);
     message += "<br>";
@@ -318,7 +378,7 @@ void handle_config() {            //Handler for the handle_config
     message += "<br><br>";
 
     message += "<b>Wersja oprogramowania: </b>";
-    message += SOFTWAREVERSION;
+    message += (SOFTWAREVERSION);
     message += "<br>";
   
     message += "</main></body></html>";
@@ -357,10 +417,14 @@ void handle_api() {
         json["pm1"] = int(calib * data.PM_AE_UG_1_0);
         json["pm25"] = int(calib * data.PM_AE_UG_2_5);
         json["pm10"] = int(calib * data.PM_AE_UG_10_0);
-        json["temperature"] = float(BMESensor.temperature);
-        json["pressure"] = int(BMESensor.pressure  / 100.0F);
-        json["humidity"] = int(BMESensor.humidity);
-        json["dewpoint"] = int(BMESensor.temperature-((100-BMESensor.humidity)/5));    
+        if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
+          Serial.println("Brak pomiarow z BME280!\n");
+        }else{
+          json["temperature"] = float(BMESensor.temperature);
+          json["pressure"] = int(BMESensor.pressure  / 100.0F);
+          json["humidity"] = int(BMESensor.humidity);
+          json["dewpoint"] = int(BMESensor.temperature-((100-BMESensor.humidity)/5));    
+        }
 
       json.prettyPrintTo(message);
     WebServer.send(200, "text/json", message);

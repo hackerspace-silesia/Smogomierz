@@ -73,4 +73,4 @@ const bool DEBUG = true;
 const float calib1 = 1.6; // 1.6* for more accurate data in high temp and low humi
 const float calib2 = 0.55; // 0.55 - 0.65* for more accurate data in low temp and high humi
 
-const char SOFTWAREVERSION[40] = "0.2.7 build 17:35_28.03.2018";
+const char SOFTWAREVERSION[40] = "0.2.8 build 12:00_04.04.2018";

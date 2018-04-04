@@ -43,15 +43,15 @@ void sendJson(JsonObject& json) {
     client.stop();
 }
 
-void sendPMSData(const PMS::DATA &pms, BME280<BME280_C, BME280_ADDRESS> &bme, float calib) {
+void sendPMSData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int averagePM25, int averagePM10) {
 
     StaticJsonBuffer<400> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
     json["long"] = String(LONGITUDE, 4);
-    json["pm1"] = int(calib * pms.PM_AE_UG_1_0);
-    json["pm25"] = int(calib * pms.PM_AE_UG_2_5);
-    json["pm10"] = int(calib * pms.PM_AE_UG_10_0);
+    json["pm1"] = averagePM1;
+    json["pm25"] = averagePM25;
+    json["pm10"] = averagePM10;
     json["sensor"] = "PMS7003";
     sendJson(json);
 }
@@ -68,12 +68,12 @@ void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
     sendJson(json);
 }
 
-void sendDataToAirMonitor(BME280<BME280_C, BME280_ADDRESS> &bme, const PMS::DATA &pms, float calib) {
+void sendDataToAirMonitor(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int averagePM25, int averagePM10) {
     if (!(AIRMONITOR_ON)) {
         return;
     }
 
-    sendPMSData(pms, bme, calib);
+    sendPMSData(bme, averagePM1, averagePM25, averagePM10);
     sendBMEData(bme);
 }
 

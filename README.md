@@ -6,7 +6,7 @@
 - [X] Przegranie zawartości config.h do pliku w ESP - przykład https://github.com/esp8266/Arduino/blob/master/libraries/esp8266/examples/ConfigFile/ConfigFile.ino
 - [ ] Możliwość edycji pliku Config w pamięci ESP poprzez przeglądarkę(zakładka Config w panelu miernika)
 - [X] Kolory dla wartości pomiarów PM10 i PM2.5 w zależności od przekroczenia normy zanieczyszczeń 
-- [ ] Uśrednianie wyników pomiarów - np. wyświetlenie i wysyłanie wyników z 10 pomiarów, a nie bierzącego 
+- [X] Uśrednianie wyników pomiarów - np. wyświetlenie i wysyłanie wyników z 5 pomiarów, a nie bierzącego 
 - [X] Wysyłanie danych do InfluxDB 
 - [X] Podstrona /api z bierzącymi danymi pomiarowymi jako JSON
 - [X] Obsługa Homebridge 
@@ -44,11 +44,6 @@ https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 ### Tested on:
 
 ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
-
-nodemcu-master-16-modules-2018-01-14-09-39-20-float - https://www.dropbox.com/s/rxtoz876kscjvb2/nodemcu-master-16-modules-2018-01-14-09-39-20-float.bin
-
-NodeMCU custom builds – https://nodemcu-build.com
-
 
 ### Dodatkowe informacje
 

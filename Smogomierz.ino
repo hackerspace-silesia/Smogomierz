@@ -38,8 +38,11 @@ PMS pms(mySerial);
 PMS::DATA data;
 
 char device_name[20];
+int pmMeasurements[5][3];
 
-int counter1, counter2 = 0;
+int counter1, counter3, iPM = 0;
+int counter2 = -5000;
+int averagePM1, averagePM25, averagePM10 = 0;
 float calib = 1;
 
 ESP8266WebServer WebServer(80);
@@ -120,21 +123,21 @@ void loop() {
   counter1++;
   //execute every ~10 minutes(dokładniej około 8:50) - 25000
   if (counter1 >= 25000){
-    sendDataToThingSpeak(BMESensor, data, calib);
-    sendDataToAirMonitor(BMESensor, data, calib);
+    sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
+    sendDataToAirMonitor(BMESensor, averagePM1, averagePM25, averagePM10);
     if(DEBUG){
       Serial.println("10 minut!\n");
     }
     counter1 = 0;  
   }
   counter2++;
-  //execute every ~1 minutes(dokładniej około 56 sekund) - 2500
+  //execute every ~1 minutes(dokładniejt około 56 sekund) - 2500
   if(counter2 >= 2500){
     if (INFLUXDB_ON){
       dbMeasurement row(device_name);
-      row.addField("pm1", (int(calib * data.PM_AE_UG_1_0)));
-      row.addField("pm25", (int(calib * data.PM_AE_UG_2_5)));
-      row.addField("pm10", (int(calib * data.PM_AE_UG_10_0)));
+      row.addField("pm1", averagePM1);
+      row.addField("pm25", averagePM25);
+      row.addField("pm10", averagePM10);
       if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
         Serial.println("Brak pomiarow z BME280!\n");
       }else{
@@ -142,10 +145,15 @@ void loop() {
       row.addField("pressure", (BMESensor.pressure  / 100.0F));
       row.addField("humidity", (BMESensor.humidity));
       }
-      // sprawdzić czy bez debug też wysyła dane!!
-      if(DEBUG){
-      Serial.println(influxdb.write(row) == DB_SUCCESS ? "Dane wyslane do InfluxDB": "Blad wysylania danych do InfluxDB");
-      }
+      if(influxdb.write(row) == DB_SUCCESS){
+           if(DEBUG){
+            Serial.println("Dane wyslane do InfluxDB");
+           }
+        } else {
+           if(DEBUG){
+            Serial.println("Blad wysylania danych do InfluxDB");
+           }
+        }
       row.empty();
     }
     if(DEBUG){
@@ -153,6 +161,39 @@ void loop() {
     }
     counter2 = 0;  
   }
+
+  counter3++;
+  //execute every ~20 sec (około 20 sekund) - 900
+  //execute every ~30 sec (około 30 sekund) - 1350
+  if (counter3 >= 900){
+
+    pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+    pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+    pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+    
+    if(DEBUG){
+      Serial.println(iPM);
+      Serial.println(pmMeasurements[iPM][0]);
+      Serial.println(pmMeasurements[iPM][1]);
+      Serial.println(pmMeasurements[iPM][2]);
+      Serial.println("20 sekund!\n");
+    }
+    averagePM();
+    if(DEBUG){
+      Serial.print("Srednia PM1: ");
+      Serial.println(averagePM1);
+      Serial.print("Srednia PM2.5: ");
+      Serial.println(averagePM25);
+      Serial.print("Srednia PM10: ");
+      Serial.println(averagePM10);
+    }
+    counter3 = 0;
+    iPM++;
+    if (iPM >= 5) {
+      iPM = 0;
+    }
+  }
+  
 }
 
 // Webserver starts here!
@@ -187,6 +228,64 @@ void handle_root() {            //Handler for the handle_root
       }
       message += "<p><h2>Pomiary zanieczyszczeń:</h2>";
       
+      if (DISPLAY_PM1){
+          message += "<h3>PM1: ";
+          message += (averagePM1);
+          message += " µg/m³</h3>";
+        }
+        message += "<h3>PM2.5: ";
+        if (averagePM25 <= 10){
+          message += "<font color='#61EEE4'>";
+          message += (averagePM25);
+          message += " µg/m³</h3></font>";
+        } else if (averagePM25 > 10 && averagePM25 <= 20){
+          message += "<font color='#5BCAAA'>";
+          message += (averagePM25);
+          message += " µg/m³</h3></font>";
+        } else if (averagePM25 > 20 && averagePM25 <= 25){
+          message += "<font color='#EEE25D'>";
+          message += (averagePM25);
+          message += " µg/m³</h3></font>";
+        } else if (averagePM25 > 25 && averagePM25 <= 50){
+          message += "<font color='#F95459'>";
+          message += (averagePM25);
+          message += " µg/m³</h3></font>";
+        } else if (averagePM25 > 50){
+          message += "<font color='#920736'>";
+          message += (averagePM25);
+          message += " µg/m³</h3></font>";
+        } else {
+          message += (averagePM25);
+          message += " µg/m³</h3>";
+        }
+        
+        message += "<h3>PM10: ";
+        if (averagePM10 <= 20){
+          message += "<font color='#61EEE4'>";
+          message += (averagePM10);
+          message += " µg/m³</h3></font>";
+        } else if (averagePM10 > 20 && averagePM10 <= 35){
+          message += "<font color='#5BCAAA'>";
+          message += (averagePM10);
+          message += " µg/m³</h3></font>";
+        } else if (averagePM10 > 35 && averagePM10 <= 50){
+          message += "<font color='#EEE25D'>";
+          message += (averagePM10);
+          message += " µg/m³</h3></font>";
+        } else if (averagePM10 > 50 && averagePM10 <= 100){
+          message += "<font color='#F95459'>";
+          message += (averagePM10);
+          message += " µg/m³</h3></font>";
+        } else if (averagePM10 > 100){
+          message += "<font color='#920736'>";
+          message += (averagePM10);
+          message += " µg/m³</h3></font>";
+        } else {
+          message += (averagePM10);
+          message += " µg/m³</h3>";
+        }      
+      
+      /*
         if (DISPLAY_PM1){
           message += "<h3>PM1: ";
           message += (int(calib * data.PM_AE_UG_1_0));
@@ -242,7 +341,7 @@ void handle_root() {            //Handler for the handle_root
         } else {
           message += (int(calib * data.PM_AE_UG_10_0));
           message += " µg/m³</h3>";
-        }      
+        }      */
 
   if(AIRMONITOR_GRAPH_ON){
       message += ("<hr>");
@@ -436,5 +535,28 @@ void pm_calibration(){
     } else {
     calib = calib1;
     }
+}
+
+int averagePM() {
+  averagePM1=0;
+  averagePM25=0;
+  averagePM10=0;
+  for (int i=0; i < 5; i++){
+    averagePM1 += pmMeasurements[i][0];
+    averagePM25 += pmMeasurements[i][1];
+    averagePM10  += pmMeasurements[i][2];
+  }
+  if(DEBUG){
+    Serial.print("\nWartość averagePM1: ");
+    Serial.println(averagePM1);
+    Serial.print("Wartość averagePM25: ");
+    Serial.println(averagePM25);
+    Serial.print("Wartość averagePM10: ");
+    Serial.println(averagePM10);
+  }
+  averagePM1 = averagePM1/5;
+  averagePM25 = averagePM25/5;
+  averagePM10 = averagePM10/5;
+  return averagePM1, averagePM25, averagePM10;
 }
 

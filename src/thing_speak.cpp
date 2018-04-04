@@ -5,16 +5,16 @@
 
 #include "../config.h"
 
-void sendDataToThingSpeak(BME280<> &BMESensor, const PMS::DATA &pms, float calib) {
+void sendDataToThingSpeak(BME280<> &BMESensor, int averagePM1, int averagePM25, int averagePM10) {
     if (!(THINGSPEAK_ON)) {
         return;
     }
 
     WiFiClient client;
     ThingSpeak.begin(client);
-    ThingSpeak.setField(1, calib * pms.PM_AE_UG_1_0);
-    ThingSpeak.setField(2, calib * pms.PM_AE_UG_2_5);
-    ThingSpeak.setField(3, calib * pms.PM_AE_UG_10_0);
+    ThingSpeak.setField(1, averagePM1);
+    ThingSpeak.setField(2, averagePM25);
+    ThingSpeak.setField(3, averagePM10);
     ThingSpeak.setField(4, BMESensor.temperature);
     ThingSpeak.setField(5, BMESensor.pressure  / 100.0F);
     ThingSpeak.setField(6, BMESensor.humidity);

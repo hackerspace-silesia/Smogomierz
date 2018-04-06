@@ -84,8 +84,8 @@ void setup() {
     }
     
     if (INFLUXDB_ON){
-      if (influxdb.opendb(DATABASE)!=DB_SUCCESS) {
-        Serial.println("Opend database failed");
+      if (influxdb.opendb(DATABASE, DB_USER, DB_PASSWORD)!=DB_SUCCESS) {
+        Serial.println("Opening database failed");
       }
     }
 
@@ -131,7 +131,7 @@ void loop() {
     counter1 = 0;  
   }
   counter2++;
-  //execute every ~1 minutes(dokładniejt około 56 sekund) - 2500
+  //execute every ~1 minutes(dokładniej około 56 sekund) - 2500
   if(counter2 >= 2500){
     if (INFLUXDB_ON){
       dbMeasurement row(device_name);
@@ -284,64 +284,6 @@ void handle_root() {            //Handler for the handle_root
           message += (averagePM10);
           message += " µg/m³</h3>";
         }      
-      
-      /*
-        if (DISPLAY_PM1){
-          message += "<h3>PM1: ";
-          message += (int(calib * data.PM_AE_UG_1_0));
-          message += " µg/m³</h3>";
-        }
-        message += "<h3>PM2.5: ";
-        if (int(calib * data.PM_AE_UG_2_5) <= 10){
-          message += "<font color='#61EEE4'>";
-          message += (int(calib * data.PM_AE_UG_2_5));
-          message += " µg/m³</h3></font>";
-        } else if (int(calib * data.PM_AE_UG_2_5) > 10 && int(calib * data.PM_AE_UG_2_5) <= 20){
-          message += "<font color='#5BCAAA'>";
-          message += (int(calib * data.PM_AE_UG_2_5));
-          message += " µg/m³</h3></font>";
-        } else if (int(calib * data.PM_AE_UG_2_5) > 20 && int(calib * data.PM_AE_UG_2_5) <= 25){
-          message += "<font color='#EEE25D'>";
-          message += (int(calib * data.PM_AE_UG_2_5));
-          message += " µg/m³</h3></font>";
-        } else if (int(calib * data.PM_AE_UG_2_5) > 25 && int(calib * data.PM_AE_UG_2_5) <= 50){
-          message += "<font color='#F95459'>";
-          message += (int(calib * data.PM_AE_UG_2_5));
-          message += " µg/m³</h3></font>";
-        } else if (int(calib * data.PM_AE_UG_2_5) > 50){
-          message += "<font color='#920736'>";
-          message += (int(calib * data.PM_AE_UG_2_5));
-          message += " µg/m³</h3></font>";
-        } else {
-          message += (int(calib * data.PM_AE_UG_2_5));
-          message += " µg/m³</h3>";
-        }
-        
-        message += "<h3>PM10: ";
-        if (int(calib * data.PM_AE_UG_10_0) <= 20){
-          message += "<font color='#61EEE4'>";
-          message += (int(calib * data.PM_AE_UG_10_0));
-          message += " µg/m³</h3></font>";
-        } else if (int(calib * data.PM_AE_UG_10_0) > 20 && int(calib * data.PM_AE_UG_10_0) <= 35){
-          message += "<font color='#5BCAAA'>";
-          message += (int(calib * data.PM_AE_UG_10_0));
-          message += " µg/m³</h3></font>";
-        } else if (int(calib * data.PM_AE_UG_10_0) > 35 && int(calib * data.PM_AE_UG_10_0) <= 50){
-          message += "<font color='#EEE25D'>";
-          message += (int(calib * data.PM_AE_UG_10_0));
-          message += " µg/m³</h3></font>";
-        } else if (int(calib * data.PM_AE_UG_10_0) > 50 && int(calib * data.PM_AE_UG_10_0) <= 100){
-          message += "<font color='#F95459'>";
-          message += (int(calib * data.PM_AE_UG_10_0));
-          message += " µg/m³</h3></font>";
-        } else if (int(calib * data.PM_AE_UG_10_0) > 100){
-          message += "<font color='#920736'>";
-          message += (int(calib * data.PM_AE_UG_10_0));
-          message += " µg/m³</h3></font>";
-        } else {
-          message += (int(calib * data.PM_AE_UG_10_0));
-          message += " µg/m³</h3>";
-        }      */
 
   if(AIRMONITOR_GRAPH_ON){
       message += ("<hr>");
@@ -513,9 +455,9 @@ void handle_api() {
       JsonObject& json = jsonBuffer.createObject();
 
         json["device_name"] = device_name;
-        json["pm1"] = int(calib * data.PM_AE_UG_1_0);
-        json["pm25"] = int(calib * data.PM_AE_UG_2_5);
-        json["pm10"] = int(calib * data.PM_AE_UG_10_0);
+        json["pm1"] = averagePM1;
+        json["pm25"] = averagePM25;
+        json["pm10"] = averagePM10;
         if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
           Serial.println("Brak pomiarow z BME280!\n");
         }else{

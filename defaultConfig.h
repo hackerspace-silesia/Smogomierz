@@ -24,3 +24,8 @@ char DB_USER[255] = "username";
 char DB_PASSWORD[255] = "password";
 
 bool DEBUG = true;
+
+char MODEL[255] = "black";
+float calib1 = 1.6;
+float calib2 = 0.55;
+

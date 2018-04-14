@@ -4,8 +4,13 @@
 #include "config.h"
 
 
-void _safeCpy(char* dest, const JsonVariant &obj) {
-    strncpy(dest, obj.as<const char*>(), 255);
+void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "") {
+    const char* val = obj.as<const char*>();
+    if (val) {
+        strncpy(dest, val, 255);
+    } else {
+        strncpy(dest, dflt, 255);
+    }
 }
 
 
@@ -41,7 +46,7 @@ bool loadConfig() {
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND webserver.h!!
 
   DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
-  _safeCpy(DEVICENAME, json["DEVICENAME"]);
+  _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz");
   DISPLAY_PM1 = json["DISPLAY_PM1"];
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
@@ -55,15 +60,17 @@ bool loadConfig() {
   THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
   
   INFLUXDB_ON = json["INFLUXDB_ON"];
-  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"]);
+  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host");
   INFLUXDB_PORT = json["INFLUXDB_PORT"];
-  _safeCpy(DATABASE, json["DATABASE"]);
-  _safeCpy(DB_USER, json["DB_USER"]);
-  _safeCpy(DB_PASSWORD, json["DB_PASSWORD"]);
+  _safeCpy(DATABASE, json["DATABASE"], "mydb");
+  _safeCpy(DB_USER, json["DB_USER"], "user");
+  _safeCpy(DB_PASSWORD, json["DB_PASSWORD"], "password");
+
+  _safeCpy(MODEL, json["MODEL"], "black");
+  calib1 = json["calib1"];
+  calib2 = json["calib2"];
   
   DEBUG = json["DEBUG"];
-  const char* calib1 = json["calib1"];
-  const char* calib2 = json["calib2"];
   
   // Real world application would store these values in some variables for
   // later use.
@@ -146,6 +153,7 @@ bool saveConfig() {
   json["DB_PASSWORD"] = DB_PASSWORD;
   
   json["DEBUG"] = DEBUG;
+  json["MODEL"] = MODEL;
   json["calib1"] = calib1;
   json["calib2"] = calib2;
 

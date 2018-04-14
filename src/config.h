@@ -25,7 +25,8 @@ extern char DB_PASSWORD[255];
 
 extern bool DEBUG;
 
-const float calib1 = 5.8; // 5.8* for more accurate data in high temp and low humi
-const float calib2 = 1.8; // 1.8 - 2.14* for more accurate data in low temp and high humi
+extern char MODEL[255];
+extern float calib1;
+extern float calib2;
 
 const char SOFTWAREVERSION[40] = "0.2.8 build 16:00_14.04.2018";

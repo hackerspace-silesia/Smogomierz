@@ -121,17 +121,39 @@ void handle_root () {
     WebServer.send(200, "text/html", message);
   }
 
+String _addOption(const String &value, const String &label, const String &srslyValue) {
+    String option = "";
+    
+    option += "<option value='";
+    option += value;
+    if (value == srslyValue) {
+        option += "' selected>";
+    } else {
+        option += "'>";
+    }
+    option += label;
+    option += "</option>";
+    return option;
+}
+
 String _addBoolSelect(const String &key, const bool &value) {
+    String selectValue = value? "yes": "no";
     String input = "<select name='";
     input += key;
     input += "'>";
-    if (value) {
-        input += "<option value='yes' selected>Tak</option>";
-        input += "<option value='no'>Nie</option>";
-    } else {
-        input += "<option value='yes'>Tak</option>";
-        input += "<option value='no' selected>Nie</option>";
-    }
+    input += _addOption("yes", "Tak", selectValue);
+    input += _addOption("no", "Nie", selectValue);
+    input += "</select><br />";
+    return input;
+}
+
+String _addModelSelect(const String &key, const String &value) {
+    String input = "<select name='";
+    input += key;
+    input += "'>";
+    input += _addOption("black", "BLACK EDITION", value);
+    input += _addOption("white", "WHITE EDITION", value);
+    input += _addOption("red", "RED EDITION", value);
     input += "</select><br />";
     return input;
 }
@@ -145,6 +167,17 @@ String _escapeString (const String &value) {
 
 String _addTextInput(const String &key, const String &value, const String &postfix="") {
     String input = "<input type='text' maxlength='255' size='50' name='";
+    input += key;
+    input += "' value='";
+    input += _escapeString(value);
+    input += "'> ";
+    input += postfix;
+    input += "<br />";
+    return input;
+}
+
+String _addPasswdInput(const String &key, const String &value, const String &postfix="") {
+    String input = "<input type='password' maxlength='255' size='50' name='";
     input += key;
     input += "' value='";
     input += _escapeString(value);
@@ -194,11 +227,11 @@ void _handle_config(bool is_success) {
     message += "<center><h1>Smogomierz - Config</h1></center><br><br>";
 
     if (is_success) {
-        message += "<div class='success'> <strong>ZAPISANO I ZRESETOWANO!</strong> - nie placz, wszystko jest OK </div>";
+        message += "<div style='color: #2f7a2d'> <strong>ZAPISANO I ZRESETOWANO!</strong> - nie placz, wszystko jest OK </div>";
     }
 
     message += "<b>Nazwa urządzenia: </b>";
-    if (!DEVICENAME_AUTO) {
+    if (DEVICENAME_AUTO) {
         message += device_name;
     } else {
         message += _addTextInput("DEVICENAME", DEVICENAME);
@@ -220,9 +253,9 @@ void _handle_config(bool is_success) {
     message += _addSubmit();
 
     message += "<b>Współrzędne geograficzne miernika:<br>Szerokość(latitude): </b>";
-    message += _addFloatInput("LATITUDE", LATITUDE);
+    message += _addFloatInput("LATITUDE", LATITUDE, 6, "°");
     message += "<b>Długość(longitude): </b>";
-    message += _addFloatInput("LONGITUDE", LONGITUDE);
+    message += _addFloatInput("LONGITUDE", LONGITUDE, 6, "°");
     message += "<b>Wysokość: </b>";
     message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
     message += _addSubmit();
@@ -250,11 +283,14 @@ void _handle_config(bool is_success) {
     message += "<b>Użytkownik bazy danych: </b>";
     message += _addTextInput("DB_USER", DB_USER);
     message += "<b>Hasło do bazy danych: </b>";
-    message += _addTextInput("DB_PASSWORD", DB_PASSWORD);
+    message += _addPasswdInput("DB_PASSWORD", DB_PASSWORD);
     message += _addSubmit();
 
     message += "<b>Debug: </b>";
     message += _addBoolSelect("DEBUG", DEBUG);
+
+    message += "<b>Model Smogomierza: </b>";
+    message += _addModelSelect("MODEL", MODEL);
 
     message += "<b>Zmienna kalibracyjna calib1: </b>";
     message += (calib1);
@@ -275,6 +311,19 @@ void _handle_config(bool is_success) {
 
 bool _parseAsBool(String value) {
     return value == "yes";
+}
+
+void _set_calib1_and_calib2() {
+    if (!strcmp(MODEL, "black")) {
+        calib1 = 1;
+        calib2 = 1;
+    } else if (!strcmp(MODEL, "white")) {
+        calib1 = 2;
+        calib2 = 2;
+    } else {
+        calib1 = 3;
+        calib2 = 3;
+    }
 }
 
 void _parseAsCString(char* dest, String value) {
@@ -324,13 +373,17 @@ void handle_config_post() {
     _parseAsCString(DB_USER, WebServer.arg("DB_USER"));
     _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"));
 
+    _parseAsCString(MODEL, WebServer.arg("MODEL"));
+    _set_calib1_and_calib2();
+
     if (DEBUG) {
         Serial.println("POST CONFIG END!!");
     }
     
     saveConfig();
     _handle_config(true);
-    //ESP.reset();
+    // https://github.com/esp8266/Arduino/issues/1722
+    // ESP.reset();
 }
 
 void handle_update() {            //Handler for the handle_update

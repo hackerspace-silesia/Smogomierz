@@ -48,7 +48,23 @@ float calib = 1;
 ESP8266WebServer WebServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 
+
 Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
+
+bool checkBmeStatus() {
+    int temperatureInt = BMESensor.temperature;
+    int pressureInt = BMESensor.pressure / 100.0F;
+    int humidityInt = BMESensor.humidity;
+    if (temperatureInt == 0 && pressureInt == 0 && humidityInt == 0) {
+        Serial.println("Brak pomiarow z BME280!\n");
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// library doesnt support arguments :/
+#include "src/webserver.h"
 
 void setup() {
     Serial.begin(115200);
@@ -91,6 +107,7 @@ void setup() {
 
     //  WebServer config - Start
       WebServer.on("/", HTTP_GET,  handle_root);
+      WebServer.on("/config", HTTP_POST, handle_config_post);
       WebServer.on("/config", HTTP_GET, handle_config);
       WebServer.on("/update", HTTP_GET, handle_update);
       WebServer.on("/api", HTTP_GET, handle_api);
@@ -196,8 +213,7 @@ void loop() {
   
 }
 
-// library doesnt support arguments :/
-#include "src/webserver.cpp"
+
 
 void pm_calibration(){
   if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60){

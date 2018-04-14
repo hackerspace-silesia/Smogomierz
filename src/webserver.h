@@ -383,6 +383,8 @@ void handle_config_post() {
     _parseAsCString(DB_USER, WebServer.arg("DB_USER"));
     _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"));
 
+    DEBUG = _parseAsBool(WebServer.arg("DEBUG"));
+
     _parseAsCString(MODEL, WebServer.arg("MODEL"));
     _set_calib1_and_calib2();
 

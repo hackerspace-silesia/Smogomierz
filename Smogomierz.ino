@@ -38,7 +38,7 @@ PMS pms(mySerial);
 PMS::DATA data;
 
 char device_name[20];
-int pmMeasurements[5][3];
+int pmMeasurements[10][3];
 
 int counter1, counter3, iPM = 0;
 int counter2 = -5000;
@@ -189,7 +189,7 @@ void loop() {
     }
     counter3 = 0;
     iPM++;
-    if (iPM >= 5) {
+    if (iPM >= 10) {
       iPM = 0;
     }
   }
@@ -483,7 +483,7 @@ int averagePM() {
   averagePM1=0;
   averagePM25=0;
   averagePM10=0;
-  for (int i=0; i < 5; i++){
+  for (int i=0; i < 10; i++){
     averagePM1 += pmMeasurements[i][0];
     averagePM25 += pmMeasurements[i][1];
     averagePM10  += pmMeasurements[i][2];
@@ -496,9 +496,9 @@ int averagePM() {
     Serial.print("Wartość averagePM10: ");
     Serial.println(averagePM10);
   }
-  averagePM1 = averagePM1/5;
-  averagePM25 = averagePM25/5;
-  averagePM10 = averagePM10/5;
+  averagePM1 = averagePM1/10;
+  averagePM25 = averagePM25/10;
+  averagePM10 = averagePM10/10;
   return averagePM1, averagePM25, averagePM10;
 }
 

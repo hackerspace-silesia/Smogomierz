@@ -72,8 +72,8 @@ const char DB_PASSWORD[20] = "password";
 const bool DEBUG = true;
 
 // IP56 120x80x50 enclosure
-const float calib1 = 8.0; // 8.0* for more accurate data in high temp and low humi
-const float calib2 = 2.75; // 2.75 - 3.25* for more accurate data in low temp and high humi
+const float calib1 = 5.8; // 5.8* for more accurate data in high temp and low humi
+const float calib2 = 1.8; // 1.8 - 2.14* for more accurate data in low temp and high humi
 
 // IP55 86x86 enclosure
 //const float calib1 = 1.6; // 1.6* for more accurate data in high temp and low humi
@@ -83,4 +83,4 @@ const float calib2 = 2.75; // 2.75 - 3.25* for more accurate data in low temp an
 //const float calib1 = 1;
 //const float calib2 = 1;
 
-const char SOFTWAREVERSION[40] = "0.2.8 build 01:55_11.04.2018";
+const char SOFTWAREVERSION[40] = "0.2.8 build 16:00_14.04.2018";

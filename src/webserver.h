@@ -353,7 +353,9 @@ void handle_config_post() {
     // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
 
     DEVICENAME_AUTO = _parseAsBool(WebServer.arg("DEVICENAME_AUTO"));
-    _parseAsCString(DEVICENAME, WebServer.arg("DEVICENAME"));
+    if (!DEVICENAME_AUTO) {
+        _parseAsCString(DEVICENAME, WebServer.arg("DEVICENAME"));
+    }
     DISPLAY_PM1 = _parseAsBool(WebServer.arg("DISPLAY_PM1"));
     AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
     AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));

@@ -1,3 +1,4 @@
+
 void handle_root () {
       String message = "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Pomiary</title>";
       message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
@@ -162,13 +163,11 @@ String _addIntInput(const String &key, const int &value, const String &postfix="
     return input;
 }
 
-String _addFloatInput(const String &key, const float &value, const int step=6, const String &postfix="") {
+String _addFloatInput(const String &key, const double &value, const int &precision=6, const String &postfix="") {
     String input = "<input type='number' maxlength='255' name='";
     input += key;
-    input += "' step='";
-    input += step;
     input += "' value='";
-    input += String(value, step);
+    input += String(value, precision);
     input += "'> ";
     input += postfix;
     input += "<br />";
@@ -179,7 +178,7 @@ String _addSubmit() {
     return "<input type='submit' value='Zapisz' /><br /><br />";
 }
 
-void handle_config() {
+void _handle_config(bool is_success) {
     String message = "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
     message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
     message += "</head><body>";
@@ -192,11 +191,15 @@ void handle_config() {
 
     message += "<center><h1>Smogomierz - Config</h1></center><br><br>";
 
+    if (is_success) {
+        message += "<div class='success'> <strong>ZAPISANO I ZRESETOWANO!</strong> - nie placz, wszystko jest OK </div>";
+    }
+
     message += "<b>Nazwa urządzenia: </b>";
     if (!DEVICENAME_AUTO) {
         message += device_name;
     } else {
-        message += _addTextInput("DEVICE_NAME", device_name);
+        message += _addTextInput("DEVICENAME", DEVICENAME);
     }
     message += "<br>";
 
@@ -241,7 +244,7 @@ void handle_config() {
     message += "<b>Port InfluxDB: </b>";
     message += _addIntInput("INFLUXDB_PORT", INFLUXDB_PORT);
     message += "<b>Nazwa bazy danych: </b>";
-    message += _addTextInput("DATABSE", DATABASE);
+    message += _addTextInput("DATABASE", DATABASE);
     message += "<b>Użytkownik bazy danych: </b>";
     message += _addTextInput("DB_USER", DB_USER);
     message += "<b>Hasło do bazy danych: </b>";
@@ -261,25 +264,71 @@ void handle_config() {
 
     message += "<b>Wersja oprogramowania: </b>";
     message += (SOFTWAREVERSION);
-    message += "<br />;
+    message += "<br />";
     message += _addSubmit();
   
     message += "</main></form></body></html>";
     WebServer.send(200, "text/html", message);
 }
 
+bool _parseAsBool(String value) {
+    return value == "yes";
+}
+
+void _parseAsCString(char* dest, String value) {
+    strncpy(dest, value.c_str(), 255);
+}
+
+void handle_config() {
+    _handle_config(false);
+}
+
 void handle_config_post() {
+
     if (DEBUG) {
+        Serial.println("POST CONFIG START!!");
         int argsLen = WebServer.args();
         for (int i=0; i < argsLen; i++) {
-            String ss = WebServer.argName(i);
+            String argName = WebServer.argName(i);
+            String arg = WebServer.arg(i); 
+            String ss = "** ";
+            ss += argName;
             ss += " = ";
-            ss += WebServer.arg(i);
+            ss += arg;
             Serial.println(ss);
         }
     }
+
+    // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
+
+    DEVICENAME_AUTO = _parseAsBool(WebServer.arg("DEVICENAME_AUTO"));
+    _parseAsCString(DEVICENAME, WebServer.arg("DEVICENAME"));
+    DISPLAY_PM1 = _parseAsBool(WebServer.arg("DISPLAY_PM1"));
+    AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
+    AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
+    LATITUDE = WebServer.arg("LATITUDE").toFloat();
+    LONGITUDE = WebServer.arg("LONGITUDE").toFloat();
+    MYALTITUDE = WebServer.arg("MYALTITUDE").toInt();
+      
+    THINGSPEAK_ON = _parseAsBool(WebServer.arg("THINGSPEAK_ON"));
+    THINGSPEAK_GRAPH_ON = _parseAsBool(WebServer.arg("THINGSPEAK_GRAPH_ON"));
+    _parseAsCString(THINGSPEAK_API_KEY, WebServer.arg("THINGSPEAK_API_KEY"));
+    THINGSPEAK_CHANNEL_ID = WebServer.arg("THINGSPEAK_CHANNEL_ID").toInt();
+      
+    INFLUXDB_ON = _parseAsBool(WebServer.arg("INFLUXDB_ON"));
+    _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"));
+    INFLUXDB_PORT = WebServer.arg("INFLUXDB_PORT").toInt();
+    _parseAsCString(DATABASE, WebServer.arg("DATABASE"));
+    _parseAsCString(DB_USER, WebServer.arg("DB_USER"));
+    _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"));
+
+    if (DEBUG) {
+        Serial.println("POST CONFIG END!!");
+    }
     
-    handle_config();
+    saveConfig();
+    _handle_config(true);
+    //ESP.reset();
 }
 
 void handle_update() {            //Handler for the handle_update

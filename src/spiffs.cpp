@@ -1,7 +1,13 @@
 #include "ArduinoJson.h"
 #include "FS.h"
 
-#include "../config.h"
+#include "config.h"
+
+
+void _safeCpy(char* dest, const JsonVariant &obj) {
+    strncpy(dest, obj.as<const char*>(), 255);
+}
+
 
 bool loadConfig() {
   File configFile = SPIFFS.open("/config.json", "r");
@@ -31,32 +37,33 @@ bool loadConfig() {
     Serial.println("Failed to parse config file");
     return false;
   }
+
+  // REMEMBER TO ADD/EDIT KEYS IN config.h AND webserver.h!!
+
+  DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
+  _safeCpy(DEVICENAME, json["DEVICENAME"]);
+  DISPLAY_PM1 = json["DISPLAY_PM1"];
+  AIRMONITOR_ON = json["AIRMONITOR_ON"];
+  AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
+  LATITUDE = json["LATITUDE"];
+  LONGITUDE = json["LONGITUDE"];
+  MYALTITUDE = json["MYALTITUDE"];
   
-  const char* DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
-  const char* DEVICENAME = json["DEVICENAME"];
-  const char* DISPLAY_PM1 = json["DISPLAY_PM1"];
-  const char* AIRMONITOR_ON = json["AIRMONITOR_ON"];
-  const char* AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
-  const char* LATITUDE = json["LATITUDE"];
-  const char* LONGITUDE = json["LONGITUDE"];
-  const char* MYALTITUDE = json["MYALTITUDE"];
+  THINGSPEAK_ON = json["THINGSPEAK_ON"];
+  THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
+  _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"]);
+  THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
   
-  const char* THINGSPEAK_ON = json["THINGSPEAK_ON"];
-  const char* THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
-  const char* THINGSPEAK_API_KEY = json["THINGSPEAK_API_KEY"];
-  const char* THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
+  INFLUXDB_ON = json["INFLUXDB_ON"];
+  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"]);
+  INFLUXDB_PORT = json["INFLUXDB_PORT"];
+  _safeCpy(DATABASE, json["DATABASE"]);
+  _safeCpy(DB_USER, json["DB_USER"]);
+  _safeCpy(DB_PASSWORD, json["DB_PASSWORD"]);
   
-  const char* INFLUXDB_ON = json["INFLUXDB_ON"];
-  const char* INFLUXDB_HOST = json["INFLUXDB_HOST"];
-  const char* INFLUXDB_PORT = json["INFLUXDB_PORT"];
-  const char* DATABASE = json["DATABASE"];
-  const char* DB_USER = json["DB_USER"];
-  const char* DB_PASSWORD = json["DB_PASSWORD"];
-  
-  const char* DEBUG = json["DEBUG"];
+  DEBUG = json["DEBUG"];
   const char* calib1 = json["calib1"];
   const char* calib2 = json["calib2"];
-  const char* SOFTWAREVERSION = json["SOFTWAREVERSION"];
   
   // Real world application would store these values in some variables for
   // later use.
@@ -141,7 +148,6 @@ bool saveConfig() {
   json["DEBUG"] = DEBUG;
   json["calib1"] = calib1;
   json["calib2"] = calib2;
-  json["SOFTWAREVERSION"] = SOFTWAREVERSION;
 
   File configFile = SPIFFS.open("/config.json", "w");
   if (!configFile) {
@@ -150,6 +156,9 @@ bool saveConfig() {
   }
 
   json.printTo(configFile);
+  if (DEBUG) {
+    Serial.println("config saved");
+  }
   return true;
 }
 

@@ -15,7 +15,8 @@
 #include "src/thing_speak.h"
 #include "src/ESPinfluxdb.h"
 
-#include "config.h"
+#include "src/config.h"
+#include "defaultConfig.h"
 
 /*
   Podłączenie czujnikow:

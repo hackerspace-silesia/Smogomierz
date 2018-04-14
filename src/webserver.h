@@ -47,6 +47,7 @@ void handle_root () {
         }
         message += averagePM25;
         message += " µg/m³</h3>";
+		message += "</font>";
         
         message += "<h3>PM10: ";
         if (averagePM10 <= 20){
@@ -64,6 +65,7 @@ void handle_root () {
         }      
         message += averagePM10;
         message += " µg/m³</h3>";
+		message += "</font>";
 
   if(AIRMONITOR_GRAPH_ON){
       message += ("<hr>");
@@ -261,7 +263,7 @@ void handle_config() {
 
     message += "<b>Wersja oprogramowania: </b>";
     message += (SOFTWAREVERSION);
-    message += "<br />;
+    message += "<br />";
     message += _addSubmit();
   
     message += "</main></form></body></html>";

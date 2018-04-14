@@ -1,7 +1,7 @@
 #pragma once
 
 extern bool DEVICENAME_AUTO;
-extern char DEVICENAME[255]; // Bez polskich znaków!!
+extern char DEVICENAME[255];
 extern bool DISPLAY_PM1;
 
 extern bool AIRMONITOR_ON;
@@ -29,4 +29,4 @@ extern char MODEL[255];
 extern float calib1;
 extern float calib2;
 
-const char SOFTWAREVERSION[40] = "0.2.8 build 16:00_14.04.2018";
+const char SOFTWAREVERSION[40] = "2.0 build 01:40_15.04.2018";

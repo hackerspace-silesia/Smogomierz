@@ -151,9 +151,9 @@ String _addModelSelect(const String &key, const String &value) {
     String input = "<select name='";
     input += key;
     input += "'>";
-    input += _addOption("black", "BLACK EDITION", value);
-    input += _addOption("white", "WHITE EDITION", value);
-    input += _addOption("red", "RED EDITION", value);
+	input += _addOption("white", "Obudowa IP56 120x80x50", value);
+    input += _addOption("black", "Obudowa IP55 86x86", value);
+    input += _addOption("red", "Bez obudowy", value);
     input += "</select><br />";
     return input;
 }
@@ -166,7 +166,7 @@ String _escapeString (const String &value) {
 }
 
 String _addTextInput(const String &key, const String &value, const String &postfix="") {
-    String input = "<input type='text' maxlength='255' size='50' name='";
+    String input = "<input type='text' maxlength='255' size='20' name='";
     input += key;
     input += "' value='";
     input += _escapeString(value);
@@ -177,7 +177,7 @@ String _addTextInput(const String &key, const String &value, const String &postf
 }
 
 String _addPasswdInput(const String &key, const String &value, const String &postfix="") {
-    String input = "<input type='password' maxlength='255' size='50' name='";
+    String input = "<input type='password' maxlength='255' size='20' name='";
     input += key;
     input += "' value='";
     input += _escapeString(value);
@@ -199,7 +199,7 @@ String _addIntInput(const String &key, const int &value, const String &postfix="
 }
 
 String _addFloatInput(const String &key, const double &value, const int &precision=6, const String &postfix="") {
-    String input = "<input type='number' maxlength='255' name='";
+    String input = "<input type='number' maxlength='255' step='0.000001' name='";
     input += key;
     input += "' value='";
     input += String(value, precision);
@@ -210,7 +210,7 @@ String _addFloatInput(const String &key, const double &value, const int &precisi
 }
 
 String _addSubmit() {
-    return "<input type='submit' value='Zapisz' /><br /><br />";
+    return "<input type='submit' class='btn btn-outline-danger' value='Zapisz' /><br /><br />";
 }
 
 void _handle_config(bool is_success) {
@@ -227,30 +227,31 @@ void _handle_config(bool is_success) {
     message += "<center><h1>Smogomierz - Config</h1></center><br><br>";
 
     if (is_success) {
-        message += "<div style='color: #2f7a2d'> <strong>ZAPISANO I ZRESETOWANO!</strong> - nie placz, wszystko jest OK </div>";
+        message += "<div style='color: #2f7a2d'> <strong>ZAPISANO!</strong> - wszystko wygląda OK, za chwilę nastąpi restart Smogomierza </div><br><hr><br>";
     }
 
     message += "<b>Nazwa urządzenia: </b>";
     if (DEVICENAME_AUTO) {
         message += device_name;
+	    message += "<br>";
     } else {
         message += _addTextInput("DEVICENAME", DEVICENAME);
     }
-    message += "<br>";
-
     message += "<b>Automatyczne generowanie nazwy: </b>";
     message += _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO);
     
     message += "<b>Wyświetlanie pomiarów PM1: </b>";
     message += _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1);
-    message += _addSubmit();
+	message += "<hr>";	
+	//message += _addSubmit();
   
     message += "<b>Wysyłanie danych do serwisu AirMonitor: </b>";
     message += _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON);
 
     message += "<b>Wyświetlanie wykresów z serwisu AirMonitor: </b>";
     message += _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON);
-    message += _addSubmit();
+	//message += "<hr>";	
+    //message += _addSubmit();
 
     message += "<b>Współrzędne geograficzne miernika:<br>Szerokość(latitude): </b>";
     message += _addFloatInput("LATITUDE", LATITUDE, 6, "°");
@@ -258,7 +259,8 @@ void _handle_config(bool is_success) {
     message += _addFloatInput("LONGITUDE", LONGITUDE, 6, "°");
     message += "<b>Wysokość: </b>";
     message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
-    message += _addSubmit();
+	message += "<hr>";	
+    //message += _addSubmit();
   
     message += "<b>Wysyłanie danych do serwisu ThingSpeak: </b>";
     message += _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON);
@@ -270,11 +272,12 @@ void _handle_config(bool is_success) {
     message += _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY);
     message += "<b>ThingSpeak Channel ID: </b>";
     message += _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID);
-    message += _addSubmit();
+	message += "<hr>";	
+    //message += _addSubmit();
 
     message += "<b>Wysyłanie danych do InfluxDB: </b>";
     message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
-    message += "<br><b>Adres bazy danych InfluxDB: </b>";
+    message += "<b>Adres bazy danych InfluxDB: </b>";
     message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
     message += "<b>Port InfluxDB: </b>";
     message += _addIntInput("INFLUXDB_PORT", INFLUXDB_PORT);
@@ -284,7 +287,8 @@ void _handle_config(bool is_success) {
     message += _addTextInput("DB_USER", DB_USER);
     message += "<b>Hasło do bazy danych: </b>";
     message += _addPasswdInput("DB_PASSWORD", DB_PASSWORD);
-    message += _addSubmit();
+	message += "<hr>";	
+    //message += _addSubmit();
 
     message += "<b>Debug: </b>";
     message += _addBoolSelect("DEBUG", DEBUG);
@@ -302,8 +306,9 @@ void _handle_config(bool is_success) {
 
     message += "<b>Wersja oprogramowania: </b>";
     message += (SOFTWAREVERSION);
-    message += "<br />";
+	message += "<hr><br><center>";
     message += _addSubmit();
+	message += "</center>";
   
     message += "</main></form></body></html>";
     WebServer.send(200, "text/html", message);
@@ -314,15 +319,18 @@ bool _parseAsBool(String value) {
 }
 
 void _set_calib1_and_calib2() {
-    if (!strcmp(MODEL, "black")) {
-        calib1 = 1;
-        calib2 = 1;
-    } else if (!strcmp(MODEL, "white")) {
-        calib1 = 2;
-        calib2 = 2;
+    if (!strcmp(MODEL, "white")) {
+        calib1 = 5.8;
+        calib2 = 1.8;
+    } else if (!strcmp(MODEL, "black")) {
+        calib1 = 1.6;
+        calib2 = 0.55;
+    } else if (!strcmp(MODEL, "red")) {
+        calib1 = 1.0;
+        calib2 = 1.0;
     } else {
-        calib1 = 3;
-        calib2 = 3;
+        calib1 = 1.0;
+        calib2 = 1.0;
     }
 }
 
@@ -386,6 +394,8 @@ void handle_config_post() {
     _handle_config(true);
     // https://github.com/esp8266/Arduino/issues/1722
     // ESP.reset();
+	delay(300);
+	ESP.restart();
 }
 
 void handle_update() {            //Handler for the handle_update

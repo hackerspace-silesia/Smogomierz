@@ -115,9 +115,7 @@ void handle_root () {
       message += ("/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Wilgotno%C5%9B%C4%87&type=line&update=15'></iframe>");
       }
     }
-
-    message += "</form></div>";
-    message += "</center></main></body></html>";
+    message += "<br><hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form></body></html>";
     WebServer.send(200, "text/html", message);
   }
 
@@ -216,7 +214,7 @@ String _addSubmit() {
 void _handle_config(bool is_success) {
     String message = "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
     message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
-    message += "</head><body>";
+	message += "</head><body>";
     message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Pomiary</a>";
     message += "<a href='/config' class='navbar-brand'>Konfiguracja</a>";
     message += "<a href='/update' class='navbar-brand'>Update</a>";
@@ -229,6 +227,8 @@ void _handle_config(bool is_success) {
     if (is_success) {
         message += "<div style='color: #2f7a2d'> <strong>ZAPISANO!</strong> - wszystko wygląda OK, za chwilę nastąpi restart Smogomierza </div><br><hr><br>";
     }
+	
+	message += "Wszystkie instrukcje i opisy dostępne są <a title='Instrukcje' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>tutaj</a>.<br><br>";
 
     message += "<b>Nazwa urządzenia: </b>";
     if (DEVICENAME_AUTO) {
@@ -245,7 +245,7 @@ void _handle_config(bool is_success) {
 	message += "<hr>";	
 	//message += _addSubmit();
   
-    message += "<b>Wysyłanie danych do serwisu AirMonitor: </b>";
+    message += "<b>Wysyłanie danych do serwisu <a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>: </b>";
     message += _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON);
 
     message += "<b>Wyświetlanie wykresów z serwisu AirMonitor: </b>";
@@ -253,7 +253,7 @@ void _handle_config(bool is_success) {
 	//message += "<hr>";	
     //message += _addSubmit();
 
-    message += "<b>Współrzędne geograficzne miernika:<br>Szerokość(latitude): </b>";
+    message += "<b>Współrzędne geograficzne miernika(można sprawdzić <a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>Tutaj</a>):<br>Szerokość(latitude): </b>";
     message += _addFloatInput("LATITUDE", LATITUDE, 6, "°");
     message += "<b>Długość(longitude): </b>";
     message += _addFloatInput("LONGITUDE", LONGITUDE, 6, "°");
@@ -262,7 +262,7 @@ void _handle_config(bool is_success) {
 	message += "<hr>";	
     //message += _addSubmit();
   
-    message += "<b>Wysyłanie danych do serwisu ThingSpeak: </b>";
+    message += "<b>Wysyłanie danych do serwisu <a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>: </b>";
     message += _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON);
 
     message += "<b>Wyświetlanie wykresów z serwisu ThingSpeak: </b>";
@@ -310,7 +310,7 @@ void _handle_config(bool is_success) {
     message += _addSubmit();
 	message += "</center>";
   
-    message += "</main></form></body></html>";
+    message += "<hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form></body></html>";
     WebServer.send(200, "text/html", message);
 }
 
@@ -418,8 +418,7 @@ void handle_update() {            //Handler for the handle_update
     message += SOFTWAREVERSION;
     message += "</b><br>";
     message += "Najnowszą wersję oprogramowania znajdziesz zawsze <b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>tutaj</a></b>.";
-    message += "</div>";
-    message += "</main></body></html>";
+    message += "<br><hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form></body></html>";
     WebServer.send(200, "text/html", message);
   }
 

@@ -62,13 +62,14 @@ Po zainstalowaniu ArduinoIDE, musimy dodać w nim obsługę płytek ESP8266.
 
 4 – Płytka oraz port, które mamy ustawione
 
-4. Zanim wgramy nasz kod na płytkę ESP8266, musimy w nim ustawić kilka wartości. Wśród nich np. miejsce, gdzie będzie znajdował się nasz miernik. W tym celu musimy otworzyć plik config.h.
-![ArduinoIDE11](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE11.jpg)
+4. Zanim wgramy nasz kod na płytkę ESP8266, musimy w nim ustawić kilka wartości. Wśród nich np. miejsce, gdzie będzie znajdował się nasz miernik. W tym celu musimy otworzyć plik defaultConfig.h.
 
 5. Wartości, które musimy zmienić, to szerokość(LATITUDE) i długość(LONGITUDE) geograficzną oraz wysokość na jakiej będzie znajdował się nasz miernik(MYALTITUDE). Wszystkie te dane możemy uzyskać na stronie https://www.wspolrzedne-gps.pl. Wystarczy tam wpisać adres, gdzie miernik zostanie umeiszczony. Obecnie wpisane dane, to współrzędne lokalu Hackerspace Silesia. Długośc i Szerokość geograficzna jest wymagana, aby nasze dane pojawiły się we właściwym miejscu w serwisie [mapa.airmonitor.pl](http://mapa.airmonitor.pl).
 ![ArduinoIDE12](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE12.jpg)
 
-6. Miernik pozwala na wysyłanie danych do serwisu [ThingSpeak](https://thingspeak.com). ThingSpeak wymaga rejestracji i założenia darmowego konta. Pozwoli to na przesyłanie naszych pomiarów do tego seriwu i uzyskanie wykresów zanieczyszczeń oraz danych o temperaturze, wilgotności i ciśnieniu powietrza. Opis rejestracji i konfiguracji kanału w serwisie ThingSpeak znajdziecie [TUTAJ](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/thingspeak.md). W celu dodania obsługi serwisu ThingSpeak, w pliku config.h musimy zmienić trzy parametry: Wpisać odpowiednie dane do THINGSPEAK_API_KEY(parametr "Key" ze strony ThingSpeak) oraz THINGSPEAK_CHANNEL_ID(parametr "Channel ID"), a w THINGSPEAK_ON zmienić słowo "false" na "true".
+6. Miernik pozwala na wysyłanie danych do serwisu [ThingSpeak](https://thingspeak.com). ThingSpeak wymaga rejestracji i założenia darmowego konta. Pozwoli to na przesyłanie naszych pomiarów do tego seriwu i uzyskanie wykresów zanieczyszczeń oraz danych o temperaturze, wilgotności i ciśnieniu powietrza. Opis rejestracji i konfiguracji kanału w serwisie ThingSpeak znajdziecie [TUTAJ](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/thingspeak.md). W celu dodania obsługi serwisu ThingSpeak, w pliku defaultConfig.h musimy zmienić trzy parametry: Wpisać odpowiednie dane do THINGSPEAK_API_KEY(parametr "Key" ze strony ThingSpeak) oraz THINGSPEAK_CHANNEL_ID(parametr "Channel ID"), a w THINGSPEAK_ON zmienić słowo "false" na "true".
 ![ArduinoIDE13](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE13.jpg)
 
 7. Teraz możemy zweryfikować nasz kod(Punkt 3., podpunk 1.). Jeśli wszystko poprawnie się skompiluje możemy przejść do składania fizycznych części naszego miernika smogu. Dokładny opis w [Instrukcja podłączenia elektroniki](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/hardware.md).
+
+8. Wszystkie wartości podane w pliku defaultConfig.h są domyślnymi wartościami potrzebnymi przy pierwszym uruchomieniu miernika. Każdą z tych pozycji można w dowolnej chwili zmienić w zakładce Konfiguracja w panelu Smogomierza.

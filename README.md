@@ -29,7 +29,7 @@ Jeśli jesteś użytkownikiem urządzenia z systemem iOS, możesz użyć wtyczki
 
 https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 
-![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/schemat.png)
+![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/schemat.png)
 
 
 ### Tested on:

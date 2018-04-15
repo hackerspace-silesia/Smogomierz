@@ -4,7 +4,7 @@ Poniższy opis krok po kroku, przeprowadzi Was przez procedurę podłączenia ws
 
 Całościowy schemat podłączenia:
 
-![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/schemat.png)
+![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/schemat.png)
 
 ## ESP8266 - NodeMCU V3
 

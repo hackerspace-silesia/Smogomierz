@@ -2,7 +2,7 @@
 
 Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
 
-Miernik wysyła dane na stronę - [mapa.airmonitor.pl](http://mapa.airmonitor.pl) oraz ma możliwość przesyłania pomiarów do serwisu [ThingSpeak](https://thingspeak.com).
+Miernik wysyła dane na stronę - [mapa.airmonitor.pl](http://mapa.airmonitor.pl) oraz ma możliwość przesyłania pomiarów do serwisu [ThingSpeak](https://thingspeak.com) i baz danych [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/).
 
 Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogomierz-deviceName". "deviceName" generowane jest na podstawie unikalnego numeru Chip ID płytki ESP8266. Na początku pliku defaultConfig.h, możemy zmienić wartość "DEVICENAME_AUTO" z "true" na "false". Wówczas zamiast unikalnego numery Chip ID używana będzie nazwa z paramatru "DEVICENAME" w pliku defaultConfig.h. 
 

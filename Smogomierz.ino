@@ -9,7 +9,6 @@
 #include "src/pms.h" // https://github.com/fu-hsi/PMS
 #include "src/bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 
-//#include "src/webserver.h"
 #include "src/spiffs.h"
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
@@ -49,9 +48,6 @@ float calib = 1;
 ESP8266WebServer WebServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 
-
-Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-
 bool checkBmeStatus() {
     int temperatureInt = BMESensor.temperature;
     int pressureInt = BMESensor.pressure / 100.0F;
@@ -75,7 +71,6 @@ void setup() {
     Wire.begin(0,2);
     BMESensor.begin(); 
 
-    //deleteConfig(); // Kasowanie pliku config.json!
     fs_setup();
     delay(10);
     
@@ -93,6 +88,7 @@ void setup() {
     wifiManager.autoConnect(device_name);
 
     delay(250);
+    
     if(!wifiManager.autoConnect(device_name)) {
       Serial.println("failed to connect...");
       delay(1000);
@@ -101,8 +97,11 @@ void setup() {
     }
     
     if (INFLUXDB_ON){
+      Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
       if (influxdb.opendb(DATABASE, DB_USER, DB_PASSWORD)!=DB_SUCCESS) {
         Serial.println("Opening database failed");
+      } else {
+        Serial.println("Opening database succeed");
       }
     }
 
@@ -152,27 +151,33 @@ void loop() {
   //execute every ~1 minutes(dokładniej około 56 sekund) - 2500
   if(counter2 >= 2500){
     if (INFLUXDB_ON){
-      dbMeasurement row(device_name);
-      row.addField("pm1", averagePM1);
-      row.addField("pm25", averagePM25);
-      row.addField("pm10", averagePM10);
-      if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
-        Serial.println("Brak pomiarow z BME280!\n");
-      }else{
-      row.addField("temperature", (BMESensor.temperature));
-      row.addField("pressure", (BMESensor.pressure  / 100.0F));
-      row.addField("humidity", (BMESensor.humidity));
-      }
-      if(influxdb.write(row) == DB_SUCCESS){
-           if(DEBUG){
-            Serial.println("Dane wyslane do InfluxDB");
-           }
-        } else {
-           if(DEBUG){
-            Serial.println("Blad wysylania danych do InfluxDB");
-           }
+      Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
+      if (influxdb.opendb(DATABASE, DB_USER, DB_PASSWORD)!=DB_SUCCESS) {
+        Serial.println("Opening database failed");
+      } else {
+        dbMeasurement row(device_name);
+      
+        row.addField("pm1", averagePM1);
+        row.addField("pm25", averagePM25);
+        row.addField("pm10", averagePM10);
+        if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
+          Serial.println("Brak pomiarow z BME280!\n");
+        }else{
+          row.addField("temperature", (BMESensor.temperature));
+          row.addField("pressure", (BMESensor.pressure  / 100.0F));
+          row.addField("humidity", (BMESensor.humidity));
         }
-      row.empty();
+        if(influxdb.write(row) == DB_SUCCESS){
+            if(DEBUG){
+              Serial.println("Dane wyslane do InfluxDB");
+            }
+         } else {
+            if(DEBUG){
+              Serial.println("Blad wysylania danych do InfluxDB");
+            }
+          }
+        row.empty();
+      }
     }
     if(DEBUG){
       Serial.println("1 minuta!\n");
@@ -213,8 +218,6 @@ void loop() {
   }
   
 }
-
-
 
 void pm_calibration(){
   if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60){

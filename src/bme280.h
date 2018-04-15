@@ -262,6 +262,15 @@ public:
     return 44330.0 * (1.0 - pow(pressure / seaLevel, 0.1903));
   };
   
+<<<<<<< HEAD:src/bme280.h
+  //float seaLevelForAltitude(float altitude = 150.50, float atmospheric) {
+   float seaLevelForAltitude(float altitude = 150.50) {
+  	 // float seaLevelForAltitude(float altitude = MYALTITUDE) {
+	   // float atmospheric = pressure / 100.0F;    //hPa
+		 //float atmospheric = pressure;               //Pa    
+		   // 	 return pow((altitude/44330.0) + 1.0, 5.255F) * atmospheric;
+	   return pow((altitude / 44330.0) + 1.0, 5.255F) * pressure;
+=======
  // float seaLevelForAltitude(float altitude = 150.50, float atmospheric) {
   //float seaLevelForAltitude(float altitude = 150.50) {
   float seaLevelForAltitude(float altitude = MYALTITUDE) {
@@ -269,6 +278,7 @@ public:
     //float atmospheric = pressure;               //Pa    
     //return pow((altitude/44330.0) + 1.0, 5.255F) * atmospheric;
     return pow((altitude / 44330.0) + 1.0, 5.255F) * pressure;
+>>>>>>> master:bme280.h
   };
  
 };

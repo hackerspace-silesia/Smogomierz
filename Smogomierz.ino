@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <ESP8266WebServer.h>
 #include <SoftwareSerial.h>
+<<<<<<< HEAD
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include "FS.h"
@@ -16,6 +17,19 @@
 
 #include "src/config.h"
 #include "defaultConfig.h"
+=======
+//#include <DNSServer.h>
+#include <ESP8266WebServer.h>  
+#include "WiFiManager.h" // https://github.com/jakerabid/WiFiManager
+#include "pms.h" // https://github.com/fu-hsi/PMS
+#include "bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
+
+#include "config.h"
+
+#include "webserver.h"
+#include "airmonitor.h"
+#include "thing_speak.h"
+>>>>>>> master
 
 /*
   Podłączenie czujnikow:

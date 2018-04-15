@@ -29,4 +29,4 @@ extern char MODEL[255];
 extern float calib1;
 extern float calib2;
 
-const char SOFTWAREVERSION[40] = "2.0 build 17:45_15.04.2018";
+const char SOFTWAREVERSION[40] = "2.0 build 18:30_15.04.2018";

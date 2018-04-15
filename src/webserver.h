@@ -243,15 +243,12 @@ void _handle_config(bool is_success) {
     message += "<b>Wyświetlanie pomiarów PM1: </b>";
     message += _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1);
 	message += "<hr>";	
-	//message += _addSubmit();
   
-    message += "<b>Wysyłanie danych do serwisu <a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>: </b>";
+    message += "<b>Wysyłanie danych do serwisu <a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>(wymaga wypełnienia <a title='Formularz AirMonitor' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>formularza</a>; Sensor: PMS7003): </b>";
     message += _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON);
 
     message += "<b>Wyświetlanie wykresów z serwisu AirMonitor: </b>";
     message += _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON);
-	//message += "<hr>";	
-    //message += _addSubmit();
 
     message += "<b>Współrzędne geograficzne miernika(można sprawdzić <a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>Tutaj</a>):<br>Szerokość(latitude): </b>";
     message += _addFloatInput("LATITUDE", LATITUDE, 6, "°");
@@ -260,7 +257,6 @@ void _handle_config(bool is_success) {
     message += "<b>Wysokość: </b>";
     message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
 	message += "<hr>";	
-    //message += _addSubmit();
   
     message += "<b>Wysyłanie danych do serwisu <a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>: </b>";
     message += _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON);
@@ -273,7 +269,6 @@ void _handle_config(bool is_success) {
     message += "<b>ThingSpeak Channel ID: </b>";
     message += _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID);
 	message += "<hr>";	
-    //message += _addSubmit();
 
     message += "<b>Wysyłanie danych do InfluxDB: </b>";
     message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
@@ -288,7 +283,6 @@ void _handle_config(bool is_success) {
     message += "<b>Hasło do bazy danych: </b>";
     message += _addPasswdInput("DB_PASSWORD", DB_PASSWORD);
 	message += "<hr>";	
-    //message += _addSubmit();
 
     message += "<b>Debug: </b>";
     message += _addBoolSelect("DEBUG", DEBUG);

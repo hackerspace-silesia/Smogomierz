@@ -36,6 +36,13 @@ https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 
 ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 
+### TODO
+- [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
+- [ ] Ukrycie modelu IP56 - calib1 = 5.8
+- [ ] Zmiana domyślnego modelu na IP55 - calib1 = 1.6
+- [ ] Możliwość zmiany częstotliwości wysyłania danych do serwisu AirMonitor, ThingSpeak i InfluxDB
+- [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach
+
 ### Dodatkowe informacje
 
 "Projekt finansowany ze środków programu ramowego Unii Europejskiej w zakresie badań naukowych i innowacji „Horyzont 2020” na podstawie umowy o udzielenie dotacji nr 709443."

@@ -35,7 +35,7 @@ bool loadConfig() {
   // use configFile.readString instead.
   configFile.readBytes(buf.get(), size);
 
-  StaticJsonBuffer<600> jsonBuffer;
+  StaticJsonBuffer<800> jsonBuffer;
   JsonObject& json = jsonBuffer.parseObject(buf.get());
 
   if (!json.success()) {
@@ -49,17 +49,20 @@ bool loadConfig() {
   _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz");
   DISPLAY_PM1 = json["DISPLAY_PM1"];
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
+  AIRMONITOR_TIME = json["AIRMONITOR_TIME"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
   LATITUDE = json["LATITUDE"];
   LONGITUDE = json["LONGITUDE"];
   MYALTITUDE = json["MYALTITUDE"];
   
   THINGSPEAK_ON = json["THINGSPEAK_ON"];
+  THINGSPEAK_TIME = json["THINGSPEAK_TIME"];
   THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
   _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"]);
   THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
   
   INFLUXDB_ON = json["INFLUXDB_ON"];
+  INFLUXDB_TIME = json["INFLUXDB_TIME"];
   _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host");
   INFLUXDB_PORT = json["INFLUXDB_PORT"];
   _safeCpy(DATABASE, json["DATABASE"], "mydb");
@@ -83,6 +86,8 @@ bool loadConfig() {
   Serial.println(DEVICENAME);
   Serial.print("Loaded AIRMONITOR_ON: ");
   Serial.println(AIRMONITOR_ON);
+  Serial.print("Loaded AIRMONITOR_TIME: ");
+  Serial.println(AIRMONITOR_TIME);
   Serial.print("Loaded AIRMONITOR_GRAPH_ON: ");
   Serial.println(AIRMONITOR_GRAPH_ON);
   Serial.print("Loaded LATITUDE: ");
@@ -94,6 +99,8 @@ bool loadConfig() {
   
   Serial.print("Loaded THINGSPEAK_ON: ");
   Serial.println(THINGSPEAK_ON);
+  Serial.print("Loaded THINGSPEAK_TIME: ");
+  Serial.println(THINGSPEAK_TIME);
   Serial.print("Loaded THINGSPEAK_GRAPH_ON: ");
   Serial.println(THINGSPEAK_GRAPH_ON);
   Serial.print("Loaded THINGSPEAK_API_KEY: ");
@@ -103,6 +110,8 @@ bool loadConfig() {
   
   Serial.print("Loaded INFLUXDB_ON: ");
   Serial.println(INFLUXDB_ON);
+  Serial.print("Loaded INFLUXDB_TIME: ");
+  Serial.println(INFLUXDB_TIME);
   Serial.print("Loaded INFLUXDB_HOST: ");
   Serial.println(INFLUXDB_HOST);
   Serial.print("Loaded INFLUXDB_PORT: ");
@@ -128,24 +137,27 @@ bool loadConfig() {
 }
 
 bool saveConfig() {
-  StaticJsonBuffer<600> jsonBuffer;
+  StaticJsonBuffer<800> jsonBuffer;
   JsonObject& json = jsonBuffer.createObject();
   json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
   json["DEVICENAME"] = DEVICENAME;
   json["DISPLAY_PM1"] = DISPLAY_PM1;
   
   json["AIRMONITOR_ON"] = AIRMONITOR_ON;
+  json["AIRMONITOR_TIME"] = AIRMONITOR_TIME;
   json["AIRMONITOR_GRAPH_ON"] = AIRMONITOR_GRAPH_ON;
   json["LATITUDE"] = LATITUDE;
   json["LONGITUDE"] = LONGITUDE;
   json["MYALTITUDE"] = MYALTITUDE;
   
   json["THINGSPEAK_ON"] = THINGSPEAK_ON;
+  json["THINGSPEAK_TIME"] = THINGSPEAK_TIME;
   json["THINGSPEAK_GRAPH_ON"] = THINGSPEAK_GRAPH_ON;
   json["THINGSPEAK_API_KEY"] = THINGSPEAK_API_KEY;
   json["THINGSPEAK_CHANNEL_ID"] = THINGSPEAK_CHANNEL_ID;
   
   json["INFLUXDB_ON"] = INFLUXDB_ON;
+  json["INFLUXDB_TIME"] = INFLUXDB_TIME;
   json["INFLUXDB_HOST"] = INFLUXDB_HOST;
   json["INFLUXDB_PORT"] = INFLUXDB_PORT;
   json["DATABASE"] = DATABASE;

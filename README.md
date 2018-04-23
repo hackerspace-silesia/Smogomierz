@@ -38,9 +38,9 @@ ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 
 ### TODO
 - [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
-- [ ] Ukrycie modelu IP56 - calib1 = 5.8
-- [ ] Zmiana domyślnego modelu na IP55 - calib1 = 1.6
-- [ ] Możliwość zmiany częstotliwości wysyłania danych do serwisu AirMonitor, ThingSpeak i InfluxDB
+- [x] Ukrycie modelu IP56 - calib1 = 5.8
+- [x] Zmiana domyślnego modelu na IP55 - calib1 = 1.6
+- [x] Możliwość zmiany częstotliwości wysyłania danych do serwisu AirMonitor, ThingSpeak i InfluxDB
 - [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach
 
 ### Dodatkowe informacje

@@ -5,17 +5,20 @@ char DEVICENAME[255] = "smogomierz1"; // Bez polskich znaków!!
 bool DISPLAY_PM1 = false;
 
 bool AIRMONITOR_ON = false;
+int AIRMONITOR_TIME = 10;
 bool AIRMONITOR_GRAPH_ON = true;
 float LATITUDE = 50.2639;
 float LONGITUDE = 18.9957;
 float MYALTITUDE = 271.00;
 
 bool THINGSPEAK_ON = false;
+int THINGSPEAK_TIME = 10;
 bool THINGSPEAK_GRAPH_ON = false;
 char THINGSPEAK_API_KEY[255] = "API-KEY";
 int THINGSPEAK_CHANNEL_ID = 0;
 
 bool INFLUXDB_ON = false;
+int INFLUXDB_TIME = 1;
 char INFLUXDB_HOST[255] = "INFLUXDB_ADRESS";
 uint16_t INFLUXDB_PORT = 8086;
 
@@ -25,7 +28,7 @@ char DB_PASSWORD[255] = "password";
 
 bool DEBUG = false;
 
-char MODEL[255] = "white";
-float calib1 = 5.8;
-float calib2 = 1.8;
+char MODEL[255] = "black";
+float calib1 = 1.6;
+float calib2 = 0.55;
 

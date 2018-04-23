@@ -16,7 +16,7 @@ void handle_root () {
       message += (BMESensor.temperature);
       message += " °C</h3>";
       message += "<h3>Ciśnienie: ";
-      message += (BMESensor.pressure  / 100.0F);
+      message += (BMESensor.seaLevelForAltitude(MYALTITUDE));
       message += " hPa</h3>";
       message += "<h3>Wilgotność: ";
       message += (BMESensor.humidity);
@@ -99,7 +99,7 @@ void handle_root () {
       message += (THINGSPEAK_CHANNEL_ID);
       message += ("/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM10&type=line&yaxis=ug%2Fm3&update=15'></iframe>");
       message += (" ");
-      if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
+      if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.seaLevelForAltitude(MYALTITUDE)) == 0){
         Serial.println("Brak pomiarow z BME280!\n");
       }else{
       message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
@@ -149,8 +149,7 @@ String _addModelSelect(const String &key, const String &value) {
     String input = "<select name='";
     input += key;
     input += "'>";
-	input += _addOption("white", "Obudowa IP56 120x80x50", value);
-    input += _addOption("black", "Obudowa IP55 86x86", value);
+    input += _addOption("black", "Obudowa 86x86/120x80x50", value);
     input += _addOption("red", "Bez obudowy", value);
     input += "</select><br />";
     return input;
@@ -246,7 +245,10 @@ void _handle_config(bool is_success) {
   
     message += "<b>Wysyłanie danych do serwisu <a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>(wymaga wypełnienia <a title='Formularz AirMonitor' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>formularza</a>; Sensor: PMS7003): </b>";
     message += _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON);
-
+	
+    message += "<b>Wysyłanie pomiarów co: </b>";
+    message += _addIntInput("AIRMONITOR_TIME", AIRMONITOR_TIME, "minut");
+	
     message += "<b>Wyświetlanie wykresów z serwisu AirMonitor: </b>";
     message += _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON);
 
@@ -260,6 +262,9 @@ void _handle_config(bool is_success) {
   
     message += "<b>Wysyłanie danych do serwisu <a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>: </b>";
     message += _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON);
+	
+    message += "<b>Wysyłanie pomiarów co: </b>";
+    message += _addIntInput("THINGSPEAK_TIME", THINGSPEAK_TIME, "minut");
 
     message += "<b>Wyświetlanie wykresów z serwisu ThingSpeak: </b>";
     message += _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON);
@@ -272,6 +277,8 @@ void _handle_config(bool is_success) {
 
     message += "<b>Wysyłanie danych do InfluxDB: </b>";
     message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
+    message += "<b>Wysyłanie pomiarów co: </b>";
+    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "minut");
     message += "<b>Adres bazy danych InfluxDB: </b>";
     message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
     message += "<b>Port InfluxDB: </b>";
@@ -313,10 +320,7 @@ bool _parseAsBool(String value) {
 }
 
 void _set_calib1_and_calib2() {
-    if (!strcmp(MODEL, "white")) {
-        calib1 = 5.8;
-        calib2 = 1.8;
-    } else if (!strcmp(MODEL, "black")) {
+    if (!strcmp(MODEL, "black")) {
         calib1 = 1.6;
         calib2 = 0.55;
     } else if (!strcmp(MODEL, "red")) {
@@ -360,17 +364,20 @@ void handle_config_post() {
     }
     DISPLAY_PM1 = _parseAsBool(WebServer.arg("DISPLAY_PM1"));
     AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
+	AIRMONITOR_TIME = WebServer.arg("AIRMONITOR_TIME").toInt();
     AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
     LATITUDE = WebServer.arg("LATITUDE").toFloat();
     LONGITUDE = WebServer.arg("LONGITUDE").toFloat();
     MYALTITUDE = WebServer.arg("MYALTITUDE").toInt();
       
     THINGSPEAK_ON = _parseAsBool(WebServer.arg("THINGSPEAK_ON"));
+	THINGSPEAK_TIME = WebServer.arg("THINGSPEAK_TIME").toInt();
     THINGSPEAK_GRAPH_ON = _parseAsBool(WebServer.arg("THINGSPEAK_GRAPH_ON"));
     _parseAsCString(THINGSPEAK_API_KEY, WebServer.arg("THINGSPEAK_API_KEY"));
     THINGSPEAK_CHANNEL_ID = WebServer.arg("THINGSPEAK_CHANNEL_ID").toInt();
       
     INFLUXDB_ON = _parseAsBool(WebServer.arg("INFLUXDB_ON"));
+	INFLUXDB_TIME = WebServer.arg("INFLUXDB_TIME").toInt();
     _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"));
     INFLUXDB_PORT = WebServer.arg("INFLUXDB_PORT").toInt();
     _parseAsCString(DATABASE, WebServer.arg("DATABASE"));
@@ -427,7 +434,7 @@ void handle_api() {
         json["pm10"] = averagePM10;
         if (checkBmeStatus()) {
           json["temperature"] = float(BMESensor.temperature);
-          json["pressure"] = int(BMESensor.pressure  / 100.0F);
+          json["pressure"] = int(BMESensor.seaLevelForAltitude(MYALTITUDE));
           json["humidity"] = int(BMESensor.humidity);
           json["dewpoint"] = int(BMESensor.temperature-((100-BMESensor.humidity)/5));    
         }

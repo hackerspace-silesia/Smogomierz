@@ -40,7 +40,7 @@ PMS::DATA data;
 char device_name[20];
 int pmMeasurements[10][3];
 
-int counter1, counter3, iPM = 0;
+int counter1, counter3, counter4, iPM = 0;
 int counter2 = -5000;
 int averagePM1, averagePM25, averagePM10 = 0;
 float calib = 1;
@@ -50,7 +50,8 @@ ESP8266HTTPUpdateServer httpUpdater;
 
 bool checkBmeStatus() {
     int temperatureInt = BMESensor.temperature;
-    int pressureInt = BMESensor.pressure / 100.0F;
+    //int pressureInt = BMESensor.pressure / 100.0F;
+    int pressureInt = (BMESensor.seaLevelForAltitude(MYALTITUDE));
     int humidityInt = BMESensor.humidity;
     if (temperatureInt == 0 && pressureInt == 0 && humidityInt == 0) {
         Serial.println("Brak pomiarow z BME280!\n");
@@ -137,19 +138,30 @@ void loop() {
   delay(10);
 
   yield();
-  counter1++;
+  
   //execute every ~10 minutes(dokładniej około 8:50) - 25000
-  if (counter1 >= 25000){
-    sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
+  counter1++;
+  if (counter1 >= (2500*AIRMONITOR_TIME)){
     sendDataToAirMonitor(BMESensor, averagePM1, averagePM25, averagePM10);
     if(DEBUG){
-      Serial.println("10 minut!\n");
+      Serial.println("Wysłanie danych pomiarowych do serwisu AirMonitor!\n");
     }
     counter1 = 0;  
   }
-  counter2++;
+
+  //execute every ~10 minutes(dokładniej około 8:50) - 25000
+  counter4++;
+  if (counter4 >= (2500*THINGSPEAK_TIME)){
+    sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
+    if(DEBUG){
+      Serial.println("Wysłanie danych pomiarowych do serwisu Thingspeak!\n");
+    }
+    counter4 = 0;  
+  }
+  
   //execute every ~1 minutes(dokładniej około 56 sekund) - 2500
-  if(counter2 >= 2500){
+  counter2++;
+  if(counter2 >= (2500*INFLUXDB_TIME)){
     if (INFLUXDB_ON){
       Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
       if (influxdb.opendb(DATABASE, DB_USER, DB_PASSWORD)!=DB_SUCCESS) {
@@ -164,7 +176,7 @@ void loop() {
           Serial.println("Brak pomiarow z BME280!\n");
         }else{
           row.addField("temperature", (BMESensor.temperature));
-          row.addField("pressure", (BMESensor.pressure  / 100.0F));
+          row.addField("pressure", (BMESensor.seaLevelForAltitude(MYALTITUDE)));
           row.addField("humidity", (BMESensor.humidity));
         }
         if(influxdb.write(row) == DB_SUCCESS){
@@ -179,15 +191,12 @@ void loop() {
         row.empty();
       }
     }
-    if(DEBUG){
-      Serial.println("1 minuta!\n");
-    }
     counter2 = 0;  
   }
 
-  counter3++;
   //execute every ~20 sec (około 20 sekund) - 900
   //execute every ~30 sec (około 30 sekund) - 1350
+  counter3++;
   if (counter3 >= 900){
 
     pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
@@ -220,7 +229,7 @@ void loop() {
 }
 
 void pm_calibration(){
-  if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60){
+  if (int(BMESensor.temperature) < 5 and int(BMESensor.humidity) > 60){
     calib = calib2;
     } else {
     calib = calib1;

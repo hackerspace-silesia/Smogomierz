@@ -16,7 +16,7 @@ void sendDataToThingSpeak(BME280<> &BMESensor, int averagePM1, int averagePM25, 
     ThingSpeak.setField(2, averagePM25);
     ThingSpeak.setField(3, averagePM10);
     ThingSpeak.setField(4, BMESensor.temperature);
-    ThingSpeak.setField(5, BMESensor.pressure  / 100.0F);
+    ThingSpeak.setField(5, BMESensor.seaLevelForAltitude(MYALTITUDE));
     ThingSpeak.setField(6, BMESensor.humidity);
     ThingSpeak.writeFields(THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY);
     client.stop();

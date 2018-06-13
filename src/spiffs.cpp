@@ -48,6 +48,9 @@ bool loadConfig() {
   DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
   _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz");
   DISPLAY_PM1 = json["DISPLAY_PM1"];
+  _safeCpy(LANGUAGE, json["LANGUAGE"], "polish");
+  selected_language = json["selected_language"];
+  
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_TIME = json["AIRMONITOR_TIME"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
@@ -80,10 +83,15 @@ bool loadConfig() {
   if(DEBUG){
   Serial.print("Loaded DEVICENAME_AUTO: ");
   Serial.println(DEVICENAME_AUTO);
-  Serial.print("Loaded DISPLAY_PM1: ");
-  Serial.println(DISPLAY_PM1);
   Serial.print("Loaded DEVICENAME: ");
   Serial.println(DEVICENAME);
+  Serial.print("Loaded DISPLAY_PM1: ");
+  Serial.println(DISPLAY_PM1);
+  Serial.print("Loaded LANGUAGE: ");
+  Serial.println(LANGUAGE);
+  Serial.print("Loaded selected_language: ");
+  Serial.println(selected_language);
+  
   Serial.print("Loaded AIRMONITOR_ON: ");
   Serial.println(AIRMONITOR_ON);
   Serial.print("Loaded AIRMONITOR_TIME: ");
@@ -125,6 +133,8 @@ bool loadConfig() {
   
   Serial.print("Loaded DEBUG: ");
   Serial.println(DEBUG);
+  Serial.print("Loaded MODEL: ");
+  Serial.println(MODEL);
   Serial.print("Loaded calib1: ");
   Serial.println(calib1);
   Serial.print("Loaded calib2: ");
@@ -142,6 +152,8 @@ bool saveConfig() {
   json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
   json["DEVICENAME"] = DEVICENAME;
   json["DISPLAY_PM1"] = DISPLAY_PM1;
+  json["LANGUAGE"] = LANGUAGE;
+  json["selected_language"] = selected_language;
   
   json["AIRMONITOR_ON"] = AIRMONITOR_ON;
   json["AIRMONITOR_TIME"] = AIRMONITOR_TIME;

@@ -1,8 +1,10 @@
 #pragma once
 
 bool DEVICENAME_AUTO = true;
-char DEVICENAME[255] = "smogomierz1"; // Bez polskich znaków!!
+char DEVICENAME[255] = "smogomierz1"; // Bez polskich znakow!! // Without Polish letters!!
 bool DISPLAY_PM1 = false;
+char LANGUAGE[255] = "english"; // english or polish
+int selected_language = 1; // en - 1; pl - 2
 
 bool AIRMONITOR_ON = false;
 int AIRMONITOR_TIME = 10;
@@ -28,7 +30,7 @@ char DB_PASSWORD[255] = "password";
 
 bool DEBUG = false;
 
-char MODEL[255] = "black";
+char MODEL[255] = "white";
 float calib1 = 1.6;
 float calib2 = 0.55;
 

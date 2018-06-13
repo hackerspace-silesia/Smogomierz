@@ -3,6 +3,7 @@
 extern bool DEVICENAME_AUTO;
 extern char DEVICENAME[255];
 extern bool DISPLAY_PM1;
+extern char LANGUAGE[255];
 
 extern bool AIRMONITOR_ON;
 extern int AIRMONITOR_TIME;
@@ -31,5 +32,6 @@ extern bool DEBUG;
 extern char MODEL[255];
 extern float calib1;
 extern float calib2;
+extern int selected_language;
 
-const char SOFTWAREVERSION[40] = "2.1 build 00:45_24.04.2018";
+const char SOFTWAREVERSION[40] = "2.3 build 19:00_13.06.2018";

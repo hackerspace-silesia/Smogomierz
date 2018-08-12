@@ -373,7 +373,31 @@ void WiFiManager::setMinimumSignalQuality(int quality) {
 void WiFiManager::setBreakAfterConfig(boolean shouldBreak) {
   _shouldBreakAfterConfig = shouldBreak;
 }
-
+/*
+//dodane
+void WiFiManager::reportStatus(String &page){
+  if (WiFi.SSID() != ""){
+	  page += F("Smogomierz połączył się z siecią");
+	  page += WiFi.SSID();
+	  if (WiFi.status()==WL_CONNECTED){
+		  page += F(", a jego adres IP to: <a href=\"http://");
+		  page += WiFi.localIP().toString();
+		  page += F("/\">");
+		  page += WiFi.localIP().toString();
+		  page += F("</a>");
+		  page += F("<br>Kliknij Exit, a następnie otwórz w przeglądarce stronę z adresem IP Smogomierza.");
+	   }
+	  else {
+		  page += F(", ale <strong>nie ma adresu IP</strong>.");
+		  page += F("<br>Połącz się z inną siecią, lub skazuj pamięć ESP i wgraj ponownie oprogramowanie.");
+	  }
+    }
+    else {
+		page += F("Żadna z sieci WiFi nie została skonfigurowana.");
+	}
+}
+//dodane
+*/
 /** Handle root or redirect to captive portal */
 void WiFiManager::handleRoot() {
   DEBUG_WM(F("Handle root"));
@@ -392,6 +416,13 @@ void WiFiManager::handleRoot() {
   page += "</h1>";
   page += F("<h3> </h3>");
   page += FPSTR(HTTP_PORTAL_OPTIONS);
+  /*
+  //dodane
+  page += F("<div class=\"msg\">");
+  reportStatus(page);
+  page += F("</div>");
+  //dodane
+  */
   page += FPSTR(HTTP_END);
 
   server->sendHeader("Content-Length", String(page.length()));
@@ -605,6 +636,13 @@ void WiFiManager::handleWifiSave() {
   page += FPSTR(HTTP_HEAD_END);
   page += _customWifiSaveMessage;
   if (_customWifiSaveMessage == "") page += FPSTR(HTTP_SAVED);
+  /*
+  //dodane
+  page += F("<div class=\"msg\">");
+  reportStatus(page);
+  page += F("</div>");
+  //dodane
+  */
   page += FPSTR(HTTP_END);
 
   server->sendHeader("Content-Length", String(page.length()));

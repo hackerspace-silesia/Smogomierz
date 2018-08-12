@@ -4,10 +4,10 @@
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include "FS.h"
-#include "ArduinoJson.h"
-#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager
+#include "ArduinoJson.h" //5.13.2 (No 6.0.1 !!!)
 #include "src/pms.h" // https://github.com/fu-hsi/PMS
 #include "src/bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
+#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager
 
 #include "src/spiffs.h"
 #include "src/airmonitor.h"
@@ -40,7 +40,7 @@ PMS::DATA data;
 char device_name[20];
 int pmMeasurements[10][3];
 
-int counter1, counter3, iPM = 0;
+int counter1, counter3, counter4, iPM = 0;
 int counter2 = -5000;
 int averagePM1, averagePM25, averagePM10 = 0;
 float calib = 1;
@@ -50,11 +50,20 @@ ESP8266HTTPUpdateServer httpUpdater;
 
 bool checkBmeStatus() {
     int temperatureInt = BMESensor.temperature;
-    int pressureInt = BMESensor.pressure / 100.0F;
+    //int pressureInt = BMESensor.pressure / 100.0F;
+    int pressureInt = (BMESensor.seaLevelForAltitude(MYALTITUDE));
     int humidityInt = BMESensor.humidity;
     if (temperatureInt == 0 && pressureInt == 0 && humidityInt == 0) {
-        Serial.println("Brak pomiarow z BME280!\n");
+      if(selected_language == 1){
+        Serial.println("No data from BME280 sensor!\n");
         return false;
+      } else if(selected_language == 2){
+        Serial.println("Brak pomiarów z BME280!\n");
+        return false;
+      } else {
+        Serial.println("No data from BME280 sensor!\n");
+        return false;
+      }
     } else {
         return true;
     }
@@ -137,19 +146,42 @@ void loop() {
   delay(10);
 
   yield();
-  counter1++;
+  
   //execute every ~10 minutes(dokładniej około 8:50) - 25000
-  if (counter1 >= 25000){
-    sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
+  counter1++;
+  if (counter1 >= (2500*AIRMONITOR_TIME)){
     sendDataToAirMonitor(BMESensor, averagePM1, averagePM25, averagePM10);
     if(DEBUG){
-      Serial.println("10 minut!\n");
+      if(selected_language == 1){
+        Serial.println("Sending measurement data to the AirMonitor service!\n");
+      } else if(selected_language == 2){
+        Serial.println("Wysłanie danych pomiarowych do serwisu AirMonitor!\n");
+      } else {
+        Serial.println("Sending measurement data to the AirMonitor service!\n");
+      } 
     }
     counter1 = 0;  
   }
-  counter2++;
+
+  //execute every ~10 minutes(dokładniej około 8:50) - 25000
+  counter4++;
+  if (counter4 >= (2500*THINGSPEAK_TIME)){
+    sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
+    if(DEBUG){
+      if(selected_language == 1){
+        Serial.println("Sending measurement data to the Thingspeak service!\n");
+      } else if(selected_language == 2){
+        Serial.println("Wysłanie danych pomiarowych do serwisu Thingspeak!\n");
+      } else {
+        Serial.println("Sending measurement data to the Thingspeak service!\n");
+      } 
+    }
+    counter4 = 0;  
+  }
+  
   //execute every ~1 minutes(dokładniej około 56 sekund) - 2500
-  if(counter2 >= 2500){
+  counter2++;
+  if(counter2 >= (2500*INFLUXDB_TIME)){
     if (INFLUXDB_ON){
       Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
       if (influxdb.opendb(DATABASE, DB_USER, DB_PASSWORD)!=DB_SUCCESS) {
@@ -161,33 +193,48 @@ void loop() {
         row.addField("pm25", averagePM25);
         row.addField("pm10", averagePM10);
         if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.pressure  / 100.0F) == 0){
-          Serial.println("Brak pomiarow z BME280!\n");
+          if(selected_language == 1){
+            Serial.println("No measurements from BME280!\n");
+          } else if(selected_language == 2){
+            Serial.println("Brak pomiarów z BME280!\n");
+          } else {
+            Serial.println("No measurements from BME280!\n");
+          }        
         }else{
           row.addField("temperature", (BMESensor.temperature));
-          row.addField("pressure", (BMESensor.pressure  / 100.0F));
+          row.addField("pressure", (BMESensor.seaLevelForAltitude(MYALTITUDE)));
           row.addField("humidity", (BMESensor.humidity));
         }
         if(influxdb.write(row) == DB_SUCCESS){
             if(DEBUG){
-              Serial.println("Dane wyslane do InfluxDB");
+              if(selected_language == 1){
+                Serial.println("Data sent to InfluxDB\n");
+              } else if(selected_language == 2){
+                Serial.println("Dane wysłane do InfluxDB\n");
+              } else {
+                Serial.println("Data sent to InfluxDB\n");
+              } 
             }
          } else {
             if(DEBUG){
-              Serial.println("Blad wysylania danych do InfluxDB");
+              if(selected_language == 1){
+                Serial.println("Error sending data to InfluxDB\n");
+              } else if(selected_language == 2){
+                Serial.println("Błąd wysyłania danych do InfluxDB\n");
+              } else {
+                Serial.println("Error sending data to InfluxDB\n");
+              } 
             }
           }
         row.empty();
       }
     }
-    if(DEBUG){
-      Serial.println("1 minuta!\n");
-    }
     counter2 = 0;  
   }
 
-  counter3++;
   //execute every ~20 sec (około 20 sekund) - 900
   //execute every ~30 sec (około 30 sekund) - 1350
+  counter3++;
   if (counter3 >= 900){
 
     pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
@@ -203,12 +250,28 @@ void loop() {
     }
     averagePM();
     if(DEBUG){
-      Serial.print("Srednia PM1: ");
-      Serial.println(averagePM1);
-      Serial.print("Srednia PM2.5: ");
-      Serial.println(averagePM25);
-      Serial.print("Srednia PM10: ");
-      Serial.println(averagePM10);
+      if(selected_language == 1){
+                      Serial.print("Average PM1: ");
+                      Serial.println(averagePM1);
+                      Serial.print("Average PM2.5: ");
+                      Serial.println(averagePM25);
+                      Serial.print("Average PM10: ");
+                      Serial.println(averagePM10);
+              } else if(selected_language == 2){
+                      Serial.print("Średnia PM1: ");
+                      Serial.println(averagePM1);
+                      Serial.print("Średnia PM2.5: ");
+                      Serial.println(averagePM25);
+                      Serial.print("Średnia PM10: ");
+                      Serial.println(averagePM10);
+              } else {
+                      Serial.print("Average PM1: ");
+                      Serial.println(averagePM1);
+                      Serial.print("Average PM2.5: ");
+                      Serial.println(averagePM25);
+                      Serial.print("Average PM10: ");
+                      Serial.println(averagePM10);
+              } 
     }
     counter3 = 0;
     iPM++;
@@ -220,11 +283,15 @@ void loop() {
 }
 
 void pm_calibration(){
-  if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60){
+  if (int(BMESensor.temperature) < 5 and int(BMESensor.humidity) > 60){
     calib = calib2;
     } else {
     calib = calib1;
     }
+  if (!strcmp(MODEL, "white")) {
+    calib1 = float((100-(BMESensor.humidity)+100)/150);
+    calib2 = calib1/2;
+  }
 }
 
 int averagePM() {
@@ -237,11 +304,11 @@ int averagePM() {
     averagePM10  += pmMeasurements[i][2];
   }
   if(DEBUG){
-    Serial.print("\nWartość averagePM1: ");
+    Serial.print("\naveragePM1: ");
     Serial.println(averagePM1);
-    Serial.print("Wartość averagePM25: ");
+    Serial.print("averagePM25: ");
     Serial.println(averagePM25);
-    Serial.print("Wartość averagePM10: ");
+    Serial.print("averagePM10: ");
     Serial.println(averagePM10);
   }
   averagePM1 = averagePM1/10;

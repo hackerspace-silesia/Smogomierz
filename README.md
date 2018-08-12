@@ -29,12 +29,19 @@ Jeśli jesteś użytkownikiem urządzenia z systemem iOS, możesz użyć wtyczki
 
 https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 
-![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/schemat.png)
+![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/schemat.png)
 
 
 ### Tested on:
 
 ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
+
+### TODO
+- [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
+- [x] Ukrycie modelu IP56 - calib1 = 5.8
+- [x] Zmiana domyślnego modelu na IP55 - calib1 = 1.6
+- [x] Możliwość zmiany częstotliwości wysyłania danych do serwisu AirMonitor, ThingSpeak i InfluxDB
+- [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach
 
 ### Dodatkowe informacje
 

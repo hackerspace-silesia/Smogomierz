@@ -34,4 +34,4 @@ extern float calib1;
 extern float calib2;
 extern int selected_language;
 
-const char SOFTWAREVERSION[40] = "2.3 build 19:00_13.06.2018";
+const char SOFTWAREVERSION[40] = "2.4 build 9:30_2.08.2018";

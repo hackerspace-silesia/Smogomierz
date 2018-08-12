@@ -26,22 +26,29 @@ const char HTTP_HEAD[] PROGMEM            = "<!DOCTYPE html><html lang=\"pl\"><h
 const char HTTP_STYLE[] PROGMEM           = "<style>.c{text-align: center;} div,input{padding:5px;font-size:1em;} input{width:95%;} body{text-align: center;font-family:verdana;} button{border:0;border-radius:0.3rem;background-color:#1fa3ec;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;} .q{float: right;width: 64px;text-align: right;} .l{background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAALVBMVEX///8EBwfBwsLw8PAzNjaCg4NTVVUjJiZDRUUUFxdiZGSho6OSk5Pg4eFydHTCjaf3AAAAZElEQVQ4je2NSw7AIAhEBamKn97/uMXEGBvozkWb9C2Zx4xzWykBhFAeYp9gkLyZE0zIMno9n4g19hmdY39scwqVkOXaxph0ZCXQcqxSpgQpONa59wkRDOL93eAXvimwlbPbwwVAegLS1HGfZAAAAABJRU5ErkJggg==\") no-repeat left center;background-size: 1em;}</style>";
 const char HTTP_SCRIPT[] PROGMEM          = "<script>function c(l){document.getElementById('s').value=l.innerText||l.textContent;document.getElementById('p').focus();}</script>";
 const char HTTP_HEAD_END[] PROGMEM        = "</head><body><div style='text-align:left;display:inline-block;min-width:260px;'>";
-const char HTTP_PORTAL_OPTIONS[] PROGMEM  = "<form action=\"/wifi\" method=\"get\"><button>wifi config</button></form><br/><form action=\"/r\" method=\"post\"><button>restart / reboot</button></form>";
+const char HTTP_PORTAL_OPTIONS[] PROGMEM  = "<form action=\"/wifi\" method=\"get\"><button>WiFi config</button></form><br/><form action=\"/r\" method=\"post\"><button>Reset</button></form>";
 const char HTTP_ITEM[] PROGMEM            = "<div><a href='#p' onclick='c(this)'>{v}</a>&nbsp;<span class='q {i}'>{r}%</span></div>";
-const char HTTP_FORM_START[] PROGMEM      = "<form method='get' action='wifisave'><input id='s' name='s' length=32 placeholder='sieć / network'><br/><input id='p' name='p' length=64 type='password' placeholder='hasło/  password'><br/>";
+const char HTTP_FORM_START[] PROGMEM      = "<form method='get' action='wifisave'><input id='s' name='s' length=32 placeholder='sieć / network'><br/><input id='p' name='p' length=64 type='password' placeholder='hasło / password'><br/>";
 const char HTTP_FORM_PARAM[] PROGMEM      = "<br/><input id='{i}' name='{n}' maxlength={l} placeholder='{p}' value='{v}' {c}>";
 const char HTTP_FORM_END[] PROGMEM        = "<br/><button type='submit'>zapisz / save</button></form>";
-const char HTTP_SCAN_LINK[] PROGMEM       = "<br/><div class=\"c\"><a href=\"/wifi\">skanuj</a></div>";
+const char HTTP_SCAN_LINK[] PROGMEM       = "<br/><div class=\"c\"><a href=\"/wifi\">Scan</a></div>";
 const char HTTP_SAVED[] PROGMEM           = "<div><strong>PL</strong><br>Dane zapisane.<br />Próba połączenia się ze wskazaną siecią WiFi.<br />Jeśli się nie powiedzie, to powtórz konfigurację WiFi.<br><br><strong>EN</strong><br>Attempting to connect to the indicated WiFi network.<br /> If it fails, repeat the WiFi configuration.</div>";
 const char HTTP_END[] PROGMEM             = "</div></body></html>";
 
+#ifndef WIFI_MANAGER_MAX_PARAMS
 #define WIFI_MANAGER_MAX_PARAMS 10
+#endif
 
 class WiFiManagerParameter {
   public:
+    /** 
+        Create custom parameters that can be added to the WiFiManager setup web page
+        @id is used for HTTP queries and must not contain spaces nor other special characters
+    */
     WiFiManagerParameter(const char *custom);
     WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue, int length);
     WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom);
+    ~WiFiManagerParameter();
 
     const char *getID();
     const char *getValue();
@@ -65,6 +72,7 @@ class WiFiManager
 {
   public:
     WiFiManager();
+    ~WiFiManager();
 
     boolean       autoConnect();
     boolean       autoConnect(char const *apName, char const *apPassword = NULL);
@@ -99,16 +107,14 @@ class WiFiManager
     void          setAPCallback( void (*func)(WiFiManager*) );
     //called when settings have been changed and connection was successful
     void          setSaveConfigCallback( void (*func)(void) );
-    //adds a custom parameter
-    void          addParameter(WiFiManagerParameter *p);
+    //adds a custom parameter, returns false on failure
+    bool          addParameter(WiFiManagerParameter *p);
     //if this is set, it will exit after config, even if connection is unsuccessful.
     void          setBreakAfterConfig(boolean shouldBreak);
     //if this is set, try WPS setup when starting (this will delay config portal for up to 2 mins)
     //TODO
     //if this is set, customise style
     void          setCustomHeadElement(const char* element);
-    //if set to something other than an empty string, shows a custom "wifi saved" message
-    void          setWifiSaveMessage(const char* element);
     //if this is true, remove duplicated Access Points - defaut true
     void          setRemoveDuplicateAPs(boolean removeDuplicates);
 
@@ -146,7 +152,6 @@ class WiFiManager
     boolean       _tryWPS                 = false;
 
     const char*   _customHeadElement      = "";
-    const char*   _customWifiSaveMessage  = "";
 
     //String        getEEPROMString(int start, int len);
     //void          setEEPROMString(int start, int len, String string);
@@ -164,8 +169,6 @@ class WiFiManager
     void          handle204();
     boolean       captivePortal();
     boolean       configPortalHasTimeout();
-	//dodane
-	void          reportStatus(String &page);
 
     // DNS server
     const byte    DNS_PORT = 53;
@@ -181,7 +184,8 @@ class WiFiManager
     void (*_apcallback)(WiFiManager*) = NULL;
     void (*_savecallback)(void) = NULL;
 
-    WiFiManagerParameter* _params[WIFI_MANAGER_MAX_PARAMS];
+    int                    _max_params;
+    WiFiManagerParameter** _params;
 
     template <typename Generic>
     void          DEBUG_WM(Generic text);
@@ -197,4 +201,3 @@ class WiFiManager
 };
 
 #endif
-

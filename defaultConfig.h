@@ -6,6 +6,9 @@ bool DISPLAY_PM1 = false;
 char LANGUAGE[255] = "english"; // english or polish
 int selected_language = 1; // en - 1; pl - 2
 
+char THP_MODEL[255] = "Non";
+char DUST_MODEL[255] = "Non";
+
 bool AIRMONITOR_ON = false;
 int AIRMONITOR_TIME = 10;
 bool AIRMONITOR_GRAPH_ON = true;

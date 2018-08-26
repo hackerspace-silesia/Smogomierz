@@ -15,7 +15,7 @@
 #include <Arduino.h>
 
 //---------------------I2C ADDRESS---------------------------------------------------
-#define BME280_ADDRESS                (0x76)
+ #define BME280_ADDRESS                (0x76)
 // #define BME280_ADDRESS                (0x77)
 //---------------------REGISTERS-----------------------------------------------------
 enum

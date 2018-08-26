@@ -5,10 +5,11 @@
 #include <ESP8266HTTPUpdateServer.h>
 #include "FS.h"
 #include "ArduinoJson.h" //5.13.2 (No v6 !!!)
-#include "src/pms.h" // https://github.com/fu-hsi/PMS
-#include "src/bme280.h" // https://github.com/zen/BME280_light/blob/master/BME280_t.h
 #include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager
+#include "src/pms.h" // https://github.com/fu-hsi/PMS
+#include "src/bme280.h" // https://github.com/zen/BME280_light
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D
+#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library
 
 #include "src/spiffs.h"
 #include "src/airmonitor.h"
@@ -19,15 +20,17 @@
 #include "defaultConfig.h"
 
 /*
-  Podłączenie czujnikow:
-  BME280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  Podłączenie czujnikow dla ESP8266 NodeMCU:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   PMS7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  
 
-  Connection of sensors:
-  BME280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  PMS7003:/White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
+  Connection of sensors on ESP8266 NodeMCU:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  PMS7003:/White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
+  
 */
 
 // BME280 config
@@ -35,13 +38,20 @@
 char bufout[10];
 BME280<> BMESensor; 
 
+// BMP280 config
+#define BMP_SCK 13
+#define BMP_MISO 12
+#define BMP_MOSI 11 
+#define BMP_CS 10
+Adafruit_BMP280 bmp; 
+
+// Serial for SHT21/HTU21D config
+HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
+
 // Serial for PMS7003 config
 SoftwareSerial mySerial(5, 4); // Change TX - D1 and RX - D2 pins 
 PMS pms(mySerial);
 PMS::DATA data;
-
-// Serial for SHT21/HTU21D config
-HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
 
 char device_name[20];
 int pmMeasurements[10][3];
@@ -109,12 +119,11 @@ bool checkBmeStatus() {
         return true;
     }
 }
-/*
+
 bool checkBmpStatus() {
-    int temperatureInt = BMESensor.temperature;
-    int pressureInt = (BMESensor.seaLevelForAltitude(MYALTITUDE));
-    int humidityInt = BMESensor.humidity;
-    if (temperatureInt == 0 && pressureInt == 0 && humidityInt == 0) {
+    int temperature_BMP_Int = bmp.readTemperature();
+    int pressure_BMP_Int = bmp.readPressure();
+    if (temperature_BMP_Int == 0 && pressure_BMP_Int == 0) {
       if(DEBUG){
       if(selected_language == 1){
         Serial.println("No data from BMP280 sensor!\n");
@@ -131,22 +140,30 @@ bool checkBmpStatus() {
         return true;
     }
 }
-*/
+
 // library doesnt support arguments :/
 #include "src/webserver.h"
 
 void setup() {
     Serial.begin(115200);
-    mySerial.begin(9600);
+    mySerial.begin(9600); //PMS7003 serial
     delay(10);
-    
-    Wire.begin(0,2);
-
-    BMESensor.begin(); 
-    myHTU21D.begin();
-    
+     
     fs_setup();
     delay(10);
+
+     if (!strcmp(THP_MODEL, "BME280")) {
+        Wire.begin(0,2);
+        BMESensor.begin(); 
+     }
+     if (!strcmp(THP_MODEL, "BMP280")) {
+        Wire.begin(0,2);
+        bmp.begin();
+     }
+     if (!strcmp(THP_MODEL, "HTU21")) {
+        myHTU21D.begin();
+     }
+     delay(10);
     
     // get ESP id
     if (DEVICENAME_AUTO){
@@ -330,7 +347,7 @@ void loop() {
               }}  
 
            if (!strcmp(THP_MODEL, "BMP280")) {
-              if (checkBmeStatus() == true){
+              if (checkBmpStatus() == true){
                 if(DEBUG){
                   if(selected_language == 1){
                     Serial.println("Measurements from BMP280!\n");
@@ -340,8 +357,8 @@ void loop() {
                     Serial.println("Measurements from BMP280!\n");
                   }
                 }
-                row.addField("temperature", (BMESensor.temperature));
-                row.addField("humidity", (BMESensor.humidity));
+                row.addField("temperature", (bmp.readTemperature()));
+                row.addField("pressure", ((bmp.readPressure())/100));
               }else{
                 if(DEBUG){
                   if(selected_language == 1){
@@ -446,14 +463,14 @@ void pm_calibration() {
     } else {
     calib = calib1;
     }
-  }/* else if if (!strcmp(THP_MODEL, "BMP280")) {
-    if (int(BMESensor.temperature) < 5 and int(BMESensor.humidity) > 60){
+  } else if (!strcmp(THP_MODEL, "BMP280")) {
+    if (int(bmp.readTemperature()) < 5){
     calib = calib2;
     } else {
     calib = calib1;
     }
-  }*/
-  if (strcmp(MODEL, "white")) {
+  }
+  if (!strcmp(MODEL, "white")) {
     calib1 = float((100-(BMESensor.humidity)+100)/150);
     calib2 = calib1/2;
   }

@@ -42,18 +42,15 @@ void handle_root () {
 		        message += " °C</h3>";
 		        }
 			} else if (!strcmp(THP_MODEL, "BMP280")) {
-				//if (checkBmpStatus()) {
+				if (checkBmpStatus()) {
 		        message += "<h2>Weather:</h2>";
 		        message += "<h3>Temperature: ";
-		        //message += (myHTU21D.readTemperature());
+		        message += (bmp.readTemperature());
 		        message += " °C</h3>";
-		        message += "<h3>Humidity: ";
-		        //message += (myHTU21D.readCompensatedHumidity());
-		        message += " %</h3>";
-		        message += "<h3>Dew point: ";
-		        //message += (myHTU21D.readTemperature()-((100-myHTU21D.readCompensatedHumidity())/5));
-		        message += " °C</h3>";
-			}//}
+		        message += "<h3>Pressure: ";
+		        message += ((bmp.readPressure())/100);
+		        message += " hPa</h3>";
+			}}
 			
 	} else if(selected_language == 2){
         	message += "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Pomiary</title>";
@@ -96,18 +93,15 @@ void handle_root () {
 					        message += " °C</h3>";
 					        }
 			} else if (!strcmp(THP_MODEL, "BMP280")) {
-				//if (checkBmpStatus()) {
+				if (checkBmpStatus()) {
 		        message += "<h2>Pogoda:</h2>";
 		        message += "<h3>Temperatura: ";
-		        //message += (myHTU21D.readTemperature());
+		        message += (bmp.readTemperature());
 		        message += " °C</h3>";
-		        message += "<h3>Wilgotność: ";
-		        //message += (myHTU21D.readHumidity());
-		        message += " %</h3>";
-		        message += "<h3>Punkt rosy: ";
-		        //message += (myHTU21D.readTemperature()-((100-myHTU21D.readHumidity())/5));
-		        message += " °C</h3>";
-			}//}
+		        message += "<h3>Ciśnienie: ";
+		        message += ((bmp.readPressure())/100);
+		        message += " hPa</h3>";
+			}}
 	} else {
     	message += "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Measurements</title>";
         message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
@@ -149,18 +143,15 @@ void handle_root () {
 	        message += " °C</h3>";
 	        }
 		} else if (!strcmp(THP_MODEL, "BMP280")) {
-			//if (checkBmpStatus()) {
+			if (checkBmpStatus()) {
 	        message += "<h2>Weather:</h2>";
 	        message += "<h3>Temperature: ";
-	        //message += (myHTU21D.readTemperature());
+	        message += (bmp.readTemperature());
 	        message += " °C</h3>";
-	        message += "<h3>Humidity: ";
-	        //message += (myHTU21D.readCompensatedHumidity());
-	        message += " %</h3>";
-	        message += "<h3>Dew point: ";
-	        //message += (myHTU21D.readTemperature()-((100-myHTU21D.readCompensatedHumidity())/5));
-	        message += " °C</h3>";
-		}//}
+	        message += "<h3>Pressure: ";
+	        message += ((bmp.readPressure())/100);
+	        message += " hPa</h3>";
+		}}
 	} 
       
 	  if (!strcmp(DUST_MODEL, "PMS7003")) {
@@ -212,6 +203,8 @@ void handle_root () {
 	        message += averagePM10;
 	        message += " µg/m³</h3>";
 			message += "</font>";
+	  } else {
+		  //Data from other Dust sensor
 	  }
 
   if(AIRMONITOR_GRAPH_ON){
@@ -245,15 +238,6 @@ void handle_root () {
       message += (THINGSPEAK_CHANNEL_ID);
       message += ("/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM10&type=line&yaxis=ug%2Fm3&update=15'></iframe>");
       message += (" ");
-      /*if (int(BMESensor.temperature) == 0 && int(BMESensor.humidity) == 0 && int(BMESensor.seaLevelForAltitude(MYALTITUDE)) == 0){
-		  if(selected_language == 1){
-		          Serial.println("No data from BME280 sensor!\n");
-		        } else if(selected_language == 2){
-		          Serial.println("Brak pomiarów z BME280!\n");
-		        } else {
-		          Serial.println("No data from BME280 sensor!\n");
-		          }
-      }else{*/
       message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
       message += (THINGSPEAK_CHANNEL_ID);
       message += ("/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Temperatura&type=line&update=15'></iframe>");
@@ -265,7 +249,6 @@ void handle_root () {
       message += ("<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/");
       message += (THINGSPEAK_CHANNEL_ID);
       message += ("/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Wilgotno%C5%9B%C4%87&type=line&update=15'></iframe>");
-      //in}
     }
     message += "<br><hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form></body></html>";
     WebServer.send(200, "text/html", message);
@@ -478,15 +461,6 @@ void _handle_config(bool is_success) {
     message += "<b>Automatic name generation: </b>";
     message += _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO);
 	
-	/*
-    message += "<b>Language: </b>";
-    message += (LANGUAGE);
-	message += "<br>";
-    message += "<b>Language: </b>";
-    message += (selected_language);
-	message += "<br>";
-	*/
-	
     message += "<b>Language: </b>";
     message += _addLanguageSelect("LANGUAGE", LANGUAGE);
 	
@@ -600,15 +574,6 @@ void _handle_config(bool is_success) {
 	    }
 	    message += "<b>Automatyczne generowanie nazwy: </b>";
 	    message += _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO);
-	
-		/*
-	    message += "<b>Język: </b>";
-	    message += (LANGUAGE);
-		message += "<br>";
-	    message += "<b>Język: </b>";
-	    message += (selected_language);
-		message += "<br>";
-		*/
 		
 	    message += "<b>Język: </b>";
 	    message += _addLanguageSelect("LANGUAGE", LANGUAGE);
@@ -723,15 +688,6 @@ void _handle_config(bool is_success) {
 	    }
 	    message += "<b>Automatic name generation: </b>";
 	    message += _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO);
-	
-		/*
-	    message += "<b>Language: </b>";
-	    message += (LANGUAGE);
-		message += "<br>";
-	    message += "<b>Language: </b>";
-	    message += (selected_language);
-		message += "<br>";
-		*/
 		
 	    message += "<b>Language: </b>";
 	    message += _addLanguageSelect("LANGUAGE", LANGUAGE);
@@ -834,11 +790,15 @@ void _set_calib1_and_calib2() {
         calib1 = 1.0;
         calib2 = 1.0;
     } else if (!strcmp(MODEL, "white")) {
-		if (checkBmeStatus() == true) {
-        calib1 = float((100-(BMESensor.humidity)+100)/150);
-			} else if (checkHTU21DStatus() == true) {
+		if (!strcmp(THP_MODEL, "BME280")) {
+			if (checkBmeStatus() == true) {
+        		calib1 = float((100-(BMESensor.humidity)+100)/150);
+			}}
+		if (!strcmp(THP_MODEL, "HTU21D")) {
+			if (checkHTU21DStatus() == true) {
 				calib1 = float((100-(myHTU21D.readCompensatedHumidity())+100)/150);
-			}
+			}}
+		calib1 = calib1;
         calib2 = calib1/2;
     } else {
         calib1 = 1.0;
@@ -996,21 +956,34 @@ void handle_api() {
       JsonObject& json = jsonBuffer.createObject();
 
         json["device_name"] = device_name;
-        json["pm1"] = averagePM1;
-        json["pm25"] = averagePM25;
-        json["pm10"] = averagePM10;
-        if (checkBmeStatus()) {
-			json["temperature"] = float(BMESensor.temperature);
-			json["pressure"] = int(BMESensor.seaLevelForAltitude(MYALTITUDE));
-			json["humidity"] = int(BMESensor.humidity);
-			json["dewpoint"] = int(BMESensor.temperature-((100-BMESensor.humidity)/5));  
-        }
-		if (checkHTU21DStatus()) {
-			json["temperature"] = float(myHTU21D.readTemperature());
-  		  	json["humidity"] = int(myHTU21D.readCompensatedHumidity());
-		  	json["dewpoint"] = int(myHTU21D.readTemperature()-((100-myHTU21D.readCompensatedHumidity())/5));
+		if (!strcmp(DUST_MODEL, "PMS7003")){
+        	json["pm1"] = averagePM1;
+        	json["pm25"] = averagePM25;
+        	json["pm10"] = averagePM10;
+		}
+		
+		if (!strcmp(THP_MODEL, "BME280")) {
+	        if (checkBmeStatus()) {
+				json["temperature"] = float(BMESensor.temperature);
+				json["pressure"] = int(BMESensor.seaLevelForAltitude(MYALTITUDE));
+				json["humidity"] = int(BMESensor.humidity);
+				json["dewpoint"] = float(BMESensor.temperature-((100-BMESensor.humidity)/5));  
+	        }
+		}
+       	if (!strcmp(THP_MODEL, "BMP280")) {
+			if (checkBmpStatus()) {
+				json["temperature"] = float(bmp.readTemperature());
+  		  		json["pressure"] = int((bmp.readPressure())/100);
+			}
+		}
+		if (!strcmp(THP_MODEL, "HTU21")) {
+			if (checkHTU21DStatus()) {
+				json["temperature"] = float(myHTU21D.readTemperature());
+  		  		json["humidity"] = int(myHTU21D.readCompensatedHumidity());
+		  		json["dewpoint"] = float(myHTU21D.readTemperature()-((100-myHTU21D.readCompensatedHumidity())/5));
+			}
 		}
 
       json.prettyPrintTo(message);
-    WebServer.send(200, "text/json", message);
+      WebServer.send(200, "text/json", message);
   }

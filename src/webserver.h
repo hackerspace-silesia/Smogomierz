@@ -295,15 +295,30 @@ String _addModelSelect(const String &key, const String &value) {
 	if(selected_language == 1){
     	//input += _addOption("black", "Case 86x86/120x80x50", value);
     	input += _addOption("red", "Without calibration", value);
+		if (!strcmp(THP_MODEL, "BME280")){
 		input += _addOption("white", "Automatic calibration", value);
+		}
+		if (!strcmp(THP_MODEL, "HTU21")){
+		input += _addOption("white", "Automatic calibration", value);
+		}
 	} else if(selected_language == 2){
 	    //input += _addOption("black", "Obudowa 86x86/120x80x50", value);
 	    input += _addOption("red", "Bez kalibracji", value);
+		if (!strcmp(THP_MODEL, "BME280")){
 		input += _addOption("white", "Automatyczna kalibracja", value);
+		}
+		if (!strcmp(THP_MODEL, "HTU21")){
+		input += _addOption("white", "Automatyczna kalibracja", value);
+		}
 	} else {
 	    //input += _addOption("black", "Case 86x86/120x80x50", value);
     	input += _addOption("red", "Without calibration", value);
+		if (!strcmp(THP_MODEL, "BME280")){
 		input += _addOption("white", "Automatic calibration", value);
+		}
+		if (!strcmp(THP_MODEL, "HTU21")){
+		input += _addOption("white", "Automatic calibration", value);
+		}
 	}
     input += "</select><br />";
     return input;

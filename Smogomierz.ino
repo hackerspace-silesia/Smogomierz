@@ -454,25 +454,30 @@ void pm_calibration() {
   if (!strcmp(THP_MODEL, "BME280")) {
     if (int(BMESensor.temperature) < 5 and int(BMESensor.humidity) > 60){
     calib = calib2;
-    } else {
+    }
     calib = calib1;
     }
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
+  if (!strcmp(THP_MODEL, "HTU21")) {
     if (int(myHTU21D.readTemperature()) < 5 and int(myHTU21D.readCompensatedHumidity()) > 60){
     calib = calib2;
-    } else {
+    }
     calib = calib1;
     }
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
+  if (!strcmp(THP_MODEL, "BMP280")) {
     if (int(bmp.readTemperature()) < 5){
     calib = calib2;
-    } else {
-    calib = calib1;
     }
-  }
+    calib = calib1;
+    } 
   if (!strcmp(MODEL, "white")) {
+    if (!strcmp(THP_MODEL, "BME280")) {
     calib1 = float((100-(BMESensor.humidity)+100)/150);
     calib2 = calib1/2;
+    }
+   if (!strcmp(THP_MODEL, "HTU21")) {
+    calib1 = float((100-(myHTU21D.readCompensatedHumidity())+100)/150);
+    calib2 = calib1/2;
+   }
   }
 }
 

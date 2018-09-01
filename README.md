@@ -1,3 +1,12 @@
+### TODO
+- [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
+- [ ] Aktualizacja ArduinoJson do wersji 6 lub nowszej - [dokumentacja ArduinoJson 6](https://arduinojson.org/v6/doc/upgrade/)
+- [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach
+
+
+===
+
+
 # Smogomierz
 
 Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
@@ -37,11 +46,6 @@ https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 
 ### TODO
-- [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
-- [x] Ukrycie modelu IP56 - calib1 = 5.8
-- [x] Zmiana domyślnego modelu na IP55 - calib1 = 1.6
-- [x] Możliwość zmiany częstotliwości wysyłania danych do serwisu AirMonitor, ThingSpeak i InfluxDB
-- [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach
 
 ### Dodatkowe informacje
 

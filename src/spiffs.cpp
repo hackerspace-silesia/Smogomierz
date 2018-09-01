@@ -47,9 +47,12 @@ bool loadConfig() {
 
   DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
   _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz");
-  DISPLAY_PM1 = json["DISPLAY_PM1"];
   _safeCpy(LANGUAGE, json["LANGUAGE"], "polish");
   selected_language = json["selected_language"];
+  
+  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non");
+  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non");
+  DISPLAY_PM1 = json["DISPLAY_PM1"];
   
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_TIME = json["AIRMONITOR_TIME"];
@@ -85,12 +88,17 @@ bool loadConfig() {
   Serial.println(DEVICENAME_AUTO);
   Serial.print("Loaded DEVICENAME: ");
   Serial.println(DEVICENAME);
-  Serial.print("Loaded DISPLAY_PM1: ");
-  Serial.println(DISPLAY_PM1);
   Serial.print("Loaded LANGUAGE: ");
   Serial.println(LANGUAGE);
   Serial.print("Loaded selected_language: ");
   Serial.println(selected_language);
+  
+  Serial.print("Loaded THP_MODEL: ");
+  Serial.println(THP_MODEL);
+  Serial.print("Loaded DUST_MODEL: ");
+  Serial.println(DUST_MODEL);
+  Serial.print("Loaded DISPLAY_PM1: ");
+  Serial.println(DISPLAY_PM1);
   
   Serial.print("Loaded AIRMONITOR_ON: ");
   Serial.println(AIRMONITOR_ON);
@@ -151,9 +159,12 @@ bool saveConfig() {
   JsonObject& json = jsonBuffer.createObject();
   json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
   json["DEVICENAME"] = DEVICENAME;
-  json["DISPLAY_PM1"] = DISPLAY_PM1;
   json["LANGUAGE"] = LANGUAGE;
   json["selected_language"] = selected_language;
+  
+  json["THP_MODEL"] = THP_MODEL;
+  json["DUST_MODEL"] = DUST_MODEL;
+  json["DISPLAY_PM1"] = DISPLAY_PM1;
   
   json["AIRMONITOR_ON"] = AIRMONITOR_ON;
   json["AIRMONITOR_TIME"] = AIRMONITOR_TIME;

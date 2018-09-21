@@ -558,6 +558,9 @@ void _handle_config(bool is_success) {
 	*/
     message += "<b>Software version: </b>";
     message += (SOFTWAREVERSION);
+	message += "<br>";
+    message += "<b>Hardware version: </b>";
+    message += (HARDWAREVERSION);
 	message += "<hr><br><center>";
     message += _addSubmit();
 	message += "</center>";
@@ -672,6 +675,9 @@ void _handle_config(bool is_success) {
 		*/
 	    message += "<b>Wersja oprogramowania: </b>";
 	    message += (SOFTWAREVERSION);
+		message += "<br>";
+	    message += "<b>Platforma sprzętowa: </b>";
+	    message += (HARDWAREVERSION);
 		message += "<hr><br><center>";
 	    message += _addSubmit();
 		message += "</center>";
@@ -785,6 +791,9 @@ void _handle_config(bool is_success) {
 		*/
 	    message += "<b>Software version: </b>";
 	    message += (SOFTWAREVERSION);
+		message += "<br>";
+	    message += "<b>Hardware version: </b>";
+	    message += (HARDWAREVERSION);
 		message += "<hr><br><center>";
 	    message += _addSubmit();
 		message += "</center>";	

@@ -10,6 +10,9 @@
 #include "src/bme280.h" // https://github.com/zen/BME280_light
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library
+//#include "src/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library
+//#include "src/hpma115S0.h" // Honeywell HPMA115S0-XXX - https://github.com/jalmeroth/ESP8266-Honeywell
+
 
 #include "src/spiffs.h"
 #include "src/airmonitor.h"
@@ -48,10 +51,16 @@ Adafruit_BMP280 bmp;
 // Serial for SHT21/HTU21D config
 HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
 
-// Serial for PMS7003 config
+// Serial for PM detector
 SoftwareSerial mySerial(5, 4); // Change TX - D1 and RX - D2 pins 
+
+// PMS7003 config
 PMS pms(mySerial);
 PMS::DATA data;
+
+// SDS011 config
+
+// HPMA115S0 config
 
 char device_name[20];
 int pmMeasurements[10][3];
@@ -146,7 +155,7 @@ bool checkBmpStatus() {
 
 void setup() {
     Serial.begin(115200);
-    mySerial.begin(9600); //PMS7003 serial
+    mySerial.begin(9600); //PM sensor Serial
     delay(10);
      
     fs_setup();

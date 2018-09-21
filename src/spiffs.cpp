@@ -149,6 +149,8 @@ bool loadConfig() {
   Serial.println(calib2);
   Serial.print("Loaded SOFTWAREVERSION: ");
   Serial.println(SOFTWAREVERSION);
+  Serial.print("Loaded HARDWAREVERSION: ");
+  Serial.println(HARDWAREVERSION);
   Serial.println("\n");
 }
   return true;

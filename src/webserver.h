@@ -203,8 +203,54 @@ void handle_root () {
 	        message += averagePM10;
 	        message += " µg/m³</h3>";
 			message += "</font>";
+	  } if (!strcmp(DUST_MODEL, "SDS011/21")) {
+		  PmResult SDSdata = sds.readPm(); // do poprawy !!!
+		  if(selected_language == 1){
+			  message += "<p><h2>Air pollution:</h2>";
+		  } else if(selected_language == 2){
+			  message += "<p><h2>Pomiary zanieczyszczeń:</h2>";} 
+			  else {
+				  message += "<p><h2>Air pollution:</h2>";
+			  }
+	        message += "<h3>PM2.5: ";
+	        if (SDSdata.pm25 <= 10){
+	          message += "<font color='#61EEE4'>";
+	        } else if (SDSdata.pm25 > 10 && SDSdata.pm25 <= 20){
+	          message += "<font color='#5BCAAA'>";
+	        } else if (SDSdata.pm25 > 20 && SDSdata.pm25 <= 25){
+	          message += "<font color='#EEE25D'>";
+	        } else if (SDSdata.pm25 > 25 && SDSdata.pm25 <= 50){
+	          message += "<font color='#F95459'>";
+	        } else if (SDSdata.pm25 > 50){
+	          message += "<font color='#920736'>";
+	        } else {
+	          message += "<font>";
+	        }
+	        message += SDSdata.pm25;
+	        message += " µg/m³</h3>";
+			message += "</font>";
+        
+	        message += "<h3>PM10: ";
+	        if (SDSdata.pm10 <= 20){
+	          message += "<font color='#61EEE4'>";
+	        } else if (SDSdata.pm10 > 20 && SDSdata.pm10 <= 35){
+	          message += "<font color='#5BCAAA'>";
+	        } else if (SDSdata.pm10 > 35 && SDSdata.pm10 <= 50){
+	          message += "<font color='#EEE25D'>";
+	        } else if (SDSdata.pm10 > 50 && SDSdata.pm10 <= 100){
+	          message += "<font color='#F95459'>";
+	        } else if (SDSdata.pm10 > 100){
+	          message += "<font color='#920736'>";
+	        } else {
+	          message += "<font>";
+	        }      
+	        message += SDSdata.pm10;
+	        message += " µg/m³</h3>";
+			message += "</font>";
+	  } if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+		  //Data from HPMA115S0 Dust sensor
 	  } else {
-		  //Data from other Dust sensor
+	  	  //Data from other Dust sensor
 	  }
 
   if(AIRMONITOR_GRAPH_ON){
@@ -354,12 +400,18 @@ String _addDUST_MODELSelect(const String &key, const String &value) {
     input += "'>";
 	if(selected_language == 1){
     	input += _addOption("PMS7003", "PMS7003", value);
+		input += _addOption("SDS011/21", "SDS011/21", value);
+		input += _addOption("HPMA115S0", "HPMA115S0", value);
 		input += _addOption("Non", "Without sensor", value);
 	} else if(selected_language == 2){
 	    input += _addOption("PMS7003", "PMS7003", value);
+		input += _addOption("SDS011/21", "SDS011/21", value);
+		input += _addOption("HPMA115S0", "HPMA115S0", value);
 		input += _addOption("Non", "Bez miernika", value);
 	} else {
     	input += _addOption("PMS7003", "PMS7003", value);
+		input += _addOption("SDS011/21", "SDS011/21", value);
+		input += _addOption("HPMA115S0", "HPMA115S0", value);
 		input += _addOption("Non", "Without sensor", value);
 	}
     input += "</select><br />";

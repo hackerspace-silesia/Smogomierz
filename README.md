@@ -1,6 +1,10 @@
 ### TODO
-- [ ] Dodanie obsługi SDS011
+- [X] Dodanie obsługi SDS011/021
+- [ ] Stałe wykonywanie pomiarów z SDS011/021 co minutę
+- [ ] Uśrednianie 10 ostatnich pomiarów z SDS011/021
 - [ ] Dodanie obsługi Honeywell HPMA115S0-XXX
+- [ ] Stałe wykonywanie pomiarów z HPMA115S0-XXX co minutę
+- [ ] Uśrednianie 10 ostatnich pomiarów z HPMA115S0-XXX
 - [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
 - [ ] Aktualizacja ArduinoJson do wersji 6 lub nowszej - [dokumentacja ArduinoJson 6](https://arduinojson.org/v6/doc/upgrade/)
 - [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach

@@ -10,7 +10,7 @@
 #include "src/bme280.h" // https://github.com/zen/BME280_light
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library
-//#include "src/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library
+#include "src/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library
 //#include "src/hpma115S0.h" // Honeywell HPMA115S0-XXX - https://github.com/jalmeroth/ESP8266-Honeywell
 
 
@@ -52,13 +52,14 @@ Adafruit_BMP280 bmp;
 HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
 
 // Serial for PM detector
-SoftwareSerial mySerial(5, 4); // Change TX - D1 and RX - D2 pins 
+SoftwareSerial mySerial(5, 4); // TX - D1 and RX - D2 pins 
 
 // PMS7003 config
 PMS pms(mySerial);
-PMS::DATA data;
+PMS::DATA PMSdata;
 
-// SDS011 config
+// SDS011/21 config
+SdsDustSensor sds(5, 4);  // TX - D1 and RX - D2 pins
 
 // HPMA115S0 config
 
@@ -155,9 +156,8 @@ bool checkBmpStatus() {
 
 void setup() {
     Serial.begin(115200);
-    mySerial.begin(9600); //PM sensor Serial
     delay(10);
-     
+    
     fs_setup();
     delay(10);
 
@@ -173,6 +173,17 @@ void setup() {
         myHTU21D.begin();
      }
      delay(10);
+     
+    if (!strcmp(DUST_MODEL, "PMS7003")) {
+      mySerial.begin(9600); //PMS7003 serial
+    }
+    if (!strcmp(DUST_MODEL, "SDS011/21")) {   
+      sds.begin();  //SDS011/21 sensor begin
+    }
+    if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+      mySerial.begin(9600); //HPMA115S0 serial
+    }
+    delay(10);
     
     // get ESP id
     if (DEVICENAME_AUTO){
@@ -228,14 +239,18 @@ void setup() {
 
 void loop() {
   BMESensor.refresh();
+  
   pm_calibration();
-  pms.read(data);
+  pms.read(PMSdata);
   delay(10);
 
-  //webserverShowSite(WebServer, BMESensor, data);
+  //PmResult SDSdata = sds.readPm(); - // do poprawy !!!
+  //delay(10);
+  
+  //webserverShowSite(WebServer, BMESensor, PMSdata); // dodać SDSdata oraz HPMAdata !!
   WebServer.handleClient(); 
   delay(10);
-
+  
   yield();
   
   //execute every ~1 minute - 650
@@ -411,9 +426,9 @@ void loop() {
   counter3++;
   if (counter3 >= 220){
 
-    pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
-    pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
-    pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+    pmMeasurements[iPM][0] = int(calib * PMSdata.PM_AE_UG_1_0);
+    pmMeasurements[iPM][1] = int(calib * PMSdata.PM_AE_UG_2_5);
+    pmMeasurements[iPM][2] = int(calib * PMSdata.PM_AE_UG_10_0);
     
     if(DEBUG){
       Serial.print("\n\nNumer pomiaru PM: ");

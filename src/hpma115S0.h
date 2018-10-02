@@ -5,6 +5,8 @@
 #include "config.h"
 #include <SoftwareSerial.h>
 
+SoftwareSerial HPMASerial(5, 4);
+
 const int AutoSendOn[4] =     {0x68, 0x01, 0x40, 0x57};
 const int AutoSendOff[4] =    {0x68, 0x01, 0x20, 0x77};
 const int StartPmMeasure[4] = {0x68, 0x01, 0x01, 0x96};
@@ -22,7 +24,7 @@ unsigned long lastReading = 0;
 void sendCommand(const int *cmd) {
   int i;
   for(i=0;i<4; i++) {
-    mySerial.write(cmd[i]);
+    HPMASerial.write(cmd[i]);
   }
   // let a unicorn pass
   delay(10);
@@ -34,9 +36,9 @@ int readResponse(int l = 32) {
   
   unsigned long start = millis();
 
-  while(mySerial.available() > 0 && i < l) {
+  while(HPMASerial.available() > 0 && i < l) {
 
-    buf[i] = mySerial.read();                 // read bytes from mySerial
+    buf[i] = HPMASerial.read();                 // read bytes from HPMASerial
 
     if(DEBUG) {
       Serial.print("i: "); Serial.print(i);

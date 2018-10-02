@@ -1,7 +1,7 @@
 ### TODO
 - [X] Dodanie obsługi SDS011/021
-- [ ] Stałe wykonywanie pomiarów z SDS011/021 co minutę
-- [ ] Uśrednianie 10 ostatnich pomiarów z SDS011/021
+- [X] Stałe wykonywanie pomiarów z SDS011/021 co minutę
+- [X] Uśrednianie 10 ostatnich pomiarów z SDS011/021
 - [ ] Dodanie obsługi Honeywell HPMA115S0-XXX
 - [ ] Stałe wykonywanie pomiarów z HPMA115S0-XXX co minutę
 - [ ] Uśrednianie 10 ostatnich pomiarów z HPMA115S0-XXX

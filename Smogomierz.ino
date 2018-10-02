@@ -11,7 +11,7 @@
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library
 #include "src/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library
-//#include "src/hpma115S0.h" // Honeywell HPMA115S0-XXX - https://github.com/jalmeroth/ESP8266-Honeywell
+#include "src/hpma115S0.h" // Honeywell HPMA115S0-XXX - https://github.com/jalmeroth/ESP8266-Honeywell
 
 
 #include "src/spiffs.h"
@@ -181,7 +181,7 @@ void setup() {
       sds.begin();  //SDS011/21 sensor begin
     }
     if (!strcmp(DUST_MODEL, "HPMA115S0")) {
-      mySerial.begin(9600); //HPMA115S0 serial
+      HPMASerial.begin(9600); //HPMA115S0 serial
     }
     delay(10);
     
@@ -239,15 +239,16 @@ void setup() {
 
 void loop() {
   BMESensor.refresh();
+  delay(10);
   
   pm_calibration();
-  pms.read(PMSdata);
   delay(10);
-
-  //PmResult SDSdata = sds.readPm(); - // do poprawy !!!
-  //delay(10);
   
-  //webserverShowSite(WebServer, BMESensor, PMSdata); // dodać SDSdata oraz HPMAdata !!
+  pms.read(PMSdata);
+  PmResult SDSdata = sds.readPm();
+  delay(10);
+  
+  //webserverShowSite(WebServer, BMESensor, PMSdata, SDSdata); // dodać HPMAdata !!
   WebServer.handleClient(); 
   delay(10);
   
@@ -305,6 +306,32 @@ void loop() {
                   }
                 }
           row.addField("pm1", averagePM1);
+          row.addField("pm25", averagePM25);
+          row.addField("pm10", averagePM10);
+        } if (!strcmp(DUST_MODEL, "SDS011/21")) {   
+          if(DEBUG){
+                  if(selected_language == 1){
+                    Serial.println("Measurements from SDS011/21!\n");
+                  } else if(selected_language == 2){
+                    Serial.println("Dane z SDS011/21!\n");
+                  } else {
+                    Serial.println("Measurements from SDS011/21!\n");
+                  }
+                }
+          //row.addField("pm1", averagePM1);
+          row.addField("pm25", averagePM25);
+          row.addField("pm10", averagePM10);
+        } if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+          if(DEBUG){
+                  if(selected_language == 1){
+                    Serial.println("Measurements from HPMA115S0!\n");
+                  } else if(selected_language == 2){
+                    Serial.println("Dane z HPMA115S0!\n");
+                  } else {
+                    Serial.println("Measurements from HPMA115S0!\n");
+                  }
+                }
+          //row.addField("pm1", averagePM1);
           row.addField("pm25", averagePM25);
           row.addField("pm10", averagePM10);
         } else {
@@ -426,9 +453,25 @@ void loop() {
   counter3++;
   if (counter3 >= 220){
 
-    pmMeasurements[iPM][0] = int(calib * PMSdata.PM_AE_UG_1_0);
-    pmMeasurements[iPM][1] = int(calib * PMSdata.PM_AE_UG_2_5);
-    pmMeasurements[iPM][2] = int(calib * PMSdata.PM_AE_UG_10_0);
+    if (!strcmp(DUST_MODEL, "PMS7003")) {
+      pmMeasurements[iPM][0] = int(calib * PMSdata.PM_AE_UG_1_0);
+      pmMeasurements[iPM][1] = int(calib * PMSdata.PM_AE_UG_2_5);
+      pmMeasurements[iPM][2] = int(calib * PMSdata.PM_AE_UG_10_0);
+    }
+    if (!strcmp(DUST_MODEL, "SDS011/21")) {   
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * SDSdata.pm25);
+      pmMeasurements[iPM][2] = int(calib * SDSdata.pm10);
+    }
+    if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * pm25); // do poprawki !!
+      pmMeasurements[iPM][2] = int(calib * pm10);
+    } else {
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * 0);
+      pmMeasurements[iPM][2] = int(calib * 0);
+    }
     
     if(DEBUG){
       Serial.print("\n\nNumer pomiaru PM: ");

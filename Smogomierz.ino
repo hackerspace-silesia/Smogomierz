@@ -67,7 +67,7 @@ char device_name[20];
 int pmMeasurements[10][3];
 
 int counter1, counter3, counter4, iPM = 0;
-int counter2 = -2600;
+int counter2 = -1000;
 int averagePM1, averagePM25, averagePM10 = 0;
 float calib = 1;
 
@@ -179,9 +179,12 @@ void setup() {
     }
     if (!strcmp(DUST_MODEL, "SDS011/21")) {   
       sds.begin();  //SDS011/21 sensor begin
+      Serial.println(sds.queryFirmwareVersion().toString()); // prints firmware version
+      Serial.println(sds.setQueryReportingMode().toString()); // ensures sensor is in 'query' reporting mode
+      Serial.println(sds.setContinuousWorkingPeriod().toString()); // ensures sensor has continuous working period - default but not recommended
     }
     if (!strcmp(DUST_MODEL, "HPMA115S0")) {
-      HPMASerial.begin(9600); //HPMA115S0 serial
+      HPMASerial.begin(9600); //HPMA115S0 serial // do poprawki !!
     }
     delay(10);
     
@@ -245,7 +248,9 @@ void loop() {
   delay(10);
   
   pms.read(PMSdata);
-  PmResult SDSdata = sds.readPm();
+  delay(10);
+  
+  PmResult SDSdata = sds.queryPm();
   delay(10);
   
   //webserverShowSite(WebServer, BMESensor, PMSdata, SDSdata); // dodać HPMAdata !!
@@ -256,7 +261,8 @@ void loop() {
   
   //execute every ~1 minute - 650
   counter1++;
-  if (counter1 >= (650*AIRMONITOR_TIME)){
+  if (counter1 >= (110*AIRMONITOR_TIME)){
+    if (AIRMONITOR_ON == 1){
     sendDataToAirMonitor(BMESensor, averagePM1, averagePM25, averagePM10);
     if(DEBUG){
       if(selected_language == 1){
@@ -266,13 +272,15 @@ void loop() {
       } else {
         Serial.println("Sending measurement data to the AirMonitor service!\n");
       } 
-    }
+    }}
     counter1 = 0;  
   }
 
+  
   //execute every ~1 minute - 650
   counter4++;
-  if (counter4 >= (650*THINGSPEAK_TIME)){
+  if (counter4 >= (110*THINGSPEAK_TIME)){
+    if (THINGSPEAK_ON == 1){
     sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
     if(DEBUG){
       if(selected_language == 1){
@@ -282,14 +290,14 @@ void loop() {
       } else {
         Serial.println("Sending measurement data to the Thingspeak service!\n");
       } 
-    }
+    }}
     counter4 = 0;  
   }
   
   //execute every ~1 minute - 650
   counter2++;
-  if(counter2 >= (650*INFLUXDB_TIME)){
-    if (INFLUXDB_ON){
+  if(counter2 >= (110*INFLUXDB_TIME)){
+    if (INFLUXDB_ON == 1){
       Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
       if (influxdb.opendb(DATABASE, DB_USER, DB_PASSWORD)!=DB_SUCCESS) {
         Serial.println("Opening database failed");
@@ -318,7 +326,7 @@ void loop() {
                     Serial.println("Measurements from SDS011/21!\n");
                   }
                 }
-          //row.addField("pm1", averagePM1);
+          row.addField("pm1", averagePM1);
           row.addField("pm25", averagePM25);
           row.addField("pm10", averagePM10);
         } if (!strcmp(DUST_MODEL, "HPMA115S0")) {
@@ -331,23 +339,10 @@ void loop() {
                     Serial.println("Measurements from HPMA115S0!\n");
                   }
                 }
-          //row.addField("pm1", averagePM1);
-          row.addField("pm25", averagePM25);
-          row.addField("pm10", averagePM10);
-        } else {
-          if(DEBUG){
-                  if(selected_language == 1){
-                    Serial.println("No measurements from PMS7003!\n");
-                  } else if(selected_language == 2){
-                    Serial.println("Brak danych z PMS7003!\n");
-                  } else {
-                    Serial.println("No measurements from PMS7003!\n");
-                  }
-                }
           row.addField("pm1", averagePM1);
           row.addField("pm25", averagePM25);
           row.addField("pm10", averagePM10);
-          }
+        }
         if (!strcmp(THP_MODEL, "BME280")) {
           if (checkBmeStatus() == true){
             if(DEBUG){
@@ -451,23 +446,29 @@ void loop() {
   //execute every ~20 sec (około 20 sekund) - 220
   //execute every ~30 sec (około 30 sekund) - 330
   counter3++;
-  if (counter3 >= 220){
+  if (counter3 >= 36){
 
     if (!strcmp(DUST_MODEL, "PMS7003")) {
       pmMeasurements[iPM][0] = int(calib * PMSdata.PM_AE_UG_1_0);
       pmMeasurements[iPM][1] = int(calib * PMSdata.PM_AE_UG_2_5);
       pmMeasurements[iPM][2] = int(calib * PMSdata.PM_AE_UG_10_0);
     }
-    if (!strcmp(DUST_MODEL, "SDS011/21")) {   
-      pmMeasurements[iPM][0] = int(calib * 0);
-      pmMeasurements[iPM][1] = int(calib * SDSdata.pm25);
-      pmMeasurements[iPM][2] = int(calib * SDSdata.pm10);
+    if (!strcmp(DUST_MODEL, "SDS011/21")) {
+      if (SDSdata.isOk()) {
+        pmMeasurements[iPM][0] = int(calib * 0);
+        pmMeasurements[iPM][1] = int(calib * (SDSdata.pm25));
+        pmMeasurements[iPM][2] = int(calib * (SDSdata.pm10));
+      } else {
+        Serial.print("Could not read values from sensor, reason: ");
+        Serial.println(SDSdata.statusToString());
+        }
     }
     if (!strcmp(DUST_MODEL, "HPMA115S0")) {
       pmMeasurements[iPM][0] = int(calib * 0);
       pmMeasurements[iPM][1] = int(calib * pm25); // do poprawki !!
-      pmMeasurements[iPM][2] = int(calib * pm10);
-    } else {
+      pmMeasurements[iPM][2] = int(calib * pm10); // do poprawki !!
+    } 
+    if (!strcmp(DUST_MODEL, "Non")) {
       pmMeasurements[iPM][0] = int(calib * 0);
       pmMeasurements[iPM][1] = int(calib * 0);
       pmMeasurements[iPM][2] = int(calib * 0);

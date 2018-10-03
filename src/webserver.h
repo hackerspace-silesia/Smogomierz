@@ -980,12 +980,11 @@ void handle_api() {
       JsonObject& json = jsonBuffer.createObject();
 
         json["device_name"] = device_name;
-		if (!strcmp(DUST_MODEL, "PMS7003")){
+		if (strcmp(DUST_MODEL, "Non") != 0){
         	json["pm1"] = averagePM1;
         	json["pm25"] = averagePM25;
         	json["pm10"] = averagePM10;
 		}
-		
 		if (!strcmp(THP_MODEL, "BME280")) {
 	        if (checkBmeStatus()) {
 				json["temperature"] = float(BMESensor.temperature);

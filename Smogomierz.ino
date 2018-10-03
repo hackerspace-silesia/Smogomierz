@@ -61,7 +61,7 @@ PMS pms(PMSSerial);
 PMS::DATA PMSdata;
 
 // SDS011/21 config
-SdsDustSensor sds(13, 14);  // TX - D7 and RX - D8 pins
+SdsDustSensor sds(13, 15);  // TX - D7 and RX - D8 pins
 
 // HPMA115S0 config
 

@@ -37,5 +37,5 @@ extern float calib1;
 extern float calib2;
 extern int selected_language;
 
-const char SOFTWAREVERSION[40] = "2.4.7 build 21:45_3.10.2018";
+const char SOFTWAREVERSION[40] = "2.4.7 build 23:40_3.10.2018";
 const char HARDWAREVERSION[40] = "1.0 - ESP8266";

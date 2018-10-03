@@ -8,6 +8,7 @@
 - [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
 - [ ] Aktualizacja ArduinoJson do wersji 6 lub nowszej - [dokumentacja ArduinoJson 6](https://arduinojson.org/v6/doc/upgrade/)
 - [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach
+- [ ] Automatyczne aktualizacje oprogramowania mierników
 
 
 ===

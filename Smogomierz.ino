@@ -27,12 +27,14 @@
   BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   PMS7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
+  SDS011/21: VIN - 5V; GND - G; TX - D7; RX - D8
   
 
   Connection of sensors on ESP8266 NodeMCU:
   BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   PMS7003:/White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
+  SDS011/21: VIN - 5V; GND - G; TX - D7; RX - D8
   
 */
 
@@ -52,14 +54,14 @@ Adafruit_BMP280 bmp;
 HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
 
 // Serial for PM detector
-SoftwareSerial mySerial(5, 4); // TX - D1 and RX - D2 pins 
+SoftwareSerial PMSSerial(5, 4); // TX - D1 and RX - D2 pins 
 
 // PMS7003 config
-PMS pms(mySerial);
+PMS pms(PMSSerial);
 PMS::DATA PMSdata;
 
 // SDS011/21 config
-SdsDustSensor sds(5, 4);  // TX - D1 and RX - D2 pins
+SdsDustSensor sds(13, 14);  // TX - D7 and RX - D8 pins
 
 // HPMA115S0 config
 
@@ -175,7 +177,7 @@ void setup() {
      delay(10);
      
     if (!strcmp(DUST_MODEL, "PMS7003")) {
-      mySerial.begin(9600); //PMS7003 serial
+      PMSSerial.begin(9600); //PMS7003 serial
     }
     if (!strcmp(DUST_MODEL, "SDS011/21")) {   
       sds.begin();  //SDS011/21 sensor begin

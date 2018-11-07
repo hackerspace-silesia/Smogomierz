@@ -35,10 +35,15 @@ bool loadConfig() {
   // use configFile.readString instead.
   configFile.readBytes(buf.get(), size);
 
-  StaticJsonBuffer<800> jsonBuffer;
-  JsonObject& json = jsonBuffer.parseObject(buf.get());
+  //StaticJsonBuffer<1000> jsonBuffer;
+  //JsonObject& json = jsonBuffer.parseObject(buf.get());
+  
+  StaticJsonDocument<1000> jsonBuffer;
+  deserializeJson(jsonBuffer, buf.get());
+  JsonObject json = jsonBuffer.as<JsonObject>();
 
-  if (!json.success()) {
+  //if (!json.success()) {
+  if (json.isNull()) {
     Serial.println("Failed to parse config file");
     return false;
   }
@@ -48,11 +53,15 @@ bool loadConfig() {
   DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
   _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz");
   _safeCpy(LANGUAGE, json["LANGUAGE"], "polish");
-  selected_language = json["selected_language"];
+  SELECTED_LANGUAGE = json["SELECTED_LANGUAGE"];
+  //ADVANCED_OPTIONS_ON = json["ADVANCED_OPTIONS_ON"];
+  AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
   
   _safeCpy(THP_MODEL, json["THP_MODEL"], "Non");
   _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non");
   DISPLAY_PM1 = json["DISPLAY_PM1"];
+  DUST_TIME = json["DUST_TIME"];
+  NUMBEROFMEASUREMENTS = json["NUMBEROFMEASUREMENTS"];
   
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_TIME = json["AIRMONITOR_TIME"];
@@ -90,8 +99,12 @@ bool loadConfig() {
   Serial.println(DEVICENAME);
   Serial.print("Loaded LANGUAGE: ");
   Serial.println(LANGUAGE);
-  Serial.print("Loaded selected_language: ");
-  Serial.println(selected_language);
+  Serial.print("Loaded SELECTED_LANGUAGE: ");
+  Serial.println(SELECTED_LANGUAGE);
+  //Serial.print("Loaded ADVANCED_OPTIONS_ON: ");
+  //Serial.println(ADVANCED_OPTIONS_ON);
+  Serial.print("Loaded AUTOUPDATE_ON: ");
+  Serial.println(AUTOUPDATE_ON);
   
   Serial.print("Loaded THP_MODEL: ");
   Serial.println(THP_MODEL);
@@ -99,6 +112,10 @@ bool loadConfig() {
   Serial.println(DUST_MODEL);
   Serial.print("Loaded DISPLAY_PM1: ");
   Serial.println(DISPLAY_PM1);
+  Serial.print("Loaded DUST_TIME: ");
+  Serial.println(DUST_TIME);
+  Serial.print("Loaded NUMBEROFMEASUREMENTS: ");
+  Serial.println(NUMBEROFMEASUREMENTS);
   
   Serial.print("Loaded AIRMONITOR_ON: ");
   Serial.println(AIRMONITOR_ON);
@@ -157,16 +174,22 @@ bool loadConfig() {
 }
 
 bool saveConfig() {
-  StaticJsonBuffer<800> jsonBuffer;
-  JsonObject& json = jsonBuffer.createObject();
+	StaticJsonDocument<1000> jsonBuffer;
+	JsonObject json = jsonBuffer.to<JsonObject>();
+  //StaticJsonBuffer<1000> jsonBuffer;
+  //JsonObject& json = jsonBuffer.createObject();
   json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
   json["DEVICENAME"] = DEVICENAME;
   json["LANGUAGE"] = LANGUAGE;
-  json["selected_language"] = selected_language;
+  json["SELECTED_LANGUAGE"] = SELECTED_LANGUAGE;
+  //json["ADVANCED_OPTIONS_ON"] = ADVANCED_OPTIONS_ON;
+  json["AUTOUPDATE_ON"] = AUTOUPDATE_ON;
   
   json["THP_MODEL"] = THP_MODEL;
   json["DUST_MODEL"] = DUST_MODEL;
   json["DISPLAY_PM1"] = DISPLAY_PM1;
+  json["DUST_TIME"] = DUST_TIME;
+  json["NUMBEROFMEASUREMENTS"] = NUMBEROFMEASUREMENTS;
   
   json["AIRMONITOR_ON"] = AIRMONITOR_ON;
   json["AIRMONITOR_TIME"] = AIRMONITOR_TIME;
@@ -200,7 +223,8 @@ bool saveConfig() {
     return false;
   }
 
-  json.printTo(configFile);
+  //json.printTo(configFile);
+  serializeJson(json, configFile);
   if (DEBUG) {
     Serial.println("config saved");
   }

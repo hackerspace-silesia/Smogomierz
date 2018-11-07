@@ -1,14 +1,19 @@
 ### TODO
-- [X] Dodanie obsługi SDS011/021
-- [X] Stałe wykonywanie pomiarów z SDS011/021 co minutę
-- [X] Uśrednianie 10 ostatnich pomiarów z SDS011/021
+- [ ] Dodanie obsługi SDS011/021
+- [X] Uśrednianie 10 ostatnich pomiarów PM
+- [X] Możliwość zmiany częstotliwaości wykonywania pomiarów PM
+- [X] Możliwośc wyboru liczny pomiarów do uśredniania
+- [X] Nowy design
 - [ ] Dodanie obsługi Honeywell HPMA115S0-XXX
-- [ ] Stałe wykonywanie pomiarów z HPMA115S0-XXX co minutę
-- [ ] Uśrednianie 10 ostatnich pomiarów z HPMA115S0-XXX
 - [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
-- [ ] Aktualizacja ArduinoJson do wersji 6 lub nowszej - [dokumentacja ArduinoJson 6](https://arduinojson.org/v6/doc/upgrade/)
+- [X] Aktualizacja ArduinoJson do wersji 6 lub nowszej - [dokumentacja ArduinoJson 6](https://arduinojson.org/v6/doc/upgrade/)
 - [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach
-- [ ] Automatyczne aktualizacje oprogramowania mierników
+- [X] Automatyczne aktualizacje oprogramowania mierników – Zakomentowane i wyłączone, bo działają tylko z adresem HTTP - brakuje pamięci w ESP8266
+
+- [ ] Przygotować "czysty" .bin bez obsługi żadnego miernika.
+- [ ] Przygotować oddzielne pliki .bin dla każdej konfiguracji sprzętu
+- [ ] Dodać automatyczną aktualizację oprogramowania po HHTPS z githubu
+- [ ] Przygotowanie aplikacji Smogomierz-firmware-flasher bazującej na [airrohr-firmware-flasher](https://github.com/opendata-stuttgart/airrohr-firmware-flasher)
 
 
 ===
@@ -43,7 +48,7 @@ Jeśli jesteś użytkownikiem urządzenia z systemem iOS, możesz użyć wtyczki
 
 ## Parts / Potrzebne części
 
-https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
+https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/components.md
 
 ![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/schemat.png)
 
@@ -51,9 +56,3 @@ https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
 ### Tested on:
 
 ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
-
-### TODO
-
-### Dodatkowe informacje
-
-"Projekt finansowany ze środków programu ramowego Unii Europejskiej w zakresie badań naukowych i innowacji „Horyzont 2020” na podstawie umowy o udzielenie dotacji nr 709443."

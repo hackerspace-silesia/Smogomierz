@@ -25,17 +25,24 @@ void sendJson(JsonObject& json) {
     client.println("POST /api HTTP/1.1");
     client.println("Content-Type: application/json");
     client.print("Content-Length: ");
-    client.println(json.measureLength());
+    //client.println(json.measureLength());
+	client.println(measureJson(json));
     client.println();
-    json.printTo(client);
+    //json.printTo(client);
+	serializeJson(json, client);
 
     String line = client.readStringUntil('\r');
     // TODO: Support wrong error (!= 200)
 
     if (DEBUG) {
         Serial.print("Length:");
-        Serial.println(json.measureLength());
-        json.prettyPrintTo(Serial);
+		//size_t measureLength() const
+		//size_t measureJson(const StaticJsonDocument& doc);
+		
+        //Serial.println(json.measureLength());
+		Serial.println(measureJson(json));
+		serializeJsonPretty(json, Serial);
+        //json.prettyPrintTo(Serial);
 
         Serial.println(line);
     }
@@ -44,9 +51,10 @@ void sendJson(JsonObject& json) {
 }
 
 void sendPMSData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int averagePM25, int averagePM10) {
-
-    StaticJsonBuffer<400> jsonBuffer;
-    JsonObject& json = jsonBuffer.createObject();
+	StaticJsonDocument<400> jsonBuffer;
+	JsonObject json = jsonBuffer.to<JsonObject>();
+    //StaticJsonBuffer<400> jsonBuffer;
+    //JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
     json["long"] = String(LONGITUDE, 4);
     json["pm1"] = averagePM1;
@@ -57,8 +65,10 @@ void sendPMSData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int aver
 }
 
 void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
-    StaticJsonBuffer<400> jsonBuffer;
-    JsonObject& json = jsonBuffer.createObject();
+	StaticJsonDocument<400> jsonBuffer;
+	JsonObject json = jsonBuffer.to<JsonObject>();
+    //StaticJsonBuffer<400> jsonBuffer;
+    //JsonObject& json = jsonBuffer.createObject();
     json["lat"] = String(LATITUDE, 4);
     json["long"] = String(LONGITUDE, 4);
     json["pressure"] = float(bme.seaLevelForAltitude(MYALTITUDE));

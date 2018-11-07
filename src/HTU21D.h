@@ -5,34 +5,34 @@
   written by : enjoyneering79
   sourse code: https://github.com/enjoyneering/
 
-  This sensor uses I2C bus to communicate, specials pins are required to interface
-  Board:                                    SDA                    SCL
-  Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5
-  Mega2560, Due............................ 20                     21
-  Leonardo, Micro, ATmega32U4.............. 2                      3
-  Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7
-  Blue Pill, STM32F103xxxx boards.......... PB7*                   PB6*
-  ESP8266 ESP-01:.......................... GPIO0/D5               GPIO2/D3
-  NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1
 
-                                           *STM32F103xxxx pins PB6/PB7 are 5v tolerant, but
-                                            bi-directional logic level converter is recommended
+  This chip uses I2C bus to communicate, specials pins are required to interface
+  Board:                                    SDA                    SCL                    Level
+  Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5                     5v
+  Mega2560................................. 20                     21                     5v
+  Due, SAM3X8E............................. 20                     21                     3.3v
+  Leonardo, Micro, ATmega32U4.............. 2                      3                      5v
+  Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7    5v
+  Blue Pill, STM32F103xxxx boards.......... PB7                    PB6                    3.3v/5v
+  ESP8266 ESP-01........................... GPIO0/D5               GPIO2/D3               3.3v/5v
+  NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1               3.3v/5v
+  ESP32.................................... GPIO21/D21             GPIO22/D22             3.3v
 
-  Frameworks & Libraries:
-  ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
-  ESP8266 Core          - https://github.com/esp8266/Arduino
-  ESP8266 I2C lib fixed - https://github.com/enjoyneering/ESP8266-I2C-Driver
-  STM32 Core            - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   Frameworks & Libraries:
+   ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
+   ESP32   Core          - https://github.com/espressif/arduino-esp32
+   ESP8266 Core          - https://github.com/esp8266/Arduino
+   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
-  GNU GPL license, all text above must be included in any redistribution, see link below for details:
-  - https://www.gnu.org/licenses/licenses.html
+   GNU GPL license, all text above must be included in any redistribution,
+   see link for details  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
 
 #ifndef HTU21D_h
 #define HTU21D_h
 
-#if defined(ARDUINO) && ARDUINO >= 100         //arduino core v1.0 or later
+#if defined(ARDUINO) && ((ARDUINO) >= 100)     //arduino core v1.0 or later
 #include <Arduino.h>
 #else
 #include <WProgram.h>
@@ -84,7 +84,7 @@
 #define HTU21D_FORCE_READ_TEMP       0xFE      //force to read temperature, see https://github.com/enjoyneering/HTU21D/pull/3
 #define HTU21D_ERROR                 0xFF      //returns 255, if CRC8 or communication error is occurred
 
-typedef enum
+typedef enum : uint8_t
 {
   HTU21D_RES_RH12_TEMP14 = 0x00,               //resolution, temperature: 14-Bit & humidity: 12-Bit
   HTU21D_RES_RH8_TEMP12  = 0x01,               //resolution, temperature: 12-Bit & humidity: 8-Bit
@@ -93,14 +93,14 @@ typedef enum
 }
 HTU21D_RESOLUTION;
 
-typedef enum
+typedef enum : uint8_t
 {
   HTU21D_TRIGGER_HUMD_MEASURE_HOLD   = 0xE5,   //humidity measurement with hold master
   HTU21D_TRIGGER_HUMD_MEASURE_NOHOLD = 0xF5    //temperature measurement with no hold master
 }
 HTU21D_HUMD_OPERATION_MODE;
 
-typedef enum
+typedef enum : uint8_t
 {
   HTU21D_TRIGGER_TEMP_MEASURE_HOLD     = 0xE3, //temperature measurement with hold master
   HTU21D_TRIGGER_TEMP_MEASURE_NOHOLD   = 0xF3, //temperature measurement with no hold master
@@ -108,7 +108,7 @@ typedef enum
 }
 HTU21D_TEMP_OPERATION_MODE;
 
-typedef enum
+typedef enum : uint8_t
 {
   HTU21D_ON  = 0x04,                           //heater ON
   HTU21D_OFF = 0xFB                            //heater OFF

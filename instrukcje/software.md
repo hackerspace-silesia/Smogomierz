@@ -1,4 +1,4 @@
-# Smogomierz - instalacja orpgoramowania
+# Smogomierz - instalacja oprogramowania
 
 Poniższy opis krok po kroku, przeprowadzi Was przez procedurę instalacji oprogramowania wymaganego do wgrania nowego systemu na mierniki smogu. Całe oprogramowanie jest w pełni darmowe, a jego pobranie nie wymaga żadnej rejestracji i podawania swoich danych.
 

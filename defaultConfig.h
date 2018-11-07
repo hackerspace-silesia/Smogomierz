@@ -4,10 +4,14 @@ bool DEVICENAME_AUTO = true;
 char DEVICENAME[255] = "smogomierz1"; // Bez polskich znakow!! // Without Polish letters!!
 bool DISPLAY_PM1 = false;
 char LANGUAGE[255] = "english"; // english or polish
-int selected_language = 1; // en - 1; pl - 2
+int SELECTED_LANGUAGE = 1; // en - 1; pl - 2
+//bool ADVANCED_OPTIONS_ON = false;
+bool AUTOUPDATE_ON = false;
 
 char THP_MODEL[255] = "Non";
 char DUST_MODEL[255] = "Non";
+int DUST_TIME = 3;
+int NUMBEROFMEASUREMENTS = 10;
 
 bool AIRMONITOR_ON = false;
 int AIRMONITOR_TIME = 10;
@@ -23,7 +27,7 @@ char THINGSPEAK_API_KEY[255] = "API-KEY";
 int THINGSPEAK_CHANNEL_ID = 0;
 
 bool INFLUXDB_ON = false;
-int INFLUXDB_TIME = 1;
+int INFLUXDB_TIME = 20;
 char INFLUXDB_HOST[255] = "INFLUXDB_ADRESS";
 uint16_t INFLUXDB_PORT = 8086;
 

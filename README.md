@@ -29,9 +29,10 @@ Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogom
 
 Smogomierz obsługuje Zeroconf(Bonjour). Pozwala on na połączenie się z miernikiem będącym w naszej sieci, bez znajomości jego adresu IP. Po połączeniu miernika smogu z naszą siecią WiFi, możemy otworzyć przeglądarkę internetową i wpisać adres: "Smogomierz-deviceName.local". Zeroconf do działania potrzebuje doinstalowania na komputerze z Windowsem aplikacji [Bonjour](https://support.apple.com/kb/DL999?locale=pl_PL), a pod Linuksem – Avahi. 
 
-{::nomarkdown}
-<div class='wplacam_content' data-size='[716,206]' data-src='https://platnosci.ngo.pl/Podmiot/ShowBanners?kampaniaid=1570&wersja=1' data-size='large' data-charactername='1570_full_iframe_container_1' data-refresh='false' data-title=''></div><script src='https://platnosci.ngo.pl/Scripts/App/genscript.js'></script>
-{:/}
+
+<div class='wplacam_content' data-size='[716,206]' data-src='https://platnosci.ngo.pl/Podmiot/ShowBanners?kampaniaid=1570&wersja=1' data-size='large' data-charactername='1570_full_iframe_container_1' data-refresh='false' data-title=''></div>
+<script src='https://platnosci.ngo.pl/Scripts/App/genscript.js'></script>
+
 
 ### Aktualizacje oprogramowania
 

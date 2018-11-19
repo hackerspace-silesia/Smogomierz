@@ -7,6 +7,8 @@ extern char LANGUAGE[255];
 
 extern char THP_MODEL[255];
 extern char DUST_MODEL[255];
+extern int DUST_TIME;
+extern int NUMBEROFMEASUREMENTS;
 
 extern bool AIRMONITOR_ON;
 extern int AIRMONITOR_TIME;
@@ -35,6 +37,7 @@ extern bool DEBUG;
 extern char MODEL[255];
 extern float calib1;
 extern float calib2;
-extern int selected_language;
+extern int SELECTED_LANGUAGE;
 
-const char SOFTWAREVERSION[40] = "2.4.3 build 10:30_30.08.2018";
+const char SOFTWAREVERSION[40] = "2.4.5 build 21:30_18.11.2018";
+const char HARDWAREVERSION[40] = "1.0 - ESP8266";

@@ -1,6 +1,6 @@
 # Smogomierz - podłączenie elektroniki
 
-Poniższy opis krok po kroku, przeprowadzi Was przez procedurę podłączenia wszystkich czujników obsługiwanych przez nasz miernik smogu. Listę części, wraz z linkami do przykładowych sklepów, gdzie można je kupić znajdziecie pod adresem: https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
+Poniższy opis krok po kroku, przeprowadzi Was przez procedurę podłączenia wszystkich czujników obsługiwanych przez nasz miernik smogu. Listę części, wraz z linkami do przykładowych sklepów, gdzie można je kupić znajdziecie pod adresem: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/components.md
 
 Całościowy schemat podłączenia:
 
@@ -48,7 +48,7 @@ Podobnie robimy z GND. Jednak w tym wypadku nie musimy ręcznie rozdzielać masy
 
 Obudowę miernika smogu stanowi puszka natynkowa IP55. Daje ona dobre zabezpieczenie przeciwko niekorzystnym warunkom atmosferycznym. Puszka ma wymiary 86x86mm i posiada 6 gumowych zatyczek. W miejsce dwóch z nich wkleiliśmy klejem na gorąco elementy wydrukowane na drukarce 3D. Pozwalają one na lepszy przepływ powietrza w obudowie. Można dodać do obudowy niewielki wiatraczek zasilany przez 5V.
 
-![Obudowa](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Obudowa1.jpg)
+![Obudowa](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Obudowa2.jpg)
 ![Zasilanie_obudowa1](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Zasilanie_obudowa1.jpg)
 
 ## Połączenie całości

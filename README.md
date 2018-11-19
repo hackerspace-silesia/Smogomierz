@@ -1,12 +1,12 @@
 # Smogomierz
 
-Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
+Smogomierz to niekomercyjny projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
 
 Miernik wysyła dane na stronę - [mapa.airmonitor.pl](http://mapa.airmonitor.pl) oraz ma możliwość przesyłania pomiarów do serwisu [ThingSpeak](https://thingspeak.com) i baz danych [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/).
 
-Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogomierz-deviceName". "deviceName" generowane jest na podstawie unikalnego numeru Chip ID płytki ESP8266. Na początku pliku defaultConfig.h, możemy zmienić wartość "DEVICENAME_AUTO" z "true" na "false". Wówczas zamiast unikalnego numery Chip ID używana będzie nazwa z paramatru "DEVICENAME" w pliku defaultConfig.h. 
+Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogomierz-deviceName". "deviceName" generowane jest na podstawie unikalnego numeru Chip ID płytki ESP8266. Na początku pliku defaultConfig.h, możemy zmienić wartość "DEVICENAME_AUTO" z "true" na "false". Wówczas zamiast unikalnego numery Chip ID używana będzie nazwa z paramatru "DEVICENAME" z pliku defaultConfig.h. 
 
-Smogomierz obsługuje Zeroconf(Bonjour). Pozwala on na połączenie się z miernikiem będącym w naszej sieci, bez znajomości jego adresu IP. Po połączeniu miernika smogu z naszą siecią WiFi, możemy otworzyć przeglądarkę internetową i wpisać adres: "Smogomierz-deviceName.local". Zeroconf do działania potrzebuje doinstalowania na komputerze z Windowsem aplikacji [Bonjour](https://support.apple.com/kb/DL999?locale=pl_PL), a pod Linuksem – Avahi. 
+Smogomierz obsługuje Zeroconf(Bonjour). Pozwala on na połączenie się z miernikiem będącym w naszej sieci, bez znajomości jego adresu IP. Po połączeniu Smogomierza z naszą siecią WiFi, możemy otworzyć przeglądarkę internetową i wpisać adres: "Smogomierz-deviceName.local". Zeroconf do działania potrzebuje doinstalowania na komputerze z Windowsem aplikacji [Bonjour](https://support.apple.com/kb/DL999?locale=pl_PL), a pod Linuksem – Avahi. System macOS(oraz iOS) nie wydama instalacji dodatkowego oprogramowania. 
 
 ### Aktualizacje oprogramowania
 
@@ -14,7 +14,7 @@ Zakładka Update w panelu Smogomierza pozwala na wgrywanie plików .bin z nową 
 
 ### Obsługa HomeKit dla systemu iOS
 
-Jeśli jesteś użytkownikiem urządzenia z systemem iOS, możesz użyć wtyczki dla [Homebridge](https://github.com/nfarina/homebridge), aby mieć dostęp do danych pomiarowych w aplikacji Dom na swoim iPhonie lub iPadzie. Wtyczka Homebridge-Smogomierz dostępna jest [tutaj](https://github.com/bfaliszek/homebridge-smogomierz).
+Jeśli jesteś użytkownikiem urządzenia z systemem iOS, możesz użyć wtyczki dla [Homebridge](https://github.com/nfarina/homebridge), aby mieć dostęp do danych pomiarowych w aplikacji Dom na swoim iPhonie, iPadzie lub na Macu. Wtyczka Homebridge-Smogomierz dostępna jest [tutaj](https://github.com/bfaliszek/homebridge-smogomierz).
 
 ## Instrukcje
 
@@ -27,7 +27,7 @@ Jeśli jesteś użytkownikiem urządzenia z systemem iOS, możesz użyć wtyczki
 
 ## Parts / Potrzebne części
 
-https://github.com/hackerspace-silesia/Smogomierz/blob/master/components.md
+https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/components.md
 
 ![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/schemat.png)
 
@@ -38,6 +38,9 @@ ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 
 ### TODO
 
-### Dodatkowe informacje
+- [ ] Nowy design
+- [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
+- [ ] Automatyczne aktualizacje oprogramowania mierników
+- [ ] Przygotowanie aplikacji Smogomierz-firmware-flasher bazującej na [airrohr-firmware-flasher](https://github.com/hackerspace-silesia/airrohr-firmware-flasher)
 
-"Projekt finansowany ze środków programu ramowego Unii Europejskiej w zakresie badań naukowych i innowacji „Horyzont 2020” na podstawie umowy o udzielenie dotacji nr 709443."
+

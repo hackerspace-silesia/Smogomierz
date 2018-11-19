@@ -8,19 +8,21 @@ Lista elementów potrzebnych do zbudowania miernika smogu. Podane linki to przyk
 
 ## Mierniki
 
-**PMS7003** – Laserowy miernik pyłu PM1, PM2.5 i PM10 – https://www.aliexpress.com/item/1-set-Laser-PM2-5-PMS7003-G7-High-precision-laser-dust-concentration-sensor-digital-dust-particles/32826370928.html 
+**PMS5003/PMS7003** – Laserowy miernik pyłu PM1, PM2.5 i PM10 – https://www.aliexpress.com/item/1-set-Laser-PM2-5-PMS7003-G7-High-precision-laser-dust-concentration-sensor-digital-dust-particles/32826370928.html 
 
 **BME280** – Miernik temperatury, wilgotności - ciśnienia powietrza – https://www.aliexpress.com/item/High-Accuracy-BME280-Digital-Sensor-Temperature-Humidity-Barometric-Pressure-Sensor-Module-GY-BME280-I2C-SPI-1/32672210336.html 
 
 ## Obudowa
 
-Do wyboru mamy dwie możliwości. Polecamy zastosowanie obudowy **IP56**. Nie wymaga ona drukowania elementów na drukarce 3D. Niezależnie od wyboru.
+Do wyboru mamy trzy obudowy. Polecamy zastosowanie modelu **IP67**.
 
-+ **Obudowa IP55**, minimum 86x86 mm – http://allegro.pl/puszka-natynkowa-czarna-ep-lux-ip55-0226-02-86x86x-i7038770485.html 
++ **Obudowa IP67**, 118 x 78 x 55 mm – https://botland.com.pl/pl/obudowy/9051-obudowa-plastikowa-kradex-z57js-abs-z-uszczelka-i-mosieznymi-tulejkami-ip67-118x78x55mm-jasna.html?search_query=Z57J&results=2
 
-	Dwa element umożliwiający przepływ powietrza przez obudowę do wydrukowania na drukarce 3D / Two 3D printed parts – https://github.com/hackerspace-silesia/Smogomierz/blob/master/80x80x40mm.stl
++ **Obudowa IP55**, 118 x 78 x 55 mm – https://botland.com.pl/pl/obudowy/6235-obudowa-plastikowa-kradex-z57j-118x78x55mm-jasna.html?search_query=z57j&results=2
 
-+ **Obudowa IP56**, 120x80x50mm – http://allegro.pl/puszka-hermetyczna-ip56-120x80x50mm-przezroczysta-i6661288346.html
++ **Obudowa IP56**, 120 x 80 x 50 mm – http://allegro.pl/puszka-hermetyczna-ip56-120x80x50mm-przezroczysta-i6661288346.html
+
+	Opcjonalne, choć zalecane, dwa element chroniące otwory umożliwiające przepływ powietrza przez obudowę. Do wydrukowania na drukarce 3D / Two 3D printed parts – https://github.com/hackerspace-silesia/Smogomierz/blob/master/80x80x40mm.stl
 
 ## Pozostałe części
 
@@ -32,4 +34,4 @@ Do wyboru mamy dwie możliwości. Polecamy zastosowanie obudowy **IP56**. Nie wy
 
 ## Narzędzia
 
-Lutownica(wraz z cyną) oraz pistolet do kleju na gorąco oraz nóż do tapet, do zlutowania, sklejenia i wycięcia niektórych z wymienionych wyżej elementów. W przypadku obudowy IP56 przyda się również wiertarka. 
+Lutownica(wraz z cyną) oraz pistolet do kleju na gorąco i wiertarka.

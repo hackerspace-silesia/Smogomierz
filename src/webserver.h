@@ -1,10 +1,11 @@
+#include "ArduinoJson.h" // 6.5.0 beta or later !!!
 
 void handle_root () {
 	String message;
-	if(selected_language == 1){
+	if(SELECTED_LANGUAGE == 1){
         	message += "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Measurements</title>";
-	        message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
-	        message += "</head><body>";
+			message += "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous'>";
+			message += "</head><body>";
 	        message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Measurements</a>";
 	        message += "<a href='/config' class='navbar-brand'>Config</a>";
 	        message += "<a href='/update' class='navbar-brand'>Update</a>";
@@ -41,6 +42,19 @@ void handle_root () {
 		        message += (myHTU21D.readTemperature()-((100-myHTU21D.readCompensatedHumidity())/5));
 		        message += " °C</h3>";
 		        }
+			} else if (!strcmp(THP_MODEL, "DHT22")) {
+		        if (checkDHT22Status()) {
+		        message += "<h2>Weather:</h2>";
+		        message += "<h3>Temperature: ";
+		        message += (dht.readTemperature());
+		        message += " °C</h3>";
+		        message += "<h3>Humidity: ";
+		        message += (dht.readHumidity());
+		        message += " %</h3>";
+		        message += "<h3>Dew point: ";
+		        message += (dht.readTemperature()-((100-dht.readHumidity())/5));
+		        message += " °C</h3>";
+		        }
 			} else if (!strcmp(THP_MODEL, "BMP280")) {
 				if (checkBmpStatus()) {
 		        message += "<h2>Weather:</h2>";
@@ -52,9 +66,9 @@ void handle_root () {
 		        message += " hPa</h3>";
 			}}
 			
-	} else if(selected_language == 2){
+	} else if (SELECTED_LANGUAGE == 2){
         	message += "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Pomiary</title>";
-	        message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
+			message += "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous'>";
 	        message += "</head><body>";
 	        message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Pomiary</a>";
 	        message += "<a href='/config' class='navbar-brand'>Konfiguracja</a>";
@@ -92,6 +106,19 @@ void handle_root () {
 					        message += (myHTU21D.readTemperature()-((100-myHTU21D.readHumidity())/5));
 					        message += " °C</h3>";
 					        }
+			} else if (!strcmp(THP_MODEL, "DHT22")) {
+				if (checkDHT22Status()) {
+					        message += "<h2>Pogoda:</h2>";
+					        message += "<h3>Temperatura: ";
+					        message += (dht.readTemperature());
+					        message += " °C</h3>";
+					        message += "<h3>Wilgotność: ";
+					        message += (dht.readHumidity());
+					        message += " %</h3>";
+					        message += "<h3>Punkt rosy: ";
+					        message += (dht.readTemperature()-((100-dht.readHumidity())/5));
+					        message += " °C</h3>";
+					        }
 			} else if (!strcmp(THP_MODEL, "BMP280")) {
 				if (checkBmpStatus()) {
 		        message += "<h2>Pogoda:</h2>";
@@ -102,66 +129,14 @@ void handle_root () {
 		        message += ((bmp.readPressure())/100);
 		        message += " hPa</h3>";
 			}}
-	} else {
-    	message += "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Measurements</title>";
-        message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
-        message += "</head><body>";
-        message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Measurements</a>";
-        message += "<a href='/config' class='navbar-brand'>Config</a>";
-        message += "<a href='/update' class='navbar-brand'>Update</a>";
-        message += "</div></nav>";
-        message += "<main role='main' class='container'><div class='jumbotron'>";
-        message += "<center><h1>Smogomierz</h1><br>";
-		
-		if (!strcmp(THP_MODEL, "BME280")) {
-	        if (checkBmeStatus()) {
-	        message += "<h2>Weather:</h2>";
-	        message += "<h3>Temperature: ";
-	        message += (BMESensor.temperature);
-	        message += " °C</h3>";
-	        message += "<h3>Pressure: ";
-	        message += (BMESensor.seaLevelForAltitude(MYALTITUDE));
-	        message += " hPa</h3>";
-	        message += "<h3>Humidity: ";
-	        message += (BMESensor.humidity);
-	        message += " %</h3>";
-	        message += "<h3>Dew point: ";
-	        message += (BMESensor.temperature-((100-BMESensor.humidity)/5));
-	        message += " °C</h3>";
-	        }
-		} else if (!strcmp(THP_MODEL, "HTU21")) {
-	        if (checkHTU21DStatus()) {
-	        message += "<h2>Weather:</h2>";
-	        message += "<h3>Temperature: ";
-	        message += (myHTU21D.readTemperature());
-	        message += " °C</h3>";
-	        message += "<h3>Humidity: ";
-	        message += (myHTU21D.readCompensatedHumidity());
-	        message += " %</h3>";
-	        message += "<h3>Dew point: ";
-	        message += (myHTU21D.readTemperature()-((100-myHTU21D.readCompensatedHumidity())/5));
-	        message += " °C</h3>";
-	        }
-		} else if (!strcmp(THP_MODEL, "BMP280")) {
-			if (checkBmpStatus()) {
-	        message += "<h2>Weather:</h2>";
-	        message += "<h3>Temperature: ";
-	        message += (bmp.readTemperature());
-	        message += " °C</h3>";
-	        message += "<h3>Pressure: ";
-	        message += ((bmp.readPressure())/100);
-	        message += " hPa</h3>";
-		}}
-	} 
+	}
       
-	  if (!strcmp(DUST_MODEL, "PMS7003")) {
-		  if(selected_language == 1){
+	  if (strcmp(DUST_MODEL, "Non")) {
+		  if(SELECTED_LANGUAGE == 1){
 			  message += "<p><h2>Air pollution:</h2>";
-		  } else if(selected_language == 2){
-			  message += "<p><h2>Pomiary zanieczyszczeń:</h2>";} 
-			  else {
-				  message += "<p><h2>Air pollution:</h2>";
-			  }
+		  } else if(SELECTED_LANGUAGE == 2){
+			  message += "<p><h2>Pomiary zanieczyszczeń:</h2>";
+		  } 
 		  
 	      if (DISPLAY_PM1){
 	          message += "<h3>PM1: ";
@@ -203,8 +178,6 @@ void handle_root () {
 	        message += averagePM10;
 	        message += " µg/m³</h3>";
 			message += "</font>";
-	  } else {
-		  //Data from other Dust sensor
 	  }
 
   if(AIRMONITOR_GRAPH_ON){
@@ -213,13 +186,13 @@ void handle_root () {
       message += (String(LATITUDE, 4));
       message += ("&var-longitude=");
       message += (String(LONGITUDE, 4));
-      message += ("&refresh=1m&panelId=14' width='450' height='510' frameborder='0'></iframe>");
+      message += ("&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>");
       message += (" ");
       message += ("<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude=");
       message += (String(LATITUDE, 4));
       message += ("&var-longitude=");
       message += (String(LONGITUDE, 4));
-      message += ("&refresh=1m&panelId=13' width='450' height='510' frameborder='0'></iframe>");
+      message += ("&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>");
   }
   if(THINGSPEAK_GRAPH_ON){
       message += ("<hr>");
@@ -250,7 +223,11 @@ void handle_root () {
       message += (THINGSPEAK_CHANNEL_ID);
       message += ("/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Wilgotno%C5%9B%C4%87&type=line&update=15'></iframe>");
     }
-    message += "<br><hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form></body></html>";
+    message += "<br><hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form>";
+	message += "<script src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous'></script>";
+	message += "<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js' integrity='sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49' crossorigin='anonymous'></script>";
+	message += "<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js' integrity='sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy' crossorigin='anonymous'></script>";
+	message += "</body></html>";
     WebServer.send(200, "text/html", message);
   }
 
@@ -274,15 +251,12 @@ String _addBoolSelect(const String &key, const bool &value) {
     String input = "<select name='";
     input += key;
     input += "'>";
-	if(selected_language == 1){
+	if(SELECTED_LANGUAGE == 1){
     	input += _addOption("yes", "Yes", selectValue);
     	input += _addOption("no", "No", selectValue);
-	} else if(selected_language == 2){
+	} else if(SELECTED_LANGUAGE == 2){
     	input += _addOption("yes", "Tak", selectValue);
     	input += _addOption("no", "Nie", selectValue);
-	} else {
-    	input += _addOption("yes", "Yes", selectValue);
-    	input += _addOption("no", "No", selectValue);
 	}
     input += "</select><br />";
     return input;
@@ -292,7 +266,7 @@ String _addModelSelect(const String &key, const String &value) {
     String input = "<select name='";
     input += key;
     input += "'>";
-	if(selected_language == 1){
+	if(SELECTED_LANGUAGE == 1){
     	//input += _addOption("black", "Case 86x86/120x80x50", value);
     	input += _addOption("red", "Without calibration", value);
 		if (!strcmp(THP_MODEL, "BME280")){
@@ -301,7 +275,10 @@ String _addModelSelect(const String &key, const String &value) {
 		if (!strcmp(THP_MODEL, "HTU21")){
 		input += _addOption("white", "Automatic calibration", value);
 		}
-	} else if(selected_language == 2){
+		if (!strcmp(THP_MODEL, "DHT22")){
+		input += _addOption("white", "Automatic calibration", value);
+		}
+	} else if(SELECTED_LANGUAGE == 2){
 	    //input += _addOption("black", "Obudowa 86x86/120x80x50", value);
 	    input += _addOption("red", "Bez kalibracji", value);
 		if (!strcmp(THP_MODEL, "BME280")){
@@ -310,16 +287,10 @@ String _addModelSelect(const String &key, const String &value) {
 		if (!strcmp(THP_MODEL, "HTU21")){
 		input += _addOption("white", "Automatyczna kalibracja", value);
 		}
-	} else {
-	    //input += _addOption("black", "Case 86x86/120x80x50", value);
-    	input += _addOption("red", "Without calibration", value);
-		if (!strcmp(THP_MODEL, "BME280")){
-		input += _addOption("white", "Automatic calibration", value);
+		if (!strcmp(THP_MODEL, "DHT22")){
+		input += _addOption("white", "Automatyczna kalibracja", value);
 		}
-		if (!strcmp(THP_MODEL, "HTU21")){
-		input += _addOption("white", "Automatic calibration", value);
-		}
-	}
+	} 
     input += "</select><br />";
     return input;
 }
@@ -328,22 +299,19 @@ String _addTHP_MODELSelect(const String &key, const String &value) {
     String input = "<select name='";
     input += key;
     input += "'>";
-	if(selected_language == 1){
+	if(SELECTED_LANGUAGE == 1){
     	input += _addOption("BME280", "BME280", value);
 		input += _addOption("HTU21", "SHT21/HTU21D", value);
+		input += _addOption("DHT22", "DHT22", value);
 		input += _addOption("BMP280", "BMP280", value);
 		input += _addOption("Non", "Without sensor", value);
-	} else if(selected_language == 2){
+	} else if(SELECTED_LANGUAGE == 2){
     	input += _addOption("BME280", "BME280", value);
 		input += _addOption("HTU21", "SHT21/HTU21D", value);
+		input += _addOption("DHT22", "DHT22", value);
 		input += _addOption("BMP280", "BMP280", value);
 		input += _addOption("Non", "Bez miernika", value);
-	} else {
-    	input += _addOption("BME280", "BME280", value);
-		input += _addOption("HTU21", "SHT21/HTU21D", value);
-		input += _addOption("BMP280", "BMP280", value);
-		input += _addOption("Non", "Without sensor", value);
-	}
+	} 
     input += "</select><br />";
     return input;
 }
@@ -352,15 +320,12 @@ String _addDUST_MODELSelect(const String &key, const String &value) {
     String input = "<select name='";
     input += key;
     input += "'>";
-	if(selected_language == 1){
-    	input += _addOption("PMS7003", "PMS7003", value);
+	if(SELECTED_LANGUAGE == 1){
+    	input += _addOption("PMS7003", "PMS5003/7003", value);
 		input += _addOption("Non", "Without sensor", value);
-	} else if(selected_language == 2){
-	    input += _addOption("PMS7003", "PMS7003", value);
+	} else if(SELECTED_LANGUAGE == 2){
+	    input += _addOption("PMS7003", "PMS5003/7003", value);
 		input += _addOption("Non", "Bez miernika", value);
-	} else {
-    	input += _addOption("PMS7003", "PMS7003", value);
-		input += _addOption("Non", "Without sensor", value);
 	}
     input += "</select><br />";
     return input;
@@ -370,15 +335,12 @@ String _addLanguageSelect(const String &key, const String &value) {
     String input = "<select name='";
     input += key;
     input += "'>";
-	if(selected_language == 1){
+	if(SELECTED_LANGUAGE == 1){
 	    input += _addOption("polish", "polish", value);
 	    input += _addOption("english", "english", value);
-	} else if(selected_language == 2){
+	} else if(SELECTED_LANGUAGE == 2){
 	    input += _addOption("polish", "polski", value);
 	    input += _addOption("english", "angielski", value);
-	} else {
-    	input += _addOption("polish", "polish", value);
-    	input += _addOption("english", "english", value);
 	}
     input += "</select><br />";
     return input;
@@ -436,20 +398,18 @@ String _addFloatInput(const String &key, const double &value, const int &precisi
 }
 
 String _addSubmit() {
-	if(selected_language == 1){
+	if(SELECTED_LANGUAGE == 1){
 		return "<input type='submit' class='btn btn-outline-danger' value='Save' /><br /><br />";
-	} else if(selected_language == 2){
+	} else if(SELECTED_LANGUAGE == 2){
 		return "<input type='submit' class='btn btn-outline-danger' value='Zapisz' /><br /><br />";
-	} else {
-		return "<input type='submit' class='btn btn-outline-danger' value='Save' /><br /><br />";
 	}
 }
 
 void _handle_config(bool is_success) {
 	String message;
-	if(selected_language == 1){
+	if(SELECTED_LANGUAGE == 1){
     message += "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
-    message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
+	message += "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous'>";
 	message += "</head><body>";
     message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Measurements</a>";
     message += "<a href='/config' class='navbar-brand'>Config</a>";
@@ -486,10 +446,19 @@ void _handle_config(bool is_success) {
 
     message += "<b>PM2.5/PM10 Sensor: </b>";
     message += _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL);
+
+	message += "<hr>";
+	
+    message += "<b>Make PM measurements every: </b>";
+    message += _addIntInput("DUST_TIME", DUST_TIME, "seconds");
+	
+    message += "<b>Average result from last: </b>";
+    message += _addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "PM measurements");
 	
 	if (!strcmp(DUST_MODEL, "PMS7003")){
     	message += "<b>Display of PM1 measurements: </b>";
     	message += _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1);
+		
 	}
 	
 	message += "<hr>";	
@@ -529,7 +498,7 @@ void _handle_config(bool is_success) {
     message += "<b>Sending data to the InfluxDB: </b>";
     message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
     message += "<b>Sending measurements every: </b>";
-    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "minutes");
+    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "seconds");
     message += "<b>InfluxDB database address: </b>";
     message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
     message += "<b>InfluxDB port: </b>";
@@ -561,9 +530,9 @@ void _handle_config(bool is_success) {
 	message += "<hr><br><center>";
     message += _addSubmit();
 	message += "</center>";
-	} else if(selected_language == 2){
+	} else if(SELECTED_LANGUAGE == 2){
 	    message += "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
-	    message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
+		message += "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous'>";
 		message += "</head><body>";
 	    message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Pomiary</a>";
 	    message += "<a href='/config' class='navbar-brand'>Konfiguracja</a>";
@@ -601,9 +570,18 @@ void _handle_config(bool is_success) {
 	    message += "<b>Miernik PM2.5/PM10: </b>";
 	    message += _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL);
 		
+		message += "<hr>";
+		
+		message += "<b>Wykonywanie pomiarów PM co: </b>";
+		message += _addIntInput("DUST_TIME", DUST_TIME, "sekund");
+	
+		message += "<b>Uśredniaj wynik z ostatnich: </b>";
+		message += _addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "pomiarów PM");
+		
 		if (!strcmp(DUST_MODEL, "PMS7003")){
 		    message += "<b>Wyświetlanie pomiarów PM1: </b>";
 		    message += _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1);
+			
 		}
 		
 		message += "<hr>";	
@@ -643,7 +621,7 @@ void _handle_config(bool is_success) {
 	    message += "<b>Wysyłanie danych do InfluxDB: </b>";
 	    message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
 	    message += "<b>Wysyłanie pomiarów co: </b>";
-	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "minut");
+	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "sekund");
 	    message += "<b>Adres bazy danych InfluxDB: </b>";
 	    message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
 	    message += "<b>Port InfluxDB: </b>";
@@ -675,121 +653,12 @@ void _handle_config(bool is_success) {
 		message += "<hr><br><center>";
 	    message += _addSubmit();
 		message += "</center>";
-  	} else {
-	    message += "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
-	    message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
-		message += "</head><body>";
-	    message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Measurements</a>";
-	    message += "<a href='/config' class='navbar-brand'>Config</a>";
-	    message += "<a href='/update' class='navbar-brand'>Update</a>";
-	    message += "</div></nav>";
-	    message += "<form method='POST' action='/config'>";
-	    message += "<main role='main' class='container'><div class='jumbotron'>";
-
-	    message += "<center><h1>Smogomierz - Config</h1></center><br><br>";
-
-	    if (is_success) {
-	        message += "<div style='color: #2f7a2d'> <strong>SAVED!</strong> - everything looks OK, in a moment the Smogomierz will restart </div><br><hr><br>";
-	    }
-	
-		message += "All instructions and descriptions[in polish] are available <a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>here</a>.<br><br>";
-
-	    message += "<b>Device Name: </b>";
-	    if (DEVICENAME_AUTO) {
-	        message += device_name;
-		    message += "<br>";
-	    } else {
-	        message += _addTextInput("DEVICENAME", DEVICENAME);
-	    }
-	    message += "<b>Automatic name generation: </b>";
-	    message += _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO);
-		
-	    message += "<b>Language: </b>";
-	    message += _addLanguageSelect("LANGUAGE", LANGUAGE);
-		
-		message += "<hr>";
-		
-	    message += "<b>Temp/Humi/Press Sensor: </b>";
-	    message += _addTHP_MODELSelect("THP_MODEL", THP_MODEL);
-
-	    message += "<b>PM2.5/PM10 Sensor: </b>";
-	    message += _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL);
-		
-		if (!strcmp(DUST_MODEL, "PMS7003")){
-	    	message += "<b>Display of PM1 measurements: </b>";
-	    	message += _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1);
-		}
-		message += "<hr>";	
-  
-	    message += "<b>Sending data to the <a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a> service(requires filling out <a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>the form</a>; Sensor: PMS7003): </b>";
-	    message += _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON);
-	
-	    message += "<b>Sending measurements every: </b>";
-	    message += _addIntInput("AIRMONITOR_TIME", AIRMONITOR_TIME, "minutes");
-	
-	    message += "<b>Displaying charts from the AirMonitor site: </b>";
-	    message += _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON);
-
-	    message += "<b>Geographical coordinates(you can check it <a title='latlong.net' href='https://www.latlong.net' target='_blank'>here</a>):<br>Latitude: </b>";
-	    message += _addFloatInput("LATITUDE", LATITUDE, 6, "°");
-	    message += "<b>Longitude: </b>";
-	    message += _addFloatInput("LONGITUDE", LONGITUDE, 6, "°");
-	    message += "<b>Altitude: </b>";
-	    message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
-		message += "<hr>";	
-  
-	    message += "<b>Sending data to the <a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a> service: </b>";
-	    message += _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON);
-	
-	    message += "<b>Sending measurements every: </b>";
-	    message += _addIntInput("THINGSPEAK_TIME", THINGSPEAK_TIME, "minutes");
-
-	    message += "<b>Displaying charts from the ThingSpeak site: </b>";
-	    message += _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON);
-
-	    message += "<b>ThingSpeak API_KEY: </b>";
-	    message += _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY);
-	    message += "<b>ThingSpeak Channel ID: </b>";
-	    message += _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID);
-		message += "<hr>";	
-
-	    message += "<b>Sending data to the InfluxDB: </b>";
-	    message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
-	    message += "<b>Sending measurements every: </b>";
-	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "minutes");
-	    message += "<b>InfluxDB database address: </b>";
-	    message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
-	    message += "<b>InfluxDB port: </b>";
-	    message += _addIntInput("INFLUXDB_PORT", INFLUXDB_PORT);
-	    message += "<b>Name of the database: </b>";
-	    message += _addTextInput("DATABASE", DATABASE);
-	    message += "<b>Database user: </b>";
-	    message += _addTextInput("DB_USER", DB_USER);
-	    message += "<b>Database password: </b>";
-	    message += _addPasswdInput("DB_PASSWORD", DB_PASSWORD);
-		message += "<hr>";	
-
-	    message += "<b>Debug: </b>";
-	    message += _addBoolSelect("DEBUG", DEBUG);
-
-	    message += "<b>Calibration method: </b>";
-	    message += _addModelSelect("MODEL", MODEL);
-		
-	    message += "<b>calib1: </b>";
-	    message += (calib1);
-	    message += "<br>";
-		/*
-	    message += "<b>calib2: </b>";
-	    message += (calib2);
-	    message += "<br>";
-		*/
-	    message += "<b>Software version: </b>";
-	    message += (SOFTWAREVERSION);
-		message += "<hr><br><center>";
-	    message += _addSubmit();
-		message += "</center>";	
-	}
-    message += "<hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form></body></html>";
+  	} 
+    message += "<hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form>";
+	message += "<script src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous'></script>";
+	message += "<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js' integrity='sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49' crossorigin='anonymous'></script>";
+	message += "<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js' integrity='sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy' crossorigin='anonymous'></script>";
+	message += "</body></html>";
     WebServer.send(200, "text/html", message);
 }
 
@@ -807,11 +676,15 @@ void _set_calib1_and_calib2() {
     } else if (!strcmp(MODEL, "white")) {
 		if (!strcmp(THP_MODEL, "BME280")) {
 			if (checkBmeStatus() == true) {
-        		calib1 = float((100-(BMESensor.humidity)+100)/150);
+        		calib1 = float((200-(BMESensor.humidity))/150);
 			}}
 		if (!strcmp(THP_MODEL, "HTU21D")) {
 			if (checkHTU21DStatus() == true) {
-				calib1 = float((100-(myHTU21D.readCompensatedHumidity())+100)/150);
+				calib1 = float((200-(myHTU21D.readCompensatedHumidity()))/150);
+			}}
+		if (!strcmp(THP_MODEL, "DHT22")) {
+			if (checkDHT22Status() == true) {
+				calib1 = float((200-(dht.readHumidity()))/150);
 			}}
 		calib1 = calib1;
         calib2 = calib1/2;
@@ -823,11 +696,11 @@ void _set_calib1_and_calib2() {
 
 void _set_language() {
     if (!strcmp(LANGUAGE, "english")) {
-        selected_language = 1;
+        SELECTED_LANGUAGE = 1;
     } else if (!strcmp(LANGUAGE, "polish")) {
-        selected_language = 2;
+        SELECTED_LANGUAGE = 2;
     } else {
-        selected_language = 3;
+        SELECTED_LANGUAGE = 1;
     }
 }
 
@@ -866,6 +739,8 @@ void handle_config_post() {
 	_set_language();
 	_parseAsCString(THP_MODEL, WebServer.arg("THP_MODEL"));
 	_parseAsCString(DUST_MODEL, WebServer.arg("DUST_MODEL"));
+	DUST_TIME = WebServer.arg("DUST_TIME").toInt();
+	NUMBEROFMEASUREMENTS = WebServer.arg("NUMBEROFMEASUREMENTS").toInt();
 	
     AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
 	AIRMONITOR_TIME = WebServer.arg("AIRMONITOR_TIME").toInt();
@@ -906,9 +781,9 @@ void handle_config_post() {
 
 void handle_update() {            //Handler for the handle_update
 	String message;
-	if(selected_language == 1){
+	if(SELECTED_LANGUAGE == 1){
 	    message = "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Update</title>";
-	    message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
+		message += "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous'>";
 	    message += "</head><body>";
 	    message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Measurements</a>";
 	    message += "<a href='/config' class='navbar-brand'>Config</a>";
@@ -924,9 +799,9 @@ void handle_update() {            //Handler for the handle_update
 	    message += SOFTWAREVERSION;
 	    message += "</b><br>";
 	    message += "Latest version of the software available <b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>here</a></b>.";
-	} else if(selected_language == 2){
+	} else if(SELECTED_LANGUAGE == 2){
 	    message = "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Update</title>";
-	    message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
+		message += "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous'>";
 	    message += "</head><body>";
 	    message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Pomiary</a>";
 	    message += "<a href='/config' class='navbar-brand'>Konfiguracja</a>";
@@ -942,36 +817,22 @@ void handle_update() {            //Handler for the handle_update
 	    message += SOFTWAREVERSION;
 	    message += "</b><br>";
 	    message += "Najnowszą wersję oprogramowania znajdziesz zawsze <b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>tutaj</a></b>.";
-	} else {
-	    message = "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Update</title>";
-	    message += "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
-	    message += "</head><body>";
-	    message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Measurements</a>";
-	    message += "<a href='/config' class='navbar-brand'>Config</a>";
-	    message += "<a href='/update' class='navbar-brand'>Update</a>";
-	    message += "</div></nav>";
-	    message += "<main role='main' class='container'><div class='jumbotron'>";
-	    message += "<form id='data' action='/update' method='POST' enctype='multipart/form-data'>";
-	    message += "<center><h1>Smogomierz - Update</h1></center><br><br>";
-	    message += "<div class='input-group mb-3'><div class='custom-file'><input type='file' accept='.bin' class='custom-file-input' id='inputGroupFile04' name='update'><label class='custom-file-label' for='inputGroupFile04'>Select .bin file</label></div><div class='input-group-append'><button class='btn btn-danger' type='submit'>Update!</button></div></div>";
-	    message += "</form>";
-	    message += "<br><br>";
-	    message += "The currently used version of the software: <b>";
-	    message += SOFTWAREVERSION;
-	    message += "</b><br>";
-	    message += "Latest version of the software available <b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>here</a></b>.";
-	}
-    message += "<br><hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form></body></html>";
+	} 
+    message += "<br><hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form>";
+	message += "<script src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous'></script>";
+	message += "<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js' integrity='sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49' crossorigin='anonymous'></script>";
+	message += "<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js' integrity='sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy' crossorigin='anonymous'></script>";
+	message += "</body></html>";
     WebServer.send(200, "text/html", message);
   }
 
 void handle_api() {
     String message;
-    StaticJsonBuffer<400> jsonBuffer;
-      JsonObject& json = jsonBuffer.createObject();
+	StaticJsonDocument<800> jsonBuffer;
+	JsonObject json = jsonBuffer.to<JsonObject>();
 
         json["device_name"] = device_name;
-		if (!strcmp(DUST_MODEL, "PMS7003")){
+		if (strcmp(DUST_MODEL, "Non")){
         	json["pm1"] = averagePM1;
         	json["pm25"] = averagePM25;
         	json["pm10"] = averagePM10;
@@ -998,7 +859,14 @@ void handle_api() {
 		  		json["dewpoint"] = float(myHTU21D.readTemperature()-((100-myHTU21D.readCompensatedHumidity())/5));
 			}
 		}
+		if (!strcmp(THP_MODEL, "DHT22")) {
+			if (checkDHT22Status()) {
+				json["temperature"] = float(dht.readTemperature());
+  		  		json["humidity"] = int(dht.readHumidity());
+		  		json["dewpoint"] = float(dht.readTemperature()-((100-dht.readHumidity())/5));
+			}
+		}
 
-      json.prettyPrintTo(message);
+      serializeJsonPretty(json, message);
       WebServer.send(200, "text/json", message);
   }

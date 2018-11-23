@@ -1,6 +1,6 @@
 # ThingSpeak - opis
 
-ThingSpeak to serwis, który pozwala na gromadzenie danych pomiarowych z różnych czujników oraz tworzenie wykresów do zgromadzonych danych. Wykresy oraz pomiary mogą być prywatne lub publicznie dostępne. Serwis wymaga rejestracji. Ma darmowe konta ograniczone do 3 mln pomiarów na rok. Więcej info w [FAQ](https://thingspeak.com/pages/license_faq) i na stronie [ThingSpeak.com](https://thingspeak.com).
+ThingSpeak to serwis, który pozwala na gromadzenie danych pomiarowych z różnych czujników oraz tworzenie wykresów do zgromadzonych danych. Wykresy oraz pomiary mogą być prywatne lub publicznie dostępne. Serwis wymaga rejestracji. Ma darmowe konta ograniczone do 3 mln pomiarów na rok. Więcej info w [FAQ](https://thingspeak.com/pages/license_faq) i na stronie [ThingSpeak.com](https://thingspeak.com). ThingSpeak pozwala na dostęp do danych pomiarowych z dowolnego miejsca. Wystarczy tylko login i hasło. Jeśli chcesz mieć dostęp do informacji ze swojego Smogomierza w każdym miejscu, to ThingSpeak powinien w tym pomóc. Dodatkowo serwis pozisada aplikacje dostępne na smartfony. Jest to wygodne rozwiązanie dla osób, które nie chcą tworzyć własnej bazy danych, a zależy im głównie na dostępnie do informacjach z własnego miernika.
 
 ##  Rejestracja
 

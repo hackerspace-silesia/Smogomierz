@@ -84,7 +84,7 @@ Zgodnie ze schmeatem na początku instrukcji, łączymy wszystkie elementy ze so
 
 ## Umiejscowienie podzespołów w obudowie
 
-Jeśli postanowiliśmy użyć jako miernika pyłu modelu SDS011 to obudowa może wydawać się dość mała, ale wszystkie elementy zmieszczą się w niej bez problemu. Jeśli korzystamy z PMS7003 lub HPMA115S0 mamy nadmiar miejsca. Musimy pamiętać, aby wloty z mietnika pyłu umiejscowić jak najbliżej otworów wentylacyjnych w obudowie. Pozwoli to na lepszy przepływ powietrza i dokładniejsze pomiary.
+Jeśli postanowiliśmy użyć jako miernika pyłu modelu SDS011 to obudowa może wydawać się dość mała, ale wszystkie elementy zmieszczą się w niej bez problemu. Jeśli korzystamy z PMS7003 lub HPMA115S0 mamy nadmiar miejsca. Musimy pamiętać, aby wloty z mietnika pyłu umiejscowić jak najbliżej otworów wentylacyjnych w obudowie. Pozwoli to na lepszy przepływ powietrza i dokładniejsze pomiary. Polecam ustawienie mierników w obudowie w taki sposób, aby wiatraczkem z miernika pyłu znajdował się obok otworu wentylacyjnego. 
 
 ![Calosc_PMS5003](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Calosc_PMS5003.jpg)
 ![Calosc_SDS](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Calosc_SDS.jpg)

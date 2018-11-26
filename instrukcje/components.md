@@ -1,6 +1,6 @@
 # Smogomierz - Components / Podzespoły
 
-Wszystkie potrzebne części możesz zamówić w sklepie internetowym Botland. Oferuje on gotowe zestawy – [Link do Botlandu]
+Wszystkie potrzebne części możesz zamówić w sklepie internetowym **Botland**. Oferuje on gotowe zestawy – https://botland.com.pl/pl/czujniki-czystosci-powietrza/13434-zestaw-diy-do-budowy-miernika-smogu-czujnik-czystosci-powietrza-pm25-i-pm10.html
 
 Jeśli jednak wolisz kupić wszystkie części samodzielnie, to poniżej znajdziesz listę potrzebnych elementów. Podane linki to przykładowe miejsca, w których można kupić dany produkt. Każdą z wymienionych cześci można kupić w dowolnym sklepie. Zastosowane elementy to łatwodostępne podzespoły, które znajdziesz w większości sklepów z elektroniką. 
 

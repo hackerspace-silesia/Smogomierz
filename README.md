@@ -26,6 +26,8 @@ Do zbudowania własnego Smogomierza wymagana jest lutownica(wraz z cyną) oraz p
 
 [Lista potrzebnych części](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/components.md)
 
+Gotowe zestawy części potrzebych do zbudowania włąsnego Smogomierza, dostępne są również w sklepie Botland: [Zestaw DIY do budowy miernika smogu](https://botland.com.pl/pl/czujniki-czystosci-powietrza/13434-zestaw-diy-do-budowy-miernika-smogu-czujnik-czystosci-powietrza-pm25-i-pm10.html)
+
 ## Zaawansowane
 
 [Instrukcja instalacji oprogramowania wymaganego do kompilacji oprogramowania z repozytorium](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md)

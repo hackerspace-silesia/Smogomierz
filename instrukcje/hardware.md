@@ -2,7 +2,7 @@
 
 Poniższy opis krok po kroku, przeprowadzi Cię przez procedurę podłączenia wszystkich czujników obsługiwanych przez nasz miernik smogu. Listę części, wraz z linkami do przykładowych sklepów, gdzie można je kupić znajdziesz pod adresem: https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/components.md
 
-Jeśli masz już wszsytkie cześci, to pamiętaj, że kilka z nich wymaga przylotowania pinów. Opis wszystkiego co trzeba zlutować wraz ze zdjęciami znajdziesz w instrukcji ["Lutowanie"](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/soldering.md).
+Jeśli masz już wszystkie części, to pamiętaj, że kilka z nich wymaga przylutowania pinów. Opis wszystkiego co trzeba zlutować wraz ze zdjęciami znajdziesz w instrukcji ["Lutowanie"](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/soldering.md).
 
 Całościowy schemat podłączenia:
 
@@ -18,7 +18,9 @@ Główny element miernika. To właśnie na tę płytkę wgrywamy oprogramowanie.
 
 BME280 to niewielki moduł pozwalający na bardzo precyzyjne pomiary temperatury powietrza, ciśnienia oraz wilgotności powietrza. 
 
-BME280 można podłączyć na dwa sposoby. W naszym przypadku skorzystamy z I2C. Oznacza to, że poza zasilaniem, będziemy musili jeszcze podłączyć dwa piny: SCL oraz SDA. 
+BME280 można podłączyć na dwa sposoby. W naszym przypadku skorzystamy z I2C. Oznacza to, że poza zasilaniem, będziemy musieli jeszcze podłączyć dwa piny: SCL oraz SDA. 
+
+BME280 występuje również w wersji **Adafruit**. Charakteryzuje się ona [niebieską płytką](https://www.adafruit.com/product/2652). W przypadku tej wersji BME280 musimy podłączyć SCK tam gdzie pin SCL(do D4) i SDI tam gdzie SDA(do D3) oraz SDO do dowolnego pinu GND na naszym ESP8266.
 
 BME280 zasilamy z pinu 3V na ESP8266. Podpinamy go do VIN na BME280. GND łączymy z dowolnym G(GND) na ESP8266. SCL podpinamy do pinu D4, SDA do D3 na ESP8266.
 
@@ -72,19 +74,19 @@ ESP8266 NodeMCu oraz miernik pyłu PM2.5 i PM10 zasilamy poprzez 5V. Źródłem 
 
 ![5V_Tasma](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/5V_Tasma.jpg)
 
-Podobnie robimy z GND. Jednak w tym wypadku nie musimy ręcznie rozdzielać masy. Wystarczy ją podłączyć do pinu G na ESP8266. GND z miernika pyłu podpinamy do G na ESP8266. GND z miernika temperatury i wilgotności również łączymy z G na płytce ESP8266. Wszsytkie masy(G/GND) są ze sobą połączone. Tylko od ciebie zależy, do którego pinu G na ESP8266 podłączysz pin G z miernika pyłu czy miernika temperatury.
+Podobnie robimy z GND. Jednak w tym wypadku nie musimy ręcznie rozdzielać masy. Wystarczy ją podłączyć do pinu G na ESP8266. GND z miernika pyłu podpinamy do G na ESP8266. GND z miernika temperatury i wilgotności również łączymy z G na płytce ESP8266. Wszystkie masy(G/GND) są ze sobą połączone. Tylko od ciebie zależy, do którego pinu G na ESP8266 podłączysz pin G z miernika pyłu czy miernika temperatury.
 
 ![Zasilanie Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/Zasilanie_Schemat.png)
 
 ## Połączenie całości
 
-Zgodnie ze schmeatem na początku instrukcji, łączymy wszystkie elementy ze sobą. Z **BME280** pin VIN podpinamy do 3V na ESP8266; GND do G; SCL do D4; SDA do D3. W przypadku **PMS7003** kable 5V z płytką z 3 pinami(pozostałe podpinamy do VIN na ESP8266 oraz VBUS w obudowie miernika); GND do G na ESP8266; TX do D1; RX do D2. Na koniec pin G z obudowy miernika wpinamy do G na ESP8266.
+Zgodnie ze schematem na początku instrukcji, łączymy wszystkie elementy ze sobą. Z **BME280** pin VIN podpinamy do 3V na ESP8266; GND do G; SCL do D4; SDA do D3. W przypadku **PMS7003** kable 5V z płytką z 3 pinami(pozostałe podpinamy do VIN na ESP8266 oraz VBUS w obudowie miernika); GND do G na ESP8266; TX do D1; RX do D2. Na koniec pin G z obudowy miernika wpinamy do G na ESP8266.
 
 ![ESP8266_polaczenia](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/ESP8266_polaczenia.jpg)
 
 ## Umiejscowienie podzespołów w obudowie
 
-Jeśli postanowiliśmy użyć jako miernika pyłu modelu SDS011 to obudowa może wydawać się dość mała, ale wszystkie elementy zmieszczą się w niej bez problemu. Jeśli korzystamy z PMS7003 lub HPMA115S0 mamy nadmiar miejsca. Musimy pamiętać, aby wloty z mietnika pyłu umiejscowić jak najbliżej otworów wentylacyjnych w obudowie. Pozwoli to na lepszy przepływ powietrza i dokładniejsze pomiary. Polecam ustawienie mierników w obudowie w taki sposób, aby wiatraczkem z miernika pyłu znajdował się obok otworu wentylacyjnego. 
+Jeśli postanowiliśmy użyć jako miernika pyłu modelu SDS011 to obudowa może wydawać się dość mała, ale wszystkie elementy zmieszczą się w niej bez problemu. Jeśli korzystamy z PMS7003 lub HPMA115S0 mamy nadmiar miejsca. Musimy pamiętać, aby wloty z miernika pyłu umiejscowić jak najbliżej otworów wentylacyjnych w obudowie. Pozwoli to na lepszy przepływ powietrza i dokładniejsze pomiary. Polecam ustawienie mierników w obudowie w taki sposób, aby wiatraczkiem z miernika pyłu znajdował się obok otworu wentylacyjnego. 
 
 ![Calosc_PMS5003](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Calosc_PMS5003.jpg)
-![Calosc_SDS](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Calosc_SDS.jpg)
+![Calosc_SDS](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Calosc_SDS.jpg) 

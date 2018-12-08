@@ -2,7 +2,7 @@
 
 Wszystkie potrzebne części możesz zamówić w sklepie internetowym **Botland**. Oferuje on gotowe zestawy – https://botland.com.pl/pl/czujniki-czystosci-powietrza/13434-zestaw-diy-do-budowy-miernika-smogu-czujnik-czystosci-powietrza-pm25-i-pm10.html
 
-Jeśli jednak wolisz kupić wszystkie części samodzielnie, to poniżej znajdziesz listę potrzebnych elementów. Podane linki to przykładowe miejsca, w których można kupić dany produkt. Każdą z wymienionych cześci można kupić w dowolnym sklepie. Zastosowane elementy to łatwodostępne podzespoły, które znajdziesz w większości sklepów z elektroniką. 
+Jeśli jednak wolisz kupić wszystkie części samodzielnie, to poniżej znajdziesz listę potrzebnych elementów. Podane linki to przykładowe miejsca, w których można kupić dany produkt. Każdą z wymienionych części można kupić w dowolnym sklepie. Zastosowane elementy to łatwo dostępne podzespoły, które znajdziesz w większości sklepów z elektroniką. 
 
 ## Układ główny
 Główny układ sterujący Smogomierzem to ESP8266 w wersji ESP-12. Zalecamy użycie **ESP8266 – NodeMCu V3**, jednak bez problemu oprogramowanie będzie działać np. na WeMos D1.
@@ -21,7 +21,7 @@ Oprogramowanie Smogomierza wspiera obecnie kilka różnych modeli mierników py�
 
 ## Mierniki temperatury, wilgotności i ciśnienia
 
-Smogomierza wspiera obecnie kilka różnych modeli mierników temperatury, wilgotnośi i ciśnienia powietrza. Najistotniejszym elemenetem jest tutaj pomiar wilgotności powietrza. Wilgotność wpływa na pomiary pyłu PM2.5 oraz PM10(przy wilgotności >60% mierniki zaczynają wykrywać parę wodną jako zanieczyszczenia powietrza). Smogomierz pozwala na automatyczną kalibrację pomiarów pyłu zawieszonego, jednak potrzebuje do tego pomiarów wilgotności powietrza. Zalecamy użycie miernika **BME280**. Lista obsługiwanych modeli znajduje się poniżej:
+Smogomierza wspiera obecnie kilka różnych modeli mierników temperatury, wilgotności i ciśnienia powietrza. Najistotniejszym elementem jest tutaj pomiar wilgotności powietrza. Wilgotność wpływa na pomiary pyłu PM2.5 oraz PM10(przy wilgotności >60% mierniki zaczynają wykrywać parę wodną jako zanieczyszczenia powietrza). Smogomierz pozwala na automatyczną kalibrację pomiarów pyłu zawieszonego, jednak potrzebuje do tego pomiarów wilgotności powietrza. Zalecamy użycie miernika **BME280**. Lista obsługiwanych modeli znajduje się poniżej:
 
 + **BME280** – Miernik temperatury, wilgotności i ciśnienia powietrza – https://www.aliexpress.com/item/High-Accuracy-BME280-Digital-Sensor-Temperature-Humidity-Barometric-Pressure-Sensor-Module-GY-BME280-I2C-SPI-1/32672210336.html 
 
@@ -31,7 +31,7 @@ Smogomierza wspiera obecnie kilka różnych modeli mierników temperatury, wilgo
 
 ## Obudowa
 
-Do wyboru mamy kilka możliwości. Polecamy zastosowanie modelu **IP55**. Obudowa chroni elektronikę przed bezpośrednim kontaktem z wodą. Musi umożliwiać swobodny przepływ powietrza, ale jednocześnie chronić przez deszczem. Jeśli chcesz możesz użyć jakiejś zupełnie innej obudowy, pamiętaj jednak do przepływie powietrza oraz wymiarach. Na wszystkie elementy SMogomierza potrzebne jest około 120 x 80 x 50 mm. Zwłaszcza jeśli postanowiłeś użyć mierka SDS011. 
+Do wyboru mamy kilka możliwości. Polecamy zastosowanie modelu **IP55**. Obudowa chroni elektronikę przed bezpośrednim kontaktem z wodą. Musi umożliwiać swobodny przepływ powietrza, ale jednocześnie chronić przez deszczem. Jeśli chcesz możesz użyć jakiejś zupełnie innej obudowy, pamiętaj jednak do przepływie powietrza oraz wymiarach. Na wszystkie elementy Smogomierza potrzebne jest około 120 x 80 x 50 mm. Zwłaszcza jeśli postanowiłeś użyć miernika SDS011. 
 
 + **Obudowa IP55**, 118 x 78 x 55 mm – https://botland.com.pl/pl/obudowy/6235-obudowa-plastikowa-kradex-z57j-118x78x55mm-jasna.html?search_query=z57j&results=2
 
@@ -55,4 +55,4 @@ Elementy potrzebne do podłączenia całości.
 
 Lutownica(wraz z cyną) oraz pistolet do kleju na gorąco, wiertarka oraz nóż do tapet i śrubokręt do skręcenia obudowy. 
 
-Jeśli masz już wszsytkie cześci, to pamiętaj, że kilka z nich wymaga przylotowania pinów. Opis wszystkiego co trzeba zlutować wraz ze zdjęciami znajdziesz w instrukcji ["Lutowanie"](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/soldering.md).
+Jeśli masz już wszystkie części, to pamiętaj, że kilka z nich wymaga przylutowania pinów. Opis wszystkiego co trzeba zlutować wraz ze zdjęciami znajdziesz w instrukcji ["Lutowanie"](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/soldering.md). 

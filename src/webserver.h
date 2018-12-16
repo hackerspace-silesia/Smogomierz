@@ -183,15 +183,15 @@ void handle_root () {
   if(AIRMONITOR_GRAPH_ON){
       message += ("<hr>");
       message += ("<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude=");
-      message += (String(LATITUDE, 4));
+      message += (String(LATITUDE, 6));
       message += ("&var-longitude=");
-      message += (String(LONGITUDE, 4));
+      message += (String(LONGITUDE, 6));
       message += ("&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>");
       message += (" ");
       message += ("<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude=");
-      message += (String(LATITUDE, 4));
+      message += (String(LATITUDE, 6));
       message += ("&var-longitude=");
-      message += (String(LONGITUDE, 4));
+      message += (String(LONGITUDE, 6));
       message += ("&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>");
   }
   if(THINGSPEAK_GRAPH_ON){

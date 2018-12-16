@@ -13,7 +13,7 @@ Główny układ sterujący Smogomierzem to ESP8266 w wersji ESP-12. Zalecamy uż
 
 Oprogramowanie Smogomierza wspiera obecnie kilka różnych modeli mierników pyłu zawieszonego w powietrzu. Zalecamy użycie miernika **PMS7003**. Lista obsługiwanych modeli znajduje się poniżej:
 
-+ **PMS5003/PMS7003** – Laserowy miernik pyłu PM1, PM2.5 i PM10 – https://www.aliexpress.com/item/1-set-Laser-PM2-5-PMS7003-G7-High-precision-laser-dust-concentration-sensor-digital-dust-particles/32826370928.html 
++ **PMS5003/PMS7003** – Laserowy miernik pyłu PM1, PM2.5 i PM10. Polecam zamówić wersję kablem, bo bezpośrednio do PMS7003 praktycznie nie da się przylutować/podłaczyć przewodów. Przykładowy model z kablem – https://www.aliexpress.com/item/1-set-Laser-PM2-5-PMS7003-G7-High-precision-laser-dust-concentration-sensor-digital-dust-particles/32826370928.html 
 
 + **Honeywell HPMA115S0** – Laserowy miernik pyłu PM1, PM2.5 i PM10 – https://www.tme.eu/pl/details/hpma115s0-xxx/czujniki-gazu/honeywell/
 

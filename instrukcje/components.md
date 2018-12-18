@@ -39,7 +39,7 @@ Do wyboru mamy kilka możliwości. Polecamy zastosowanie modelu **IP55**. Obudow
 
 + **Obudowa IP56**, 120 x 80 x 50 mm – http://allegro.pl/puszka-hermetyczna-ip56-120x80x50mm-przezroczysta-i6661288346.html
 
-	Opcjonalne, choć bardzo mocno zalecane jest użycie dwóch elementów chroniących otwory umożliwiające przepływ powietrza przez obudowę. Elementy te można wydrukować na drukarce 3D / Two 3D printed parts – https://github.com/hackerspace-silesia/Smogomierz/blob/master/80x80x40mm.stl
+	Opcjonalne, choć bardzo mocno zalecane jest użycie dwóch elementów chroniących otwory umożliwiające przepływ powietrza przez obudowę. Elementy te można wydrukować na drukarce 3D / Two 3D printed parts – https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/80x80x40mm.stl
 
 ## Pozostałe części
 

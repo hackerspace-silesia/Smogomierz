@@ -29,7 +29,8 @@ const char HTTP_HEAD_END[] PROGMEM        = "</head><body><div style='text-align
 const char HTTP_PORTAL_OPTIONS[] PROGMEM  = "<form action=\"/wifi\" method=\"get\"><button>WiFi config</button></form><br/><form action=\"/r\" method=\"post\"><button>Reset</button></form>";
 const char HTTP_ITEM[] PROGMEM            = "<div><a href='#p' onclick='c(this)'>{v}</a>&nbsp;<span class='q {i}'>{r}%</span></div>";
 const char HTTP_FORM_START[] PROGMEM      = "<form method='get' action='wifisave'><input id='s' name='s' length=32 placeholder='sieć / network'><br/><input id='p' name='p' length=64 type='password' placeholder='hasło / password'><br/>";
-const char HTTP_FORM_PARAM[] PROGMEM      = "<br/><input id='{i}' name='{n}' maxlength={l} placeholder='{p}' value='{v}' {c}>";
+//const char HTTP_FORM_PARAM[] PROGMEM      = "<br/><input id='{i}' name='{n}' maxlength={l} placeholder='{p}' value='{v}' {c}>";
+const char HTTP_FORM_PARAM[] PROGMEM      = "";
 const char HTTP_FORM_END[] PROGMEM        = "<br/><button type='submit'>zapisz / save</button></form>";
 const char HTTP_SCAN_LINK[] PROGMEM       = "<br/><div class=\"c\"><a href=\"/wifi\">Scan</a></div>";
 const char HTTP_SAVED[] PROGMEM           = "<div><strong>PL</strong><br>Dane zapisane.<br />Próba połączenia się ze wskazaną siecią WiFi.<br />Jeśli się nie powiedzie, to powtórz konfigurację WiFi.<br><br><strong>EN</strong><br>Attempting to connect to the indicated WiFi network.<br /> If it fails, repeat the WiFi configuration.</div>";

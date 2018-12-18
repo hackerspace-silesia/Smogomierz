@@ -27,7 +27,7 @@ Po zainstalowaniu ArduinoIDE, musisz dodać w nim obsługę płytek ESP8266.
 3. Po dodaniu adresu, skąd program może pobrać informacje o nowych płytkach, musimy je jeszcze pobrać. W tym celu klikamy "Narzędzia > Płytka > Menedżer płytek…".
 ![ArduinoIDE3_3](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE3_3.jpg)
 
-4. W wyszukiwarce wpisujemy frazę: "esp8266", wybieramy wersję 2.4.2 i instalujemy nowe płytki.
+4. W wyszukiwarce wpisujemy frazę: "esp8266" i instalujemy nowe płytki.
 ![ArduinoIDE4](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE4.jpg)
 
 5. Teraz pozostaje nam tylko ustawić w ArduinoIDE, że nasz kod ma być dostosowany do płytek ESP8266, a nie standardowego Arduino. W tym celu musimy wybrać "Narzędzia > Płytka > NodeMCU 1.0 (ESP-12E Module)". 
@@ -36,13 +36,16 @@ Po zainstalowaniu ArduinoIDE, musisz dodać w nim obsługę płytek ESP8266.
 6. Na koniec pozostaje nam wybranie portu szeregowego, go którego podłączona jest nasza płytka. W tym celu podpinamy ESP8266 do portu USB w komputerze i wybieramy "Narzędzia > Port > COM3". W przypadku systemu innego niż Windows, zamiast "COM3" będziemy mieć inną opcję do wyboru np. "/dev/cu.wchusbserial1410". Jeśli pomimo podłączenia płytki do portu USB, na liście nie ma żadnej pozycji do wyboru, musimy jeszcze doinstalować sterownik odpowiedni sterownik. NodeMCu V3 korzysta z układy **CH340**. Sterowniki do niego można pobrać [tutaj](https://sparks.gogo.co.nz/ch340.html)(W przypadku systemu macOS, zalecamy instalację wersji 1.5 lub nowszej dostępnej [tutaj](https://github.com/adrianmihalko/ch340g-ch34g-ch34x-mac-os-x-driver)). Istnieje jednak możliwość, że Twoja płytka ma układ **CP2102**. Sterowniki do niego dostępnej są [tutaj](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers). Jeśli nie jesteś pewien jaki układ znajduje się na Twojej płytce NodeMCu, zobacz informacje na spodzie płytki. Powinno być tam to napisane. Po pobraniu i instalacji odpowiednich sterowników, powinniśmy uruchomić ponownie komputer. Arduino powinno widzieć już nasza płytkę podłączoną do portu szeregowego.
 ![ArduinoIDE6](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE6.jpg)
 
-7. Kod, który będziemy wgrywać na płytki ESP8266 wymaga do poprawnego działania, dwóch zewnętrznych bibliotek. Aby je dodać wystarczy wybrać z menu ArduinoIDE "Szkic > Dołącz bibliotekę > Zarządzaj bibliotekami...".
+7. Smogomierz zapisuje w pamięci wewnętrznej(SPIFFS) płytki ESP8266 ustawienia. Robi to, aby po nonownym uruchomienie nie było konieczne wpisywanie wszystkich danych na nowo. Musimy się upewnić, że w ArduinoIDE wybraliśmy opcję stworzenia przestrzeni w pamięci na nasz plik konfiguracyjny. W tym celu musimy zaznaczyć opcję **4M (1M SPIFFS)** z menu "Narzędzia > Flash Size > 4M (1M SPIFFS)".
+![ArduinoIDE7](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE7_2_.jpg)
+
+8. Kod, który będziemy wgrywać na płytki ESP8266 wymaga do poprawnego działania, dwóch zewnętrznych bibliotek. Aby je dodać wystarczy wybrać z menu ArduinoIDE "Szkic > Dołącz bibliotekę > Zarządzaj bibliotekami...".
 ![ArduinoIDE8](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE8.jpg)
 
-8. W wyszukiwarce wpisujemy nazwę biblioteki i następnie ją instalujemy. Biblioteki, które musimy doinstalować to: **ArduinoJson(w wersji 6.5.0 lub nowszej)**, **Adafruit BMP280 Library(najnowsza dostępna)**, **DHT sensor library by Adafruit(najnowsza dostępna)** oraz **ThingSpeak(najnowsza dostępna)**.
+9. W wyszukiwarce wpisujemy nazwę biblioteki i następnie ją instalujemy. Biblioteki, które musimy doinstalować to: **ArduinoJson(w wersji 6.5.0 lub nowszej)**, **Adafruit BMP280 Library(najnowsza dostępna)**, **DHT sensor library by Adafruit(najnowsza dostępna)** oraz **ThingSpeak(najnowsza dostępna)**.
 ![ArduinoIDE10](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE10.jpg)
 
-9. Teraz wszystko jest już gotowe do obsługi naszych mierników smogu. Możemy przejść do pobrania oprogramowania i sprawdzenia czy działa.
+10. Teraz wszystko jest już gotowe do obsługi naszych mierników smogu. Możemy przejść do pobrania oprogramowania i sprawdzenia czy działa.
 
 ## Smogomierz - pobranie i wgranie oprogramowania na ESP8266
 

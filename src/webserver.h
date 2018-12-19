@@ -405,6 +405,15 @@ String _addSubmit() {
 	}
 }
 
+String _addWiFiErase() {
+	if(SELECTED_LANGUAGE == 1){
+		return "<a href='/erase_wifi' class='btn btn-outline-primary btn-sm' role='button'>Erase WiFi Config</a>";
+		
+	} else if(SELECTED_LANGUAGE == 2){
+		return "<a href='/erase_wifi' class='btn btn-outline-primary btn-sm' role='button'>Zapomnij sieć WiFi</a>";
+	}
+}
+
 void _handle_config(bool is_success) {
 	String message;
 	if(SELECTED_LANGUAGE == 1){
@@ -527,8 +536,13 @@ void _handle_config(bool is_success) {
 	*/
     message += "<b>Software version: </b>";
     message += (SOFTWAREVERSION);
-	message += "<hr><br><center>";
-    message += _addSubmit();
+	
+	message += "<hr><center><br>";
+	message += _addWiFiErase();
+	
+	message += "<br><br></center><hr><br><center>";
+	message += _addSubmit();
+
 	message += "</center>";
 	} else if(SELECTED_LANGUAGE == 2){
 	    message += "<html lang='pl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
@@ -650,8 +664,13 @@ void _handle_config(bool is_success) {
 		*/
 	    message += "<b>Wersja oprogramowania: </b>";
 	    message += (SOFTWAREVERSION);
-		message += "<hr><br><center>";
-	    message += _addSubmit();
+		
+		message += "<hr><center><br>";
+		message += _addWiFiErase();
+		
+		message += "<br><br></center><hr><br><center>";
+		message += _addSubmit();
+			
 		message += "</center>";
   	} 
     message += "<hr><center>Hackerspace Silesia &#9830; 2018</center></div></main></form>";
@@ -824,6 +843,16 @@ void handle_update() {            //Handler for the handle_update
 	message += "<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js' integrity='sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy' crossorigin='anonymous'></script>";
 	message += "</body></html>";
     WebServer.send(200, "text/html", message);
+  }
+  
+void erase_wifi() {
+	Serial.println("Erasing WiFi Config...");
+    ESP.eraseConfig();
+	WebServer.sendHeader("Location", String("/"), true);
+	WebServer.send ( 302, "text/plain", "");
+	delay(1000);
+	Serial.println("Restart");
+  	ESP.restart();
   }
 
 void handle_api() {

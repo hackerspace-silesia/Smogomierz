@@ -258,6 +258,7 @@ void setup() {
   WebServer.on("/config", HTTP_GET, handle_config);
   WebServer.on("/update", HTTP_GET, handle_update);
   WebServer.on("/api", HTTP_GET, handle_api);
+  WebServer.on("/erase_wifi", HTTP_GET, erase_wifi);
   WebServer.onNotFound(handle_root);
 
   httpUpdater.setup(&WebServer, "/update");
@@ -282,6 +283,8 @@ void loop() {
   //webserverShowSite(WebServer, BMESensor, data);
   WebServer.handleClient();
   delay(10);
+
+  MDNS.update();
 
   yield();
 

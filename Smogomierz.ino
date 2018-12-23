@@ -1,8 +1,13 @@
+#ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
-#include <Wire.h>
 #include <SoftwareSerial.h>
+#elif defined ARDUINO_ARCH_ESP32
+#include <WiFi.h>
+#endif
+
+#include <Wire.h>
 
 #include "FS.h"
 #include "ArduinoJson.h" // 6.5.0 beta or later
@@ -10,6 +15,7 @@
 #include "src/bme280.h" // https://github.com/zen/BME280_light
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library
+#include "src/SHT1x.h"; // https://github.com/practicalarduino/SHT1x
 #include <DHT.h>
 
 #include "src/pms.h" // https://github.com/fu-hsi/PMS
@@ -25,6 +31,7 @@
 /*
   Podłączenie czujnikow dla ESP8266 NodeMCU:
   BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   DHT22: VIN - 3V; GND - G; D7
   PMS5003/7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
@@ -32,6 +39,7 @@
 
   Connection of sensors on ESP8266 NodeMCU:
   BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   DHT22: VIN - 3V; GND - G; D7
   PMS5003/7003: White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
@@ -57,6 +65,11 @@ HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
 #define DHTPIN 13 // D7 on NodeMCU/WeMos board
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 DHT dht(DHTPIN, DHTTYPE);
+
+// SHT1x – Config
+#define dataPin 14 //D5
+#define clockPin 12 //D6
+SHT1x sht1x(dataPin, clockPin);
 
 // Serial for PMS7003 config
 SoftwareSerial mySerial(5, 4); // Change TX - D1 and RX - D2 pins
@@ -176,6 +189,28 @@ bool checkDHT22Status() {
   }
 }
 
+bool checkSHT1xStatus() {
+  int humidity_SHT1x_Int = sht1x.readHumidity();
+  int temperature_SHT1x_Int = sht1x.readTemperatureC();
+  if (humidity_SHT1x_Int == 0 && temperature_SHT1x_Int == 0) {
+    if (DEBUG) {
+      if (SELECTED_LANGUAGE == 1) {
+        Serial.println("No data from SHT1x sensor!\n");
+        return false;
+      } else if (SELECTED_LANGUAGE == 2) {
+        Serial.println("Brak pomiarów z SHT1x!\n");
+        return false;
+      } else {
+        Serial.println("No data from SHT1x sensor!\n");
+        return false;
+      }
+    }
+    return false;
+  } else {
+    return true;
+  }
+}
+
 // library doesnt support arguments :/
 #include "src/webserver.h"
 
@@ -218,6 +253,9 @@ void setup() {
   }
   if (!strcmp(THP_MODEL, "DHT22")) {
     dht.begin();
+  }
+  if (!strcmp(THP_MODEL, "SHT1x")) {
+
   }
   delay(10);
 
@@ -438,6 +476,28 @@ void loop() {
           }
         }
 
+        if (!strcmp(THP_MODEL, "SHT1x")) {
+          if (checkSHT1xStatus() == true) {
+            if (DEBUG) {
+              if (SELECTED_LANGUAGE == 1) {
+                Serial.println("Measurements from SHT1x!\n");
+              } else if (SELECTED_LANGUAGE == 2) {
+                Serial.println("Dane z SHT1x!\n");
+              }
+            }
+            row.addField("temperature", (sht1x.readTemperatureC()));
+            row.addField("humidity", (sht1x.readHumidity()));
+          } else {
+            if (DEBUG) {
+              if (SELECTED_LANGUAGE == 1) {
+                Serial.println("No measurements from SHT1x!\n");
+              } else if (SELECTED_LANGUAGE == 2) {
+                Serial.println("Brak pomiarów z SHT1x!\n");
+              }
+            }
+          }
+        }
+
         if (influxdb.write(row) == DB_SUCCESS) {
           if (DEBUG) {
             if (SELECTED_LANGUAGE == 1) {
@@ -552,6 +612,10 @@ void pm_calibration() {
     }
     if (!strcmp(THP_MODEL, "DHT22")) {
       calib1 = float((200 - (dht.readHumidity())) / 150);
+      calib2 = calib1 / 2;
+    }
+    if (!strcmp(THP_MODEL, "SHT1x")) {
+      calib1 = float((200 - (sht1x.readHumidity())) / 150);
       calib2 = calib1 / 2;
     }
   }

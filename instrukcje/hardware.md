@@ -27,6 +27,12 @@ BME280 zasilamy z pinu 3V na ESP8266. Podpinamy go do VIN na BME280. GND łączy
 ![BME280 Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/BME280_schemat.png)
 ![BME280](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/BME280.jpg)
 
+## SHT1x - miernik temperatury i wilgotności powietrza
+
+SHT1x to niewielki moduł pozwalający na bardzo precyzyjne pomiary temperatury oraz wilgotności powietrza. 
+
+SHT1x zasilamy z pinu 3V na ESP8266. Podpinamy go do VCC na SHT1x. GND łączymy z dowolnym G(GND) na ESP8266. CLOCK/SCL podpinamy do pinu D6, DATA/SDA do D5 na ESP8266. Pomiędzy DATA/SDA a VCC musimy umieścić jeszcze rezystor 10k (pull-up).
+
 ## HTU21D - miernik temperatury i wilgotności powietrza
 
 Jeśli zamiast **BME280** chcesz użyć HTU21D. Podłącz go w następujący sposób: 

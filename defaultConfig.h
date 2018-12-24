@@ -8,7 +8,8 @@ int SELECTED_LANGUAGE = 1; // en - 1; pl - 2
 
 char THP_MODEL[255] = "Non";
 char DUST_MODEL[255] = "Non";
-int DUST_TIME = 3;
+bool FREQUENTMEASUREMENT = false;
+int DUST_TIME = 2;
 int NUMBEROFMEASUREMENTS = 10;
 
 bool AIRMONITOR_ON = false;
@@ -25,7 +26,7 @@ char THINGSPEAK_API_KEY[255] = "API-KEY";
 int THINGSPEAK_CHANNEL_ID = 0;
 
 bool INFLUXDB_ON = false;
-int INFLUXDB_TIME = 20;
+int INFLUXDB_TIME = 5;
 char INFLUXDB_HOST[255] = "INFLUXDB_ADRESS";
 uint16_t INFLUXDB_PORT = 8086;
 

@@ -7,6 +7,7 @@ extern char LANGUAGE[255];
 
 extern char THP_MODEL[255];
 extern char DUST_MODEL[255];
+extern bool FREQUENTMEASUREMENT;
 extern int DUST_TIME;
 extern int NUMBEROFMEASUREMENTS;
 
@@ -39,7 +40,7 @@ extern float calib1;
 extern float calib2;
 extern int SELECTED_LANGUAGE;
 
-const char SOFTWAREVERSION[40] = "2.4.7 build 19:30_23.12.2018";
+const char SOFTWAREVERSION[40] = "2.4.8 build 14:10_24.12.2018";
 #if defined(ARDUINO_ARCH_ESP8266)
 const char HARDWAREVERSION[40] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)

@@ -493,9 +493,16 @@ void _handle_config(bool is_success) {
     message += _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL);
 
     message += "<hr>";
+	
+	message += "<b>Frequent measurement: </ b>";
+	message += _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT) + " Frequent measurements - every few seconds, shorten the life span of the PM sensor.<br>";
 
-    message += "<b>Make PM measurements every: </b>";
-    message += _addIntInput("DUST_TIME", DUST_TIME, "seconds");
+	message += "<b>Make PM measurements every: </b>";
+	if (FREQUENTMEASUREMENT == true) {
+	    message += _addIntInput("DUST_TIME", DUST_TIME, "seconds");
+	} else {
+	    message += _addIntInput("DUST_TIME", DUST_TIME, "minutes");
+	}
 
     message += "<b>Average result from last: </b>";
     message += _addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "PM measurements");
@@ -543,7 +550,11 @@ void _handle_config(bool is_success) {
     message += "<b>Sending data to the InfluxDB: </b>";
     message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
     message += "<b>Sending measurements every: </b>";
-    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "seconds");
+	if (FREQUENTMEASUREMENT == true) {
+	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "seconds");
+	} else {
+	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "minutes");
+	}
     message += "<b>InfluxDB database address: </b>";
     message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
     message += "<b>InfluxDB port: </b>";
@@ -621,10 +632,17 @@ void _handle_config(bool is_success) {
     message += _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL);
 
     message += "<hr>";
-
-    message += "<b>Wykonywanie pomiarów PM co: </b>";
-    message += _addIntInput("DUST_TIME", DUST_TIME, "sekund");
-
+	
+    message += "<b>Częste pomiary PM: </b>";
+    message += _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT) + " Częste pomiary – co kilka-kilkanaście sekund, skracają żywotność miernika PM.<br>";
+	
+	message += "<b>Wykonywanie pomiarów PM co: </b>";
+	if (FREQUENTMEASUREMENT == true) {
+	    message += _addIntInput("DUST_TIME", DUST_TIME, "sekund");
+	} else {
+	    message += _addIntInput("DUST_TIME", DUST_TIME, "minut");
+	}
+	
     message += "<b>Uśredniaj wynik z ostatnich: </b>";
     message += _addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "pomiarów PM");
 
@@ -667,11 +685,15 @@ void _handle_config(bool is_success) {
     message += "<b>ThingSpeak Channel ID: </b>";
     message += _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID);
     message += "<hr>";
-
-    message += "<b>Wysyłanie danych do InfluxDB: </b>";
-    message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
+	
+	message += "<b>Wysyłanie danych do InfluxDB: </b>";
+	message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
     message += "<b>Wysyłanie pomiarów co: </b>";
-    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "sekund");
+	if (FREQUENTMEASUREMENT == true) {
+	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "sekund");
+	} else {
+	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "minut");
+	}
     message += "<b>Adres bazy danych InfluxDB: </b>";
     message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
     message += "<b>Port InfluxDB: </b>";
@@ -802,6 +824,7 @@ void handle_config_post() {
   _set_language();
   _parseAsCString(THP_MODEL, WebServer.arg("THP_MODEL"));
   _parseAsCString(DUST_MODEL, WebServer.arg("DUST_MODEL"));
+  FREQUENTMEASUREMENT = _parseAsBool(WebServer.arg("FREQUENTMEASUREMENT"));
   DUST_TIME = WebServer.arg("DUST_TIME").toInt();
   NUMBEROFMEASUREMENTS = WebServer.arg("NUMBEROFMEASUREMENTS").toInt();
 

@@ -78,15 +78,18 @@ PMS::DATA data;
 
 char device_name[20];
 
-unsigned long DUST_interval = 1000; // 1 second
+unsigned long DUST_interval = 60 * 1000; // 1 minute
 unsigned long previous_DUST_Millis = 0;
 
 unsigned long AIRMONITOR_interval = 60 * 1000; // 1 minute
 unsigned long previous_AIRMONITOR_Millis = 0;
 unsigned long THINGSPEAK_interval = 60 * 1000; // 1 minute
 unsigned long previous_THINGSPEAK_Millis = 0;
-unsigned long INFLUXDB_interval = 1000; // 1 second
+unsigned long INFLUXDB_interval = 60 * 1000; // 1 minute
 unsigned long previous_INFLUXDB_Millis = 0;
+
+unsigned long previous_2sec_Millis = 0;
+unsigned long TwoSec_interval = 2 * 1000; // 2 second
 
 unsigned long REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned long previous_REBOOT_Millis = 0;
@@ -211,6 +214,11 @@ bool checkSHT1xStatus() {
   }
 }
 
+void minutesToSeconds() {
+  DUST_interval = 1000; // 1 second
+  INFLUXDB_interval = 1000; // 1 second
+}
+
 // library doesnt support arguments :/
 #include "src/webserver.h"
 
@@ -223,20 +231,33 @@ void setup() {
 
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     mySerial.begin(9600); //PMS7003 serial
+    if (FREQUENTMEASUREMENT == true) {
+      pms.wakeUp();
+      delay(500);
+      pms.activeMode();
+    } else {
+      pms.passiveMode();
+      delay(500);
+      pms.sleep();
+    }
   }
   delay(10);
 
+  if (FREQUENTMEASUREMENT == true) {
+    minutesToSeconds();
+  }
+
   if (strcmp(DUST_MODEL, "Non")) {
-    DUST_interval = DUST_TIME * 1000; // seconds
+    DUST_interval = DUST_interval * DUST_TIME;
   }
   if (AIRMONITOR_ON) {
-    AIRMONITOR_interval = AIRMONITOR_TIME * 60 * 1000; // minutes
+    AIRMONITOR_interval = AIRMONITOR_interval * AIRMONITOR_TIME;
   }
   if (THINGSPEAK_ON) {
-    THINGSPEAK_interval = THINGSPEAK_TIME * 60 * 1000; // minutes
+    THINGSPEAK_interval = THINGSPEAK_interval * THINGSPEAK_TIME;
   }
   if (INFLUXDB_ON) {
-    INFLUXDB_interval =  INFLUXDB_TIME * 1000; // seconds
+    INFLUXDB_interval =  INFLUXDB_interval * INFLUXDB_TIME;
   }
   delay(10);
 
@@ -523,46 +544,116 @@ void loop() {
 
   if (strcmp(DUST_MODEL, "Non")) {
     unsigned long current_DUST_Millis = millis();
-    if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
-
-      pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
-      pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
-      pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
-
-      if (DEBUG) {
-        Serial.print("\n\nNumer pomiaru PM: ");
-        Serial.print(iPM);
-        Serial.print("\nWartość PM1: ");
-        Serial.print(pmMeasurements[iPM][0]);
-        Serial.print("\nWartość PM2.5: ");
-        Serial.print(pmMeasurements[iPM][1]);
-        Serial.print("\nWartość PM10: ");
-        Serial.print(pmMeasurements[iPM][2]);
-        Serial.println("\n20 sekund!\n");
-      }
-      averagePM();
-      if (DEBUG) {
-        if (SELECTED_LANGUAGE == 1) {
-          Serial.print("Average PM1: ");
-          Serial.println(averagePM1);
-          Serial.print("Average PM2.5: ");
-          Serial.println(averagePM25);
-          Serial.print("Average PM10: ");
-          Serial.println(averagePM10);
-        } else if (SELECTED_LANGUAGE == 2) {
-          Serial.print("Średnia PM1: ");
-          Serial.println(averagePM1);
-          Serial.print("Średnia PM2.5: ");
-          Serial.println(averagePM25);
-          Serial.print("Średnia PM10: ");
-          Serial.println(averagePM10);
+    if (FREQUENTMEASUREMENT == true ) {
+      if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
+        pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+        pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+        pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+        if (DEBUG) {
+          Serial.print("\n\nNumer pomiaru PM: ");
+          Serial.print(iPM);
+          Serial.print("\nWartość PM1: ");
+          Serial.print(pmMeasurements[iPM][0]);
+          Serial.print("\nWartość PM2.5: ");
+          Serial.print(pmMeasurements[iPM][1]);
+          Serial.print("\nWartość PM10: ");
+          Serial.print(pmMeasurements[iPM][2]);
         }
+        averagePM();
+        if (DEBUG) {
+          if (SELECTED_LANGUAGE == 1) {
+            Serial.print("Average PM1: ");
+            Serial.println(averagePM1);
+            Serial.print("Average PM2.5: ");
+            Serial.println(averagePM25);
+            Serial.print("Average PM10: ");
+            Serial.println(averagePM10);
+          } else if (SELECTED_LANGUAGE == 2) {
+            Serial.print("Średnia PM1: ");
+            Serial.println(averagePM1);
+            Serial.print("Średnia PM2.5: ");
+            Serial.println(averagePM25);
+            Serial.print("Średnia PM10: ");
+            Serial.println(averagePM10);
+          }
+        }
+        iPM++;
+        if (iPM >= NUMBEROFMEASUREMENTS) {
+          iPM = 0;
+        }
+        previous_DUST_Millis = millis();
       }
-      iPM++;
-      if (iPM >= NUMBEROFMEASUREMENTS) {
-        iPM = 0;
+    } else {
+
+      if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
+        if (DEBUG) {
+          Serial.print("\nTurning ON PM sensor...");
+        }
+        if (!strcmp(DUST_MODEL, "PMS7003")) {
+          pms.wakeUp();
+          delay(6000); // waiting 6 sec...
+        }
+        int counterNM1 = 0;
+        while (counterNM1 < NUMBEROFMEASUREMENTS) {
+          unsigned long current_2sec_Millis = millis();
+          if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
+            if (!strcmp(DUST_MODEL, "PMS7003")) {
+              pms.requestRead();
+            }
+            delay(1000);
+            if (pms.readUntil(data)) {
+              pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+              pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+              pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+            }
+            if (DEBUG) {
+              Serial.print("\n\nNumer pomiaru PM: ");
+              Serial.print(iPM);
+              Serial.print("\nWartość PM1: ");
+              Serial.print(pmMeasurements[iPM][0]);
+              Serial.print("\nWartość PM2.5: ");
+              Serial.print(pmMeasurements[iPM][1]);
+              Serial.print("\nWartość PM10: ");
+              Serial.print(pmMeasurements[iPM][2]);
+            }
+            averagePM();
+            if (DEBUG) {
+              if (SELECTED_LANGUAGE == 1) {
+                Serial.print("Average PM1: ");
+                Serial.println(averagePM1);
+                Serial.print("Average PM2.5: ");
+                Serial.println(averagePM25);
+                Serial.print("Average PM10: ");
+                Serial.println(averagePM10);
+              } else if (SELECTED_LANGUAGE == 2) {
+                Serial.print("Średnia PM1: ");
+                Serial.println(averagePM1);
+                Serial.print("Średnia PM2.5: ");
+                Serial.println(averagePM25);
+                Serial.print("Średnia PM10: ");
+                Serial.println(averagePM10);
+              }
+            }
+            iPM++;
+            if (iPM >= NUMBEROFMEASUREMENTS) {
+              iPM = 0;
+            }
+            previous_2sec_Millis = millis();
+            counterNM1++;
+          }
+          WebServer.handleClient();
+          delay(10);
+          yield();
+          delay(10);
+        }
+        if (DEBUG) {
+          Serial.print("\nTurning OFF PM sensor...");
+        }
+        if (!strcmp(DUST_MODEL, "PMS7003")) {
+          pms.sleep();
+        }
+        previous_DUST_Millis = millis();
       }
-      previous_DUST_Millis = millis();
     }
   }
 
@@ -644,5 +735,4 @@ int averagePM() {
   averagePM10 = averagePM10 / NUMBEROFMEASUREMENTS;
   return averagePM1, averagePM25, averagePM10;
 }
-
 

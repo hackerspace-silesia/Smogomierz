@@ -54,6 +54,7 @@ bool loadConfig() {
   _safeCpy(THP_MODEL, json["THP_MODEL"], "Non");
   _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non");
   DISPLAY_PM1 = json["DISPLAY_PM1"];
+  FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
   DUST_TIME = json["DUST_TIME"];
   NUMBEROFMEASUREMENTS = json["NUMBEROFMEASUREMENTS"];
 
@@ -102,6 +103,8 @@ bool loadConfig() {
     Serial.println(DUST_MODEL);
     Serial.print("Loaded DISPLAY_PM1: ");
     Serial.println(DISPLAY_PM1);
+    Serial.print("Loaded FREQUENTMEASUREMENT: ");
+    Serial.println(FREQUENTMEASUREMENT);
     Serial.print("Loaded DUST_TIME: ");
     Serial.println(DUST_TIME);
     Serial.print("Loaded NUMBEROFMEASUREMENTS: ");
@@ -172,6 +175,7 @@ bool saveConfig() {
   json["THP_MODEL"] = THP_MODEL;
   json["DUST_MODEL"] = DUST_MODEL;
   json["DISPLAY_PM1"] = DISPLAY_PM1;
+  json["FREQUENTMEASUREMENT"] = FREQUENTMEASUREMENT;
   json["DUST_TIME"] = DUST_TIME;
   json["NUMBEROFMEASUREMENTS"] = NUMBEROFMEASUREMENTS;
 

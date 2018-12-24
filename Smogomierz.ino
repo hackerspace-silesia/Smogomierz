@@ -318,6 +318,7 @@ void setup() {
   WebServer.on("/update", HTTP_GET, handle_update);
   WebServer.on("/api", HTTP_GET, handle_api);
   WebServer.on("/erase_wifi", HTTP_GET, erase_wifi);
+  WebServer.on("/restore_config", HTTP_GET, restore_config);
   WebServer.onNotFound(handle_root);
 
   httpUpdater.setup(&WebServer, "/update");

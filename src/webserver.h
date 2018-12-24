@@ -1,4 +1,5 @@
 #include "ArduinoJson.h" // 6.5.0 beta or later !!!
+#include "spiffs.h"
 
 void handle_root () {
   String message;
@@ -450,6 +451,15 @@ String _addWiFiErase() {
   }
 }
 
+String _addRestoreConfig() {
+  if (SELECTED_LANGUAGE == 1) {
+    return "<a href='/restore_config' class='btn btn-outline-primary btn-sm' role='button'>Restore default settings</a>";
+
+  } else if (SELECTED_LANGUAGE == 2) {
+    return "<a href='/restore_config' class='btn btn-outline-primary btn-sm' role='button'>Przywróć ustawienia domyślne</a>";
+  }
+}
+
 void _handle_config(bool is_success) {
   String message;
   if (SELECTED_LANGUAGE == 1) {
@@ -494,7 +504,7 @@ void _handle_config(bool is_success) {
 
     message += "<hr>";
 	
-	message += "<b>Frequent measurement: </ b>";
+	message += "<b>Frequent measurement: </b>";
 	message += _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT) + " Frequent measurements - every few seconds, shorten the life span of the PM sensor.<br>";
 
 	message += "<b>Make PM measurements every: </b>";
@@ -586,6 +596,8 @@ void _handle_config(bool is_success) {
 
     message += "<hr><center><br>";
     message += _addWiFiErase();
+	message += "	";
+	message += _addRestoreConfig();
 
     message += "<br><br></center><hr><br><center>";
     message += _addSubmit();
@@ -725,6 +737,8 @@ void _handle_config(bool is_success) {
 
     message += "<hr><center><br>";
     message += _addWiFiErase();
+	message += "	";
+	message += _addRestoreConfig();
 
     message += "<br><br></center><hr><br><center>";
     message += _addSubmit();
@@ -913,8 +927,18 @@ void handle_update() {            //Handler for the handle_update
 }
 
 void erase_wifi() {
-  Serial.println("Erasing WiFi Config...");
+  Serial.println("Erasing Config...");
   ESP.eraseConfig();
+  WebServer.sendHeader("Location", String("/"), true);
+  WebServer.send ( 302, "text/plain", "");
+  delay(1000);
+  Serial.println("Restart");
+  ESP.restart();
+}
+
+void restore_config() {
+  Serial.println("Restoring default settings...");
+  deleteConfig();
   WebServer.sendHeader("Location", String("/"), true);
   WebServer.send ( 302, "text/plain", "");
   delay(1000);

@@ -11,14 +11,14 @@
 
 #include "FS.h"
 #include "ArduinoJson.h" // 6.5.0 beta or later
-#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager
-#include "src/bme280.h" // https://github.com/zen/BME280_light
-#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D
-#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library
-#include "src/SHT1x.h"; // https://github.com/practicalarduino/SHT1x
+#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager // 
+#include "src/bme280.h" // https://github.com/zen/BME280_light // 2.01.2019
+#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 2.01.2019
+#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 2.01.2019
+#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 2.01.2019
 #include <DHT.h>
 
-#include "src/pms.h" // https://github.com/fu-hsi/PMS
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 2.01.2019
 
 #include "src/spiffs.h"
 #include "src/config.h"
@@ -26,7 +26,7 @@
 
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
-#include "src/ESPinfluxdb.h"
+#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 2.01.2019
 
 /*
   Podłączenie czujnikow dla ESP8266 NodeMCU:
@@ -43,7 +43,6 @@
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   DHT22: VIN - 3V; GND - G; D7
   PMS5003/7003: White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
-
 */
 
 // BME280 config
@@ -52,11 +51,7 @@ char bufout[10];
 BME280<> BMESensor;
 
 // BMP280 config
-#define BMP_SCK 13
-#define BMP_MISO 12
-#define BMP_MOSI 11
-#define BMP_CS 10
-Adafruit_BMP280 bmp;
+Adafruit_BMP280 bmp; //I2C
 
 // Serial for SHT21/HTU21D config
 HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
@@ -90,6 +85,9 @@ unsigned long previous_INFLUXDB_Millis = 0;
 
 unsigned long previous_2sec_Millis = 0;
 unsigned long TwoSec_interval = 2 * 1000; // 2 second
+
+unsigned long previous_5minutes_Millis = 0;
+unsigned long FiveMinute_interval = 5 * 60 * 1000; // 5 minutes
 
 unsigned long REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned long previous_REBOOT_Millis = 0;
@@ -251,10 +249,10 @@ void setup() {
     DUST_interval = DUST_interval * DUST_TIME;
   }
   if (AIRMONITOR_ON) {
-    AIRMONITOR_interval = AIRMONITOR_interval * AIRMONITOR_TIME;
+    AIRMONITOR_interval = AIRMONITOR_TIME * 60 * 1000; // minutes
   }
   if (THINGSPEAK_ON) {
-    THINGSPEAK_interval = THINGSPEAK_interval * THINGSPEAK_TIME;
+    THINGSPEAK_interval = THINGSPEAK_TIME * 60 * 1000; // minutes
   }
   if (INFLUXDB_ON) {
     INFLUXDB_interval =  INFLUXDB_interval * INFLUXDB_TIME;
@@ -344,7 +342,11 @@ void loop() {
   WebServer.handleClient();
   delay(10);
 
-  MDNS.update();
+  unsigned long current_5MINUTES_Millis = millis();
+  if (current_5MINUTES_Millis - previous_5minutes_Millis >= FiveMinute_interval) {
+    MDNS.update();
+  }
+  previous_5minutes_Millis = millis();
 
   yield();
 

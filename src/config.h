@@ -40,7 +40,7 @@ extern float calib1;
 extern float calib2;
 extern int SELECTED_LANGUAGE;
 
-const char SOFTWAREVERSION[40] = "2.4.8 build 14:35_24.12.2018";
+const char SOFTWAREVERSION[40] = "2.4.9 build 20:10_2.01.2019";
 #if defined(ARDUINO_ARCH_ESP8266)
 const char HARDWAREVERSION[40] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)

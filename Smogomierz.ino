@@ -86,9 +86,6 @@ unsigned long previous_INFLUXDB_Millis = 0;
 unsigned long previous_2sec_Millis = 0;
 unsigned long TwoSec_interval = 2 * 1000; // 2 second
 
-unsigned long previous_5minutes_Millis = 0;
-unsigned long FiveMinute_interval = 5 * 60 * 1000; // 5 minutes
-
 unsigned long REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned long previous_REBOOT_Millis = 0;
 
@@ -342,11 +339,7 @@ void loop() {
   WebServer.handleClient();
   delay(10);
 
-  unsigned long current_5MINUTES_Millis = millis();
-  if (current_5MINUTES_Millis - previous_5minutes_Millis >= FiveMinute_interval) {
-    MDNS.update();
-  }
-  previous_5minutes_Millis = millis();
+  MDNS.update();
 
   yield();
 

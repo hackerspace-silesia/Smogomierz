@@ -122,7 +122,7 @@ class HTU21D
    HTU21D(HTU21D_RESOLUTION = HTU21D_RES_RH12_TEMP14);
 
    #if defined(ESP8266)
-   bool     begin(uint8_t sda = SDA, uint8_t scl = SCL);
+   bool     begin(uint8_t sda = 12, uint8_t scl = 14);
    #else
    bool     begin(void);
    #endif

@@ -41,6 +41,6 @@ ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 - [ ] Nowy design
 - [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
 - [ ] Automatyczne aktualizacje oprogramowania mierników
-- [ ] Przygotowanie aplikacji Smogomierz-firmware-flasher bazującej na [airrohr-firmware-flasher](https://github.com/hackerspace-silesia/airrohr-firmware-flasher)
+- [X] Przygotowanie aplikacji [Smogomierz-Flashing-Tool](https://github.com/hackerspace-silesia/Smogomierz-Flashing-Tool/)
 
 

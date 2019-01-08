@@ -14,7 +14,7 @@ Stworzyliśmy również aplikację dla systemów Windows, macOS oraz Linux), kt�
 
 Projekt Smogomierza jest rozwijany od ponad roku. Wszystko w ramach projektu Smogomierz robione jest za darmo, w ramach wolontariatu. Jeśli chcesz wesprzeć rozwój projektu, to możesz przekazać darowiznę na Stowarzyszenie Hackerspace Silesia. Najprościej można to zrobić przez specjalny formularz znajdujący się na stronie: [hs-silesia.pl/smogomierz](https://hs-silesia.pl/smogomierz/).
 
-<img align="left" width="1204" height="336" src="https://smogomierz.hs-silesia.pl/WsparcieSmogomierzeHS.jpg">
+<a href="https://github.com/hackerspace-silesia/Smogomierz"><img align="left" width="1204" height="336" src="https://smogomierz.hs-silesia.pl/WsparcieSmogomierzeHS.jpg"></a>
 
 ## Instrukcje
 

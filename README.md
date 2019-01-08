@@ -10,6 +10,12 @@ Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogom
 
 Stworzyliśmy również aplikację dla systemów Windows, macOS oraz Linux), która umożliwia w łatwy sposób wgranie oprogramowania oraz znajdowanie adresu IP Twojego miernika! Możesz ją pobrać ze strony [github.com/hackerspace-silesia/Smogomierz-Flashing-Tool](https://github.com/hackerspace-silesia/Smogomierz-Flashing-Tool/releases).
 
+## Darowizny
+
+Projekt Smogomierza jest rozwijany od ponad roku. Wszystko w ramach projektu Smogomierz robione jest za darmo, w ramach wolontariatu. Jeśli chcesz wesprzeć rozwój projektu, to możesz przekazać darowiznę na Stowarzyszenie Hackerspace Silesia. Najprościej można to zrobić przez specjalny formularz znajdujący się na stronie: [hs-silesia.pl/smogomierz](https://hs-silesia.pl/smogomierz/).
+
+<img align="left" width="1204" height="336" src="https://smogomierz.hs-silesia.pl/WsparcieSmogomierzeHS.jpg">
+
 ## Instrukcje
 
 1. [Instrukcja zlutowania wymaganych elementów](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/soldering.md)

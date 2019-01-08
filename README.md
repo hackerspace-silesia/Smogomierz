@@ -8,7 +8,7 @@ Smogomierz nie wysyła Twoich danych do żadnego serwisu, jeśli nie wyrazisz na
 
 Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogomierz-deviceName"(np. "Smogomierz-328017"). Po podłączeniu się z nią, będziesz miał możliwość skonfigurowania połączenia WiFi z własną siecią domową. Z listy dostępnych sieci wybierz swoją własną i podaj do niej hasło. Smogomierz zapisze dane w swojej pamięci wewnętrznej i ponownie się uruchomienie. Dalszą konfigurację wykonasz już przez przeglądarkę internetową wchodząc pod adres Smogomierz-deviceName.local lub IP_Smogomierza(do sprawdzenia na routerze). 
 
-Wkrótce planujemy udostępnić aplikację na Windowsa/macOS/Linuksa, która umożliwi w łatwy sposób wgranie oprogramowania oraz znalezienie adresu IP Twojego miernika!
+Stworzyliśmy również aplikację dla systemów Windows, macOS oraz Linux), która umożliwia w łatwy sposób wgranie oprogramowania oraz znajdowanie adresu IP Twojego miernika! Możesz ją pobrać ze strony [github.com/hackerspace-silesia/Smogomierz-Flashing-Tool](https://github.com/hackerspace-silesia/Smogomierz-Flashing-Tool/releases).
 
 ## Instrukcje
 

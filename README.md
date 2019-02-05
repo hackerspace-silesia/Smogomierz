@@ -40,7 +40,7 @@ Gotowe zestawy części potrzebnych do zbudowania własnego Smogomierza, dostęp
 
 ### Tested on:
 
-ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
+ArduinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
 
 ### TODO
 

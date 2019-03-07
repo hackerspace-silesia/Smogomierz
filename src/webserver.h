@@ -1,4 +1,4 @@
-#include "ArduinoJson.h" // 6.5.0 beta or later !!!
+#include <ArduinoJson.h> // 6.5.0 beta or later !!!
 #include "spiffs.h"
 
 void handle_root () {
@@ -517,40 +517,42 @@ void _handle_config(bool is_success) {
     message += "<b>Average result from last: </b>";
     message += _addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "PM measurements");
 
+    message += "<b>Sending measurements to external services every: </b>";
+	if (FREQUENTMEASUREMENT == true) {
+	    message += _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "seconds");
+	} else {
+	    message += _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "minutes");
+	}
+
     if (!strcmp(DUST_MODEL, "PMS7003")) {
       message += "<b>Display of PM1 measurements: </b>";
       message += _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1);
-
     }
+	
+    message += "<b>Altitude above sea level (required for correct pressure measurements. You can check it <a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>Here</a>): </b>";
+    message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
+    message += "<hr>";
 
+    message += "<b>Sending data to the <a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a> service(requires filling out <a title='LuftDaten.info Form' href='https://luftdaten.info/en/construction-manual/#feinstaubsensor-konfiguration' target='_blank'>the form</a>): </b>";
+    message += _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON);
+	message += "<b>ChipID: </b>";
+	message += String(ESP.getChipId());
     message += "<hr>";
 
     message += "<b>Sending data to the <a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a> service(requires filling out <a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>the form</a>; Sensor: PMS7003): </b>";
     message += _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON);
-
-    message += "<b>Sending measurements every: </b>";
-    message += _addIntInput("AIRMONITOR_TIME", AIRMONITOR_TIME, "minutes");
-
     message += "<b>Displaying charts from the AirMonitor site: </b>";
     message += _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON);
-
     message += "<b>Geographical coordinates(you can check it <a title='latlong.net' href='https://www.latlong.net' target='_blank'>here</a>):<br>Latitude: </b>";
     message += _addFloatInput("LATITUDE", LATITUDE, 6, "°");
     message += "<b>Longitude: </b>";
     message += _addFloatInput("LONGITUDE", LONGITUDE, 6, "°");
-    message += "<b>Altitude: </b>";
-    message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
     message += "<hr>";
 
     message += "<b>Sending data to the <a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a> service: </b>";
     message += _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON);
-
-    message += "<b>Sending measurements every: </b>";
-    message += _addIntInput("THINGSPEAK_TIME", THINGSPEAK_TIME, "minutes");
-
     message += "<b>Displaying charts from the ThingSpeak site: </b>";
     message += _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON);
-
     message += "<b>ThingSpeak API_KEY: </b>";
     message += _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY);
     message += "<b>ThingSpeak Channel ID: </b>";
@@ -559,12 +561,6 @@ void _handle_config(bool is_success) {
 
     message += "<b>Sending data to the InfluxDB: </b>";
     message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
-    message += "<b>Sending measurements every: </b>";
-	if (FREQUENTMEASUREMENT == true) {
-	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "seconds");
-	} else {
-	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "minutes");
-	}
     message += "<b>InfluxDB database address: </b>";
     message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
     message += "<b>InfluxDB port: </b>";
@@ -575,7 +571,7 @@ void _handle_config(bool is_success) {
     message += _addTextInput("DB_USER", DB_USER);
     message += "<b>Database password: </b>";
     message += _addPasswdInput("DB_PASSWORD", DB_PASSWORD);
-    message += "<hr>";
+	message += "<hr>";
 
     message += "<b>Debug: </b>";
     message += _addBoolSelect("DEBUG", DEBUG);
@@ -658,40 +654,43 @@ void _handle_config(bool is_success) {
     message += "<b>Uśredniaj wynik z ostatnich: </b>";
     message += _addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "pomiarów PM");
 
+    message += "<b>Wysyłanie pomiarów do serwisów zewnętrznych co: </b>";
+	if (FREQUENTMEASUREMENT == true) {
+	    message += _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "sekund");
+	} else {
+	    message += _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "minut");
+	}
+
     if (!strcmp(DUST_MODEL, "PMS7003")) {
       message += "<b>Wyświetlanie pomiarów PM1: </b>";
       message += _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1);
-
     }
+	
+    message += "<b>Wysokość(wymagana do poprawnych pomiarów ciśnienia. Można sprawdzić <a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>Tutaj</a>): </b>";
+    message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
+	
+    message += "<hr>";
 
+    message += "<b>Wysyłanie danych do serwisu <a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>(wymaga wypełnienia <a title='LuftDaten.info Form' href='https://luftdaten.info/en/construction-manual/#feinstaubsensor-konfiguration' target='_blank'>formularza</a>): </b>";
+	message += _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON);
+	message += "<b>ChipID: </b>";
+	message += String(ESP.getChipId());
     message += "<hr>";
 
     message += "<b>Wysyłanie danych do serwisu <a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>(wymaga wypełnienia <a title='Formularz AirMonitor' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>formularza</a>; Sensor: PMS7003): </b>";
     message += _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON);
-
-    message += "<b>Wysyłanie pomiarów co: </b>";
-    message += _addIntInput("AIRMONITOR_TIME", AIRMONITOR_TIME, "minut");
-
     message += "<b>Wyświetlanie wykresów z serwisu AirMonitor: </b>";
     message += _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON);
-
     message += "<b>Współrzędne geograficzne miernika(można sprawdzić <a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>Tutaj</a>):<br>Szerokość(latitude): </b>";
     message += _addFloatInput("LATITUDE", LATITUDE, 6, "°");
     message += "<b>Długość(longitude): </b>";
     message += _addFloatInput("LONGITUDE", LONGITUDE, 6, "°");
-    message += "<b>Wysokość: </b>";
-    message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
     message += "<hr>";
 
     message += "<b>Wysyłanie danych do serwisu <a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>: </b>";
     message += _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON);
-
-    message += "<b>Wysyłanie pomiarów co: </b>";
-    message += _addIntInput("THINGSPEAK_TIME", THINGSPEAK_TIME, "minut");
-
     message += "<b>Wyświetlanie wykresów z serwisu ThingSpeak: </b>";
     message += _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON);
-
     message += "<b>ThingSpeak API_KEY: </b>";
     message += _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY);
     message += "<b>ThingSpeak Channel ID: </b>";
@@ -700,12 +699,6 @@ void _handle_config(bool is_success) {
 	
 	message += "<b>Wysyłanie danych do InfluxDB: </b>";
 	message += _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON);
-    message += "<b>Wysyłanie pomiarów co: </b>";
-	if (FREQUENTMEASUREMENT == true) {
-	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "sekund");
-	} else {
-	    message += _addIntInput("INFLUXDB_TIME", INFLUXDB_TIME, "minut");
-	}
     message += "<b>Adres bazy danych InfluxDB: </b>";
     message += _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST);
     message += "<b>Port InfluxDB: </b>";
@@ -839,31 +832,39 @@ void handle_config_post() {
   _parseAsCString(THP_MODEL, WebServer.arg("THP_MODEL"));
   _parseAsCString(DUST_MODEL, WebServer.arg("DUST_MODEL"));
   FREQUENTMEASUREMENT = _parseAsBool(WebServer.arg("FREQUENTMEASUREMENT"));
+  
   DUST_TIME = WebServer.arg("DUST_TIME").toInt();
   NUMBEROFMEASUREMENTS = WebServer.arg("NUMBEROFMEASUREMENTS").toInt();
 
+  LUFTDATEN_ON = _parseAsBool(WebServer.arg("LUFTDATEN_ON"));
+
   AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
-  AIRMONITOR_TIME = WebServer.arg("AIRMONITOR_TIME").toInt();
   AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
   LATITUDE = WebServer.arg("LATITUDE").toFloat();
   LONGITUDE = WebServer.arg("LONGITUDE").toFloat();
   MYALTITUDE = WebServer.arg("MYALTITUDE").toInt();
 
   THINGSPEAK_ON = _parseAsBool(WebServer.arg("THINGSPEAK_ON"));
-  THINGSPEAK_TIME = WebServer.arg("THINGSPEAK_TIME").toInt();
   THINGSPEAK_GRAPH_ON = _parseAsBool(WebServer.arg("THINGSPEAK_GRAPH_ON"));
   _parseAsCString(THINGSPEAK_API_KEY, WebServer.arg("THINGSPEAK_API_KEY"));
   THINGSPEAK_CHANNEL_ID = WebServer.arg("THINGSPEAK_CHANNEL_ID").toInt();
 
   INFLUXDB_ON = _parseAsBool(WebServer.arg("INFLUXDB_ON"));
-  INFLUXDB_TIME = WebServer.arg("INFLUXDB_TIME").toInt();
   _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"));
   INFLUXDB_PORT = WebServer.arg("INFLUXDB_PORT").toInt();
   _parseAsCString(DATABASE, WebServer.arg("DATABASE"));
   _parseAsCString(DB_USER, WebServer.arg("DB_USER"));
   _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"));
+  
+  SENDING_FREQUENCY = WebServer.arg("SENDING_FREQUENCY").toInt();
+  /*
+  AIRMONITOR_TIME = WebServer.arg("AIRMONITOR_TIME").toInt();
+  THINGSPEAK_TIME = WebServer.arg("THINGSPEAK_TIME").toInt();
+  INFLUXDB_TIME = WebServer.arg("INFLUXDB_TIME").toInt();
+  */
 
   DEBUG = _parseAsBool(WebServer.arg("DEBUG"));
+  
   _parseAsCString(MODEL, WebServer.arg("MODEL"));
   _set_calib1_and_calib2();
 

@@ -29,13 +29,23 @@ int THINGSPEAK_CHANNEL_ID = 0;
 bool INFLUXDB_ON = false;
 char INFLUXDB_HOST[255] = "INFLUXDB_ADRESS";
 uint16_t INFLUXDB_PORT = 8086;
-char DATABASE[255] = "mydb";
+char INFLUXDB_DATABASE[255] = "mydb";
 char DB_USER[255] = "username";
 char DB_PASSWORD[255] = "password";
+
+bool MQTT_ON = false;
+char MQTT_HOST[255] = "MQTT_ADRESS";
+uint16_t MQTT_PORT = 1883;
+char MQTT_USER[255] = "username";
+char MQTT_PASSWORD[255] = "password";
 
 int SENDING_FREQUENCY = 2;
 
 bool DEBUG = false;
+
+bool CONFIG_AUTH = false;
+char CONFIG_USERNAME[255] = "admin";
+char CONFIG_PASSWORD[255] = "password";
 
 char MODEL[255] = "white";
 float calib1 = 1.6;

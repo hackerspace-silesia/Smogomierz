@@ -29,20 +29,29 @@ extern int THINGSPEAK_CHANNEL_ID;
 extern bool INFLUXDB_ON;
 extern char INFLUXDB_HOST[255];
 extern uint16_t INFLUXDB_PORT;
-
-extern char DATABASE[255];
+extern char INFLUXDB_DATABASE[255];
 extern char DB_USER[255];
 extern char DB_PASSWORD[255];
+
+extern bool MQTT_ON;
+extern char MQTT_HOST[255];
+extern uint16_t MQTT_PORT;
+extern char MQTT_USER[255];
+extern char MQTT_PASSWORD[255];
 
 extern int SENDING_FREQUENCY;
 
 extern bool DEBUG;
 
+extern bool CONFIG_AUTH;
+extern char CONFIG_USERNAME[255];
+extern char CONFIG_PASSWORD[255];
+
 extern char MODEL[255];
 extern float calib1;
 extern float calib2;
 
-const char SOFTWAREVERSION[40] = "2.5.0 build 21:15_7.03.2019";
+const char SOFTWAREVERSION[40] = "2.5.1 build 14:35_14.03.2019";
 #if defined(ARDUINO_ARCH_ESP8266)
 const char HARDWAREVERSION[40] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)

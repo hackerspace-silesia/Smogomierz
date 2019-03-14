@@ -1,5 +1,8 @@
-#include <ArduinoJson.h> // 6.5.0 beta or later !!!
+#include <ArduinoJson.h> // 6.9.0 or later
 #include "spiffs.h"
+
+const char* www_realm = "Custom Auth Realm";
+String authFailResponse = "<meta http-equiv='refresh' content='0; url=/' /> Authentication Failed! <p><a href='/'>Redirect</a></p>";
 
 void handle_root () {
   String message;
@@ -26,8 +29,8 @@ void handle_root () {
         message += "<h3>Humidity: ";
         message += (BMESensor.humidity);
         message += " %</h3>";
-        message += "<h3>Dew point: ";
-        message += (BMESensor.temperature - ((100 - BMESensor.humidity) / 5));
+        message += "<h3>Dew point: "; // formula https://pl.wikipedia.org/wiki/Temperatura_punktu_rosy#Zależności  
+        message += float(pow((BMESensor.humidity)/100, 0.125)*(112+0.9*(BMESensor.temperature))+0.1*(BMESensor.temperature)-112);
         message += " °C</h3>";
       }
     } else if (!strcmp(THP_MODEL, "HTU21")) {
@@ -40,7 +43,7 @@ void handle_root () {
         message += (myHTU21D.readCompensatedHumidity());
         message += " %</h3>";
         message += "<h3>Dew point: ";
-        message += (myHTU21D.readTemperature() - ((100 - myHTU21D.readCompensatedHumidity()) / 5));
+        message +=  float(pow((myHTU21D.readCompensatedHumidity())/100, 0.125)*(112+0.9*(myHTU21D.readTemperature()))+0.1*(myHTU21D.readTemperature())-112);	
         message += " °C</h3>";
       }
     } else if (!strcmp(THP_MODEL, "DHT22")) {
@@ -53,7 +56,7 @@ void handle_root () {
         message += (dht.readHumidity());
         message += " %</h3>";
         message += "<h3>Dew point: ";
-        message += (dht.readTemperature() - ((100 - dht.readHumidity()) / 5));
+        message += float(pow((dht.readHumidity())/100, 0.125)*(112+0.9*(dht.readTemperature()))+0.1*(dht.readTemperature())-112);
         message += " °C</h3>";
       }
     } else if (!strcmp(THP_MODEL, "BMP280")) {
@@ -76,7 +79,7 @@ void handle_root () {
         message += float(sht1x.readHumidity());
         message += " %</h3>";
         message += "<h3>Dew point: ";
-        message += float(sht1x.readTemperatureC() - (100 - (sht1x.readHumidity()) / 5));
+        message += float(pow((sht1x.readHumidity())/100, 0.125)*(112+0.9*(sht1x.readTemperatureC()))+0.1*(sht1x.readTemperatureC())-112);
         message += " °C</h3>";
       }
     }
@@ -105,7 +108,7 @@ void handle_root () {
         message += (BMESensor.humidity);
         message += " %</h3>";
         message += "<h3>Punkt rosy: ";
-        message += (BMESensor.temperature - ((100 - BMESensor.humidity) / 5));
+        message += float(pow((BMESensor.humidity)/100, 0.125)*(112+0.9*(BMESensor.temperature))+0.1*(BMESensor.temperature)-112);
         message += " °C</h3>";
       }
     } else if (!strcmp(THP_MODEL, "HTU21")) {
@@ -118,7 +121,7 @@ void handle_root () {
         message += (myHTU21D.readHumidity());
         message += " %</h3>";
         message += "<h3>Punkt rosy: ";
-        message += (myHTU21D.readTemperature() - ((100 - myHTU21D.readHumidity()) / 5));
+        message += float(pow((myHTU21D.readCompensatedHumidity())/100, 0.125)*(112+0.9*(myHTU21D.readTemperature()))+0.1*(myHTU21D.readTemperature())-112);	  
         message += " °C</h3>";
       }
     } else if (!strcmp(THP_MODEL, "DHT22")) {
@@ -131,7 +134,7 @@ void handle_root () {
         message += (dht.readHumidity());
         message += " %</h3>";
         message += "<h3>Punkt rosy: ";
-        message += (dht.readTemperature() - ((100 - dht.readHumidity()) / 5));
+        message += float(pow((dht.readHumidity())/100, 0.125)*(112+0.9*(dht.readTemperature()))+0.1*(dht.readTemperature())-112);
         message += " °C</h3>";
       }
     } else if (!strcmp(THP_MODEL, "BMP280")) {
@@ -154,7 +157,7 @@ void handle_root () {
         message += float(sht1x.readHumidity());
         message += " %</h3>";
         message += "<h3>Punkt rosy: ";
-        message += float(sht1x.readTemperatureC() - ((100 - sht1x.readHumidity()) / 5));
+        message += float(pow((sht1x.readHumidity())/100, 0.125)*(112+0.9*(sht1x.readTemperatureC()))+0.1*(sht1x.readTemperatureC())-112);
         message += " °C</h3>";
       }
     }
@@ -452,6 +455,8 @@ String _addWiFiErase() {
 }
 
 String _addRestoreConfig() {
+	String header;
+	
   if (SELECTED_LANGUAGE == 1) {
     return "<a href='/restore_config' class='btn btn-outline-primary btn-sm' role='button'>Restore default settings</a>";
 
@@ -461,9 +466,19 @@ String _addRestoreConfig() {
 }
 
 void _handle_config(bool is_success) {
-  String message;
-  if (SELECTED_LANGUAGE == 1) {
-    message += "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
+	  
+   	if (CONFIG_AUTH == true) {
+   		if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+   			//return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+   			return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+		} 
+	}
+	
+	String message;
+	
+  if (SELECTED_LANGUAGE == 1) {    
+		  
+	message += "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Config</title>";
     message += "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous'>";
     message += "</head><body>";
     message += "<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>Measurements</a>";
@@ -532,7 +547,20 @@ void _handle_config(bool is_success) {
     message += "<b>Altitude above sea level (required for correct pressure measurements. You can check it <a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>Here</a>): </b>";
     message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
     message += "<hr>";
-
+		
+    message += "<b>Secure the Configuration and Update pages(default: admin/password): </b>";
+    message += _addBoolSelect("CONFIG_AUTH", CONFIG_AUTH);
+    message += "<b>Login: </b>";
+    message += _addTextInput("CONFIG_USERNAME", CONFIG_USERNAME);
+    message += "<b>Password: </b>";
+    message += _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD);
+	
+	if (CONFIG_AUTH == true) {
+	message += "Restart your web browser to log out!";
+	}
+	
+    message += "<hr>";
+	
     message += "<b>Sending data to the <a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a> service(requires filling out <a title='LuftDaten.info Form' href='https://luftdaten.info/en/construction-manual/#feinstaubsensor-konfiguration' target='_blank'>the form</a>): </b>";
     message += _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON);
 	message += "<b>ChipID: </b>";
@@ -566,11 +594,23 @@ void _handle_config(bool is_success) {
     message += "<b>InfluxDB port: </b>";
     message += _addIntInput("INFLUXDB_PORT", INFLUXDB_PORT);
     message += "<b>Name of the database: </b>";
-    message += _addTextInput("DATABASE", DATABASE);
+    message += _addTextInput("INFLUXDB_DATABASE", INFLUXDB_DATABASE);
     message += "<b>Database user: </b>";
     message += _addTextInput("DB_USER", DB_USER);
     message += "<b>Database password: </b>";
     message += _addPasswdInput("DB_PASSWORD", DB_PASSWORD);
+	message += "<hr>";
+	
+    message += "<b>Sending data to the MQTT server: </b>";
+    message += _addBoolSelect("MQTT_ON", MQTT_ON);
+    message += "<b>MQTT server address: </b>";
+    message += _addTextInput("MQTT_HOST", MQTT_HOST);
+    message += "<b>MQTT port: </b>";
+    message += _addIntInput("MQTT_PORT", MQTT_PORT);
+    message += "<b>MQTT user: </b>";
+    message += _addTextInput("MQTT_USER", MQTT_USER);
+    message += "<b>MQTT password: </b>";
+    message += _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD);
 	message += "<hr>";
 
     message += "<b>Debug: </b>";
@@ -587,6 +627,7 @@ void _handle_config(bool is_success) {
       message += (calib2);
       message += "<br>";
     */
+	
     message += "<b>Software version: </b>";
     message += (SOFTWAREVERSION);
 
@@ -668,6 +709,18 @@ void _handle_config(bool is_success) {
 	
     message += "<b>Wysokość(wymagana do poprawnych pomiarów ciśnienia. Można sprawdzić <a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>Tutaj</a>): </b>";
     message += _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m");
+    message += "<hr>";
+	
+    message += "<b>Wymagaj hasła dla strony Konfiguracyjnej oraz Update(domyślne: admin/password): </b>";
+    message += _addBoolSelect("CONFIG_AUTH", CONFIG_AUTH);
+    message += "<b>Login: </b>";
+    message += _addTextInput("CONFIG_USERNAME", CONFIG_USERNAME);
+    message += "<b>Hasło: </b>";
+    message += _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD);
+	
+	if (CONFIG_AUTH == true) {
+	message += "Zrestartuj przeglądarkę w celu wylogowania!";
+	}
 	
     message += "<hr>";
 
@@ -704,12 +757,24 @@ void _handle_config(bool is_success) {
     message += "<b>Port InfluxDB: </b>";
     message += _addIntInput("INFLUXDB_PORT", INFLUXDB_PORT);
     message += "<b>Nazwa bazy danych: </b>";
-    message += _addTextInput("DATABASE", DATABASE);
+    message += _addTextInput("INFLUXDB_DATABASE", INFLUXDB_DATABASE);
     message += "<b>Użytkownik bazy danych: </b>";
     message += _addTextInput("DB_USER", DB_USER);
     message += "<b>Hasło do bazy danych: </b>";
     message += _addPasswdInput("DB_PASSWORD", DB_PASSWORD);
     message += "<hr>";
+	
+    message += "<b>Wysyłanie danych poprzez MQTT: </b>";
+    message += _addBoolSelect("MQTT_ON", MQTT_ON);
+    message += "<b>Adres serwera MQTT: </b>";
+    message += _addTextInput("MQTT_HOST", MQTT_HOST);
+    message += "<b>Port MQTT: </b>";
+    message += _addIntInput("MQTT_PORT", MQTT_PORT);
+    message += "<b>Użytkownik MQTT: </b>";
+    message += _addTextInput("MQTT_USER", MQTT_USER);
+    message += "<b>Hasło MQTT: </b>";
+    message += _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD);
+	message += "<hr>";
 
     message += "<b>Debug: </b>";
     message += _addBoolSelect("DEBUG", DEBUG);
@@ -725,6 +790,7 @@ void _handle_config(bool is_success) {
       message += (calib2);
       message += "<br>";
     */
+	
     message += "<b>Wersja oprogramowania: </b>";
     message += (SOFTWAREVERSION);
 
@@ -852,18 +918,23 @@ void handle_config_post() {
   INFLUXDB_ON = _parseAsBool(WebServer.arg("INFLUXDB_ON"));
   _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"));
   INFLUXDB_PORT = WebServer.arg("INFLUXDB_PORT").toInt();
-  _parseAsCString(DATABASE, WebServer.arg("DATABASE"));
+  _parseAsCString(INFLUXDB_DATABASE, WebServer.arg("INFLUXDB_DATABASE"));
   _parseAsCString(DB_USER, WebServer.arg("DB_USER"));
   _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"));
   
+  MQTT_ON = _parseAsBool(WebServer.arg("MQTT_ON"));
+    _parseAsCString(MQTT_HOST, WebServer.arg("MQTT_HOST"));
+    MQTT_PORT = WebServer.arg("MQTT_PORT").toInt();
+    _parseAsCString(MQTT_USER, WebServer.arg("MQTT_USER"));
+    _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"));
+  
   SENDING_FREQUENCY = WebServer.arg("SENDING_FREQUENCY").toInt();
-  /*
-  AIRMONITOR_TIME = WebServer.arg("AIRMONITOR_TIME").toInt();
-  THINGSPEAK_TIME = WebServer.arg("THINGSPEAK_TIME").toInt();
-  INFLUXDB_TIME = WebServer.arg("INFLUXDB_TIME").toInt();
-  */
 
   DEBUG = _parseAsBool(WebServer.arg("DEBUG"));
+  
+  CONFIG_AUTH = _parseAsBool(WebServer.arg("CONFIG_AUTH"));
+  _parseAsCString(CONFIG_USERNAME, WebServer.arg("CONFIG_USERNAME"));
+  _parseAsCString(CONFIG_PASSWORD, WebServer.arg("CONFIG_PASSWORD"));
   
   _parseAsCString(MODEL, WebServer.arg("MODEL"));
   _set_calib1_and_calib2();
@@ -881,6 +952,12 @@ void handle_config_post() {
 }
 
 void handle_update() {            //Handler for the handle_update
+   	if (CONFIG_AUTH == true) {
+   		if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+   			//return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+   			return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+		} 
+	}
   String message;
   if (SELECTED_LANGUAGE == 1) {
     message = "<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - Update</title>";
@@ -964,7 +1041,7 @@ void handle_api() {
       json["temperature"] = float(BMESensor.temperature);
       json["pressure"] = int(BMESensor.seaLevelForAltitude(MYALTITUDE));
       json["humidity"] = int(BMESensor.humidity);
-      json["dewpoint"] = float(BMESensor.temperature - ((100 - BMESensor.humidity) / 5));
+	  json["dewpoint"] = float(pow((BMESensor.humidity)/100, 0.125)*(112+0.9*(BMESensor.temperature))+0.1*(BMESensor.temperature)-112);
     }
   }
   if (!strcmp(THP_MODEL, "BMP280")) {
@@ -977,21 +1054,21 @@ void handle_api() {
     if (checkHTU21DStatus()) {
       json["temperature"] = float(myHTU21D.readTemperature());
       json["humidity"] = int(myHTU21D.readCompensatedHumidity());
-      json["dewpoint"] = float(myHTU21D.readTemperature() - ((100 - myHTU21D.readCompensatedHumidity()) / 5));
+	  json["dewpoint"] = float(pow((myHTU21D.readCompensatedHumidity())/100, 0.125)*(112+0.9*(myHTU21D.readTemperature()))+0.1*(myHTU21D.readTemperature())-112);	  
     }
   }
   if (!strcmp(THP_MODEL, "DHT22")) {
     if (checkDHT22Status()) {
       json["temperature"] = float(dht.readTemperature());
       json["humidity"] = int(dht.readHumidity());
-      json["dewpoint"] = float(dht.readTemperature() - ((100 - dht.readHumidity()) / 5));
+	  json["dewpoint"] = float(pow((dht.readHumidity())/100, 0.125)*(112+0.9*(dht.readTemperature()))+0.1*(dht.readTemperature())-112);
     }
   }
   if (!strcmp(THP_MODEL, "SHT1x")) {
     if (checkSHT1xStatus()) {
       json["temperature"] = float(sht1x.readTemperatureC());
       json["humidity"] = int(sht1x.readHumidity());
-      json["dewpoint"] = float(sht1x.readTemperatureC() - ((100 - sht1x.readHumidity()) / 5));
+	  json["dewpoint"] = float(pow((sht1x.readHumidity())/100, 0.125)*(112+0.9*(sht1x.readTemperatureC()))+0.1*(sht1x.readTemperatureC())-112);
     }
   }
 

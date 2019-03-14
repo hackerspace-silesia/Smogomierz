@@ -47,8 +47,6 @@ void sendPMSData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int aver
 	JsonObject json = jsonBuffer.to<JsonObject>();
     json["lat"] = String(LATITUDE, 6);
     json["long"] = String(LONGITUDE, 6);
-    //json["lat"] = LATITUDE;
-    //json["long"] = LONGITUDE;
     json["pm1"] = averagePM1;
     json["pm25"] = averagePM25;
     json["pm10"] = averagePM10;
@@ -65,8 +63,6 @@ void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
 	JsonObject json = jsonBuffer.to<JsonObject>();
     json["lat"] = String(LATITUDE, 6);
     json["long"] = String(LONGITUDE, 6);
-    //json["lat"] = LATITUDE;
-    //json["long"] = LONGITUDE;
 	if (!strcmp(THP_MODEL, "BME280")) {
     json["pressure"] = float(bme.seaLevelForAltitude(MYALTITUDE));
     json["temperature"] = float(bme.temperature);

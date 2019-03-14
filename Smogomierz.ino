@@ -3,6 +3,7 @@
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <SoftwareSerial.h>
+#include <PubSubClient.h>
 #elif defined ARDUINO_ARCH_ESP32
 #include <WiFi.h>
 #endif
@@ -10,15 +11,15 @@
 #include <Wire.h>
 
 #include "FS.h"
-#include <ArduinoJson.h> // 6.5.0 beta or later
-#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager // 
-#include "src/bme280.h" // https://github.com/zen/BME280_light // 2.01.2019
-#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 2.01.2019
-#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 2.01.2019
-#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 2.01.2019
+#include <ArduinoJson.h> // 6.9.0 or later
+#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager // 12.03.2019
+#include "src/bme280.h" // https://github.com/zen/BME280_light // 12.03.2019
+#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
+#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
+#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
 #include <DHT.h>
 
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 2.01.2019
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
 
 #include "src/spiffs.h"
 #include "src/config.h"
@@ -27,7 +28,7 @@
 #include "src/luftdaten.h"
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
-#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 2.01.2019
+#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
 
 /*
   Podłączenie czujnikow dla ESP8266 NodeMCU:
@@ -92,6 +93,9 @@ float calib = 1;
 
 ESP8266WebServer WebServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
+
+WiFiClient espClient;
+PubSubClient mqttclient(espClient);
 
 bool checkHTU21DStatus() {
   int temperature_HTU21D_Int = int(myHTU21D.readTemperature());
@@ -212,6 +216,24 @@ void minutesToSeconds() {
   SENDING_FREQUENCY_interval = 1000;
 }
 
+void MQTTreconnect() {
+  // Loop until we're reconnected
+  if (!mqttclient.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (mqttclient.connect("ESP8266Client", MQTT_USER, MQTT_PASSWORD)) {
+      Serial.println("connected");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(mqttclient.state());
+      Serial.println("\n");
+      //Serial.println(" try again in 2 seconds");
+      // Wait 2 seconds before retrying
+      //delay(2000);
+    }
+  }
+}
+
 // library doesnt support arguments :/
 #include "src/webserver.h"
 
@@ -248,8 +270,8 @@ void setup() {
   if (strcmp(DUST_MODEL, "Non")) {
     DUST_interval = DUST_interval * DUST_TIME;
   }
-  
-  if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON) {
+
+  if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
     SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
   }
 
@@ -296,9 +318,13 @@ void setup() {
     delay(5000);
   }
 
+  if (MQTT_ON) {
+    mqttclient.setServer(MQTT_HOST, MQTT_PORT);
+  }
+
   if (INFLUXDB_ON) {
     Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-    if (influxdb.opendb(DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
+    if (influxdb.opendb(INFLUXDB_DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
       Serial.println("Opening database failed");
     } else {
       Serial.println("Opening database succeed");
@@ -339,12 +365,27 @@ void loop() {
   delay(10);
 
   MDNS.update();
-
+/*
+  if (MQTT_ON) {
+    if (!mqttclient.connected()) {
+      MQTTreconnect();
+    }
+    mqttclient.loop();
+    delay(10);
+  }
+*/
   yield();
 
-  if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON) {
+  if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
     unsigned long current_SENDING_FREQUENCY_Millis = millis();
     if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
+      if (MQTT_ON) {
+        if (!mqttclient.connected()) {
+          MQTTreconnect();
+        }
+        mqttclient.loop();
+        delay(10);
+      }
       if (LUFTDATEN_ON) {
         sendDataToLuftdaten(BMESensor, averagePM1, averagePM25, averagePM10);
         if (DEBUG) {
@@ -380,7 +421,7 @@ void loop() {
 
       if (INFLUXDB_ON) {
         Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-        if (influxdb.opendb(DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
+        if (influxdb.opendb(INFLUXDB_DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
           Serial.println("Opening database failed");
         } else {
           dbMeasurement row(device_name);
@@ -538,6 +579,52 @@ void loop() {
           row.empty();
         }
       }
+
+      if (MQTT_ON) {
+        if (!strcmp(DUST_MODEL, "PMS7003")) {
+          if (DEBUG) {
+            if (SELECTED_LANGUAGE == 1) {
+              Serial.println("Measurements from PMS7003!\n");
+            } else if (SELECTED_LANGUAGE == 2) {
+              Serial.println("Dane z PMS7003!\n");
+            }
+          }
+          mqttclient.publish("sensor/PM1", String(averagePM1).c_str(), true);
+          mqttclient.publish("sensor/PM2.5", String(averagePM25).c_str(), true);
+          mqttclient.publish("sensor/PM10", String(averagePM10).c_str(), true);
+        } else {
+          if (DEBUG) {
+            if (SELECTED_LANGUAGE == 1) {
+              Serial.println("No measurements from PMS7003!\n");
+            } else if (SELECTED_LANGUAGE == 2) {
+              Serial.println("Brak danych z PMS7003!\n");
+            }
+          }
+        }
+        if (!strcmp(THP_MODEL, "BME280")) {
+          if (checkBmeStatus() == true) {
+            if (DEBUG) {
+              if (SELECTED_LANGUAGE == 1) {
+                Serial.println("Measurements from BME280!\n");
+              } else if (SELECTED_LANGUAGE == 2) {
+                Serial.println("Dane z BME280!\n");
+              }
+            }
+            mqttclient.publish("sensor/temperature", String(BMESensor.temperature).c_str(), true);
+            mqttclient.publish("sensor/pressure", String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
+            mqttclient.publish("sensor/humidity", String(BMESensor.humidity).c_str(), true);
+          } else {
+            if (DEBUG) {
+              if (SELECTED_LANGUAGE == 1) {
+                Serial.println("No measurements from BME280!\n");
+              } else if (SELECTED_LANGUAGE == 2) {
+                Serial.println("Brak pomiarów z BME280!\n");
+              }
+            }
+          }
+        }
+      }
+
       previous_SENDING_FREQUENCY_Millis = millis();
     }
   }

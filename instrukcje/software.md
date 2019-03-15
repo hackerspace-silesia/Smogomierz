@@ -42,7 +42,7 @@ Po zainstalowaniu ArduinoIDE, musisz dodać w nim obsługę płytek ESP8266.
 8. Kod, który będziemy wgrywać na płytki ESP8266 wymaga do poprawnego działania, dwóch zewnętrznych bibliotek. Aby je dodać wystarczy wybrać z menu ArduinoIDE "Szkic > Dołącz bibliotekę > Zarządzaj bibliotekami...".
 ![ArduinoIDE8](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE8.jpg)
 
-9. W wyszukiwarce wpisujemy nazwę biblioteki i następnie ją instalujemy. Biblioteki, które musimy doinstalować to: **ArduinoJson(w wersji 6.5.0 lub nowszej)**, **Adafruit BMP280 Library(najnowsza dostępna)**, **DHT sensor library by Adafruit(najnowsza dostępna)** oraz **ThingSpeak(najnowsza dostępna)**.
+9. W wyszukiwarce wpisujemy nazwę biblioteki i następnie ją instalujemy. Biblioteki, które musimy doinstalować to: **ArduinoJson(w wersji 6.5.0 lub nowszej)** oraz najnowsze wersje bibliotek: **Adafruit BMP280 Library**, **DHT sensor library by Adafruit**, **ThingSpeak**, **Adafruit Unified Sensor** oraz **PubSubClient**.
 ![ArduinoIDE10](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE10.jpg)
 
 10. Teraz wszystko jest już gotowe do obsługi naszych mierników smogu. Możemy przejść do pobrania oprogramowania i sprawdzenia czy działa.

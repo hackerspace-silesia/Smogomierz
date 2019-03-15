@@ -37,7 +37,7 @@ Po zainstalowaniu ArduinoIDE, musisz dodać w nim obsługę płytek ESP8266.
 ![ArduinoIDE6](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE6.jpg)
 
 7. Smogomierz zapisuje w pamięci wewnętrznej(SPIFFS) płytki ESP8266 ustawienia. Robi to, aby po nonownym uruchomienie nie było konieczne wpisywanie wszystkich danych na nowo. Musimy się upewnić, że w ArduinoIDE wybraliśmy opcję stworzenia przestrzeni w pamięci na nasz plik konfiguracyjny. W tym celu musimy zaznaczyć opcję **4M (1M SPIFFS)** z menu "Narzędzia > Flash Size > 4M (1M SPIFFS)".
-![ArduinoIDE7](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE7_2_.jpg)
+![ArduinoIDE7](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE7_2.jpg)
 
 8. Kod, który będziemy wgrywać na płytki ESP8266 wymaga do poprawnego działania, dwóch zewnętrznych bibliotek. Aby je dodać wystarczy wybrać z menu ArduinoIDE "Szkic > Dołącz bibliotekę > Zarządzaj bibliotekami...".
 ![ArduinoIDE8](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE8.jpg)

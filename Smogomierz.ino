@@ -102,24 +102,14 @@ bool checkHTU21DStatus() {
   int humidity_HTU21D_Int = int(myHTU21D.readHumidity());
   if (temperature_HTU21D_Int == 0 && humidity_HTU21D_Int == 0) {
     if (DEBUG) {
-      if (SELECTED_LANGUAGE == 1) {
-        Serial.println("No data from HTU21D sensor!\n");
-        return false;
-      } else if (SELECTED_LANGUAGE == 2) {
-        Serial.println("Brak pomiarów z HTU21D!\n");
-        return false;
-      }
+      Serial.println("No data from HTU21D sensor!\n");
+      return false;
     }
     return false;
   } else if (temperature_HTU21D_Int == 255 && humidity_HTU21D_Int == 255) {
     if (DEBUG) {
-      if (SELECTED_LANGUAGE == 1) {
-        Serial.println("No data from HTU21D sensor!\n");
-        return false;
-      } else if (SELECTED_LANGUAGE == 2) {
-        Serial.println("Brak pomiarów z HTU21D!\n");
-        return false;
-      }
+      Serial.println("No data from HTU21D sensor!\n");
+      return false;
     }
     return false;
   } else {
@@ -133,13 +123,8 @@ bool checkBmeStatus() {
   int humidity_BME280_Int = BMESensor.humidity;
   if (temperature_BME280_Int == 0 && pressure_BME280_Int == 0 && humidity_BME280_Int == 0) {
     if (DEBUG) {
-      if (SELECTED_LANGUAGE == 1) {
-        Serial.println("No data from BME280 sensor!\n");
-        return false;
-      } else if (SELECTED_LANGUAGE == 2) {
-        Serial.println("Brak pomiarów z BME280!\n");
-        return false;
-      }
+      Serial.println("No data from BME280 sensor!\n");
+      return false;
     }
     return false;
   } else {
@@ -152,13 +137,8 @@ bool checkBmpStatus() {
   int pressure_BMP_Int = bmp.readPressure();
   if (temperature_BMP_Int == 0 && pressure_BMP_Int == 0) {
     if (DEBUG) {
-      if (SELECTED_LANGUAGE == 1) {
-        Serial.println("No data from BMP280 sensor!\n");
-        return false;
-      } else if (SELECTED_LANGUAGE == 2) {
-        Serial.println("Brak pomiarów z BMP280!\n");
-        return false;
-      }
+      Serial.println("No data from BMP280 sensor!\n");
+      return false;
     }
     return false;
   } else {
@@ -171,16 +151,8 @@ bool checkDHT22Status() {
   int temperature_DHT_Int = dht.readTemperature();
   if (humidity_DHT_Int == 0 && temperature_DHT_Int == 0) {
     if (DEBUG) {
-      if (SELECTED_LANGUAGE == 1) {
-        Serial.println("No data from DHT22 sensor!\n");
-        return false;
-      } else if (SELECTED_LANGUAGE == 2) {
-        Serial.println("Brak pomiarów z DHT22!\n");
-        return false;
-      } else {
-        Serial.println("No data from DHT22 sensor!\n");
-        return false;
-      }
+      Serial.println("No data from DHT22 sensor!\n");
+      return false;
     }
     return false;
   } else {
@@ -193,16 +165,8 @@ bool checkSHT1xStatus() {
   int temperature_SHT1x_Int = sht1x.readTemperatureC();
   if (humidity_SHT1x_Int == 0 && temperature_SHT1x_Int == 0) {
     if (DEBUG) {
-      if (SELECTED_LANGUAGE == 1) {
-        Serial.println("No data from SHT1x sensor!\n");
-        return false;
-      } else if (SELECTED_LANGUAGE == 2) {
-        Serial.println("Brak pomiarów z SHT1x!\n");
-        return false;
-      } else {
-        Serial.println("No data from SHT1x sensor!\n");
-        return false;
-      }
+      Serial.println("No data from SHT1x sensor!\n");
+      return false;
     }
     return false;
   } else {
@@ -212,7 +176,6 @@ bool checkSHT1xStatus() {
 
 void minutesToSeconds() {
   DUST_interval = 1000; // 1 second
-  //INFLUXDB_interval = 1000; // 1 second
   SENDING_FREQUENCY_interval = 1000;
 }
 
@@ -227,12 +190,17 @@ void MQTTreconnect() {
       Serial.print("failed, rc=");
       Serial.print(mqttclient.state());
       Serial.println("\n");
-      //Serial.println(" try again in 2 seconds");
-      // Wait 2 seconds before retrying
-      //delay(2000);
     }
   }
 }
+
+// default translation - english
+#include "src/default_intl.h"
+
+#include "src/translator.h"
+
+// all HTML content
+#include "src/html-content.h"
 
 // library doesnt support arguments :/
 #include "src/webserver.h"
@@ -242,6 +210,9 @@ void setup() {
   delay(10);
 
   fs_setup();
+  delay(10);
+
+  loadtranslation(SELECTED_LANGUAGE);
   delay(10);
 
   if (!strcmp(DUST_MODEL, "PMS7003")) {
@@ -365,15 +336,7 @@ void loop() {
   delay(10);
 
   MDNS.update();
-/*
-  if (MQTT_ON) {
-    if (!mqttclient.connected()) {
-      MQTTreconnect();
-    }
-    mqttclient.loop();
-    delay(10);
-  }
-*/
+
   yield();
 
   if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
@@ -389,33 +352,21 @@ void loop() {
       if (LUFTDATEN_ON) {
         sendDataToLuftdaten(BMESensor, averagePM1, averagePM25, averagePM10);
         if (DEBUG) {
-          if (SELECTED_LANGUAGE == 1) {
-            Serial.println("Sending measurement data to the LuftDaten service!\n");
-          } else if (SELECTED_LANGUAGE == 2) {
-            Serial.println("Wysłanie danych pomiarowych do serwisu LuftDaten!\n");
-          }
+          Serial.println("Sending measurement data to the LuftDaten service!\n");
         }
       }
 
       if (AIRMONITOR_ON) {
         sendDataToAirMonitor(BMESensor, averagePM1, averagePM25, averagePM10);
         if (DEBUG) {
-          if (SELECTED_LANGUAGE == 1) {
-            Serial.println("Sending measurement data to the AirMonitor service!\n");
-          } else if (SELECTED_LANGUAGE == 2) {
-            Serial.println("Wysłanie danych pomiarowych do serwisu AirMonitor!\n");
-          }
+          Serial.println("Sending measurement data to the AirMonitor service!\n");
         }
       }
 
       if (THINGSPEAK_ON) {
         sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
         if (DEBUG) {
-          if (SELECTED_LANGUAGE == 1) {
-            Serial.println("Sending measurement data to the Thingspeak service!\n");
-          } else if (SELECTED_LANGUAGE == 2) {
-            Serial.println("Wysłanie danych pomiarowych do serwisu Thingspeak!\n");
-          }
+          Serial.println("Sending measurement data to the Thingspeak service!\n");
         }
       }
 
@@ -427,22 +378,14 @@ void loop() {
           dbMeasurement row(device_name);
           if (!strcmp(DUST_MODEL, "PMS7003")) {
             if (DEBUG) {
-              if (SELECTED_LANGUAGE == 1) {
-                Serial.println("Measurements from PMS7003!\n");
-              } else if (SELECTED_LANGUAGE == 2) {
-                Serial.println("Dane z PMS7003!\n");
-              }
+              Serial.println("Measurements from PMS7003!\n");
             }
             row.addField("pm1", averagePM1);
             row.addField("pm25", averagePM25);
             row.addField("pm10", averagePM10);
           } else {
             if (DEBUG) {
-              if (SELECTED_LANGUAGE == 1) {
-                Serial.println("No measurements from PMS7003!\n");
-              } else if (SELECTED_LANGUAGE == 2) {
-                Serial.println("Brak danych z PMS7003!\n");
-              }
+              Serial.println("No measurements from PMS7003!\n");
             }
             row.addField("pm1", averagePM1);
             row.addField("pm25", averagePM25);
@@ -451,22 +394,14 @@ void loop() {
           if (!strcmp(THP_MODEL, "BME280")) {
             if (checkBmeStatus() == true) {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("Measurements from BME280!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Dane z BME280!\n");
-                }
+                Serial.println("Measurements from BME280!\n");
               }
               row.addField("temperature", (BMESensor.temperature));
               row.addField("pressure", (BMESensor.seaLevelForAltitude(MYALTITUDE)));
               row.addField("humidity", (BMESensor.humidity));
             } else {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("No measurements from BME280!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Brak pomiarów z BME280!\n");
-                }
+                Serial.println("No measurements from BME280!\n");
               }
             }
           }
@@ -474,21 +409,13 @@ void loop() {
           if (!strcmp(THP_MODEL, "HTU21")) {
             if (checkHTU21DStatus() == true) {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("Measurements from HTU21!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Dane z HTU21!\n");
-                }
+                Serial.println("Measurements from HTU21!\n");
               }
               row.addField("temperature", (myHTU21D.readTemperature()));
               row.addField("humidity", (myHTU21D.readHumidity()));
             } else {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("No measurements from HTU21D!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Brak pomiarów z HTU21D!\n");
-                }
+                Serial.println("No measurements from HTU21D!\n");
               }
             }
           }
@@ -496,21 +423,13 @@ void loop() {
           if (!strcmp(THP_MODEL, "BMP280")) {
             if (checkBmpStatus() == true) {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("Measurements from BMP280!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Dane z BMP280!\n");
-                }
+                Serial.println("Measurements from BMP280!\n");
               }
               row.addField("temperature", (bmp.readTemperature()));
               row.addField("pressure", ((bmp.readPressure()) / 100));
             } else {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("No measurements from BMP280!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Brak pomiarów z BMP280!\n");
-                }
+                Serial.println("No measurements from BMP280!\n");
               }
             }
           }
@@ -518,21 +437,13 @@ void loop() {
           if (!strcmp(THP_MODEL, "DHT22")) {
             if (checkDHT22Status() == true) {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("Measurements from DHT22!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Dane z DHT22!\n");
-                }
+                Serial.println("Measurements from DHT22!\n");
               }
               row.addField("temperature", (dht.readTemperature()));
               row.addField("humidity", (dht.readHumidity()));
             } else {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("No measurements from DHT22!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Brak pomiarów z DHT22!\n");
-                }
+                Serial.println("No measurements from DHT22!\n");
               }
             }
           }
@@ -540,40 +451,24 @@ void loop() {
           if (!strcmp(THP_MODEL, "SHT1x")) {
             if (checkSHT1xStatus() == true) {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("Measurements from SHT1x!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Dane z SHT1x!\n");
-                }
+                Serial.println("Measurements from SHT1x!\n");
               }
               row.addField("temperature", (sht1x.readTemperatureC()));
               row.addField("humidity", (sht1x.readHumidity()));
             } else {
               if (DEBUG) {
-                if (SELECTED_LANGUAGE == 1) {
-                  Serial.println("No measurements from SHT1x!\n");
-                } else if (SELECTED_LANGUAGE == 2) {
-                  Serial.println("Brak pomiarów z SHT1x!\n");
-                }
+                Serial.println("No measurements from SHT1x!\n");
               }
             }
           }
 
           if (influxdb.write(row) == DB_SUCCESS) {
             if (DEBUG) {
-              if (SELECTED_LANGUAGE == 1) {
-                Serial.println("Data sent to InfluxDB\n");
-              } else if (SELECTED_LANGUAGE == 2) {
-                Serial.println("Dane wysłane do InfluxDB\n");
-              }
+              Serial.println("Data sent to InfluxDB\n");
             }
           } else {
             if (DEBUG) {
-              if (SELECTED_LANGUAGE == 1) {
-                Serial.println("Error sending data to InfluxDB\n");
-              } else if (SELECTED_LANGUAGE == 2) {
-                Serial.println("Błąd wysyłania danych do InfluxDB\n");
-              }
+              Serial.println("Error sending data to InfluxDB\n");
             }
           }
           row.empty();
@@ -583,43 +478,27 @@ void loop() {
       if (MQTT_ON) {
         if (!strcmp(DUST_MODEL, "PMS7003")) {
           if (DEBUG) {
-            if (SELECTED_LANGUAGE == 1) {
-              Serial.println("Measurements from PMS7003!\n");
-            } else if (SELECTED_LANGUAGE == 2) {
-              Serial.println("Dane z PMS7003!\n");
-            }
+            Serial.println("Measurements from PMS7003!\n");
           }
           mqttclient.publish("sensor/PM1", String(averagePM1).c_str(), true);
           mqttclient.publish("sensor/PM2.5", String(averagePM25).c_str(), true);
           mqttclient.publish("sensor/PM10", String(averagePM10).c_str(), true);
         } else {
           if (DEBUG) {
-            if (SELECTED_LANGUAGE == 1) {
-              Serial.println("No measurements from PMS7003!\n");
-            } else if (SELECTED_LANGUAGE == 2) {
-              Serial.println("Brak danych z PMS7003!\n");
-            }
+            Serial.println("No measurements from PMS7003!\n");
           }
         }
         if (!strcmp(THP_MODEL, "BME280")) {
           if (checkBmeStatus() == true) {
             if (DEBUG) {
-              if (SELECTED_LANGUAGE == 1) {
-                Serial.println("Measurements from BME280!\n");
-              } else if (SELECTED_LANGUAGE == 2) {
-                Serial.println("Dane z BME280!\n");
-              }
+              Serial.println("Measurements from BME280!\n");
             }
             mqttclient.publish("sensor/temperature", String(BMESensor.temperature).c_str(), true);
             mqttclient.publish("sensor/pressure", String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
             mqttclient.publish("sensor/humidity", String(BMESensor.humidity).c_str(), true);
           } else {
             if (DEBUG) {
-              if (SELECTED_LANGUAGE == 1) {
-                Serial.println("No measurements from BME280!\n");
-              } else if (SELECTED_LANGUAGE == 2) {
-                Serial.println("Brak pomiarów z BME280!\n");
-              }
+              Serial.println("No measurements from BME280!\n");
             }
           }
         }
@@ -648,21 +527,12 @@ void loop() {
         }
         averagePM();
         if (DEBUG) {
-          if (SELECTED_LANGUAGE == 1) {
             Serial.print("Average PM1: ");
             Serial.println(averagePM1);
             Serial.print("Average PM2.5: ");
             Serial.println(averagePM25);
             Serial.print("Average PM10: ");
             Serial.println(averagePM10);
-          } else if (SELECTED_LANGUAGE == 2) {
-            Serial.print("Średnia PM1: ");
-            Serial.println(averagePM1);
-            Serial.print("Średnia PM2.5: ");
-            Serial.println(averagePM25);
-            Serial.print("Średnia PM10: ");
-            Serial.println(averagePM10);
-          }
         }
         iPM++;
         if (iPM >= NUMBEROFMEASUREMENTS) {
@@ -705,21 +575,12 @@ void loop() {
             }
             averagePM();
             if (DEBUG) {
-              if (SELECTED_LANGUAGE == 1) {
                 Serial.print("Average PM1: ");
                 Serial.println(averagePM1);
                 Serial.print("Average PM2.5: ");
                 Serial.println(averagePM25);
                 Serial.print("Average PM10: ");
                 Serial.println(averagePM10);
-              } else if (SELECTED_LANGUAGE == 2) {
-                Serial.print("Średnia PM1: ");
-                Serial.println(averagePM1);
-                Serial.print("Średnia PM2.5: ");
-                Serial.println(averagePM25);
-                Serial.print("Średnia PM10: ");
-                Serial.println(averagePM10);
-              }
             }
             iPM++;
             if (iPM >= NUMBEROFMEASUREMENTS) {
@@ -754,6 +615,7 @@ void loop() {
   }
 
 }
+
 void pm_calibration() {
   if (!strcmp(THP_MODEL, "BME280")) {
     if (int(BMESensor.temperature) < 5 and int(BMESensor.humidity) > 60) {

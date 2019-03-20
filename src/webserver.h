@@ -321,9 +321,16 @@ void _handle_config(bool is_success) {
     if (FREQUENTMEASUREMENT == true) {
 		message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_SECONDS}"));
 		message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
+		
+		message.replace("<hr>DeepSleep</b> - {TEXT_DEEPSLEEPINFO}:", ""); 
+		message.replace("{DEEPSLEEP_ON}<hr>", "");
     } else {
 		message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
 		message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+		message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO);
+		message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS)*2+6)); 
+		message.replace("{SENDING_FREQUENCY}", String(SENDING_FREQUENCY)); 
+		message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
     }
 	
     if (!strcmp(DUST_MODEL, "PMS7003")) {
@@ -542,6 +549,7 @@ void handle_config_post() {
   _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"));
 
   SENDING_FREQUENCY = WebServer.arg("SENDING_FREQUENCY").toInt();
+  DEEPSLEEP_ON = _parseAsBool(WebServer.arg("DEEPSLEEP_ON"));
 
   DEBUG = _parseAsBool(WebServer.arg("DEBUG"));
 

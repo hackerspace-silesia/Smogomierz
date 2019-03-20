@@ -37,6 +37,9 @@ String TEXT_PMMEASUREMENTS = "PM measurements";
 String TEXT_SENDINGINTERVAL = "Sending measurements to external services every";
 String TEXT_SECONDS = "seconds";
 String TEXT_MINUTES = "minutes";
+
+String TEXT_DEEPSLEEPINFO = "put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
+
 String TEXT_DISPLAYPM1 = "Display of PM1 measurements";
 String TEXT_ALTITUDEINFO = "Altitude above sea level (required for correct pressure measurements. You can check it {WSPOLRZEDNE_GPS_LINK})";
 

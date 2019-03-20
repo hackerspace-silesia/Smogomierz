@@ -40,6 +40,7 @@ char MQTT_USER[255] = "username";
 char MQTT_PASSWORD[255] = "password";
 
 int SENDING_FREQUENCY = 2;
+bool DEEPSLEEP_ON = false;
 
 bool DEBUG = false;
 

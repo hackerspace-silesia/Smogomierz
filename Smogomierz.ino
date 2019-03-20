@@ -527,12 +527,12 @@ void loop() {
         }
         averagePM();
         if (DEBUG) {
-            Serial.print("Average PM1: ");
-            Serial.println(averagePM1);
-            Serial.print("Average PM2.5: ");
-            Serial.println(averagePM25);
-            Serial.print("Average PM10: ");
-            Serial.println(averagePM10);
+          Serial.print("Average PM1: ");
+          Serial.println(averagePM1);
+          Serial.print("Average PM2.5: ");
+          Serial.println(averagePM25);
+          Serial.print("Average PM10: ");
+          Serial.println(averagePM10);
         }
         iPM++;
         if (iPM >= NUMBEROFMEASUREMENTS) {
@@ -540,8 +540,233 @@ void loop() {
         }
         previous_DUST_Millis = millis();
       }
-    } else {
+    } else if (DEEPSLEEP_ON == true) {
+      Serial.println("\nDeepSleep Mode!\n");
+      
+      if (strcmp(DUST_MODEL, "Non")) { //check PMs - Start
+        if (DEBUG) {
+          Serial.print("\nTurning ON PM sensor...");
+        }
+        if (!strcmp(DUST_MODEL, "PMS7003")) {
+          pms.wakeUp();
+          delay(6000); // waiting 6 sec...
+        }
+        int counterNM1 = 0;
+        while (counterNM1 < NUMBEROFMEASUREMENTS) {
+          unsigned long current_2sec_Millis = millis();
+          if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
+            if (!strcmp(DUST_MODEL, "PMS7003")) {
+              pms.requestRead();
+            }
+            delay(1000);
+            if (pms.readUntil(data)) {
+              pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+              pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+              pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+            }
+            if (DEBUG) {
+              Serial.print("\n\nNumer pomiaru PM: ");
+              Serial.print(iPM);
+              Serial.print("\nWartość PM1: ");
+              Serial.print(pmMeasurements[iPM][0]);
+              Serial.print("\nWartość PM2.5: ");
+              Serial.print(pmMeasurements[iPM][1]);
+              Serial.print("\nWartość PM10: ");
+              Serial.print(pmMeasurements[iPM][2]);
+            }
+            averagePM();
+            if (DEBUG) {
+              Serial.print("Average PM1: ");
+              Serial.println(averagePM1);
+              Serial.print("Average PM2.5: ");
+              Serial.println(averagePM25);
+              Serial.print("Average PM10: ");
+              Serial.println(averagePM10);
+            }
+            iPM++;
+            if (iPM >= NUMBEROFMEASUREMENTS) {
+              iPM = 0;
+            }
+            previous_2sec_Millis = millis();
+            counterNM1++;
+          }
+          WebServer.handleClient();
+          delay(10);
+          yield();
+          delay(10);
+        }
+        if (DEBUG) {
+          Serial.print("\nTurning OFF PM sensor...\n");
+        }
+        if (!strcmp(DUST_MODEL, "PMS7003")) {
+          pms.sleep();
+        }
+      }//check PMs - end
+      delay(10);
 
+      //sending data - start
+      if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+        if (MQTT_ON) {
+          if (!mqttclient.connected()) {
+            MQTTreconnect();
+          }
+          mqttclient.loop();
+          delay(10);
+        }
+        if (LUFTDATEN_ON) {
+          sendDataToLuftdaten(BMESensor, averagePM1, averagePM25, averagePM10);
+          if (DEBUG) {
+            Serial.println("Sending measurement data to the LuftDaten service!\n");
+          }
+        }
+        if (AIRMONITOR_ON) {
+          sendDataToAirMonitor(BMESensor, averagePM1, averagePM25, averagePM10);
+          if (DEBUG) {
+            Serial.println("Sending measurement data to the AirMonitor service!\n");
+          }
+        }
+        if (THINGSPEAK_ON) {
+          sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
+          if (DEBUG) {
+            Serial.println("Sending measurement data to the Thingspeak service!\n");
+          }
+        }
+        if (INFLUXDB_ON) {
+          Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
+          if (influxdb.opendb(INFLUXDB_DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
+            Serial.println("Opening database failed");
+          } else {
+            dbMeasurement row(device_name);
+            if (!strcmp(DUST_MODEL, "PMS7003")) {
+              if (DEBUG) {
+                Serial.println("Measurements from PMS7003!\n");
+              }
+              row.addField("pm1", averagePM1);
+              row.addField("pm25", averagePM25);
+              row.addField("pm10", averagePM10);
+            } else {
+              if (DEBUG) {
+                Serial.println("No measurements from PMS7003!\n");
+              }
+              row.addField("pm1", averagePM1);
+              row.addField("pm25", averagePM25);
+              row.addField("pm10", averagePM10);
+            }
+            if (!strcmp(THP_MODEL, "BME280")) {
+              if (checkBmeStatus() == true) {
+                if (DEBUG) {
+                  Serial.println("Measurements from BME280!\n");
+                }
+                row.addField("temperature", (BMESensor.temperature));
+                row.addField("pressure", (BMESensor.seaLevelForAltitude(MYALTITUDE)));
+                row.addField("humidity", (BMESensor.humidity));
+              } else {
+                if (DEBUG) {
+                  Serial.println("No measurements from BME280!\n");
+                }
+              }
+            }
+            if (!strcmp(THP_MODEL, "HTU21")) {
+              if (checkHTU21DStatus() == true) {
+                if (DEBUG) {
+                  Serial.println("Measurements from HTU21!\n");
+                }
+                row.addField("temperature", (myHTU21D.readTemperature()));
+                row.addField("humidity", (myHTU21D.readHumidity()));
+              } else {
+                if (DEBUG) {
+                  Serial.println("No measurements from HTU21D!\n");
+                }
+              }
+            }
+            if (!strcmp(THP_MODEL, "BMP280")) {
+              if (checkBmpStatus() == true) {
+                if (DEBUG) {
+                  Serial.println("Measurements from BMP280!\n");
+                }
+                row.addField("temperature", (bmp.readTemperature()));
+                row.addField("pressure", ((bmp.readPressure()) / 100));
+              } else {
+                if (DEBUG) {
+                  Serial.println("No measurements from BMP280!\n");
+                }
+              }
+            }
+            if (!strcmp(THP_MODEL, "DHT22")) {
+              if (checkDHT22Status() == true) {
+                if (DEBUG) {
+                  Serial.println("Measurements from DHT22!\n");
+                }
+                row.addField("temperature", (dht.readTemperature()));
+                row.addField("humidity", (dht.readHumidity()));
+              } else {
+                if (DEBUG) {
+                  Serial.println("No measurements from DHT22!\n");
+                }
+              }
+            }
+            if (!strcmp(THP_MODEL, "SHT1x")) {
+              if (checkSHT1xStatus() == true) {
+                if (DEBUG) {
+                  Serial.println("Measurements from SHT1x!\n");
+                }
+                row.addField("temperature", (sht1x.readTemperatureC()));
+                row.addField("humidity", (sht1x.readHumidity()));
+              } else {
+                if (DEBUG) {
+                  Serial.println("No measurements from SHT1x!\n");
+                }
+              }
+            }
+
+            if (influxdb.write(row) == DB_SUCCESS) {
+              if (DEBUG) {
+                Serial.println("Data sent to InfluxDB\n");
+              }
+            } else {
+              if (DEBUG) {
+                Serial.println("Error sending data to InfluxDB\n");
+              }
+            }
+            row.empty();
+          }
+        }
+        if (MQTT_ON) {
+          if (!strcmp(DUST_MODEL, "PMS7003")) {
+            if (DEBUG) {
+              Serial.println("Measurements from PMS7003!\n");
+            }
+            mqttclient.publish("sensor/PM1", String(averagePM1).c_str(), true);
+            mqttclient.publish("sensor/PM2.5", String(averagePM25).c_str(), true);
+            mqttclient.publish("sensor/PM10", String(averagePM10).c_str(), true);
+          } else {
+            if (DEBUG) {
+              Serial.println("No measurements from PMS7003!\n");
+            }
+          }
+          if (!strcmp(THP_MODEL, "BME280")) {
+            if (checkBmeStatus() == true) {
+              if (DEBUG) {
+                Serial.println("Measurements from BME280!\n");
+              }
+              mqttclient.publish("sensor/temperature", String(BMESensor.temperature).c_str(), true);
+              mqttclient.publish("sensor/pressure", String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
+              mqttclient.publish("sensor/humidity", String(BMESensor.humidity).c_str(), true);
+            } else {
+              if (DEBUG) {
+                Serial.println("No measurements from BME280!\n");
+              }
+            }
+          }
+        }
+
+      } //sending data - end
+
+      Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+      ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
+      delay(10);
+
+    } else {
       if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
         if (DEBUG) {
           Serial.print("\nTurning ON PM sensor...");
@@ -575,12 +800,12 @@ void loop() {
             }
             averagePM();
             if (DEBUG) {
-                Serial.print("Average PM1: ");
-                Serial.println(averagePM1);
-                Serial.print("Average PM2.5: ");
-                Serial.println(averagePM25);
-                Serial.print("Average PM10: ");
-                Serial.println(averagePM10);
+              Serial.print("Average PM1: ");
+              Serial.println(averagePM1);
+              Serial.print("Average PM2.5: ");
+              Serial.println(averagePM25);
+              Serial.print("Average PM10: ");
+              Serial.println(averagePM10);
             }
             iPM++;
             if (iPM >= NUMBEROFMEASUREMENTS) {

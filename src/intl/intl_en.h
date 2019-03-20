@@ -37,6 +37,9 @@ char EN_INTL_PMMEASUREMENTS[] PROGMEM = "PM measurements";
 char EN_INTL_SENDINGINTERVAL[] PROGMEM = "Sending measurements to external services every";
 char EN_INTL_SECONDS[] PROGMEM = "seconds";
 char EN_INTL_MINUTES[] PROGMEM = "minutes";
+
+char EN_INTL_DEEPSLEEPINFO[] PROGMEM = "put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
+
 char EN_INTL_DISPLAYPM1[] PROGMEM = "Display of PM1 measurements";
 char EN_INTL_ALTITUDEINFO[] PROGMEM = "Altitude above sea level (required for correct pressure measurements. You can check it {WSPOLRZEDNE_GPS_LINK})";
 

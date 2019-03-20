@@ -40,6 +40,7 @@ extern char MQTT_USER[255];
 extern char MQTT_PASSWORD[255];
 
 extern int SENDING_FREQUENCY;
+extern bool DEEPSLEEP_ON;
 
 extern bool DEBUG;
 
@@ -51,7 +52,7 @@ extern char MODEL[255];
 extern float calib1;
 extern float calib2;
 
-const char SOFTWAREVERSION[40] = "2.5.1 build 14:35_14.03.2019";
+const char SOFTWAREVERSION[40] = "2.5.2 build " __TIME__ " " __DATE__;
 #if defined(ARDUINO_ARCH_ESP8266)
 const char HARDWAREVERSION[40] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)

@@ -38,7 +38,7 @@ char PL_INTL_SENDINGINTERVAL[] PROGMEM = "Wysyłanie pomiarów do serwisów zewn
 char PL_INTL_SECONDS[] PROGMEM = "sekund";
 char PL_INTL_MINUTES[] PROGMEM = "minut";
 
-char PL_INTL_DEEPSLEEPINFO[] PROGMEM = "wprowadzaj urządzenie w głębokie uśpienie pomiędzy seriami pomiarów - znacznie niższe zużycie energii(możliwość pracy na baterii przez kilka tygodni), ale brak ciągłego dostępu do interfejsu WWW. Interfejs WWW będzie dostępny tylko przez około {INTERFACEWWWONTIME} sekund co {SENDING_FREQUENCY} minut(oraz zaraz po restarcie urządzenia). Czas uśpienia będzie taki sam jak okres wysyłania pomiarów do serwisów zewnętrznych. Wymaga podłączenia pinów D0 oraz RST na ESP8266!";
+char PL_INTL_DEEPSLEEPINFO[] PROGMEM = "wprowadzaj urządzenie w głębokie uśpienie pomiędzy seriami pomiarów - znacznie niższe zużycie energii(możliwość pracy na baterii przez kilka tygodni), ale brak ciągłego dostępu do interfejsu WWW. Interfejs WWW będzie dostępny tylko przez około {INTERFACEWWWONTIME} sekund co {SENDING_FREQUENCY} minut(oraz zaraz po restarcie urządzenia). Czas uśpienia będzie taki sam jak okres wysyłania pomiarów do serwisów zewnętrznych. Wymaga połączenia pinów D0 oraz RST na ESP8266!";
 
 char PL_INTL_DISPLAYPM1[] PROGMEM = "Wyświetlanie pomiarów PM1";
 char PL_INTL_ALTITUDEINFO[] PROGMEM = "Wysokość(wymagana do poprawnych pomiarów ciśnienia. Można sprawdzić {WSPOLRZEDNE_GPS_LINK})";

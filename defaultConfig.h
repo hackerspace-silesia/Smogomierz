@@ -43,6 +43,7 @@ int SENDING_FREQUENCY = 2;
 bool DEEPSLEEP_ON = false;
 
 bool DEBUG = false;
+bool AUTOUPDATE_ON = false;
 
 bool CONFIG_AUTH = false;
 char CONFIG_USERNAME[255] = "admin";
@@ -51,4 +52,3 @@ char CONFIG_PASSWORD[255] = "password";
 char MODEL[255] = "white";
 float calib1 = 1.6;
 float calib2 = 0.55;
-

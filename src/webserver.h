@@ -13,6 +13,25 @@ void handle_root() {
     	message.replace("{UpdatePageTitle}", (TEXT_UPDATE_PAGE));
 	
 	message += FPSTR(WEB_ROOT_PAGE_MEASUREMENTS);
+	
+	if (!AUTOUPDATE_ON) {
+		if (need_update) {
+			message.replace("{WEB_UPDATE_INFO_WARNING}", FPSTR(WEB_UPDATE_INFO_WARNING));
+			message.replace("{TEXT_FWUPDATEAVALIBLE}", (TEXT_FWUPDATEAVALIBLE));
+			message.replace("{MANUALUPDATEBUTTON}", FPSTR(WEB_UPDATE_BUTTON_MANUALUPDATE));
+			message.replace("{TEXT_MANUALUPDATEBUTTON}", (TEXT_MANUALUPDATEBUTTON));
+			message.replace("{FWUPDATEBUTTON}", FPSTR(WEB_UPDATE_BUTTON_FWUPDATE));
+			message.replace("{TEXT_FWUPDATEBUTTON}", (TEXT_FWUPDATEBUTTON));
+			message.replace("{AUTOUPDATEONBUTTON}", FPSTR(WEB_UPDATE_BUTTON_AUTOUPDATEON));
+			message.replace("{TEXT_AUTOUPDATEONBUTTON}", (TEXT_AUTOUPDATEONBUTTON));
+			message.replace("{TEXT_AUTOUPDATEWARNING}", (TEXT_AUTOUPDATEWARNING));
+			message.replace("{TEXT_FWUPDATEBUTTON}", (TEXT_FWUPDATEBUTTON));
+		}
+		message.replace("{WEB_UPDATE_INFO_WARNING}", "");
+	} else {
+		message.replace("{WEB_UPDATE_INFO_WARNING}", "");
+	}
+	
 	if (!strcmp(THP_MODEL, "Non")) {
 	    	message.replace("{TEXT_WEATHER}:", "");
 			message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
@@ -289,7 +308,7 @@ void _handle_config(bool is_success) {
 	
 	message.replace("{TEXT_DEVICENAME}", (TEXT_DEVICENAME));
     if (DEVICENAME_AUTO) {
-		message.replace("{device_name}", String(device_name));
+		message.replace("{device_name}", (device_name));
     } else {
 		message.replace("{device_name}", _addTextInput("DEVICENAME", DEVICENAME));
     }
@@ -425,6 +444,10 @@ void _handle_config(bool is_success) {
 	message.replace("{TEXT_SOFTWATEVERSION}", (TEXT_SOFTWATEVERSION));
 	message.replace("{SOFTWAREVERSION}", SOFTWAREVERSION);
 	
+	message.replace("{TEXT_AUTOUPDATEON}", TEXT_AUTOUPDATEON);
+	message.replace("{AUTOUPDATEON}", _addBoolSelect("AUTOUPDATE_ON", AUTOUPDATE_ON));
+	message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", TEXT_UPDATEPAGEAUTOUPDATEWARNING);
+	
 	message.replace("{WiFiEraseButton}", _addWiFiErase());
 	message.replace("{RestoreConfigButton}", _addRestoreConfig());
 	message.replace("{SubmitButton}", _addSubmit());
@@ -552,6 +575,7 @@ void handle_config_post() {
   DEEPSLEEP_ON = _parseAsBool(WebServer.arg("DEEPSLEEP_ON"));
 
   DEBUG = _parseAsBool(WebServer.arg("DEBUG"));
+  AUTOUPDATE_ON = _parseAsBool(WebServer.arg("AUTOUPDATE_ON"));
 
   CONFIG_AUTH = _parseAsBool(WebServer.arg("CONFIG_AUTH"));
   _parseAsCString(CONFIG_USERNAME, WebServer.arg("CONFIG_USERNAME"));
@@ -587,11 +611,41 @@ void handle_update() {            //Handler for the handle_update
     message.replace("{UpdatePageTitle}", (TEXT_UPDATE_PAGE));
 	
 	message += FPSTR(WEB_UPDATE_PAGE_UPDATE);
+	
+	if (!AUTOUPDATE_ON) {
+		if (need_update) {
+			message.replace("{WEB_UPDATE_INFO_WARNING}", FPSTR(WEB_UPDATE_INFO_WARNING));
+			message.replace("{TEXT_FWUPDATEAVALIBLE}", (TEXT_FWUPDATEAVALIBLE));
+			message.replace("{MANUALUPDATEBUTTON}", "");
+			message.replace("{FWUPDATEBUTTON}", FPSTR(WEB_UPDATE_BUTTON_FWUPDATE));
+			message.replace("{TEXT_FWUPDATEBUTTON}", (TEXT_FWUPDATEBUTTON));
+			message.replace("{AUTOUPDATEONBUTTON}", FPSTR(WEB_UPDATE_BUTTON_AUTOUPDATEON));
+			message.replace("{TEXT_AUTOUPDATEONBUTTON}", (TEXT_AUTOUPDATEONBUTTON));
+			message.replace("{TEXT_AUTOUPDATEWARNING}", (TEXT_AUTOUPDATEWARNING));
+			message.replace("{TEXT_FWUPDATEBUTTON}", (TEXT_FWUPDATEBUTTON));
+		}
+		message.replace("{WEB_UPDATE_INFO_WARNING}", "");
+	} else {
+		message.replace("{WEB_UPDATE_INFO_WARNING}", "");
+	}
+	
 	message.replace("{TEXT_UPDATE_PAGE}", (TEXT_UPDATE_PAGE));
 	message.replace("{TEXT_SELECTUPDATEFILE}", (TEXT_SELECTUPDATEFILE));
 	message.replace("{TEXT_SUBMITUPDATE}", (TEXT_SUBMITUPDATE));
+	
+	message.replace("{TEXT_AUTOUPDATEON}", (TEXT_AUTOUPDATEON));
+	if (AUTOUPDATE_ON) {
+		message.replace("{AUTOUPDATEONSTATUS}", (TEXT_YES));
+	} else {
+		message.replace("{AUTOUPDATEONSTATUS}", (TEXT_NO));
+	}
+		
 	message.replace("{TEXT_CURRENTSOFTVERSION}", (TEXT_CURRENTSOFTVERSION));
-	message.replace("{SOFTWAREVERSION}", SOFTWAREVERSION);
+	message.replace("{SOFTWAREVERSION}", String(CURRENTSOFTWAREVERSION) + " " + String(PMSENSORVERSION));
+	
+	message.replace("{TEXT_SERVERSOFTWAREVERSION}", (TEXT_SERVERSOFTWAREVERSION));
+	message.replace("{SERVERSOFTWAREVERSION}", String(SERVERSOFTWAREVERSION) + " " + String(PMSENSORVERSION));
+	
 	message.replace("{TEXT_LATESTAVAILABLESOFT}", TEXT_LATESTAVAILABLESOFT);
 	message.replace("{SMOGOMIERZRELEASES_LINK}", (SMOGOMIERZRELEASES_LINK));
 	message.replace("{TEXT_HERE}", (TEXT_HERE));
@@ -603,7 +657,7 @@ void handle_update() {            //Handler for the handle_update
 void erase_wifi() {
   Serial.println("Erasing Config...");
   ESP.eraseConfig();
-  WebServer.sendHeader("Location", String("/"), true);
+  WebServer.sendHeader("Location", "/", true);
   WebServer.send ( 302, "text/plain", "");
   delay(1000);
   Serial.println("Restart");
@@ -613,7 +667,26 @@ void erase_wifi() {
 void restore_config() {
   Serial.println("Restoring default settings...");
   deleteConfig();
-  WebServer.sendHeader("Location", String("/"), true);
+  WebServer.sendHeader("Location", "/", true);
+  WebServer.send ( 302, "text/plain", "");
+  delay(1000);
+  Serial.println("Restart");
+  ESP.restart();
+}
+
+void fwupdate() {
+  doUpdate();
+  delay(1000);
+  WebServer.sendHeader("Location", "/", true);
+  WebServer.send ( 302, "text/plain", "");
+  delay(1000);
+}
+
+void autoupdateon() {
+  AUTOUPDATE_ON = true;
+  saveConfig();
+  delay(300);
+  WebServer.sendHeader("Location", "/", true);
   WebServer.send ( 302, "text/plain", "");
   delay(1000);
   Serial.println("Restart");

@@ -24,6 +24,7 @@
 #include "src/spiffs.h"
 #include "src/config.h"
 #include "defaultConfig.h"
+#include "src/autoupdate.h"
 
 #include "src/luftdaten.h"
 #include "src/airmonitor.h"
@@ -90,6 +91,9 @@ unsigned long previous_REBOOT_Millis = 0;
 int pmMeasurements[10][3];
 int iPM, averagePM1, averagePM25, averagePM10 = 0;
 float calib = 1;
+bool need_update = false;
+char SERVERSOFTWAREVERSION[255] = "";
+char CURRENTSOFTWAREVERSION[255] = "";
 
 ESP8266WebServer WebServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
@@ -289,6 +293,13 @@ void setup() {
     delay(5000);
   }
 
+  // check update
+  if (checkUpdate() == true) {
+    need_update = true;
+  } else {
+    need_update = false;
+  }
+
   if (MQTT_ON) {
     mqttclient.setServer(MQTT_HOST, MQTT_PORT);
   }
@@ -310,6 +321,8 @@ void setup() {
   WebServer.on("/api", HTTP_GET, handle_api);
   WebServer.on("/erase_wifi", HTTP_GET, erase_wifi);
   WebServer.on("/restore_config", HTTP_GET, restore_config);
+  WebServer.on("/fwupdate", HTTP_GET, fwupdate);
+  WebServer.on("/autoupdateon", HTTP_GET, autoupdateon);
   WebServer.onNotFound(handle_root);
 
   httpUpdater.setup(&WebServer, "/update");
@@ -326,6 +339,16 @@ void setup() {
 }
 
 void loop() {
+  if (need_update == true) {
+    if (AUTOUPDATE_ON) {
+      for (int i = 0; i < 5 ; i++) {
+        doUpdate();
+        delay(1000);
+      }
+    }
+  }
+  delay(10);
+
   BMESensor.refresh();
   pm_calibration();
   pms.read(data);
@@ -542,7 +565,7 @@ void loop() {
       }
     } else if (DEEPSLEEP_ON == true) {
       Serial.println("\nDeepSleep Mode!\n");
-      
+
       if (strcmp(DUST_MODEL, "Non")) { //check PMs - Start
         if (DEBUG) {
           Serial.print("\nTurning ON PM sensor...");

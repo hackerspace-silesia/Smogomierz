@@ -89,6 +89,7 @@ bool loadConfig() {
   DEEPSLEEP_ON = json["DEEPSLEEP_ON"];
 
   DEBUG = json["DEBUG"];
+  AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
   
   CONFIG_AUTH = json["CONFIG_AUTH"];
   _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin");
@@ -178,6 +179,8 @@ bool loadConfig() {
 	
     Serial.print("Loaded DEBUG: ");
     Serial.println(DEBUG);
+    Serial.print("Loaded AUTOUPDATE_ON: ");
+    Serial.println(AUTOUPDATE_ON);
 	
     Serial.print("Loaded CONFIG_AUTH: ");
     Serial.println(CONFIG_AUTH);
@@ -246,6 +249,7 @@ bool saveConfig() {
   json["DEEPSLEEP_ON"] = DEEPSLEEP_ON;
 
   json["DEBUG"] = DEBUG;
+  json["AUTOUPDATE_ON"] = AUTOUPDATE_ON;
   
   json["CONFIG_AUTH"] = CONFIG_AUTH;
   json["CONFIG_USERNAME"] = CONFIG_USERNAME;

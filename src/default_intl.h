@@ -38,7 +38,7 @@ String TEXT_SENDINGINTERVAL = "Sending measurements to external services every";
 String TEXT_SECONDS = "seconds";
 String TEXT_MINUTES = "minutes";
 
-String TEXT_DEEPSLEEPINFO = "put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
+String TEXT_DEEPSLEEPINFO = "DeepSleep put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
 
 String TEXT_DISPLAYPM1 = "Display of PM1 measurements";
 String TEXT_ALTITUDEINFO = "Altitude above sea level (required for correct pressure measurements. You can check it {WSPOLRZEDNE_GPS_LINK})";
@@ -82,30 +82,39 @@ String TEXT_SOFTWATEVERSION = "Software version";
 String TEXT_ERASEWIFICONFIG = "Erase WiFi Config";
 String TEXT_RESTORESETTINGS = "Restore default settings";
 String TEXT_SAVE = "Save";
-String TEXT_YES = "yes";
-String TEXT_NO = "no";
+String TEXT_YES = "Yes";
+String TEXT_NO = "No";
 String TEXT_WITHOUTSENSOR = "Without sensor";
 String TEXT_WITHOUTCALIBRATION = "Without calibration";
 String TEXT_AUTOMATICCALIBRATION = "Automatic calibration";
 
 String TEXT_INTL_EN = "english";
 String TEXT_INTL_PL = "polish";
-// future translations gose here!
+
+String TEXT_FWUPDATEAVALIBLE = "Firmware update available!";
+String TEXT_AUTOUPDATEON = "Autoupdate";
+String TEXT_MANUALUPDATEBUTTON = "Manual Upgrade";
+String TEXT_FWUPDATEBUTTON = "Firmware Upgrade";
+String TEXT_AUTOUPDATEONBUTTON = "Autoupdate On";
+String TEXT_AUTOUPDATEWARNING = "Automatic updates are performed via an unencrypted connection (HTTP, not HTTPS). It can be dangerous and allow interception of packets and hacking the device. You can use the Autoupdate once by clicking the \"{TEXT_FWUPDATEBUTTON}\" button or turn on Autoupdate permanently. You can change your mind at any time and disable Autoupdate in the Configuration. After selecting \"{TEXT_FWUPDATEBUTTON}\" or turning on Autoupdate, the device will save the current configuration and restart. It may take several seconds.";
+String TEXT_UPDATEPAGEAUTOUPDATEWARNING = "Automatic updates are performed via an unencrypted connection (HTTP, not HTTPS). It can be dangerous and allow interception of packets and hacking the device.";
 
 String TEXT_SELECTUPDATEFILE = "Select .bin file";
 String TEXT_SUBMITUPDATE = "Update!";
-String TEXT_CURRENTSOFTVERSION = "The currently used version of the software";
+String TEXT_CURRENTSOFTVERSION = "The currently used version of the firmware";
+String TEXT_SERVERSOFTWAREVERSION = "The latest available firmware version";
 String TEXT_LATESTAVAILABLESOFT = "Latest version of the software available {SMOGOMIERZRELEASES_LINK}.";
 
 String TEXT_HERE = "here";
 String TEXT_THEFORM = "the form";
 
-String GITHUB_LINK = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
-String WSPOLRZEDNE_GPS_LINK = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
-String LUFTDATEN_LINK = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
-String LUFTDATENFORM_LINK = "<a title='LuftDaten.info Form' href='https://luftdaten.info/en/construction-manual/#feinstaubsensor-konfiguration' target='_blank'>{TEXT_THEFORM}</a>";
-String AIRMONITOR_LINK = "<a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>";
-String AIRMONITORFORM_LINK = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
-String LATLONG_LINK = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
-String THINGSPEAK_LINK = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
-String SMOGOMIERZRELEASES_LINK = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char GITHUB_LINK[] PROGMEM = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
+static char WSPOLRZEDNE_GPS_LINK[] PROGMEM = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
+static char LUFTDATEN_LINK[] PROGMEM = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
+static char LUFTDATENFORM_LINK[] PROGMEM = "<a title='LuftDaten.info Form' href='https://luftdaten.info/en/construction-manual/#feinstaubsensor-konfiguration' target='_blank'>{TEXT_THEFORM}</a>";
+static char AIRMONITOR_LINK[] PROGMEM = "<a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>";
+static char AIRMONITORFORM_LINK[] PROGMEM = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
+static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
+static char THINGSPEAK_LINK[] PROGMEM = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
+static char SMOGOMIERZRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+

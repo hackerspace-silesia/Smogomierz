@@ -20,6 +20,7 @@ const char WEB_PAGE_FOOTER[] PROGMEM = "<br><hr><center>Hackerspace Silesia &#98
 
 const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = "<main role='main' class='container'><div class='jumbotron'>\
 	<center><h1>Smogomierz</h1><br>\
+	{WEB_UPDATE_INFO_WARNING}\
 	<h2>{TEXT_WEATHER}:</h2>\
 	<h3>{TEXT_TEMPERATURE}: {Temperature} °C</h3>\
 	<h3>{TEXT_HUMIDITY}: {Humidity} %</h3>\
@@ -61,7 +62,7 @@ const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = "<b>{TEXT_DEVICENAME}: </b>{device
 	<b>{TEXT_MEASUREMENTFREQUENCY}: </b>{FREQUENTMEASUREMENT_time}\
 	<b>{TEXT_AVERAGELASTRESULT}: </b>{NUMBEROFMEASUREMENTS}\
 	<b>{TEXT_SENDINGINTERVAL}: </b>{SENDING_FREQUENCY}\
-	<b><hr>DeepSleep</b> - {TEXT_DEEPSLEEPINFO}: {DEEPSLEEP_ON}<hr>\
+	<hr><b>DeepSleep: </b>{DEEPSLEEP_ON} {TEXT_DEEPSLEEPINFO}<hr>\
 	<b>{TEXT_DISPLAYPM1}: </b> {DISPLAY_PM1}\
 	<b>{TEXT_ALTITUDEINFO}: </b>{MYALTITUDE}\
 	<hr>\
@@ -103,6 +104,7 @@ const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = "<b>{TEXT_DEVICENAME}: </b>{device
 	<br>\
 	<!-- <b>{TEXT_CALIB2}: </b>{calib2}\ -->\
 	<b>{TEXT_SOFTWATEVERSION}: </b>{SOFTWAREVERSION}\
+	<br><b>{TEXT_AUTOUPDATEON}: </b>{AUTOUPDATEON} {TEXT_UPDATEPAGEAUTOUPDATEWARNING}\
 	<hr><center><br>\
 	{WiFiEraseButton}  {RestoreConfigButton}\
 	<br><br></center><hr><br><center>\
@@ -130,15 +132,29 @@ const char WEB_CONFIG_PAGE_WIFIERASE[] PROGMEM = "<a href='/erase_wifi' class='b
 const char WEB_CONFIG_PAGE_RESTORECONFIG[] PROGMEM = "<a href='/restore_config' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_RESTORESETTINGS}</a>";
 
 // CONFIG PAGE - END
+// UPDATE BUTTONS - START
+
+const char WEB_UPDATE_BUTTON_MANUALUPDATE[] PROGMEM = "<a href='/update' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_MANUALUPDATEBUTTON}</a>";
+
+const char WEB_UPDATE_BUTTON_FWUPDATE[] PROGMEM = "<a href='/fwupdate' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_FWUPDATEBUTTON}</a>";
+
+const char WEB_UPDATE_BUTTON_AUTOUPDATEON[] PROGMEM = "<a href='/autoupdateon' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_AUTOUPDATEONBUTTON}</a>";
+
+const char WEB_UPDATE_INFO_WARNING[] PROGMEM = "<center><h2><b>{TEXT_FWUPDATEAVALIBLE}</b></h2>{MANUALUPDATEBUTTON}	{FWUPDATEBUTTON}	{AUTOUPDATEONBUTTON}<br><br>{TEXT_AUTOUPDATEWARNING}<br></center>";
+
+// UPDATE BUTTONS - END
 // UPDATE PAGE - START
 
 const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = "<main role='main' class='container'><div class='jumbotron'>\
 	<form id='data' action='/update' method='POST' enctype='multipart/form-data'>\
 	<center><h1>Smogomierz - {TEXT_UPDATE_PAGE}</h1></center><br><br>\
-	<div class='input-group mb-3'><div class='custom-file'><input type='file' accept='.bin' class='custom-file-input' id='inputGroupFile04' name='update'><label class='custom-file-label' for='inputGroupFile04'>{TEXT_SELECTUPDATEFILE}</label></div><div class='input-group-append'><button class='btn btn-danger' type='submit'>{TEXT_SUBMITUPDATE}</button></div></div></form>\
-	<br><br>\
-	{TEXT_CURRENTSOFTVERSION}: <b>{SOFTWAREVERSION}\
-	</b><br>\
+	{WEB_UPDATE_INFO_WARNING}\
+	<br><br><div class='input-group mb-3'><div class='custom-file'><input type='file' accept='.bin' class='custom-file-input' id='inputGroupFile04' name='update'><label class='custom-file-label' for='inputGroupFile04'>{TEXT_SELECTUPDATEFILE}</label></div><div class='input-group-append'><button class='btn btn-danger' type='submit'>{TEXT_SUBMITUPDATE}</button></div></div></form>\
+	<br>\
+	{TEXT_AUTOUPDATEON}: <b>{AUTOUPDATEONSTATUS}</b>\
+	<br>{TEXT_CURRENTSOFTVERSION}: <b>{SOFTWAREVERSION}</b>\
+	<br>{TEXT_SERVERSOFTWAREVERSION}: <b>{SERVERSOFTWAREVERSION}</b>\
+	<br>\
 	{TEXT_LATESTAVAILABLESOFT}";
 
 // UPDATE PAGE - END

@@ -38,7 +38,7 @@ char EN_INTL_SENDINGINTERVAL[] PROGMEM = "Sending measurements to external servi
 char EN_INTL_SECONDS[] PROGMEM = "seconds";
 char EN_INTL_MINUTES[] PROGMEM = "minutes";
 
-char EN_INTL_DEEPSLEEPINFO[] PROGMEM = "put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
+char EN_INTL_DEEPSLEEPINFO[] PROGMEM = "DeepSleep put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
 
 char EN_INTL_DISPLAYPM1[] PROGMEM = "Display of PM1 measurements";
 char EN_INTL_ALTITUDEINFO[] PROGMEM = "Altitude above sea level (required for correct pressure measurements. You can check it {WSPOLRZEDNE_GPS_LINK})";
@@ -90,11 +90,19 @@ char EN_INTL_AUTOMATICCALIBRATION[] PROGMEM = "Automatic calibration";
 
 char EN_INTL_INTL_EN[] PROGMEM = "english";
 char EN_INTL_INTL_PL[] PROGMEM = "polish";
-// future translations gose here!
+
+char EN_INTL_FWUPDATEAVALIBLE[] PROGMEM = "Firmware update available!";
+char EN_INTL_AUTOUPDATEON[] PROGMEM = "Autoupdate";
+char EN_INTL_MANUALUPDATEBUTTON[] PROGMEM = "Manual Upgrade";
+char EN_INTL_FWUPDATEBUTTON[] PROGMEM = "Firmware Upgrade";
+char EN_INTL_AUTOUPDATEONBUTTON[] PROGMEM = "Autoupdate On";
+char EN_INTL_AUTOUPDATEWARNING[] PROGMEM = "Automatic updates are performed via an unencrypted connection (HTTP, not HTTPS). It can be dangerous and allow interception of packets and hacking the device. You can use the Autoupdate once by clicking the \"{TEXT_FWUPDATEBUTTON}\" button or turn on Autoupdate permanently. You can change your mind at any time and disable Autoupdate in the Configuration. After selecting \"{TEXT_FWUPDATEBUTTON}\" or turning on Autoupdate, the device will save the current configuration and restart. It may take several seconds.";
+char EN_INTL_UPDATEPAGEAUTOUPDATEWARNING[] PROGMEM = "Automatic updates are performed via an unencrypted connection (HTTP, not HTTPS). It can be dangerous and allow interception of packets and hacking the device.";
 
 char EN_INTL_SELECTUPDATEFILE[] PROGMEM = "Select .bin file";
 char EN_INTL_SUBMITUPDATE[] PROGMEM = "Update!";
-char EN_INTL_CURRENTSOFTVERSION[] PROGMEM = "The currently used version of the software";
+char EN_INTL_CURRENTSOFTVERSION[] PROGMEM = "The currently used version of the firmware";
+char EN_INTL_SERVERSOFTWAREVERSION[] PROGMEM = "The latest available firmware version";
 char EN_INTL_LATESTAVAILABLESOFT[] PROGMEM = "Latest version of the software available {SMOGOMIERZRELEASES_LINK}.";
 
 char EN_INTL_HERE[] PROGMEM = "here";

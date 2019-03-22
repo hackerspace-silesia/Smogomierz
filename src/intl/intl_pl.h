@@ -38,7 +38,7 @@ char PL_INTL_SENDINGINTERVAL[] PROGMEM = "Wysyłanie pomiarów do serwisów zewn
 char PL_INTL_SECONDS[] PROGMEM = "sekund";
 char PL_INTL_MINUTES[] PROGMEM = "minut";
 
-char PL_INTL_DEEPSLEEPINFO[] PROGMEM = "wprowadzaj urządzenie w głębokie uśpienie pomiędzy seriami pomiarów - znacznie niższe zużycie energii(możliwość pracy na baterii przez kilka tygodni), ale brak ciągłego dostępu do interfejsu WWW. Interfejs WWW będzie dostępny tylko przez około {INTERFACEWWWONTIME} sekund co {SENDING_FREQUENCY} minut(oraz zaraz po restarcie urządzenia). Czas uśpienia będzie taki sam jak okres wysyłania pomiarów do serwisów zewnętrznych. Wymaga połączenia pinów D0 oraz RST na ESP8266!";
+char PL_INTL_DEEPSLEEPINFO[] PROGMEM = "DeepSleep wprowadza urządzenie w głębokie uśpienie pomiędzy seriami pomiarów - znacznie niższe zużycie energii(możliwość pracy na baterii przez kilka tygodni), ale brak ciągłego dostępu do interfejsu WWW. Interfejs WWW będzie dostępny tylko przez około {INTERFACEWWWONTIME} sekund co {SENDING_FREQUENCY} minut(oraz zaraz po restarcie urządzenia). Czas uśpienia będzie taki sam jak okres wysyłania pomiarów do serwisów zewnętrznych. Wymaga połączenia pinów D0 oraz RST na ESP8266!";
 
 char PL_INTL_DISPLAYPM1[] PROGMEM = "Wyświetlanie pomiarów PM1";
 char PL_INTL_ALTITUDEINFO[] PROGMEM = "Wysokość(wymagana do poprawnych pomiarów ciśnienia. Można sprawdzić {WSPOLRZEDNE_GPS_LINK})";
@@ -84,17 +84,25 @@ char PL_INTL_RESTORESETTINGS[] PROGMEM = "Przywróć ustawienia domyślne";
 char PL_INTL_SAVE[] PROGMEM = "Zapisz";
 char PL_INTL_YES[] PROGMEM = "Tak";
 char PL_INTL_NO[] PROGMEM = "Nie";
-char PL_INTL_WITHOUTSENSOR[] PROGMEM = "Without miernika";
+char PL_INTL_WITHOUTSENSOR[] PROGMEM = "Bez miernika";
 char PL_INTL_WITHOUTCALIBRATION[] PROGMEM = "Bez kalibracji";
 char PL_INTL_AUTOMATICCALIBRATION[] PROGMEM = "Automatyczna kalibracja";
 
 char PL_INTL_INTL_EN[] PROGMEM = "angielski";
 char PL_INTL_INTL_PL[] PROGMEM = "polski";
-// future translations gose here!
+
+char PL_INTL_FWUPDATEAVALIBLE[] PROGMEM = "Dostępna aktualizacja oprogramowania!";
+char PL_INTL_AUTOUPDATEON[] PROGMEM = "Automatyczne Aktualizacje";
+char PL_INTL_MANUALUPDATEBUTTON[] PROGMEM = "Ręczna Aktualizacja";
+char PL_INTL_FWUPDATEBUTTON[] PROGMEM = "Automatycznie - tylko tym razem";
+char PL_INTL_AUTOUPDATEONBUTTON[] PROGMEM = "Automatycznie - zapamiętaj wybór";
+char PL_INTL_AUTOUPDATEWARNING[] PROGMEM = "Automatyczne aktualizacje wykonywane są przez nieszyfrowane połaczenie(HTTP, a nie HTTPS). Może to być niebezpieczne i umożliwić przechwycenie pakietów oraz włamanie na urządzenie. Możesz skorzystać z Automatycznej aktualizacji jednorazowo, klikając przycisk \"{TEXT_FWUPDATEBUTTON}\", lub włączyć Automatyczne aktualizacje na stałe. W każdej chwili możesz zmienić swoje zdanie i wyłączyć Automatyczne Aktualizacje w Konfiguracji. Po wybraniu \"{TEXT_FWUPDATEBUTTON}\" lub włączeniu automatycznych aktualizacji urządzenie zapisze bieżącą konfigurację i uruchomi się ponownie. Może to potrwać kilkanaście sekund.";
+char PL_INTL_UPDATEPAGEAUTOUPDATEWARNING[] PROGMEM = "Automatyczne aktualizacje wykonywane są przez nieszyfrowane połaczenie(HTTP, a nie HTTPS). Może to być niebezpieczne i umożliwić przechwycenie pakietów oraz włamanie na urządzenie.";
 
 char PL_INTL_SELECTUPDATEFILE[] PROGMEM = "Wybierz plik .bin";
 char PL_INTL_SUBMITUPDATE[] PROGMEM = "Update!";
 char PL_INTL_CURRENTSOFTVERSION[] PROGMEM = "Aktualna wersja oprogramowania";
+char PL_INTL_SERVERSOFTWAREVERSION[] PROGMEM = "Najnowsza dostępna wersja oprogramowania";
 char PL_INTL_LATESTAVAILABLESOFT[] PROGMEM = "Najnowszą wersję oprogramowania znajdziesz zawsze {SMOGOMIERZRELEASES_LINK}.";
 
 char PL_INTL_HERE[] PROGMEM = "tutaj";

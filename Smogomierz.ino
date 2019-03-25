@@ -503,9 +503,9 @@ void loop() {
           if (DEBUG) {
             Serial.println("Measurements from PMS7003!\n");
           }
-          mqttclient.publish("sensor/PM1", String(averagePM1).c_str(), true);
-          mqttclient.publish("sensor/PM2.5", String(averagePM25).c_str(), true);
-          mqttclient.publish("sensor/PM10", String(averagePM10).c_str(), true);
+          mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/PM1", String(averagePM1).c_str(), true);
+          mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/PM2.5", String(averagePM25).c_str(), true);
+          mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/PM10", String(averagePM10).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from PMS7003!\n");
@@ -516,9 +516,9 @@ void loop() {
             if (DEBUG) {
               Serial.println("Measurements from BME280!\n");
             }
-            mqttclient.publish("sensor/temperature", String(BMESensor.temperature).c_str(), true);
-            mqttclient.publish("sensor/pressure", String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
-            mqttclient.publish("sensor/humidity", String(BMESensor.humidity).c_str(), true);
+            mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/temperature", String(BMESensor.temperature).c_str(), true);
+            mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/pressure", String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
+            mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/humidity", String(BMESensor.humidity).c_str(), true);
           } else {
             if (DEBUG) {
               Serial.println("No measurements from BME280!\n");
@@ -759,9 +759,9 @@ void loop() {
             if (DEBUG) {
               Serial.println("Measurements from PMS7003!\n");
             }
-            mqttclient.publish("sensor/PM1", String(averagePM1).c_str(), true);
-            mqttclient.publish("sensor/PM2.5", String(averagePM25).c_str(), true);
-            mqttclient.publish("sensor/PM10", String(averagePM10).c_str(), true);
+            mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/PM1", String(averagePM1).c_str(), true);
+            mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/PM2.5", String(averagePM25).c_str(), true);
+            mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/PM10", String(averagePM10).c_str(), true);
           } else {
             if (DEBUG) {
               Serial.println("No measurements from PMS7003!\n");
@@ -772,9 +772,9 @@ void loop() {
               if (DEBUG) {
                 Serial.println("Measurements from BME280!\n");
               }
-              mqttclient.publish("sensor/temperature", String(BMESensor.temperature).c_str(), true);
-              mqttclient.publish("sensor/pressure", String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
-              mqttclient.publish("sensor/humidity", String(BMESensor.humidity).c_str(), true);
+              mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/temperature", String(BMESensor.temperature).c_str(), true);
+              mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/pressure", String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
+              mqttclient.publish(("Smogomierz-%06X", ESP.getChipId()) + "/sensor/humidity", String(BMESensor.humidity).c_str(), true);
             } else {
               if (DEBUG) {
                 Serial.println("No measurements from BME280!\n");

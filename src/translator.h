@@ -6,6 +6,8 @@
 void loadtranslation(int SELECTED_LANGUAGE) {
 	if (SELECTED_LANGUAGE == 1) { //english translataion
 		Serial.println("English Translation!\n");
+		// there is no need to translate the default translation(default_intl.h) into English - it is in English
+		/*
 		TEXT_LANG = EN_INTL_LANG;
 
 		TEXT_INDEX_PAGE = EN_INTL_INDEX_PAGE;
@@ -107,6 +109,7 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 
 		TEXT_HERE = EN_INTL_HERE;
 		TEXT_THEFORM = EN_INTL_THEFORM;
+		*/
 	} else if (SELECTED_LANGUAGE == 2) { //polish translation
 		Serial.println("Polish Translation!\n");
 		TEXT_LANG = PL_INTL_LANG;

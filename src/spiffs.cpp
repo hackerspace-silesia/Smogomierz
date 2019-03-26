@@ -60,6 +60,9 @@ bool loadConfig() {
   NUMBEROFMEASUREMENTS = json["NUMBEROFMEASUREMENTS"];
 
   LUFTDATEN_ON = json["LUFTDATEN_ON"];
+  CHIP_ID_AUTO = json["CHIP_ID_AUTO"];
+  _safeCpy(CHIP_ID, json["CHIP_ID"], "1234567");
+  SMOGLIST_ON = json["SMOGLIST_ON"];
 
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
@@ -127,6 +130,12 @@ bool loadConfig() {
 	
 	Serial.print("Loaded LUFTDATEN_ON: ");
 	Serial.println(LUFTDATEN_ON);
+	Serial.print("Loaded CHIP_ID_AUTO: ");
+	Serial.println(CHIP_ID_AUTO);
+	Serial.print("Loaded CHIP_ID: ");
+	Serial.println(CHIP_ID);
+	Serial.print("Loaded SMOGLIST_ON: ");
+	Serial.println(SMOGLIST_ON);
 	
     Serial.print("Loaded AIRMONITOR_ON: ");
     Serial.println(AIRMONITOR_ON);
@@ -220,6 +229,9 @@ bool saveConfig() {
   json["NUMBEROFMEASUREMENTS"] = NUMBEROFMEASUREMENTS;
 
   json["LUFTDATEN_ON"] = LUFTDATEN_ON;
+  json["CHIP_ID_AUTO"] = CHIP_ID_AUTO;
+  json["CHIP_ID"] = CHIP_ID;
+  json["SMOGLIST_ON"] = SMOGLIST_ON;
 
   json["AIRMONITOR_ON"] = AIRMONITOR_ON;
   json["AIRMONITOR_GRAPH_ON"] = AIRMONITOR_GRAPH_ON;

@@ -48,7 +48,10 @@ String TEXT_SECURELOGIN = "Login";
 String TEXT_SECUREPASSWD = "Password";
 String TEXT_SECURELOGOUTINFO = "Restart your web browser to log out!";
 
+String TEXT_SMOGLISTSENDING = "Sending data to the Smoglist service";
 String TEXT_LUFTDATENSENDING = "Sending data to the {LUFTDATEN_LINK} service(requires filling out {LUFTDATENFORM_LINK})"; 
+String TEXT_CHIP_ID_AUTO = "Automatic ChipID generation";
+String TEXT_CHIP_ID_INFO = "Luftdaten identifies devices based on ChipID. In case that your ChipID was already occupied (you can check {MADAVI_LINK}), disable \"{TEXT_CHIP_ID_AUTO}\" and enter the seven-digit ChipID yourself.";
 
 String TEXT_AIRMONITORSENDING = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. PMS7003)";
 String TEXT_AIRMONITORCHARTS = "Displaying charts from the AirMonitor site";
@@ -117,4 +120,5 @@ static char AIRMONITORFORM_LINK[] PROGMEM = "<a title='AirMonitor Form' href='ht
 static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
 static char THINGSPEAK_LINK[] PROGMEM = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
 static char SMOGOMIERZRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char MADAVI_LINK[] PROGMEM = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
 

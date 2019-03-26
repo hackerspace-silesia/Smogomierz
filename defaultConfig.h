@@ -14,6 +14,9 @@ int DUST_TIME = 1;
 int NUMBEROFMEASUREMENTS = 10;
 
 bool LUFTDATEN_ON = false;
+bool CHIP_ID_AUTO = true;
+char CHIP_ID[255] = "1234567";
+bool SMOGLIST_ON = true;
 
 bool AIRMONITOR_ON = false;
 bool AIRMONITOR_GRAPH_ON = true;

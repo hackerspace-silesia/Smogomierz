@@ -49,6 +49,9 @@ char EN_INTL_SECUREPASSWD[] PROGMEM = "Password";
 char EN_INTL_SECURELOGOUTINFO[] PROGMEM = "Restart your web browser to log out!";
 
 char EN_INTL_LUFTDATENSENDING[] PROGMEM = "Sending data to the {LUFTDATEN_LINK} service(requires filling out {LUFTDATENFORM_LINK})"; 
+char EN_INTL_SMOGLISTSENDING[] PROGMEM = "Sending data to the Smoglist service";
+char EN_INTL_CHIP_ID_AUTO[] PROGMEM = "Automatic ChipID generation";
+char EN_INTL_CHIP_ID_INFO[] PROGMEM = "Luftdaten identifies devices based on ChipID. In case that your ChipID was already occupied (you can check {MADAVI_LINK}), disable \"{TEXT_CHIP_ID_AUTO}\" and enter the seven-digit ChipID yourself.";
 
 char EN_INTL_AIRMONITORSENDING[] PROGMEM = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. PMS7003)";
 char EN_INTL_AIRMONITORCHARTS[] PROGMEM = "Displaying charts from the AirMonitor site";

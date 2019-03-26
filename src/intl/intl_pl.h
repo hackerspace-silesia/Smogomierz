@@ -48,7 +48,10 @@ char PL_INTL_SECURELOGIN[] PROGMEM = "Login";
 char PL_INTL_SECUREPASSWD[] PROGMEM = "Hasło";
 char PL_INTL_SECURELOGOUTINFO[] PROGMEM = "Zrestartuj przeglądarkę w celu wylogowania!";
 
+char PL_INTL_SMOGLISTSENDING[] PROGMEM = "Wysyłanie danych do serwisu Smoglist";
 char PL_INTL_LUFTDATENSENDING[] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga wypełnienia {LUFTDATENFORM_LINK})";
+char PL_INTL_CHIP_ID_AUTO[] PROGMEM = "Automatyczne generowanie ChipID";
+char PL_INTL_CHIP_ID_INFO[] PROGMEM = "Luftdaten identyfikuje urządzenia na podstawie ChipID. W przypadku, gdyby Twoje ChipID było już zajęte(można sptawdzić na {MADAVI_LINK}), wyłącz \"{TEXT_CHIP_ID_AUTO}\" i wpisz samemu siedmiocyfrowe ChipID.";
 
 char PL_INTL_AIRMONITORSENDING[] PROGMEM = "Wysyłanie danych do serwisu {AIRMONITOR_LINK} (wymaga wypełnienia {AIRMONITORFORM_LINK}; Sensor: np. PMS7003)";
 char PL_INTL_AIRMONITORCHARTS[] PROGMEM = "Wyświetlanie wykresów z serwisu AirMonitor";

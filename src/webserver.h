@@ -375,14 +375,28 @@ void _handle_config(bool is_success) {
     } else {
     	message.replace("{TEXT_SECURELOGOUTINFO}", (TEXT_SECURELOGOUTINFO));
     }
-		
+	
+	message.replace("{TEXT_SMOGLISTSENDING}", (TEXT_SMOGLISTSENDING));
+	message.replace("{SMOGLIST_ON}", _addBoolSelect("SMOGLIST_ON", SMOGLIST_ON));	
+	
 	message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
 	message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));
 	message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));
 	message.replace("{TEXT_THEFORM}", (TEXT_THEFORM));
 		
 	message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
-	message.replace("{ChipID}", String(ESP.getChipId()));
+	message.replace("{TEXT_CHIP_ID_AUTO}", (TEXT_CHIP_ID_AUTO));
+	message.replace("{CHIP_ID_AUTO}", _addBoolSelect("CHIP_ID_AUTO", CHIP_ID_AUTO));
+	message.replace("{TEXT_CHIP_ID_INFO}", (TEXT_CHIP_ID_INFO));
+	message.replace("{MADAVI_LINK}", (MADAVI_LINK));
+	message.replace("{TEXT_HERE}", (TEXT_HERE));
+	message.replace("{TEXT_CHIP_ID_AUTO}", (TEXT_CHIP_ID_AUTO));
+	
+    if (CHIP_ID_AUTO) {
+		message.replace("{CHIP_ID}", (CHIP_ID));
+    } else {
+		message.replace("{CHIP_ID}", _addTextInput("CHIP_ID", CHIP_ID));
+    }
 	
 	message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
 	message.replace("{AIRMONITOR_LINK}", (AIRMONITOR_LINK));
@@ -452,6 +466,7 @@ void _handle_config(bool is_success) {
 	message.replace("{RestoreConfigButton}", _addRestoreConfig());
 	message.replace("{SubmitButton}", _addSubmit());
   	message += FPSTR(WEB_PAGE_FOOTER);
+	
   WebServer.send(200, "text/html", message);
 }
 
@@ -546,6 +561,15 @@ void handle_config_post() {
   NUMBEROFMEASUREMENTS = WebServer.arg("NUMBEROFMEASUREMENTS").toInt();
 
   LUFTDATEN_ON = _parseAsBool(WebServer.arg("LUFTDATEN_ON"));
+  
+  CHIP_ID_AUTO = _parseAsBool(WebServer.arg("CHIP_ID_AUTO"));
+  if (!CHIP_ID_AUTO) {
+    _parseAsCString(CHIP_ID, WebServer.arg("CHIP_ID"));
+  } else {
+	  sprintf(CHIP_ID, "%d", ESP.getChipId());
+  }
+  
+  SMOGLIST_ON = _parseAsBool(WebServer.arg("SMOGLIST_ON"));
 
   AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
   AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));

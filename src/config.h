@@ -14,8 +14,6 @@ extern int DUST_TIME;
 extern int NUMBEROFMEASUREMENTS;
 
 extern bool LUFTDATEN_ON;
-extern bool CHIP_ID_AUTO;
-extern char CHIP_ID[255];
 extern bool SMOGLIST_ON;
 
 extern bool AIRMONITOR_ON;

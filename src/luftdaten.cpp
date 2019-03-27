@@ -31,7 +31,7 @@ void sendPMSLuftdatenJson(JsonObject& json) {
 	client.println("Host: "+ String(luftdatenAPIHOST));
 	client.println("Content-Type: application/json");
 	client.println("X-PIN: 1");
-	client.println("X-Sensor: esp8266-" + String(CHIP_ID));
+	client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 	client.print("Content-Length: ");
 	client.println(measureJson(json));
 	client.println("Connection: close");
@@ -49,7 +49,7 @@ void sendPMSLuftdatenJson(JsonObject& json) {
 		Serial.println("Host: "+ String(luftdatenAPIHOST));
 		Serial.println("Content-Type: application/json");
 		Serial.println("X-PIN: 1");
-		Serial.println("X-Sensor: esp8266-" + String(CHIP_ID));
+		Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 		Serial.print("Content-Length: ");
 		Serial.println(measureJson(json));
 		Serial.println("Connection: close");
@@ -83,7 +83,7 @@ void sendBMELuftdatenJson(JsonObject& json) {
 	client.println("Host: "+ String(luftdatenAPIHOST));
 	client.println("Content-Type: application/json");
 	client.println("X-PIN: 11");
-	client.println("X-Sensor: esp8266-" + String(CHIP_ID));
+	client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 	client.print("Content-Length: ");
 	client.println(measureJson(json));
 	client.println("Connection: close");
@@ -101,7 +101,7 @@ void sendBMELuftdatenJson(JsonObject& json) {
 		Serial.println("Host: "+ String(luftdatenAPIHOST));
 		Serial.println("Content-Type: application/json");
 		Serial.println("X-PIN: 11");
-		Serial.println("X-Sensor: esp8266-" + String(CHIP_ID));
+		Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 		Serial.print("Content-Length: ");
 		Serial.println(measureJson(json));
 		Serial.println("Connection: close");
@@ -176,7 +176,7 @@ void sendPMSMadavideJson(JsonObject& json) {
 	client.println("Host: "+ String(madavideAPIHOST));
 	client.println("Content-Type: application/json");
 	client.println("X-PIN: 1");
-	client.println("X-Sensor: esp8266-" + String(CHIP_ID));
+	client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 	client.print("Content-Length: ");
 	client.println(measureJson(json));
 	client.println("Connection: close");
@@ -194,7 +194,7 @@ void sendPMSMadavideJson(JsonObject& json) {
 		Serial.println("Host: "+ String(madavideAPIHOST));
 		Serial.println("Content-Type: application/json");
 		Serial.println("X-PIN: 1");
-		Serial.println("X-Sensor: esp8266-" + String(CHIP_ID));
+		Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 		Serial.print("Content-Length: ");
 		Serial.println(measureJson(json));
 		Serial.println("Connection: close");
@@ -228,7 +228,7 @@ void sendBMEMadavideJson(JsonObject& json) {
 	client.println("Host: "+ String(madavideAPIHOST));
 	client.println("Content-Type: application/json");
 	client.println("X-PIN: 11");
-	client.println("X-Sensor: esp8266-" + String(CHIP_ID));
+	client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 	client.print("Content-Length: ");
 	client.println(measureJson(json));
 	client.println("Connection: close");
@@ -246,7 +246,7 @@ void sendBMEMadavideJson(JsonObject& json) {
 		Serial.println("Host: "+ String(madavideAPIHOST));
 		Serial.println("Content-Type: application/json");
 		Serial.println("X-PIN: 11");
-		Serial.println("X-Sensor: esp8266-" + String(CHIP_ID));
+		Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 		Serial.print("Content-Length: ");
 		Serial.println(measureJson(json));
 		Serial.println("Connection: close");

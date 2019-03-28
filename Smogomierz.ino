@@ -325,14 +325,7 @@ void setup() {
   }
 
   if (SMOGLIST_ON) {
-    /*
-    Smoglist smoglist;
-    if (smoglist.opendb() != SmoglistDB_SUCCESS) {
-      Serial.println("Connecting smoglistDB failed");
-    } else {
-      Serial.println("Connecting smoglistDB succeed");
-    }
-    */
+
   }
 
   //  WebServer config - Start
@@ -416,11 +409,7 @@ void loop() {
       delay(10);
 
       if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
-        unsigned long current_SENDING_FREQUENCY_Millis = millis();
-        if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
-          sendDataToExternalServices();
-          previous_SENDING_FREQUENCY_Millis = millis();
-        }
+        sendDataToExternalServices();
       }
 
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
@@ -432,6 +421,22 @@ void loop() {
         takeSleepPMMeasurements();
         previous_DUST_Millis = millis();
       }
+    }
+  } else {
+    if (DEEPSLEEP_ON == true) {
+      if (millis() >= TwoSec_interval * 13) { // Waiting ~20 sec...
+        Serial.println("\nDeepSleep Mode!\n");
+        if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
+          sendDataToExternalServices();
+        }
+        delay(10);
+        Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+        ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
+        delay(10);
+      }
+      WebServer.handleClient();
+      delay(10);
+      yield();
     }
   }
 
@@ -581,132 +586,7 @@ void sendDataToExternalServices() {
   }
 
   if (SMOGLIST_ON) {
-    /*
-    Smoglist smoglist;
-    if (smoglist.opendb() != SmoglistDB_SUCCESS) {
-      Serial.println("Opening smoglistDB failed");
-    } else {
-      SmoglistdbMeasurement row(CHIP_ID);
 
-      row.addField("ChipID", ESP.getChipId());
-      //row.addField("SW", SOFTWAREVERSION);
-      //row.addField("HW", HARDWAREVERSION);
-      //row.addField("THP_MODEL", THP_MODEL);
-      //row.addField("DUST_MODEL", DUST_MODEL);
-      row.addField("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT);
-      row.addField("DISPLAY_PM1", DISPLAY_PM1);
-      row.addField("DUST_TIME", DUST_TIME);
-      row.addField("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS);
-      row.addField("SENDING_FREQUENCY", SENDING_FREQUENCY);
-      row.addField("LUFTDATEN_ON", LUFTDATEN_ON);
-      row.addField("AIRMONITOR_ON", AIRMONITOR_ON);
-      row.addField("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON);
-      row.addField("THINGSPEAK_ON", THINGSPEAK_ON);
-      row.addField("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON);
-      row.addField("INFLUXDB_ON", INFLUXDB_ON);
-      row.addField("MQTT_ON", MQTT_ON);
-      row.addField("DEEPSLEEP_ON", DEEPSLEEP_ON);
-      row.addField("AUTOUPDATE_ON", AUTOUPDATE_ON);
-      //row.addField("CALIBRATION_MODEL", MODEL);
-
-      if (!strcmp(DUST_MODEL, "PMS7003")) {
-        if (DEBUG) {
-          Serial.println("Measurements from PMS7003!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
-      } else {
-        if (DEBUG) {
-          Serial.println("No measurements from PMS7003!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
-      }
-      if (!strcmp(THP_MODEL, "BME280")) {
-        if (checkBmeStatus() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from BME280!\n");
-          }
-          row.addField("temperature", (BMESensor.temperature));
-          row.addField("pressure", (BMESensor.seaLevelForAltitude(MYALTITUDE)));
-          row.addField("humidity", (BMESensor.humidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from BME280!\n");
-          }
-        }
-      }
-
-      if (!strcmp(THP_MODEL, "HTU21")) {
-        if (checkHTU21DStatus() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from HTU21!\n");
-          }
-          row.addField("temperature", (myHTU21D.readTemperature()));
-          row.addField("humidity", (myHTU21D.readHumidity()));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from HTU21D!\n");
-          }
-        }
-      }
-
-      if (!strcmp(THP_MODEL, "BMP280")) {
-        if (checkBmpStatus() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from BMP280!\n");
-          }
-          row.addField("temperature", (bmp.readTemperature()));
-          row.addField("pressure", ((bmp.readPressure()) / 100));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from BMP280!\n");
-          }
-        }
-      }
-
-      if (!strcmp(THP_MODEL, "DHT22")) {
-        if (checkDHT22Status() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from DHT22!\n");
-          }
-          row.addField("temperature", (dht.readTemperature()));
-          row.addField("humidity", (dht.readHumidity()));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from DHT22!\n");
-          }
-        }
-      }
-
-      if (!strcmp(THP_MODEL, "SHT1x")) {
-        if (checkSHT1xStatus() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from SHT1x!\n");
-          }
-          row.addField("temperature", (sht1x.readTemperatureC()));
-          row.addField("humidity", (sht1x.readHumidity()));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from SHT1x!\n");
-          }
-        }
-      }
-
-      if (smoglist.write(row) == SmoglistDB_SUCCESS) {
-        if (DEBUG) {
-          Serial.println("Data sent to SmoglistDB\n");
-        }
-      } else {
-        if (DEBUG) {
-          Serial.println("Error sending data to SmoglistDB\n");
-        }
-      }
-      row.empty();
-    }
-    */
   }
 
   if (MQTT_ON) {

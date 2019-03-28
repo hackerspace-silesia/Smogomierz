@@ -6,110 +6,108 @@
 
 #pragma once
 
-String TEXT_LANG = "en";
+extern char TEXT_LANG[16] = "en";
 
-String TEXT_INDEX_PAGE = "Measurements";
-String TEXT_CONFIG_PAGE = "Configuration";
-String TEXT_UPDATE_PAGE = "Update";
+extern char TEXT_INDEX_PAGE[16] = "Measurements";
+extern char TEXT_CONFIG_PAGE[16] = "Configuration";
+extern char TEXT_UPDATE_PAGE[16] = "Update";
 
-String TEXT_WEATHER = "Weather";
-String TEXT_TEMPERATURE = "Temperature";
-String TEXT_HUMIDITY = "Humidity";
-String TEXT_PRESSURE = "Pressure";
-String TEXT_DEWPOINT = "Dewpoint";
+extern char TEXT_WEATHER[16] = "Weather";
+extern char TEXT_TEMPERATURE[16] = "Temperature";
+extern char TEXT_HUMIDITY[16] = "Humidity";
+extern char TEXT_PRESSURE[16] = "Pressure";
+extern char TEXT_DEWPOINT[16] = "Dewpoint";
 
-String TEXT_AIRPOLLUTION = "Air pollution";
-String TEXT_SAVED = "SAVED!";
+extern char TEXT_AIRPOLLUTION[32] = "Air pollution";
+extern char TEXT_SAVED[16] = "SAVED!";
 
-String TEXT_POSTCONFIG_INFO = "everything looks OK, in a moment the Smogomierz will restart";
-String TEXT_INSTRUCIONSLINK = "All instructions and descriptions[in polish] are available {GITHUB_LINK}.";
-String TEXT_DEVICENAME = "Device Name";
-String TEXT_DEVICENAMEAUTO = "Automatic name generation";
-String TEXT_SELECTEDLANGUAGE = "Language";
-String TEXT_TEMPHUMIPRESSSENSOR = "Temp/Humi/Press Sensor";
-String TEXT_PMSENSOR = "PM2.5/PM10 Sensor";
+extern char TEXT_POSTCONFIG_INFO[64] = "everything looks OK, in a moment the Smogomierz will restart";
+extern char TEXT_INSTRUCIONSLINK[80] = "All instructions and descriptions[in polish] are available {GITHUB_LINK}.";
+extern char TEXT_DEVICENAME[32] = "Device Name";
+extern char TEXT_DEVICENAMEAUTO[32] = "Automatic name generation";
+extern char TEXT_SELECTEDLANGUAGE[16] = "Language";
+extern char TEXT_TEMPHUMIPRESSSENSOR[64] = "Temp/Humi/Press Sensor";
+extern char TEXT_PMSENSOR[32] = "PM2.5/PM10 Sensor";
 
-String TEXT_FREQUENTMEASUREMENTONOFF = "Frequent measurement";
-String TEXT_FREQUENTMEASUREMENTINFO = "frequent measurements - every few seconds, shorten the life span of the PM sensor.";
-String TEXT_MEASUREMENTFREQUENCY = "Make PM measurements every";
-String TEXT_AVERAGELASTRESULT = "Average result from last";
-String TEXT_PMMEASUREMENTS = "PM measurements";
-String TEXT_SENDINGINTERVAL = "Sending measurements to external services every";
-String TEXT_SECONDS = "seconds";
-String TEXT_MINUTES = "minutes";
+extern char TEXT_FREQUENTMEASUREMENTONOFF[32] = "Frequent measurement";
+extern char TEXT_FREQUENTMEASUREMENTINFO[96] = "frequent measurements - every few seconds, shorten the life span of the PM sensor.";
+extern char TEXT_MEASUREMENTFREQUENCY[32] = "Make PM measurements every";
+extern char TEXT_AVERAGELASTRESULT[32] = "Average result from last";
+extern char TEXT_PMMEASUREMENTS[32] = "PM measurements";
+extern char TEXT_SENDINGINTERVAL[64] = "Sending measurements to external services every";
+extern char TEXT_SECONDS[16] = "seconds";
+extern char TEXT_MINUTES[16] = "minutes";
 
-String TEXT_DEEPSLEEPINFO = "DeepSleep put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
+extern char TEXT_DEEPSLEEPINFO[544] = "DeepSleep put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
 
-String TEXT_DISPLAYPM1 = "Display of PM1 measurements";
-String TEXT_ALTITUDEINFO = "Altitude above sea level (required for correct pressure measurements. You can check it {WSPOLRZEDNE_GPS_LINK})";
+extern char TEXT_DISPLAYPM1[32] = "Display of PM1 measurements";
+extern char TEXT_ALTITUDEINFO[128] = "Altitude above sea level (required for correct pressure measurements. You can check it {WSPOLRZEDNE_GPS_LINK})";
 
-String TEXT_SECURECONFIGUPDATEPAGE = "Secure the Configuration and Update pages(default: admin/password)";
-String TEXT_SECURELOGIN = "Login";
-String TEXT_SECUREPASSWD = "Password";
-String TEXT_SECURELOGOUTINFO = "Restart your web browser to log out!";
+extern char TEXT_SECURECONFIGUPDATEPAGE[96] = "Secure the Configuration and Update pages(default: admin/password)";
+extern char TEXT_SECURELOGIN[16] = "Login";
+extern char TEXT_SECUREPASSWD[16] = "Password";
+extern char TEXT_SECURELOGOUTINFO[64] = "Restart your web browser to log out!";
 
-String TEXT_SMOGLISTSENDING = "Sending data to the Smoglist service";
-String TEXT_LUFTDATENSENDING = "Sending data to the {LUFTDATEN_LINK} service(requires filling out {LUFTDATENFORM_LINK})"; 
-String TEXT_CHIP_ID_AUTO = "Automatic ChipID generation";
-String TEXT_CHIP_ID_INFO = "Luftdaten identifies devices based on ChipID. In case that your ChipID was already occupied (you can check {MADAVI_LINK}), disable \"{TEXT_CHIP_ID_AUTO}\" and enter the seven-digit ChipID yourself.";
+extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires filling out {LUFTDATENFORM_LINK})"; 
+extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the Smoglist service";
 
-String TEXT_AIRMONITORSENDING = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. PMS7003)";
-String TEXT_AIRMONITORCHARTS = "Displaying charts from the AirMonitor site";
-String TEXT_AIRMONITORCOORDINATESINFO = "Geographical coordinates(you can check it {LATLONG_LINK}";
-String TEXT_AIRMONITORLATITUDE = "Latitude";
-String TEXT_AIRMONITORLONGITUDE = "Longitude";
+extern char TEXT_AIRMONITORSENDING[128] = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. PMS7003)";
+extern char TEXT_AIRMONITORCHARTS[64] = "Displaying charts from the AirMonitor site";
+extern char TEXT_AIRMONITORCOORDINATESINFO[80] = "Geographical coordinates(you can check it {LATLONG_LINK}";
+extern char TEXT_AIRMONITORLATITUDE[32] = "Latitude";
+extern char TEXT_AIRMONITORLONGITUDE[32] = "Longitude";
 
-String TEXT_THINGSPEAKSENDING = "Sending data to the {THINGSPEAK_LINK} service:";
-String TEXT_THINGSPEAKCHARTS = "Displaying charts from the ThingSpeak site";
-String TEXT_THINGSPEAKAPIKEY = "ThingSpeak API_KEY";
-String TEXT_THINGSPEAKCHANNELID = "ThingSpeak Channel ID";
+extern char TEXT_THINGSPEAKSENDING[64] = "Sending data to the {THINGSPEAK_LINK} service:";
+extern char TEXT_THINGSPEAKCHARTS[64] = "Displaying charts from the ThingSpeak site";
+extern char TEXT_THINGSPEAKAPIKEY[32] = "ThingSpeak API_KEY";
+extern char TEXT_THINGSPEAKCHANNELID[32] = "ThingSpeak Channel ID";
 
-String TEXT_INFLUXDBSENDING = "Sending data to the InfluxDB";
-String TEXT_INFLUXDBSERVER = "InfluxDB database address";
-String TEXT_INFLUXDBPORT = "InfluxDB port";
-String TEXT_INFLUXDBNAME = "Name of the database";
-String TEXT_INFLUXDBUSER = "Database user";
-String TEXT_INFLUXDBPASSWD = "Database password";
+extern char TEXT_INFLUXDBSENDING[64] = "Sending data to the InfluxDB";
+extern char TEXT_INFLUXDBSERVER[64] = "InfluxDB database address";
+extern char TEXT_INFLUXDBPORT[32] = "InfluxDB port";
+extern char TEXT_INFLUXDBNAME[32] = "Name of the database";
+extern char TEXT_INFLUXDBUSER[32] = "Database user";
+extern char TEXT_INFLUXDBPASSWD[32] = "Database password";
 
-String TEXT_MQTTSENDING = "Sending data to the MQTT server";
-String TEXT_MQTTSERVER = "MQTT server address";
-String TEXT_MQTTPORT = "MQTT port";
-String TEXT_MQTTUSER = "MQTT user";
-String TEXT_MQTTPASSWD = "MQTT password";
+extern char TEXT_MQTTSENDING[64] = "Sending data to the MQTT server";
+extern char TEXT_MQTTSERVER[32] = "MQTT server address";
+extern char TEXT_MQTTPORT[32] = "MQTT port";
+extern char TEXT_MQTTUSER[32] = "MQTT user";
+extern char TEXT_MQTTPASSWD[32] = "MQTT password";
 
-String TEXT_CALIBMETHOD = "Calibration method";
-String TEXT_CALIB1 = "calib1";
-String TEXT_CALIB2 = "calib2";
-String TEXT_SOFTWATEVERSION = "Software version";
+extern char TEXT_CALIBMETHOD[32] = "Calibration method";
+extern char TEXT_CALIB1[32] = "calib1";
+extern char TEXT_CALIB2[32] = "calib2";
+extern char TEXT_SOFTWATEVERSION[32] = "Software version";
 
-String TEXT_ERASEWIFICONFIG = "Erase WiFi Config";
-String TEXT_RESTORESETTINGS = "Restore default settings";
-String TEXT_SAVE = "Save";
-String TEXT_YES = "Yes";
-String TEXT_NO = "No";
-String TEXT_WITHOUTSENSOR = "Without sensor";
-String TEXT_WITHOUTCALIBRATION = "Without calibration";
-String TEXT_AUTOMATICCALIBRATION = "Automatic calibration";
+extern char TEXT_ERASEWIFICONFIG[32] = "Erase WiFi Config";
+extern char TEXT_RESTORESETTINGS[32] = "Restore default settings";
+extern char TEXT_SAVE[16] = "Save";
+extern char TEXT_YES[16] = "Yes";
+extern char TEXT_NO[16] = "No";
+extern char TEXT_WITHOUTSENSOR[32] = "Without sensor";
+extern char TEXT_WITHOUTCALIBRATION[32] = "Without calibration";
+extern char TEXT_AUTOMATICCALIBRATION[32] = "Automatic calibration";
 
-String TEXT_INTL_EN = "english";
-String TEXT_INTL_PL = "polish";
+extern char TEXT_INTL_EN[16] = "english";
+extern char TEXT_INTL_PL[16] = "polish";
 
-String TEXT_FWUPDATEAVALIBLE = "Firmware update available!";
-String TEXT_AUTOUPDATEON = "Autoupdate";
-String TEXT_MANUALUPDATEBUTTON = "Manual Upgrade";
-String TEXT_FWUPDATEBUTTON = "Firmware Upgrade";
-String TEXT_AUTOUPDATEONBUTTON = "Autoupdate On";
-String TEXT_AUTOUPDATEWARNING = "Automatic updates are performed via an unencrypted connection (HTTP, not HTTPS). It can be dangerous and allow interception of packets and hacking the device. You can use the Autoupdate once by clicking the \"{TEXT_FWUPDATEBUTTON}\" button or turn on Autoupdate permanently. You can change your mind at any time and disable Autoupdate in the Configuration. After selecting \"{TEXT_FWUPDATEBUTTON}\" or turning on Autoupdate, the device will save the current configuration and restart. It may take several seconds.";
-String TEXT_UPDATEPAGEAUTOUPDATEWARNING = "Automatic updates are performed via an unencrypted connection (HTTP, not HTTPS). It can be dangerous and allow interception of packets and hacking the device.";
+extern char TEXT_FWUPDATEAVALIBLE[64] = "Firmware update available!";
+extern char TEXT_AUTOUPDATEON[32] = "Autoupdate";
+extern char TEXT_MANUALUPDATEBUTTON[32] = "Manual Upgrade";
+extern char TEXT_FWUPDATEBUTTON[32] = "Firmware Upgrade";
+extern char TEXT_AUTOUPDATEONBUTTON[64] = "Autoupdate On";
+extern char TEXT_AUTOUPDATEWARNING[672] = "Automatic updates are performed via an unencrypted connection (HTTP, not HTTPS). It can be dangerous and allow interception of packets and hacking the device. You can use the Autoupdate once by clicking the \"{TEXT_FWUPDATEBUTTON}\" button or turn on Autoupdate permanently. You can change your mind at any time and disable Autoupdate in the Configuration. After selecting \"{TEXT_FWUPDATEBUTTON}\" or turning on Autoupdate, the device will save the current configuration and restart. It may take several seconds.";
+extern char TEXT_UPDATEPAGEAUTOUPDATEWARNING[192] = "Automatic updates are performed via an unencrypted connection (HTTP, not HTTPS). It can be dangerous and allow interception of packets and hacking the device.";
 
-String TEXT_SELECTUPDATEFILE = "Select .bin file";
-String TEXT_SUBMITUPDATE = "Update!";
-String TEXT_CURRENTSOFTVERSION = "The currently used version of the firmware";
-String TEXT_SERVERSOFTWAREVERSION = "The latest available firmware version";
-String TEXT_LATESTAVAILABLESOFT = "Latest version of the software available {SMOGOMIERZRELEASES_LINK}.";
+extern char TEXT_SELECTUPDATEFILE[32] = "Select .bin file";
+extern char TEXT_SUBMITUPDATE[16] = "Update!";
+extern char TEXT_CURRENTSOFTVERSION[64] = "Currently used version of the firmware";
+extern char TEXT_SERVERSOFTWAREVERSION[64] = "The latest available firmware version";
+extern char TEXT_LATESTAVAILABLESOFT[96] = "Latest version of the software available {SMOGOMIERZRELEASES_LINK}.";
 
-String TEXT_HERE = "here";
-String TEXT_THEFORM = "the form";
+extern char TEXT_HERE[16] = "here";
+extern char TEXT_THEFORM[16] = "the form";
 
 static char GITHUB_LINK[] PROGMEM = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
 static char WSPOLRZEDNE_GPS_LINK[] PROGMEM = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";

@@ -631,17 +631,13 @@ void sendDataToExternalDBs() {
   }
 
   if (MQTT_ON) {
-    if (!strcmp(DUST_MODEL, "PMS7003")) {
+    if (strcmp(DUST_MODEL, "Non")) {
       if (DEBUG) {
-        Serial.println("Measurements from PMS7003!\n");
+        Serial.println("Measurements from PM Sensor!\n");
       }
       mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
       mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
       mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
-    } else {
-      if (DEBUG) {
-        Serial.println("No measurements from PMS7003!\n");
-      }
     }
     if (!strcmp(THP_MODEL, "BME280")) {
       if (checkBmeStatus() == true) {
@@ -693,9 +689,11 @@ void takeNormalnPMMeasurements() {
 
 void takeSleepPMMeasurements() {
   if (strcmp(DUST_MODEL, "Non")) {
+
     if (DEBUG) {
       Serial.print("\nTurning ON PM sensor...");
     }
+
     if (!strcmp(DUST_MODEL, "PMS7003")) {
       pms.wakeUp();
       unsigned long current_2sec_Millis = millis();
@@ -708,15 +706,18 @@ void takeSleepPMMeasurements() {
       previous_2sec_Millis = 0;
       pms.requestRead();
     }
+
     int counterNM1 = 0;
     while (counterNM1 < NUMBEROFMEASUREMENTS) {
       unsigned long current_2sec_Millis = millis();
       if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
+
         if (pms.readUntil(data)) {
           pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
           pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
           pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
         }
+
         if (DEBUG) {
           Serial.print("\n\nPM measurement number PM: ");
           Serial.print(iPM);
@@ -750,9 +751,11 @@ void takeSleepPMMeasurements() {
     if (DEBUG) {
       Serial.print("\nTurning OFF PM sensor...\n");
     }
+
     if (!strcmp(DUST_MODEL, "PMS7003")) {
       pms.sleep();
     }
+
   }
 }
 

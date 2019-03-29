@@ -34,7 +34,9 @@ char EN_INTL_FREQUENTMEASUREMENTINFO[96] PROGMEM = "frequent measurements - ever
 char EN_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Make PM measurements every";
 char EN_INTL_AVERAGELASTRESULT[32] PROGMEM = "Average result from last";
 char EN_INTL_PMMEASUREMENTS[32] PROGMEM = "PM measurements";
-char EN_INTL_SENDINGINTERVAL[64] PROGMEM = "Sending measurements to external services every";
+char EN_INTL_SENDINGINTERVAL[64] PROGMEM = "Sending data to external services every";
+char EN_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Sending data to AirMonitor/Luftdaten every";
+char EN_INTL_DBSENDINGINTERVAL[64] PROGMEM = "Sending data to ThingSpeak/InfluxDB/MQTT every";
 char EN_INTL_SECONDS[16] PROGMEM = "seconds";
 char EN_INTL_MINUTES[16] PROGMEM = "minutes";
 

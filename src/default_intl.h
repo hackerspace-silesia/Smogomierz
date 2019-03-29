@@ -34,7 +34,9 @@ extern char TEXT_FREQUENTMEASUREMENTINFO[96] = "frequent measurements - every fe
 extern char TEXT_MEASUREMENTFREQUENCY[32] = "Make PM measurements every";
 extern char TEXT_AVERAGELASTRESULT[32] = "Average result from last";
 extern char TEXT_PMMEASUREMENTS[32] = "PM measurements";
-extern char TEXT_SENDINGINTERVAL[64] = "Sending measurements to external services every";
+extern char TEXT_SENDINGINTERVAL[64] = "Sending data to external services every";
+extern char TEXT_SERVICESSENDINGINTERVAL[64] = "Sending data to AirMonitor/Luftdaten every";
+extern char TEXT_DBSENDINGINTERVAL[64] = "Sending data to ThingSpeak/InfluxDB/MQTT every";
 extern char TEXT_SECONDS[16] = "seconds";
 extern char TEXT_MINUTES[16] = "minutes";
 

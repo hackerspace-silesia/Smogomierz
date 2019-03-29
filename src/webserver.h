@@ -324,7 +324,8 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_FREQUENTMEASUREMENTONOFF}", (TEXT_FREQUENTMEASUREMENTONOFF));
   message.replace("{TEXT_FREQUENTMEASUREMENTINFO}", (TEXT_FREQUENTMEASUREMENTINFO));
   message.replace("{TEXT_MEASUREMENTFREQUENCY}", (TEXT_MEASUREMENTFREQUENCY));
-  message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
+  //message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
+  
   message.replace("{FREQUENTMEASUREMENT_Select}", _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
 
   if (FREQUENTMEASUREMENT == true) {
@@ -340,15 +341,34 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_PMMEASUREMENTS}", (TEXT_PMMEASUREMENTS));
 
   if (FREQUENTMEASUREMENT == true) {
+	message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
     message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_SECONDS}"));
+    message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
+	
+	message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
+    message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_SECONDS}"));
     message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
 
     message.replace("<hr><b>DeepSleep: </b>{DEEPSLEEP_ON} {TEXT_DEEPSLEEPINFO}", "");
   } else {
-    message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
-    message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+    if (DEEPSLEEP_ON == true) {
+		message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
+	    message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
+	    message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+		
+	  	message.replace("<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}", "");
+    } else {
+		message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
+	    message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
+	    message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+		
+		message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
+		message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_MINUTES}"));
+    	message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+	}
+
     message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO);
-    message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS) * 2 + 8));
+    message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS) * 2 + 10 ));
     message.replace("{SENDING_FREQUENCY}", String(SENDING_FREQUENCY));
     message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
   }
@@ -578,6 +598,7 @@ void handle_config_post() {
   _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"));
 
   SENDING_FREQUENCY = WebServer.arg("SENDING_FREQUENCY").toInt();
+  SENDING_DB_FREQUENCY = WebServer.arg("SENDING_DB_FREQUENCY").toInt();
   DEEPSLEEP_ON = _parseAsBool(WebServer.arg("DEEPSLEEP_ON"));
 
   DEBUG = _parseAsBool(WebServer.arg("DEBUG"));

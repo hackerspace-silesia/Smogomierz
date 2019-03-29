@@ -41,6 +41,7 @@ extern char MQTT_USER[255];
 extern char MQTT_PASSWORD[255];
 
 extern int SENDING_FREQUENCY;
+extern int SENDING_DB_FREQUENCY;
 extern bool DEEPSLEEP_ON;
 
 extern bool DEBUG;

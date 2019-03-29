@@ -87,6 +87,9 @@ unsigned long previous_DUST_Millis = 0;
 unsigned long SENDING_FREQUENCY_interval = 60 * 1000; // 1 minute
 unsigned long previous_SENDING_FREQUENCY_Millis = 0;
 
+unsigned long SENDING_DB_FREQUENCY_interval = 60 * 1000; // 1 minute
+unsigned long previous_SENDING_DB_FREQUENCY_Millis = 0;
+
 unsigned long previous_2sec_Millis = 0;
 unsigned long TwoSec_interval = 2 * 1000; // 2 second
 
@@ -189,6 +192,7 @@ bool checkSHT1xStatus() {
 void minutesToSeconds() {
   DUST_interval = 1000; // 1 second
   SENDING_FREQUENCY_interval = 1000;
+  SENDING_DB_FREQUENCY_interval = 1000;
 }
 
 void MQTTreconnect() {
@@ -246,6 +250,9 @@ void setup() {
   if (SENDING_FREQUENCY < DUST_TIME) {
     SENDING_FREQUENCY = DUST_TIME;
   }
+  if (SENDING_DB_FREQUENCY == 0) {
+    SENDING_DB_FREQUENCY = SENDING_FREQUENCY;
+  }
   delay(10);
 
   if (FREQUENTMEASUREMENT == true) {
@@ -255,9 +262,17 @@ void setup() {
   if (strcmp(DUST_MODEL, "Non")) {
     DUST_interval = DUST_interval * DUST_TIME;
   }
-
-  if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
-    SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
+  if (DEEPSLEEP_ON == true) {
+    if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+      SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
+    }
+  } else {
+    if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+      SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
+    }
+    if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+      SENDING_DB_FREQUENCY_interval = SENDING_DB_FREQUENCY_interval * SENDING_DB_FREQUENCY;
+    }
   }
   delay(10);
 
@@ -394,14 +409,18 @@ void loop() {
         takeNormalnPMMeasurements();
         previous_DUST_Millis = millis();
       }
-    } else if (DEEPSLEEP_ON == true) {
+    }
+    if (DEEPSLEEP_ON == true) {
       Serial.println("\nDeepSleep Mode!\n");
 
       takeSleepPMMeasurements();
       delay(10);
 
-      if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
+      if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         sendDataToExternalServices();
+      }
+      if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+        sendDataToExternalDBs();
       }
 
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
@@ -425,8 +444,11 @@ void loop() {
         yield();
         previous_2sec_Millis = millis();
       }
-      if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
+      if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         sendDataToExternalServices();
+      }
+      if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+        sendDataToExternalDBs();
       }
       delay(10);
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
@@ -435,11 +457,19 @@ void loop() {
     }
   }
 
-  if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
+  if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
     unsigned long current_SENDING_FREQUENCY_Millis = millis();
     if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
       sendDataToExternalServices();
       previous_SENDING_FREQUENCY_Millis = millis();
+    }
+  }
+
+  if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+    unsigned long current_SENDING_DB_FREQUENCY_Millis = millis();
+    if (current_SENDING_DB_FREQUENCY_Millis - previous_SENDING_DB_FREQUENCY_Millis >= SENDING_DB_FREQUENCY_interval) {
+      sendDataToExternalDBs();
+      previous_SENDING_DB_FREQUENCY_Millis = millis();
     }
   }
 
@@ -455,13 +485,7 @@ void loop() {
 } // loop() - END
 
 void sendDataToExternalServices() {
-  if (MQTT_ON) {
-    if (!mqttclient.connected()) {
-      MQTTreconnect();
-    }
-    mqttclient.loop();
-    delay(10);
-  }
+
   if (LUFTDATEN_ON) {
     sendDataToLuftdaten(BMESensor, averagePM1, averagePM25, averagePM10);
     if (DEBUG) {
@@ -474,6 +498,24 @@ void sendDataToExternalServices() {
     if (DEBUG) {
       Serial.println("Sending measurement data to the AirMonitor service!\n");
     }
+  }
+
+  if (SMOGLIST_ON) {
+    if (DEBUG) {
+      //Serial.println("Sending measurement data to the Smoglist service!\n");
+    }
+  }
+
+}
+
+void sendDataToExternalDBs() {
+
+  if (MQTT_ON) {
+    if (!mqttclient.connected()) {
+      MQTTreconnect();
+    }
+    mqttclient.loop();
+    delay(10);
   }
 
   if (THINGSPEAK_ON) {
@@ -588,10 +630,6 @@ void sendDataToExternalServices() {
     }
   }
 
-  if (SMOGLIST_ON) {
-
-  }
-
   if (MQTT_ON) {
     if (!strcmp(DUST_MODEL, "PMS7003")) {
       if (DEBUG) {
@@ -621,6 +659,7 @@ void sendDataToExternalServices() {
       }
     }
   }
+
 }
 
 void takeNormalnPMMeasurements() {
@@ -661,7 +700,7 @@ void takeSleepPMMeasurements() {
       pms.wakeUp();
       unsigned long current_2sec_Millis = millis();
       previous_2sec_Millis = millis();
-      while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 4) {
+      while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
         WebServer.handleClient();
         yield();
         previous_2sec_Millis = millis();

@@ -87,6 +87,7 @@ bool loadConfig() {
   _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password");
   
   SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
+  SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
   DEEPSLEEP_ON = json["DEEPSLEEP_ON"];
 
   DEBUG = json["DEBUG"];
@@ -177,6 +178,8 @@ bool loadConfig() {
     
 	Serial.print("Loaded SENDING_FREQUENCY: ");
     Serial.println(SENDING_FREQUENCY);
+	Serial.print("Loaded SENDING_DB_FREQUENCY: ");
+    Serial.println(SENDING_DB_FREQUENCY);
 	Serial.print("Loaded DEEPSLEEP_ON: ");
     Serial.println(DEEPSLEEP_ON);
 	
@@ -250,6 +253,8 @@ bool saveConfig() {
   json["MQTT_PASSWORD"] = MQTT_PASSWORD;
 
   json["SENDING_FREQUENCY"] = SENDING_FREQUENCY;
+  json["SENDING_DB_FREQUENCY"] = SENDING_DB_FREQUENCY;
+  
   json["DEEPSLEEP_ON"] = DEEPSLEEP_ON;
 
   json["DEBUG"] = DEBUG;

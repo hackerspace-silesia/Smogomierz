@@ -387,14 +387,6 @@ void loop() {
 
   yield();
 
-  if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
-    unsigned long current_SENDING_FREQUENCY_Millis = millis();
-    if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
-      sendDataToExternalServices();
-      previous_SENDING_FREQUENCY_Millis = millis();
-    }
-  }
-
   if (strcmp(DUST_MODEL, "Non")) {
     unsigned long current_DUST_Millis = millis();
     if (FREQUENTMEASUREMENT == true ) {
@@ -424,19 +416,30 @@ void loop() {
     }
   } else {
     if (DEEPSLEEP_ON == true) {
-      if (millis() >= TwoSec_interval * 13) { // Waiting ~20 sec...
-        Serial.println("\nDeepSleep Mode!\n");
-        if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
-          sendDataToExternalServices();
-        }
+      Serial.println("\nDeepSleep Mode!\n");
+      unsigned long current_2sec_Millis = millis();
+      previous_2sec_Millis = millis();
+      while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
+        WebServer.handleClient();
         delay(10);
-        Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
-        ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
-        delay(10);
+        yield();
+        previous_2sec_Millis = millis();
       }
-      WebServer.handleClient();
+      if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
+        sendDataToExternalServices();
+      }
       delay(10);
-      yield();
+      Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+      ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
+      delay(10);
+    }
+  }
+
+  if (LUFTDATEN_ON or AIRMONITOR_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON or SMOGLIST_ON) {
+    unsigned long current_SENDING_FREQUENCY_Millis = millis();
+    if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
+      sendDataToExternalServices();
+      previous_SENDING_FREQUENCY_Millis = millis();
     }
   }
 
@@ -488,14 +491,14 @@ void sendDataToExternalServices() {
       dbMeasurement row(device_name);
       if (!strcmp(DUST_MODEL, "PMS7003")) {
         if (DEBUG) {
-          Serial.println("Measurements from PMS7003!\n");
+          Serial.println("\nMeasurements from PMS7003!\n");
         }
         row.addField("pm1", averagePM1);
         row.addField("pm25", averagePM25);
         row.addField("pm10", averagePM10);
       } else {
         if (DEBUG) {
-          Serial.println("No measurements from PMS7003!\n");
+          Serial.println("\nNo measurements from PMS7003!\n");
         }
         row.addField("pm1", averagePM1);
         row.addField("pm25", averagePM25);
@@ -594,9 +597,9 @@ void sendDataToExternalServices() {
       if (DEBUG) {
         Serial.println("Measurements from PMS7003!\n");
       }
-      mqttclient.publish(("Smogomierz-", ESP.getChipId()) + "/sensor/PM1", String(averagePM1).c_str(), true);
-      mqttclient.publish(("Smogomierz-", ESP.getChipId()) + "/sensor/PM2.5", String(averagePM25).c_str(), true);
-      mqttclient.publish(("Smogomierz-", ESP.getChipId()) + "/sensor/PM10", String(averagePM10).c_str(), true);
+      mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
+      mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
+      mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
     } else {
       if (DEBUG) {
         Serial.println("No measurements from PMS7003!\n");
@@ -607,9 +610,10 @@ void sendDataToExternalServices() {
         if (DEBUG) {
           Serial.println("Measurements from BME280!\n");
         }
-        mqttclient.publish(("Smogomierz-", ESP.getChipId()) + "/sensor/temperature", String(BMESensor.temperature).c_str(), true);
-        mqttclient.publish(("Smogomierz-", ESP.getChipId()) + "/sensor/pressure", String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
-        mqttclient.publish(("Smogomierz-", ESP.getChipId()) + "/sensor/humidity", String(BMESensor.humidity).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(BMESensor.temperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/pressure").c_str(), String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(BMESensor.humidity).c_str(), true);
+
       } else {
         if (DEBUG) {
           Serial.println("No measurements from BME280!\n");
@@ -635,12 +639,12 @@ void takeNormalnPMMeasurements() {
   }
   averagePM();
   if (DEBUG) {
-    Serial.print("Average PM1: ");
-    Serial.println(averagePM1);
-    Serial.print("Average PM2.5: ");
-    Serial.println(averagePM25);
-    Serial.print("Average PM10: ");
-    Serial.println(averagePM10);
+    Serial.print("\nAverage PM1: ");
+    Serial.print(averagePM1);
+    Serial.print("\nAverage PM2.5: ");
+    Serial.print(averagePM25);
+    Serial.print("\nAverage PM10: ");
+    Serial.print(averagePM10);
   }
   iPM++;
   if (iPM >= NUMBEROFMEASUREMENTS) {
@@ -655,16 +659,20 @@ void takeSleepPMMeasurements() {
     }
     if (!strcmp(DUST_MODEL, "PMS7003")) {
       pms.wakeUp();
-      delay(6000); // waiting 6 sec...
+      unsigned long current_2sec_Millis = millis();
+      previous_2sec_Millis = millis();
+      while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 4) {
+        WebServer.handleClient();
+        yield();
+        previous_2sec_Millis = millis();
+      }
+      previous_2sec_Millis = 0;
+      pms.requestRead();
     }
     int counterNM1 = 0;
     while (counterNM1 < NUMBEROFMEASUREMENTS) {
       unsigned long current_2sec_Millis = millis();
       if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
-        if (!strcmp(DUST_MODEL, "PMS7003")) {
-          pms.requestRead();
-        }
-        delay(1000);
         if (pms.readUntil(data)) {
           pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
           pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
@@ -682,12 +690,12 @@ void takeSleepPMMeasurements() {
         }
         averagePM();
         if (DEBUG) {
-          Serial.print("Average PM1: ");
-          Serial.println(averagePM1);
-          Serial.print("Average PM2.5: ");
-          Serial.println(averagePM25);
-          Serial.print("Average PM10: ");
-          Serial.println(averagePM10);
+          Serial.print("\nAverage PM1: ");
+          Serial.print(averagePM1);
+          Serial.print("\nAverage PM2.5: ");
+          Serial.print(averagePM25);
+          Serial.print("\nAverage PM10: ");
+          Serial.print(averagePM10);
         }
         iPM++;
         if (iPM >= NUMBEROFMEASUREMENTS) {
@@ -697,7 +705,6 @@ void takeSleepPMMeasurements() {
         counterNM1++;
       }
       WebServer.handleClient();
-      delay(10);
       yield();
       delay(10);
     }
@@ -771,15 +778,6 @@ int averagePM() {
     averagePM1 += pmMeasurements[i][0];
     averagePM25 += pmMeasurements[i][1];
     averagePM10  += pmMeasurements[i][2];
-  }
-  if (DEBUG) {
-    Serial.print("\naveragePM1: ");
-    Serial.println(averagePM1);
-    Serial.print("averagePM25: ");
-    Serial.println(averagePM25);
-    Serial.print("averagePM10: ");
-    Serial.println(averagePM10);
-    Serial.print("\n");
   }
   averagePM1 = averagePM1 / NUMBEROFMEASUREMENTS;
   averagePM25 = averagePM25 / NUMBEROFMEASUREMENTS;

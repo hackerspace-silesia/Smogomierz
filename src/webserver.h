@@ -328,9 +328,11 @@ void _handle_config(bool is_success) {
   message.replace("{FREQUENTMEASUREMENT_Select}", _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
 
   if (FREQUENTMEASUREMENT == true) {
-    message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "seconds"));
+    message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_SECONDS}"));
+	message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
   } else {
-    message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "minutes"));
+    message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_MINUTES}"));
+	message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
   }
 
   message.replace("{TEXT_AVERAGELASTRESULT}", (TEXT_AVERAGELASTRESULT));
@@ -341,13 +343,12 @@ void _handle_config(bool is_success) {
     message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_SECONDS}"));
     message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
 
-    message.replace("<hr>DeepSleep</b> - {TEXT_DEEPSLEEPINFO}:", "");
-    message.replace("{DEEPSLEEP_ON}<hr>", "");
+    message.replace("<hr><b>DeepSleep: </b>{DEEPSLEEP_ON} {TEXT_DEEPSLEEPINFO}", "");
   } else {
     message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
     message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
     message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO);
-    message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS) * 2 + 6));
+    message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS) * 2 + 8));
     message.replace("{SENDING_FREQUENCY}", String(SENDING_FREQUENCY));
     message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
   }

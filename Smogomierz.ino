@@ -25,7 +25,7 @@
 #include "src/config.h"
 #include "defaultConfig.h"
 #include "src/autoupdate.h"
-//#include "src/smoglist.h"
+#include "src/smoglist.h"
 
 #include "src/luftdaten.h"
 #include "src/airmonitor.h"
@@ -97,7 +97,7 @@ unsigned long REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned long previous_REBOOT_Millis = 0;
 
 int pmMeasurements[10][3];
-int iPM, averagePM1, averagePM25, averagePM10 = 0;
+int iPM, averagePM1, averagePM25, averagePM4, averagePM10 = 0;
 float calib = 1;
 
 bool need_update = false;
@@ -339,10 +339,6 @@ void setup() {
     }
   }
 
-  if (SMOGLIST_ON) {
-
-  }
-
   //  WebServer config - Start
   WebServer.on("/", HTTP_GET,  handle_root);
   WebServer.on("/config", HTTP_POST, handle_config_post);
@@ -501,8 +497,9 @@ void sendDataToExternalServices() {
   }
 
   if (SMOGLIST_ON) {
+    sendDataToSmogList(BMESensor, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
-      //Serial.println("Sending measurement data to the Smoglist service!\n");
+      Serial.println("Sending measurement data to the SmogList service!\n");
     }
   }
 
@@ -760,38 +757,7 @@ void takeSleepPMMeasurements() {
 }
 
 void pm_calibration() {
-  if (!strcmp(THP_MODEL, "BME280")) {
-    if (int(BMESensor.temperature) < 5 and int(BMESensor.humidity) > 60) {
-      calib = calib2;
-    }
-    calib = calib1;
-  }
-  if (!strcmp(THP_MODEL, "HTU21")) {
-    if (int(myHTU21D.readTemperature()) < 5 and int(myHTU21D.readCompensatedHumidity()) > 60) {
-      calib = calib2;
-    }
-    calib = calib1;
-  }
-  if (!strcmp(THP_MODEL, "DHT22")) {
-    if (int(dht.readTemperature()) < 5 and int(dht.readHumidity()) > 60) {
-      calib = calib2;
-    }
-    calib = calib1;
-  }
-  if (!strcmp(THP_MODEL, "SHT1x")) {
-    if (int(sht1x.readTemperatureC()) < 5 and int(sht1x.readHumidity()) > 60) {
-      calib = calib2;
-    }
-    calib = calib1;
-  }
-
-  if (!strcmp(THP_MODEL, "BMP280")) {
-    if (int(bmp.readTemperature()) < 5) {
-      calib = calib2;
-    }
-    calib = calib1;
-  }
-
+  // Automatic calibration - START
   if (!strcmp(MODEL, "white")) {
     if (!strcmp(THP_MODEL, "BME280")) {
       calib1 = float((200 - (BMESensor.humidity)) / 150);
@@ -810,6 +776,45 @@ void pm_calibration() {
       calib2 = calib1 / 2;
     }
   }
+  // Automatic calibration - END
+  
+  if (!strcmp(THP_MODEL, "BME280")) {
+    if (int(BMESensor.temperature) < 5 and int(BMESensor.humidity) > 60) {
+      calib = calib2;
+    } else {
+      calib = calib1;
+    }
+  }
+  if (!strcmp(THP_MODEL, "HTU21")) {
+    if (int(myHTU21D.readTemperature()) < 5 and int(myHTU21D.readCompensatedHumidity()) > 60) {
+      calib = calib2;
+    } else {
+      calib = calib1;
+    }
+  }
+  if (!strcmp(THP_MODEL, "DHT22")) {
+    if (int(dht.readTemperature()) < 5 and int(dht.readHumidity()) > 60) {
+      calib = calib2;
+    } else {
+      calib = calib1;
+    }
+  }
+  if (!strcmp(THP_MODEL, "SHT1x")) {
+    if (int(sht1x.readTemperatureC()) < 5 and int(sht1x.readHumidity()) > 60) {
+      calib = calib2;
+    } else {
+      calib = calib1;
+    }
+  }
+
+  if (!strcmp(THP_MODEL, "BMP280")) {
+    if (int(bmp.readTemperature()) < 5) {
+      calib = calib2;
+    } else {
+      calib = calib1;
+    }
+  }
+
 }
 
 int averagePM() {

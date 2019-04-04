@@ -35,7 +35,7 @@ extern char TEXT_MEASUREMENTFREQUENCY[32] = "Make PM measurements every";
 extern char TEXT_AVERAGELASTRESULT[32] = "Average result from last";
 extern char TEXT_PMMEASUREMENTS[32] = "PM measurements";
 extern char TEXT_SENDINGINTERVAL[64] = "Sending data to external services every";
-extern char TEXT_SERVICESSENDINGINTERVAL[64] = "Sending data to AirMonitor/Luftdaten every";
+extern char TEXT_SERVICESSENDINGINTERVAL[64] = "Sending data to AirMonitor/Luftdaten/SmogList every";
 extern char TEXT_DBSENDINGINTERVAL[64] = "Sending data to ThingSpeak/InfluxDB/MQTT every";
 extern char TEXT_SECONDS[16] = "seconds";
 extern char TEXT_MINUTES[16] = "minutes";
@@ -51,7 +51,7 @@ extern char TEXT_SECUREPASSWD[16] = "Password";
 extern char TEXT_SECURELOGOUTINFO[64] = "Restart your web browser to log out!";
 
 extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires filling out {LUFTDATENFORM_LINK})"; 
-extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the Smoglist service";
+extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the SmogList service";
 
 extern char TEXT_AIRMONITORSENDING[128] = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. PMS7003)";
 extern char TEXT_AIRMONITORCHARTS[64] = "Displaying charts from the AirMonitor site";

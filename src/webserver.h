@@ -40,12 +40,12 @@ void handle_root() {
     message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
   } else {
     message.replace("{TEXT_WEATHER}", (TEXT_WEATHER));
+  }
+  if (!strcmp(THP_MODEL, "BME280")) {
     message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
     message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
     message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
     message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
-  }
-  if (!strcmp(THP_MODEL, "BME280")) {
     if (checkBmeStatus()) {
       message.replace("{Temperature}", String(BMESensor.temperature));
       message.replace("{Pressure}", String(BMESensor.seaLevelForAltitude(MYALTITUDE)));
@@ -53,6 +53,9 @@ void handle_root() {
       message.replace("{Dewpoint}", String(float(pow((BMESensor.humidity) / 100, 0.125) * (112 + 0.9 * (BMESensor.temperature)) + 0.1 * (BMESensor.temperature) - 112)));
     }
   } else if (!strcmp(THP_MODEL, "HTU21")) {
+    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
     if (checkHTU21DStatus()) {
       message.replace("{Temperature}", String(myHTU21D.readTemperature()));
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
@@ -60,6 +63,9 @@ void handle_root() {
       message.replace("{Dewpoint}", String(float(pow((myHTU21D.readCompensatedHumidity()) / 100, 0.125) * (112 + 0.9 * (myHTU21D.readTemperature())) + 0.1 * (myHTU21D.readTemperature()) - 112)));
     }
   } else if (!strcmp(THP_MODEL, "DHT22")) {
+    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
     if (checkDHT22Status()) {
       message.replace("{Temperature}", String(dht.readTemperature()));
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
@@ -67,6 +73,7 @@ void handle_root() {
       message.replace("{Dewpoint}", String(float(pow((dht.readHumidity()) / 100, 0.125) * (112 + 0.9 * (dht.readTemperature())) + 0.1 * (dht.readTemperature()) - 112)));
     }
   } else if (!strcmp(THP_MODEL, "BMP280")) {
+    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
     if (checkBmpStatus()) {
       message.replace("{Temperature}", String(bmp.readTemperature()));
       message.replace("{Pressure}", String((bmp.readPressure()) / 100));
@@ -74,6 +81,10 @@ void handle_root() {
       message.replace("{TEXT_DEWPOINT}: {Pressure} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    message.replace("{TEXT_WEATHER}", (TEXT_WEATHER));
+    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
     if (checkSHT1xStatus()) {
       message.replace("{Temperature}", String(sht1x.readTemperatureC()));
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
@@ -325,15 +336,15 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_FREQUENTMEASUREMENTINFO}", (TEXT_FREQUENTMEASUREMENTINFO));
   message.replace("{TEXT_MEASUREMENTFREQUENCY}", (TEXT_MEASUREMENTFREQUENCY));
   //message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
-  
+
   message.replace("{FREQUENTMEASUREMENT_Select}", _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
 
   if (FREQUENTMEASUREMENT == true) {
     message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_SECONDS}"));
-	message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
+    message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
   } else {
     message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_MINUTES}"));
-	message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+    message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
   }
 
   message.replace("{TEXT_AVERAGELASTRESULT}", (TEXT_AVERAGELASTRESULT));
@@ -341,31 +352,31 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_PMMEASUREMENTS}", (TEXT_PMMEASUREMENTS));
 
   if (FREQUENTMEASUREMENT == true) {
-	message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
+    message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
     message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_SECONDS}"));
     message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
-	
-	message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
+
+    message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
     message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_SECONDS}"));
     message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
 
     message.replace("<hr><b>DeepSleep: </b>{DEEPSLEEP_ON} {TEXT_DEEPSLEEPINFO}", "");
   } else {
     if (DEEPSLEEP_ON == true) {
-		message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
-	    message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
-	    message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
-		
-	  	message.replace("<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}", "");
+      message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
+      message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
+      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+
+      message.replace("<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}", "");
     } else {
-		message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
-	    message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
-	    message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
-		
-		message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
-		message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_MINUTES}"));
-    	message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
-	}
+      message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
+      message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
+      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+
+      message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
+      message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_MINUTES}"));
+      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+    }
 
     message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO);
     message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS) * 2 + 10 ));

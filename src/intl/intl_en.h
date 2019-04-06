@@ -29,8 +29,8 @@ char EN_INTL_SELECTEDLANGUAGE[16] PROGMEM = "Language";
 char EN_INTL_TEMPHUMIPRESSSENSOR[64] PROGMEM = "Temp/Humi/Press Sensor";
 char EN_INTL_PMSENSOR[32] PROGMEM = "PM2.5/PM10 Sensor";
 
-char EN_INTL_FREQUENTMEASUREMENTONOFF[32] PROGMEM = "Frequent measurement";
-char EN_INTL_FREQUENTMEASUREMENTINFO[96] PROGMEM = "frequent measurements - every few seconds, shorten the life span of the PM sensor.";
+char EN_INTL_FREQUENTMEASUREMENTONOFF[32] PROGMEM = "Continuous measurements";
+char EN_INTL_FREQUENTMEASUREMENTINFO[96] PROGMEM = "Continuous measurements significantly shorten the life span of the PM sensor.";
 char EN_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Make PM measurements every";
 char EN_INTL_AVERAGELASTRESULT[32] PROGMEM = "Average result from last";
 char EN_INTL_PMMEASUREMENTS[32] PROGMEM = "PM measurements";

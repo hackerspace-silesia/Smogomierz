@@ -29,8 +29,8 @@ char PL_INTL_SELECTEDLANGUAGE[16] PROGMEM = "Język";
 char PL_INTL_TEMPHUMIPRESSSENSOR[64] PROGMEM = "Miernik Temp/Wilgotności/Ciśnienia";
 char PL_INTL_PMSENSOR[32] PROGMEM = "Miernik PM2.5/PM10";
 
-char PL_INTL_FREQUENTMEASUREMENTONOFF[32] PROGMEM = "Częste pomiary PM";
-char PL_INTL_FREQUENTMEASUREMENTINFO[96] PROGMEM = "Częste pomiary – co kilka-kilkanaście sekund, skracają żywotność miernika PM.";
+char PL_INTL_FREQUENTMEASUREMENTONOFF[32] PROGMEM = "Ciągłe pomiary PM";
+char PL_INTL_FREQUENTMEASUREMENTINFO[96] PROGMEM = "Ciągłe pomiary znacznie skracają żywotność miernika PM.";
 char PL_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Wykonywanie pomiarów PM co";
 char PL_INTL_AVERAGELASTRESULT[32] PROGMEM = "Uśredniaj wynik z ostatnich";
 char PL_INTL_PMMEASUREMENTS[32] PROGMEM = "pomiarów PM";

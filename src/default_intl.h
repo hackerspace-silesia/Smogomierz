@@ -29,8 +29,8 @@ extern char TEXT_SELECTEDLANGUAGE[16] = "Language";
 extern char TEXT_TEMPHUMIPRESSSENSOR[64] = "Temp/Humi/Press Sensor";
 extern char TEXT_PMSENSOR[32] = "PM2.5/PM10 Sensor";
 
-extern char TEXT_FREQUENTMEASUREMENTONOFF[32] = "Frequent measurement";
-extern char TEXT_FREQUENTMEASUREMENTINFO[96] = "frequent measurements - every few seconds, shorten the life span of the PM sensor.";
+extern char TEXT_FREQUENTMEASUREMENTONOFF[32] = "Continuous measurements";
+extern char TEXT_FREQUENTMEASUREMENTINFO[96] = "Continuous measurements significantly shorten the life span of the PM sensor.";
 extern char TEXT_MEASUREMENTFREQUENCY[32] = "Make PM measurements every";
 extern char TEXT_AVERAGELASTRESULT[32] = "Average result from last";
 extern char TEXT_PMMEASUREMENTS[32] = "PM measurements";

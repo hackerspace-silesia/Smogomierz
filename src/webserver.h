@@ -42,54 +42,84 @@ void handle_root() {
     message.replace("{TEXT_WEATHER}", (TEXT_WEATHER));
   }
   if (!strcmp(THP_MODEL, "BME280")) {
-    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
-    message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
-    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
     if (checkBmeStatus()) {
-      message.replace("{Temperature}", String(BMESensor.temperature));
-      message.replace("{Pressure}", String(BMESensor.seaLevelForAltitude(MYALTITUDE)));
-      message.replace("{Humidity}", String(BMESensor.humidity));
-      message.replace("{Dewpoint}", String(float(pow((BMESensor.humidity) / 100, 0.125) * (112 + 0.9 * (BMESensor.temperature)) + 0.1 * (BMESensor.temperature) - 112)));
+	    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+	    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+	    message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
+	    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
+		
+      	message.replace("{Temperature}", String(BMESensor.temperature));
+      	message.replace("{Pressure}", String(BMESensor.seaLevelForAltitude(MYALTITUDE)));
+      	message.replace("{Humidity}", String(BMESensor.humidity));
+      	message.replace("{Dewpoint}", String(float(pow((BMESensor.humidity) / 100, 0.125) * (112 + 0.9 * (BMESensor.temperature)) + 0.1 * (BMESensor.temperature) - 112)));
+    } else {
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "HTU21")) {
-    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
-    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
     if (checkHTU21DStatus()) {
-      message.replace("{Temperature}", String(myHTU21D.readTemperature()));
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{Humidity}", String(myHTU21D.readCompensatedHumidity()));
-      message.replace("{Dewpoint}", String(float(pow((myHTU21D.readCompensatedHumidity()) / 100, 0.125) * (112 + 0.9 * (myHTU21D.readTemperature())) + 0.1 * (myHTU21D.readTemperature()) - 112)));
+	    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+	    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+	    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
+		
+      	message.replace("{Temperature}", String(myHTU21D.readTemperature()));
+      	message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      	message.replace("{Humidity}", String(myHTU21D.readCompensatedHumidity()));
+      	message.replace("{Dewpoint}", String(float(pow((myHTU21D.readCompensatedHumidity()) / 100, 0.125) * (112 + 0.9 * (myHTU21D.readTemperature())) + 0.1 * (myHTU21D.readTemperature()) - 112)));
+    } else {
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "DHT22")) {
-    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
-    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
     if (checkDHT22Status()) {
-      message.replace("{Temperature}", String(dht.readTemperature()));
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{Humidity}", String(dht.readHumidity()));
-      message.replace("{Dewpoint}", String(float(pow((dht.readHumidity()) / 100, 0.125) * (112 + 0.9 * (dht.readTemperature())) + 0.1 * (dht.readTemperature()) - 112)));
+	    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+	    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+	    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
+		
+      	message.replace("{Temperature}", String(dht.readTemperature()));
+      	message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      	message.replace("{Humidity}", String(dht.readHumidity()));
+      	message.replace("{Dewpoint}", String(float(pow((dht.readHumidity()) / 100, 0.125) * (112 + 0.9 * (dht.readTemperature())) + 0.1 * (dht.readTemperature()) - 112)));
+    } else {
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "BMP280")) {
-    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
     if (checkBmpStatus()) {
-      message.replace("{Temperature}", String(bmp.readTemperature()));
-      message.replace("{Pressure}", String((bmp.readPressure()) / 100));
-      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-      message.replace("{TEXT_DEWPOINT}: {Pressure} °C", "");
+		message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+		message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
+      	
+		message.replace("{Temperature}", String(bmp.readTemperature()));
+      	message.replace("{Pressure}", String((bmp.readPressure()) / 100));
+      	message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      	message.replace("{TEXT_DEWPOINT}: {Pressure} °C", "");
+    } else {
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
-    message.replace("{TEXT_WEATHER}", (TEXT_WEATHER));
-    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
-    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
     if (checkSHT1xStatus()) {
-      message.replace("{Temperature}", String(sht1x.readTemperatureC()));
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{Humidity}", String(float(sht1x.readHumidity())));
-      message.replace("{Dewpoint}", String(float(pow((sht1x.readHumidity()) / 100, 0.125) * (112 + 0.9 * (sht1x.readTemperatureC())) + 0.1 * (sht1x.readTemperatureC()) - 112)));
+	    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+	    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+	    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
+		
+      	message.replace("{Temperature}", String(sht1x.readTemperatureC()));
+      	message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      	message.replace("{Humidity}", String(float(sht1x.readHumidity())));
+      	message.replace("{Dewpoint}", String(float(pow((sht1x.readHumidity()) / 100, 0.125) * (112 + 0.9 * (sht1x.readTemperatureC())) + 0.1 * (sht1x.readTemperatureC()) - 112)));
+    } else {
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   }
 

@@ -35,7 +35,7 @@ char EN_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Make PM measurements every";
 char EN_INTL_AVERAGELASTRESULT[32] PROGMEM = "Average result from last";
 char EN_INTL_PMMEASUREMENTS[32] PROGMEM = "PM measurements";
 char EN_INTL_SENDINGINTERVAL[64] PROGMEM = "Sending data to external services every";
-char EN_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Sending data to AirMonitor/Luftdaten/SmogList every";
+char EN_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Sending data to AirMonitor/Luftdaten/Smoglist every";
 char EN_INTL_DBSENDINGINTERVAL[64] PROGMEM = "Sending data to ThingSpeak/InfluxDB/MQTT every";
 char EN_INTL_SECONDS[16] PROGMEM = "seconds";
 char EN_INTL_MINUTES[16] PROGMEM = "minutes";
@@ -51,7 +51,8 @@ char EN_INTL_SECUREPASSWD[16] PROGMEM = "Password";
 char EN_INTL_SECURELOGOUTINFO[64] PROGMEM = "Restart your web browser to log out!";
 
 char EN_INTL_LUFTDATENSENDING[96] PROGMEM = "Sending data to the {LUFTDATEN_LINK} service(requires filling out {LUFTDATENFORM_LINK})"; 
-char EN_INTL_SMOGLISTSENDING[64] PROGMEM = "Sending data to the SmogList service";
+char EN_INTL_SMOGLISTSENDING[64] PROGMEM = "Sending data to the {SMOGLIST_LINK} service";
+char EN_INTL_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
 
 char EN_INTL_AIRMONITORSENDING[128] PROGMEM = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. PMS7003)";
 char EN_INTL_AIRMONITORCHARTS[64] PROGMEM = "Displaying charts from the AirMonitor site";

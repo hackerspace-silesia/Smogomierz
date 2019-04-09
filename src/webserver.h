@@ -439,7 +439,9 @@ void _handle_config(bool is_success) {
   }
 
   message.replace("{TEXT_SMOGLISTSENDING}", (TEXT_SMOGLISTSENDING));
+  message.replace("{SMOGLIST_LINK}", (SMOGLIST_LINK));
   message.replace("{SMOGLIST_ON}", _addBoolSelect("SMOGLIST_ON", SMOGLIST_ON));
+  message.replace("{TEXT_SMOGLISTINFO}", (TEXT_SMOGLISTINFO));
 
   message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
   message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));

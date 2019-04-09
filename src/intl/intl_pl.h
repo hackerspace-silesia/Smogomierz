@@ -35,7 +35,7 @@ char PL_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Wykonywanie pomiarów PM co";
 char PL_INTL_AVERAGELASTRESULT[32] PROGMEM = "Uśredniaj wynik z ostatnich";
 char PL_INTL_PMMEASUREMENTS[32] PROGMEM = "pomiarów PM";
 char PL_INTL_SENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do serwisów zewnętrznych co";
-char PL_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do AirMonitor/Luftdaten/SmogList co";
+char PL_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do AirMonitor/Luftdaten/Smoglist co";
 char PL_INTL_DBSENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do ThingSpeak/InfluxDB/MQTT co";
 char PL_INTL_SECONDS[16] PROGMEM = "sekund";
 char PL_INTL_MINUTES[16] PROGMEM = "minut";
@@ -51,7 +51,8 @@ char PL_INTL_SECUREPASSWD[16] PROGMEM = "Hasło";
 char PL_INTL_SECURELOGOUTINFO[64] PROGMEM = "Zrestartuj przeglądarkę w celu wylogowania!";
 
 char PL_INTL_LUFTDATENSENDING[96] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga wypełnienia {LUFTDATENFORM_LINK})";
-char PL_INTL_SMOGLISTSENDING[64] PROGMEM = "Wysyłanie danych do serwisu SmogList";
+char PL_INTL_SMOGLISTSENDING[64] PROGMEM = "Wysyłanie danych do serwisu {SMOGLIST_LINK}";
+char PL_INTL_SMOGLISTINFO[256] = "Smoglist to serwis zbierający statystyki użytkowania Smogomierzy(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";
 
 char PL_INTL_AIRMONITORSENDING[128] PROGMEM = "Wysyłanie danych do serwisu {AIRMONITOR_LINK} (wymaga wypełnienia {AIRMONITORFORM_LINK}; Sensor: np. PMS7003)";
 char PL_INTL_AIRMONITORCHARTS[64] PROGMEM = "Wyświetlanie wykresów z serwisu AirMonitor";

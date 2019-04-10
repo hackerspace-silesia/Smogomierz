@@ -231,9 +231,11 @@ String _addTHP_MODELSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
   input += _addOption("BME280", "BME280", value);
-  if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
-  	input += _addOption("BME280-SparkFun", "BME280-SparkFun", value);
-  }
+  if (strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
+	  if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
+	  	input += _addOption("BME280-SparkFun", "BME280-SparkFun", value);
+	  }
+  } 
   input += _addOption("SHT1x", "SHT1x", value);
   input += _addOption("HTU21", "SHT21/HTU21D", value);
   input += _addOption("DHT22", "DHT22", value);
@@ -659,6 +661,14 @@ void handle_config_post() {
 	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
 		  need_update = 4;
 	  }
+  } else if (!strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
+	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+		  need_update = 2;
+	  }
+ 
+	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+		  need_update = 3;
+	  }
   }
   // DUST Sensor config - END
   
@@ -713,6 +723,11 @@ void handle_config_post() {
   }
 
    if (need_update != 0) {
+	   strcpy(THP_MODEL, "Non");
+	   strcpy(DUST_MODEL, "Non");
+	   saveConfig();
+	   _handle_config(true);
+	   delay(10);
 	if (need_update == 1) {
 		String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_PMS-SparkFunBME280.bin";
 		t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);

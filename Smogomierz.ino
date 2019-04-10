@@ -642,9 +642,8 @@ void takeNormalnPMMeasurements() {
     Serial.print("\nValue of PM10: ");
     Serial.print(pmMeasurements[iPM][2]);
   }
-  averagePM();
-  iPM++;
-  if (iPM >= NUMBEROFMEASUREMENTS) {
+  if (++iPM == NUMBEROFMEASUREMENTS) {
+    averagePM();
     iPM = 0;
   }
 }
@@ -743,7 +742,7 @@ void pm_calibration() {
 
 }
 
-int averagePM() {
+void averagePM() {
   averagePM1 = 0;
   averagePM25 = 0;
   averagePM10 = 0;
@@ -756,12 +755,11 @@ int averagePM() {
   averagePM25 = averagePM25 / NUMBEROFMEASUREMENTS;
   averagePM10 = averagePM10 / NUMBEROFMEASUREMENTS;
   if (DEBUG) {
-    Serial.print("\nAverage PM1: ");
+    Serial.print("\n\nAverage PM1: ");
     Serial.print(averagePM1);
     Serial.print("\nAverage PM2.5: ");
     Serial.print(averagePM25);
     Serial.print("\nAverage PM10: ");
     Serial.print(averagePM10);
   }
-  return averagePM1, averagePM25, averagePM10;
 }

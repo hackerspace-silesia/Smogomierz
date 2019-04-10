@@ -54,7 +54,7 @@ extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} se
 extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the {SMOGLIST_LINK} service";
 extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
 
-extern char TEXT_AIRMONITORSENDING[128] = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. PMS7003)";
+extern char TEXT_AIRMONITORSENDING[128] = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. {PMSENSORMODEL})";
 extern char TEXT_AIRMONITORCHARTS[64] = "Displaying charts from the AirMonitor site";
 extern char TEXT_AIRMONITORCOORDINATESINFO[80] = "Geographical coordinates(you can check it {LATLONG_LINK}";
 extern char TEXT_AIRMONITORLATITUDE[32] = "Latitude";

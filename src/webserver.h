@@ -465,9 +465,9 @@ void _handle_config(bool is_success) {
   if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
 	  strcpy(PMSENSORMODEL, "PMS7003");
   } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
-	  strcpy(PMSENSORMODEL, PL_INTL_MINUTES);
-  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
 	  strcpy(PMSENSORMODEL, "SDS011");
+  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+	  strcpy(PMSENSORMODEL, "HPMA115S0");
   }
   message.replace("{PMSENSORMODEL}", PMSENSORMODEL);
 

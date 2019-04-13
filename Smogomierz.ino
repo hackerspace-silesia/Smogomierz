@@ -8,6 +8,13 @@
 #include <WiFi.h>
 #endif
 
+/*
+
+Szkic używa 492040 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+Zmienne globalne używają 53976 bajtów (65%) pamięci dynamicznej, pozostawiając 27944 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+*/
+
 #include <Wire.h>
 
 #include "FS.h"
@@ -481,7 +488,7 @@ void sendDataToExternalServices() {
   if (SMOGLIST_ON) {
     sendDataToSmogList(BMESensor, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
-      Serial.println("Sending measurement data to the SmogList service!\n");
+      Serial.println("Sending measurement data to the Smoglist service!\n");
     }
   }
 
@@ -609,6 +616,19 @@ void sendDataToExternalDBs() {
       mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
       mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
       mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
+      if (averagePM25 <= 10) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "EXCELLENT", true);
+      } else if (averagePM25 > 10 && averagePM25 <= 20) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "GOOD", true);
+      } else if (averagePM25 > 20 && averagePM25 <= 25) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "FAIR", true);
+      } else if (averagePM25 > 25 && averagePM25 <= 50) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "INFERIOR", true);
+      } else if (averagePM25 > averagePM25) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "POOR", true);
+      } else {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "UNKNOWN", true);
+      }
     }
     if (!strcmp(THP_MODEL, "BME280")) {
       if (checkBmeStatus() == true) {

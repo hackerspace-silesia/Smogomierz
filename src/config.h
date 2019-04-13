@@ -58,7 +58,7 @@ extern float calib2;
 const char PMSENSORVERSION[32] PROGMEM = "PMS";
 extern char SERVERSOFTWAREVERSION[255];
 extern char CURRENTSOFTWAREVERSION[255];
-const char SOFTWAREVERSION[40] PROGMEM = "2.6.4 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[40] PROGMEM = "2.6.5 build " __TIME__ " " __DATE__;
 #if defined(ARDUINO_ARCH_ESP8266)
 const char HARDWAREVERSION[40] PROGMEM = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)

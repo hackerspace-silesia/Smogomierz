@@ -40,13 +40,4 @@ Gotowe zestawy części potrzebnych do zbudowania własnego Smogomierza, dostęp
 
 ### Tested on:
 
-ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
-
-### TODO
-
-- [ ] Nowy design
-- [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
-- [ ] Automatyczne aktualizacje oprogramowania mierników
-- [X] Przygotowanie aplikacji [Smogomierz-Flashing-Tool](https://github.com/hackerspace-silesia/Smogomierz-Flashing-Tool/)
-
-
+ArdinoIDE 1.8.9 – https://www.arduino.cc/en/main/software

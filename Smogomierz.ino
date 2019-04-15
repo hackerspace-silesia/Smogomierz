@@ -662,8 +662,9 @@ void takeNormalnPMMeasurements() {
     Serial.print("\nValue of PM10: ");
     Serial.print(pmMeasurements[iPM][2]);
   }
-  if (++iPM == NUMBEROFMEASUREMENTS) {
-    averagePM();
+  averagePM();
+  iPM++;
+  if (iPM >= NUMBEROFMEASUREMENTS) {
     iPM = 0;
   }
 }

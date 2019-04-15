@@ -189,9 +189,9 @@ String _addOption(const String &value, const String &label, const String &srslyV
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace("{value}", value);
   if (value == srslyValue) {
-    option.replace("{srslyValue}", " selected>");
+	  option.replace("{srslyValue}", " selected>");
   } else {
-    option.replace("{srslyValue}", ">");
+	  option.replace("{srslyValue}", ">");
   }
   option.replace("{label}", label);
   return option;

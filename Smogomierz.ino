@@ -10,7 +10,7 @@
 
 /*
 
-  Szkic używa 492728 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 492808 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54168 bajtów (66%) pamięci dynamicznej, pozostawiając 27752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 */
@@ -624,7 +624,7 @@ void sendDataToExternalDBs() {
         mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "FAIR", true);
       } else if (averagePM25 > 25 && averagePM25 <= 50) {
         mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "INFERIOR", true);
-      } else if (averagePM25 > averagePM25) {
+      } else if (averagePM25 > 50) {
         mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "POOR", true);
       } else {
         mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "UNKNOWN", true);
@@ -644,6 +644,7 @@ void sendDataToExternalDBs() {
         }
       }
     }
+    mqttclient.disconnect();
   }
 
 }

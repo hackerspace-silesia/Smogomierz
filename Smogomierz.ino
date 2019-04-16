@@ -663,8 +663,8 @@ void takeNormalnPMMeasurements() {
     Serial.print("\nValue of PM10: ");
     Serial.print(pmMeasurements[iPM][2]);
   }
-  averagePM();
   if (++iPM == NUMBEROFMEASUREMENTS) {
+    averagePM();
     iPM = 0;
   }
 }
@@ -693,9 +693,9 @@ void takeSleepPMMeasurements() {
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
       if (pms.readUntil(data)) {
         takeNormalnPMMeasurements();
+        counterNM1++;
       }
       previous_2sec_Millis = millis();
-      counterNM1++;
     }
     WebServer.handleClient();
     yield();

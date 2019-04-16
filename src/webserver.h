@@ -189,9 +189,9 @@ String _addOption(const String &value, const String &label, const String &srslyV
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace("{value}", value);
   if (value == srslyValue) {
-	  option.replace("{srslyValue}", " selected>");
+    option.replace("{srslyValue}", " selected>");
   } else {
-	  option.replace("{srslyValue}", ">");
+    option.replace("{srslyValue}", ">");
   }
   option.replace("{label}", label);
   return option;
@@ -886,7 +886,28 @@ void handle_update() {            //Handler for the handle_update
   message.replace("{TEXT_LATESTAVAILABLESOFT}", TEXT_LATESTAVAILABLESOFT);
   message.replace("{SMOGOMIERZRELEASES_LINK}", (SMOGOMIERZRELEASES_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
-
+  
+  // init WiFi signal quality info - START
+  String WiFiSSID = WiFi.SSID();
+  int WiFiRSSI = WiFi.RSSI();
+  message.replace("{TEXT_CONNECTEDWIFI}", (TEXT_CONNECTEDWIFI));
+  message.replace("{WiFiSSID}", (WiFiSSID));
+  message.replace("{TEXT_WIFIRSSI}", (TEXT_WIFIRSSI));
+  message.replace("{WiFiRSSI}", (String(WiFiRSSI) + " dBm"));
+  
+  // https://stackoverflow.com/a/15798024
+  int WiFiQuality;
+  if(WiFiRSSI <= -100) {
+         WiFiQuality = 0;
+  } else if(WiFiRSSI >= -50) {
+         WiFiQuality = 100;
+  } else {
+         WiFiQuality = 2 * (WiFiRSSI + 100);
+	 }
+  message.replace("{TEXT_WIFIQUALITY}", (TEXT_WIFIQUALITY));
+  message.replace("{WiFiQuality}", (String(WiFiQuality) + " %"));
+  // init WiFi signal quality info - END
+  
   message += FPSTR(WEB_PAGE_FOOTER);
   WebServer.send(200, "text/html", message);
 }

@@ -111,3 +111,7 @@ char EN_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Latest version of the software a
 
 char EN_INTL_HERE[16] PROGMEM = "here";
 char EN_INTL_THEFORM[16] PROGMEM = "the form";
+
+char EN_INTL_CONNECTEDWIFI[32] = "Connected to a WiFi(SSID)";
+char EN_INTL_WIFIRSSI[32] = "WiFi Signal Strength(RSSI)";
+char EN_INTL_WIFIQUALITY[32] = "WiFi Signal Quality";

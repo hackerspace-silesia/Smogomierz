@@ -112,6 +112,11 @@ extern char TEXT_LATESTAVAILABLESOFT[96] = "Latest version of the software avail
 extern char TEXT_HERE[16] = "here";
 extern char TEXT_THEFORM[16] = "the form";
 
+extern char TEXT_CONNECTEDWIFI[32] = "Connected to a WiFi(SSID)";
+extern char TEXT_WIFIRSSI[32] = "WiFi Signal Strength(RSSI)";
+extern char TEXT_WIFIQUALITY[32] = "WiFi Signal Quality";
+
+
 static char GITHUB_LINK[] PROGMEM = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
 static char WSPOLRZEDNE_GPS_LINK[] PROGMEM = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
 static char LUFTDATEN_LINK[] PROGMEM = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";

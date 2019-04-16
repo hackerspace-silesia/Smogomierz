@@ -10,8 +10,8 @@
 
 /*
 
-  Szkic używa 492040 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 53976 bajtów (65%) pamięci dynamicznej, pozostawiając 27944 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 492728 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54168 bajtów (66%) pamięci dynamicznej, pozostawiając 27752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 */
 
@@ -663,8 +663,7 @@ void takeNormalnPMMeasurements() {
     Serial.print(pmMeasurements[iPM][2]);
   }
   averagePM();
-  iPM++;
-  if (iPM >= NUMBEROFMEASUREMENTS) {
+  if (++iPM == NUMBEROFMEASUREMENTS) {
     iPM = 0;
   }
 }

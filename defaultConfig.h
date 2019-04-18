@@ -40,8 +40,8 @@ uint16_t MQTT_PORT = 1883;
 char MQTT_USER[255] = "username";
 char MQTT_PASSWORD[255] = "password";
 
-int SENDING_FREQUENCY = 2;
-int SENDING_DB_FREQUENCY = 2;
+int SENDING_FREQUENCY = 3;
+int SENDING_DB_FREQUENCY = 3;
 bool DEEPSLEEP_ON = false;
 
 bool DEBUG = false;

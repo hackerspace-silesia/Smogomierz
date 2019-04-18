@@ -50,7 +50,8 @@ char EN_INTL_SECURELOGIN[16] PROGMEM = "Login";
 char EN_INTL_SECUREPASSWD[16] PROGMEM = "Password";
 char EN_INTL_SECURELOGOUTINFO[64] PROGMEM = "Restart your web browser to log out!";
 
-char EN_INTL_LUFTDATENSENDING[96] PROGMEM = "Sending data to the {LUFTDATEN_LINK} service(requires filling out {LUFTDATENFORM_LINK})"; 
+char EN_INTL_LUFTDATENSENDING[96] PROGMEM = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
+
 char EN_INTL_SMOGLISTSENDING[64] PROGMEM = "Sending data to the {SMOGLIST_LINK} service";
 char EN_INTL_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
 

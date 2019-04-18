@@ -453,11 +453,42 @@ void _handle_config(bool is_success) {
 
   message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
   message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));
-  message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));
-  message.replace("{TEXT_THEFORM}", (TEXT_THEFORM));
+  message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));  
 
   message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
   message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
+	
+  if (!strcmp(THP_MODEL, "BME280")) {
+	  message.replace("{THPSENSOR}", "BME280");
+   	  message.replace("{THPXPIN}", "11");
+  } else if(!strcmp(THP_MODEL, "BMP280")) {
+	  message.replace("{THPSENSOR}", "BMP280");
+  	  message.replace("{THPXPIN}", "3");
+  } else if(!strcmp(THP_MODEL, "HTU21")) {
+	  message.replace("{THPSENSOR}", "HTU21");
+  	  message.replace("{THPXPIN}", "7");
+  } else if(!strcmp(THP_MODEL, "DHT22")) {
+	  message.replace("{THPSENSOR}", "DHT22");
+  	  message.replace("{THPXPIN}", "7");
+  } else if(!strcmp(THP_MODEL, "SHT1x")) {
+	  message.replace("{THPSENSOR}", "SHT1x");
+  	  message.replace("{THPXPIN}", "12");
+  } else {
+	  message.replace("<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>", "");
+  }
+  
+  if (!strcmp(DUST_MODEL, "PMS7003")) {
+	  message.replace("{DUSTSENSOR}", "PMS5003/7003");
+	  message.replace("{DUSTXPIN}", "1");
+  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+	  message.replace("{DUSTSENSOR}", "SDS011/21");
+	  message.replace("{DUSTXPIN}", "1");
+  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+	  message.replace("{DUSTSENSOR}", "HPMA115S0");
+	  message.replace("{DUSTXPIN}", "1");
+  } else {
+	  message.replace("<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>", "");
+  }
 
   message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
   

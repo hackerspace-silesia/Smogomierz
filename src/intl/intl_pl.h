@@ -50,7 +50,8 @@ char PL_INTL_SECURELOGIN[16] PROGMEM = "Login";
 char PL_INTL_SECUREPASSWD[16] PROGMEM = "Hasło";
 char PL_INTL_SECURELOGOUTINFO[64] PROGMEM = "Zrestartuj przeglądarkę w celu wylogowania!";
 
-char PL_INTL_LUFTDATENSENDING[96] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga wypełnienia {LUFTDATENFORM_LINK})";
+char PL_INTL_LUFTDATENSENDING[96] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga rejestracji {LUFTDATENFORM_LINK})";
+
 char PL_INTL_SMOGLISTSENDING[64] PROGMEM = "Wysyłanie danych do serwisu {SMOGLIST_LINK}";
 char PL_INTL_SMOGLISTINFO[256] = "Smoglist to serwis zbierający statystyki użytkowania Smogomierzy(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";
 

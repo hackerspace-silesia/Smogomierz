@@ -10,8 +10,14 @@
 
 /*
 
-  Szkic używa 492808 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 492824 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54168 bajtów (66%) pamięci dynamicznej, pozostawiając 27752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 493352 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54312 bajtów (66%) pamięci dynamicznej, pozostawiając 27608 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 495180 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54332 bajtów (66%) pamięci dynamicznej, pozostawiając 27588 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 */
 
@@ -644,7 +650,9 @@ void sendDataToExternalDBs() {
         }
       }
     }
-    mqttclient.disconnect();
+    if (DEEPSLEEP_ON == true) {
+      mqttclient.disconnect();
+    }
   }
 
 }
@@ -663,8 +671,8 @@ void takeNormalnPMMeasurements() {
     Serial.print("\nValue of PM10: ");
     Serial.print(pmMeasurements[iPM][2]);
   }
-  averagePM();
   if (++iPM == NUMBEROFMEASUREMENTS) {
+    averagePM();
     iPM = 0;
   }
 }
@@ -693,9 +701,9 @@ void takeSleepPMMeasurements() {
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
       if (pms.readUntil(data)) {
         takeNormalnPMMeasurements();
+        counterNM1++;
       }
       previous_2sec_Millis = millis();
-      counterNM1++;
     }
     WebServer.handleClient();
     yield();

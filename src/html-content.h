@@ -77,6 +77,8 @@ const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = "<b>{TEXT_DEVICENAME}: </b>{device
 	<hr>\	
 	<b>{TEXT_LUFTDATENSENDING}: </b>{LUFTDATEN_ON}\
 	<b>ChipID: </b>{ChipID}\
+	<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>\
+	<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>\
 	<hr>\
 	<b>{TEXT_AIRMONITORSENDING}: </b>{AIRMONITOR_ON}\
 	<b>{TEXT_AIRMONITORCHARTS}: </b>{AIRMONITOR_GRAPH_ON}\

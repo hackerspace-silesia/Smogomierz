@@ -1,6 +1,5 @@
 #include <ESP8266WiFi.h>
-#include "ArduinoJson.h"
-#include "bme280.h"
+#include <ArduinoJson.h>
 
 #include "config.h"
 
@@ -14,8 +13,8 @@ void sendJson(JsonObject& json) {
 
     if (!client.connect(airMonitorServerName, airMonitorPort)) {
         Serial.println("connection failed");
-        Serial.println("wait 3 sec...\n");
-        delay(3000);
+        Serial.println("wait 1 sec...\n");
+        delay(1000);
         return;
     }
 
@@ -37,11 +36,10 @@ void sendJson(JsonObject& json) {
 		serializeJsonPretty(json, Serial);
         Serial.println(line);
     }
-
     client.stop();
 }
 
-void sendPMSData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int averagePM25, int averagePM10) {
+void sendDUSTData(int averagePM1, int averagePM25, int averagePM10) {
 	if (strcmp(DUST_MODEL, "Non")) {
 	StaticJsonDocument<400> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
@@ -51,35 +49,60 @@ void sendPMSData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int aver
     json["pm25"] = averagePM25;
     json["pm10"] = averagePM10;
 	if (!strcmp(DUST_MODEL, "PMS7003")) {
-    json["sensor"] = "PMS7003";
+		json["sensor"] = "PMS7003";
+	}
+	if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+		json["sensor"] = "HPMA115S0";
+	}
+	if (!strcmp(DUST_MODEL, "SDS011/21")) {
+		json["sensor"] = "SDS011";
+	}
+	if (!strcmp(DUST_MODEL, "SPS30")) {
+		json["sensor"] = "SPS30";
 	}
     sendJson(json);
 	}
 }
 
-void sendBMEData(BME280<BME280_C, BME280_ADDRESS> &bme) {
+void sendTHPData(float currentTemperature, float currentPressure, float currentHumidity) {
 	if (strcmp(THP_MODEL, "Non")) {
 	StaticJsonDocument<400> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
     json["lat"] = String(LATITUDE, 6);
     json["long"] = String(LONGITUDE, 6);
 	if (!strcmp(THP_MODEL, "BME280")) {
-    json["pressure"] = float(bme.seaLevelForAltitude(MYALTITUDE));
-    json["temperature"] = float(bme.temperature);
-    json["humidity"] = float(bme.humidity);
-    json["sensor"] = "BME280";
+	    json["pressure"] = currentPressure;
+	    json["temperature"] = currentTemperature;
+	    json["humidity"] = currentHumidity;
+		json["sensor"] = "BME280";
+	} else if (!strcmp(THP_MODEL, "BMP280")) {
+	    json["pressure"] = currentPressure;
+	    json["temperature"] = currentTemperature;
+		json["sensor"] = "BMP280";
+	} else if (!strcmp(THP_MODEL, "HTU21")) {
+	    json["temperature"] = currentTemperature;
+	    json["humidity"] = currentHumidity;
+		json["sensor"] = "HTU21";
+	} else if (!strcmp(THP_MODEL, "DHT22")) {
+	    json["temperature"] = currentTemperature;
+	    json["humidity"] = currentHumidity;
+		json["sensor"] = "DHT22";
+	} else if (!strcmp(THP_MODEL, "SHT1x")) {
+	    json["temperature"] = currentTemperature;
+	    json["humidity"] = currentHumidity;
+		json["sensor"] = "SHT1x";
 	}
     sendJson(json);
 	}
 }
 
-void sendDataToAirMonitor(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int averagePM25, int averagePM10) {
+void sendDataToAirMonitor(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
     if (!(AIRMONITOR_ON)) {
         return;
     }
 
-    sendPMSData(bme, averagePM1, averagePM25, averagePM10);
-    sendBMEData(bme);
+    sendDUSTData(averagePM1, averagePM25, averagePM10);
+    sendTHPData(currentTemperature, currentPressure, currentHumidity);
 }
 
 

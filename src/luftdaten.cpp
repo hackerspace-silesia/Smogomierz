@@ -1,11 +1,5 @@
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
-#include "bme280.h"
-
-#include "HTU21D.h"
-#include "Adafruit_BMP280.h"
-#include "SHT1x.h"
-#include <DHT.h>
 
 #include "config.h"
 
@@ -153,7 +147,7 @@ void sendDUSTDatatoLuftdaten(int averagePM1, int averagePM25, int averagePM10) {
   }
 }
 
-void sendTHPDatatoLuftdaten(BME280<BME280_C, BME280_ADDRESS> &bme) {
+void sendTHPDatatoLuftdaten(float currentTemperature, float currentPressure, float currentHumidity) {
   if (strcmp(THP_MODEL, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
@@ -162,41 +156,41 @@ void sendTHPDatatoLuftdaten(BME280<BME280_C, BME280_ADDRESS> &bme) {
     if (!strcmp(THP_MODEL, "BME280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
-      humidity["value"] = String(float(bme.humidity));
+      humidity["value"] = String(currentHumidity);
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure["value_type"] = "pressure";
-      pressure["value"] = String(float((bme.seaLevelForAltitude(MYALTITUDE)) * 100)); //hPa -> Pa
+      pressure["value"] = String(currentPressure * 100); //hPa -> Pa
     } else if (!strcmp(THP_MODEL, "BMP280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      //temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure["value_type"] = "pressure";
-      //pressure["value"] = String(float((bme.seaLevelForAltitude(MYALTITUDE))*100));  //hPa -> Pa
+      pressure["value"] = String(currentPressure * 100); //hPa -> Pa
     } else if (!strcmp(THP_MODEL, "HTU21")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      //temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
-      //humidity["value"] = String(float(bme.humidity));
+      humidity["value"] = String(currentHumidity);
     } else if (!strcmp(THP_MODEL, "DHT22")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      //temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
-      //humidity["value"] = String(float(bme.humidity));
+      humidity["value"] = String(currentHumidity);
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      //temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
-      //humidity["value"] = String(float(bme.humidity));
+      humidity["value"] = String(currentHumidity);
     }
     sendTHPLuftdatenJson(json);
   }
@@ -346,7 +340,7 @@ void sendDUSTDatatoMadavide(int averagePM1, int averagePM25, int averagePM10) {
   }
 }
 
-void sendTHPDatatoMadavide(BME280<BME280_C, BME280_ADDRESS> &bme) {
+void sendTHPDatatoMadavide(float currentTemperature, float currentPressure, float currentHumidity) {
   if (strcmp(THP_MODEL, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
@@ -355,53 +349,53 @@ void sendTHPDatatoMadavide(BME280<BME280_C, BME280_ADDRESS> &bme) {
     if (!strcmp(THP_MODEL, "BME280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
-      humidity["value"] = String(float(bme.humidity));
+      humidity["value"] = String(currentHumidity);
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure["value_type"] = "pressure";
-      pressure["value"] = String(float((bme.seaLevelForAltitude(MYALTITUDE)) * 100)); //hPa -> Pa
+      pressure["value"] = String(currentPressure * 100); //hPa -> Pa
     } else if (!strcmp(THP_MODEL, "BMP280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      //temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure["value_type"] = "pressure";
-      //pressure["value"] = String(float((bme.seaLevelForAltitude(MYALTITUDE))*100));  //hPa -> Pa
+      pressure["value"] = String(currentPressure * 100); //hPa -> Pa
     } else if (!strcmp(THP_MODEL, "HTU21")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      //temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
-      //humidity["value"] = String(float(bme.humidity));
+      humidity["value"] = String(currentHumidity);
     } else if (!strcmp(THP_MODEL, "DHT22")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      //temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
-      //humidity["value"] = String(float(bme.humidity));
+      humidity["value"] = String(currentHumidity);
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
-      //temperature["value"] = String(float(bme.temperature));
+      temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
-      //humidity["value"] = String(float(bme.humidity));
+      humidity["value"] = String(currentHumidity);
     }
     sendTHPMadavideJson(json);
   }
 }
 
-void sendDataToLuftdaten(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int averagePM25, int averagePM10) {
+void sendDataToLuftdaten(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
   if (!(LUFTDATEN_ON)) {
     return;
   }	
   sendDUSTDatatoLuftdaten(averagePM1, averagePM25, averagePM10);
-  sendTHPDatatoLuftdaten(bme);
+  sendTHPDatatoLuftdaten(currentTemperature, currentPressure, currentHumidity);
   delay(10);
   sendDUSTDatatoMadavide(averagePM1, averagePM25, averagePM10);
-  sendTHPDatatoMadavide(bme);
+  sendTHPDatatoMadavide(currentTemperature, currentPressure, currentHumidity);
 }

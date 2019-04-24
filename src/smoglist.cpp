@@ -1,18 +1,17 @@
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
-#include "bme280.h"
 
 #include "config.h"
 
-const char *SmogListServerName = "api.smoglist.pl"; // api.smoglist.pl:8090/postjson
-const uint16_t SmogListPort = 8090;
+const char *SmoglistServerName = "api.smoglist.pl"; // api.smoglist.pl:8090/postjson
+const uint16_t SmoglistPort = 8090;
 
-void sendSmogListJson(JsonObject& json) {
+void sendSmoglistJson(JsonObject& json) {
     WiFiClient client;
     Serial.print("\nconnecting to ");
-    Serial.println(SmogListServerName);
+    Serial.println(SmoglistServerName);
 
-    if (!client.connect(SmogListServerName, SmogListPort)) {
+    if (!client.connect(SmoglistServerName, SmoglistPort)) {
         Serial.println("connection failed");
         Serial.println("wait 3 sec...\n");
         delay(3000);
@@ -39,7 +38,7 @@ void sendSmogListJson(JsonObject& json) {
     client.stop();
 }
 
-void sendSmogListData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
+void sendSmoglistData(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
 	StaticJsonDocument<1000> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
 	
@@ -101,10 +100,18 @@ void sendSmogListData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int
 	if (strcmp(THP_MODEL, "Non")) {
 		if (!strcmp(THP_MODEL, "BME280")) {
 			json["THP_MODEL"] = "BME280";
-    		json["Temperature"] = float(bme.temperature);
-    		json["Humidity"] = float(bme.humidity);
-			json["Pressure"] = float(bme.seaLevelForAltitude(MYALTITUDE));
-		}
+		} else if (!strcmp(THP_MODEL, "BMP280")) {
+			json["THP_MODEL"] = "BMP280";
+  		} else if (!strcmp(THP_MODEL, "HTU21")) {
+			json["THP_MODEL"] = "HTU21";
+  		} else if (!strcmp(THP_MODEL, "DHT22")) {
+			json["THP_MODEL"] = "DHT22";
+  		} else if (!strcmp(THP_MODEL, "SHT1x")) {
+  			json["THP_MODEL"] = "SHT1x";
+  		}
+		json["Temperature"] = currentTemperature;
+		json["Humidity"] = currentHumidity;
+		json["Pressure"] = currentPressure;
 	} else {
 		json["THP_MODEL"] = "Non";
 		json["Temperature"] = 0;
@@ -112,12 +119,12 @@ void sendSmogListData(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int
 		json["Pressure"] = 0;
 	}
 	
-    sendSmogListJson(json);
+    sendSmoglistJson(json);
 }
 
-void sendDataToSmogList(BME280<BME280_C, BME280_ADDRESS> &bme, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
+void sendDataToSmoglist(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
     if (!(SMOGLIST_ON)) {
         return;
     }
-    sendSmogListData(bme, averagePM1, averagePM25, averagePM4, averagePM10);
+    sendSmoglistData(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
 }

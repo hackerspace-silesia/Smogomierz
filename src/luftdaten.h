@@ -1,3 +1,4 @@
 #pragma once
 
-void sendDataToLuftdaten(BME280<BME280_C, BME280_ADDRESS>&, int averagePM1, int averagePM25, int averagePM10);
+void sendDataToLuftdaten(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10);
+

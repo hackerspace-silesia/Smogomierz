@@ -40,87 +40,88 @@ void handle_root() {
     message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
     message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
   } else {
+    takeTHPMeasurements();
     message.replace("{TEXT_WEATHER}", (TEXT_WEATHER));
   }
   if (!strcmp(THP_MODEL, "BME280")) {
     if (checkBmeStatus()) {
-	    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-	    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
-	    message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
-	    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
-		
-      	message.replace("{Temperature}", String(BMESensor.temperature));
-      	message.replace("{Pressure}", String(BMESensor.seaLevelForAltitude(MYALTITUDE)));
-      	message.replace("{Humidity}", String(BMESensor.humidity));
-      	message.replace("{Dewpoint}", String(float(pow((BMESensor.humidity) / 100, 0.125) * (112 + 0.9 * (BMESensor.temperature)) + 0.1 * (BMESensor.temperature) - 112)));
+      message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+      message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+      message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
+      message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
+
+      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{Pressure}", String(currentPressure));
+      message.replace("{Humidity}", String(currentHumidity));
+      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
-	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "HTU21")) {
     if (checkHTU21DStatus()) {
-	    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-	    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
-	    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
-		
-      	message.replace("{Temperature}", String(myHTU21D.readTemperature()));
-      	message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      	message.replace("{Humidity}", String(myHTU21D.readCompensatedHumidity()));
-      	message.replace("{Dewpoint}", String(float(pow((myHTU21D.readCompensatedHumidity()) / 100, 0.125) * (112 + 0.9 * (myHTU21D.readTemperature())) + 0.1 * (myHTU21D.readTemperature()) - 112)));
+      message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+      message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+      message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
+
+      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{Humidity}", String(currentHumidity));
+      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
-	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "DHT22")) {
     if (checkDHT22Status()) {
-	    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-	    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
-	    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
-		
-      	message.replace("{Temperature}", String(dht.readTemperature()));
-      	message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      	message.replace("{Humidity}", String(dht.readHumidity()));
-      	message.replace("{Dewpoint}", String(float(pow((dht.readHumidity()) / 100, 0.125) * (112 + 0.9 * (dht.readTemperature())) + 0.1 * (dht.readTemperature()) - 112)));
+      message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+      message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+      message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
+
+      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{Humidity}", String(currentHumidity));
+      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
-	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "BMP280")) {
     if (checkBmpStatus()) {
-		message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-		message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
-      	
-		message.replace("{Temperature}", String(bmp.readTemperature()));
-      	message.replace("{Pressure}", String((bmp.readPressure()) / 100));
-      	message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-      	message.replace("{TEXT_DEWPOINT}: {Pressure} °C", "");
+      message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+      message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
+
+      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{Pressure}", String(currentPressure));
+      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      message.replace("{TEXT_DEWPOINT}: {Pressure} °C", "");
     } else {
-	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     if (checkSHT1xStatus()) {
-	    message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
-	    message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
-	    message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
-		
-      	message.replace("{Temperature}", String(sht1x.readTemperatureC()));
-      	message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      	message.replace("{Humidity}", String(float(sht1x.readHumidity())));
-      	message.replace("{Dewpoint}", String(float(pow((sht1x.readHumidity()) / 100, 0.125) * (112 + 0.9 * (sht1x.readTemperatureC())) + 0.1 * (sht1x.readTemperatureC()) - 112)));
+      message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+      message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
+      message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
+
+      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{Humidity}", String(float(currentHumidity)));
+      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
-	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
   }
 
@@ -232,10 +233,10 @@ String _addTHP_MODELSelect(const String &key, const String &value) {
   input.replace("{key}", key);
   input += _addOption("BME280", "BME280", value);
   if (strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
-	  if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
-	  	input += _addOption("BME280-SparkFun", "BME280-SparkFun", value);
-	  }
-  } 
+    if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
+      input += _addOption("BME280-SparkFun", "BME280-SparkFun", value);
+    }
+  }
   input += _addOption("SHT1x", "SHT1x", value);
   input += _addOption("HTU21", "SHT21/HTU21D", value);
   input += _addOption("DHT22", "DHT22", value);
@@ -373,7 +374,6 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_FREQUENTMEASUREMENTONOFF}", (TEXT_FREQUENTMEASUREMENTONOFF));
   message.replace("{TEXT_FREQUENTMEASUREMENTINFO}", (TEXT_FREQUENTMEASUREMENTINFO));
   message.replace("{TEXT_MEASUREMENTFREQUENCY}", (TEXT_MEASUREMENTFREQUENCY));
-  //message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
 
   message.replace("{FREQUENTMEASUREMENT_Select}", _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
 
@@ -453,52 +453,52 @@ void _handle_config(bool is_success) {
 
   message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
   message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));
-  message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));  
+  message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));
 
   message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
   message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
-	
+
   if (!strcmp(THP_MODEL, "BME280")) {
-	  message.replace("{THPSENSOR}", "BME280");
-   	  message.replace("{THPXPIN}", "11");
-  } else if(!strcmp(THP_MODEL, "BMP280")) {
-	  message.replace("{THPSENSOR}", "BMP280");
-  	  message.replace("{THPXPIN}", "3");
-  } else if(!strcmp(THP_MODEL, "HTU21")) {
-	  message.replace("{THPSENSOR}", "HTU21");
-  	  message.replace("{THPXPIN}", "7");
-  } else if(!strcmp(THP_MODEL, "DHT22")) {
-	  message.replace("{THPSENSOR}", "DHT22");
-  	  message.replace("{THPXPIN}", "7");
-  } else if(!strcmp(THP_MODEL, "SHT1x")) {
-	  message.replace("{THPSENSOR}", "SHT1x");
-  	  message.replace("{THPXPIN}", "12");
+    message.replace("{THPSENSOR}", "BME280");
+    message.replace("{THPXPIN}", "11");
+  } else if (!strcmp(THP_MODEL, "BMP280")) {
+    message.replace("{THPSENSOR}", "BMP280");
+    message.replace("{THPXPIN}", "3");
+  } else if (!strcmp(THP_MODEL, "HTU21")) {
+    message.replace("{THPSENSOR}", "HTU21");
+    message.replace("{THPXPIN}", "7");
+  } else if (!strcmp(THP_MODEL, "DHT22")) {
+    message.replace("{THPSENSOR}", "DHT22");
+    message.replace("{THPXPIN}", "7");
+  } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    message.replace("{THPSENSOR}", "SHT1x");
+    message.replace("{THPXPIN}", "12");
   } else {
-	  message.replace("<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>", "");
+    message.replace("<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>", "");
   }
-  
+
   if (!strcmp(DUST_MODEL, "PMS7003")) {
-	  message.replace("{DUSTSENSOR}", "PMS5003/7003");
-	  message.replace("{DUSTXPIN}", "1");
+    message.replace("{DUSTSENSOR}", "PMS5003/7003");
+    message.replace("{DUSTXPIN}", "1");
   } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
-	  message.replace("{DUSTSENSOR}", "SDS011/21");
-	  message.replace("{DUSTXPIN}", "1");
+    message.replace("{DUSTSENSOR}", "SDS011/21");
+    message.replace("{DUSTXPIN}", "1");
   } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
-	  message.replace("{DUSTSENSOR}", "HPMA115S0");
-	  message.replace("{DUSTXPIN}", "1");
+    message.replace("{DUSTSENSOR}", "HPMA115S0");
+    message.replace("{DUSTXPIN}", "1");
   } else {
-	  message.replace("<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>", "");
+    message.replace("<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>", "");
   }
 
   message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
-  
+
   char PMSENSORMODEL[16];
   if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
-	  strcpy(PMSENSORMODEL, "PMS7003");
+    strcpy(PMSENSORMODEL, "PMS7003");
   } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
-	  strcpy(PMSENSORMODEL, "SDS011");
+    strcpy(PMSENSORMODEL, "SDS011");
   } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
-	  strcpy(PMSENSORMODEL, "HPMA115S0");
+    strcpy(PMSENSORMODEL, "HPMA115S0");
   }
   message.replace("{PMSENSORMODEL}", PMSENSORMODEL);
 
@@ -577,42 +577,6 @@ bool _parseAsBool(String value) {
   return value == "yes";
 }
 
-void _set_calib1_and_calib2() {
-  if (!strcmp(MODEL, "black")) {
-    calib1 = 1.6;
-    calib2 = 0.55;
-  } else if (!strcmp(MODEL, "red")) {
-    calib1 = 1.0;
-    calib2 = 1.0;
-  } else if (!strcmp(MODEL, "white")) {
-    if (!strcmp(THP_MODEL, "BME280")) {
-      if (checkBmeStatus() == true) {
-        calib1 = float((200 - (BMESensor.humidity)) / 150);
-      }
-    }
-    if (!strcmp(THP_MODEL, "HTU21D")) {
-      if (checkHTU21DStatus() == true) {
-        calib1 = float((200 - (myHTU21D.readCompensatedHumidity())) / 150);
-      }
-    }
-    if (!strcmp(THP_MODEL, "DHT22")) {
-      if (checkDHT22Status() == true) {
-        calib1 = float((200 - (dht.readHumidity())) / 150);
-      }
-    }
-    if (!strcmp(THP_MODEL, "SHT1x")) {
-      if (checkSHT1xStatus() == true) {
-        calib1 = float((200 - (sht1x.readHumidity())) / 150);
-      }
-    }
-    calib1 = calib1;
-    calib2 = calib1 / 2;
-  } else {
-    calib1 = 1.0;
-    calib2 = 1.0;
-  }
-}
-
 void _set_language() {
   if (!strcmp(LANGUAGE, "english")) {
     SELECTED_LANGUAGE = 1;
@@ -656,53 +620,53 @@ void handle_config_post() {
   DISPLAY_PM1 = _parseAsBool(WebServer.arg("DISPLAY_PM1"));
   _parseAsCString(LANGUAGE, WebServer.arg("LANGUAGE"));
   _set_language();
-  
+
   char oldTHP_MODEL[32];
   strcpy(oldTHP_MODEL, THP_MODEL);
   _parseAsCString(THP_MODEL, WebServer.arg("THP_MODEL"));
-  
+
   if (strcmp(THP_MODEL, oldTHP_MODEL) and !strcmp(THP_MODEL, "BME280-SparkFun")) {
-	  need_update = 1;
+    need_update = 1;
   }
-  
+
   char oldDUST_MODEL[32];
   strcpy(oldDUST_MODEL, DUST_MODEL);
   _parseAsCString(DUST_MODEL, WebServer.arg("DUST_MODEL"));
-  
+
   // DUST Sensor config - START
   if (!strcmp(PMSENSORVERSION, "PMS")) {
-	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
-		  need_update = 2;
-	  }
- 
-	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
-		  need_update = 3;
-	  }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+      need_update = 2;
+    }
+
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+      need_update = 3;
+    }
   } else if (!strcmp(PMSENSORVERSION, "SDS")) {
-	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
-		  need_update = 3;
-	  }
-	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
-		  need_update = 4;
-	  }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+      need_update = 3;
+    }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+      need_update = 4;
+    }
   } else if (!strcmp(PMSENSORVERSION, "HPMA115S0")) {
-	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
-		  need_update = 2;
-	  }
-	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
-		  need_update = 4;
-	  }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+      need_update = 2;
+    }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+      need_update = 4;
+    }
   } else if (!strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
-	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
-		  need_update = 2;
-	  }
- 
-	  if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
-		  need_update = 3;
-	  }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+      need_update = 2;
+    }
+
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+      need_update = 3;
+    }
   }
   // DUST Sensor config - END
-  
+
   FREQUENTMEASUREMENT = _parseAsBool(WebServer.arg("FREQUENTMEASUREMENT"));
 
   DUST_TIME = WebServer.arg("DUST_TIME").toInt();
@@ -747,113 +711,112 @@ void handle_config_post() {
   _parseAsCString(CONFIG_PASSWORD, WebServer.arg("CONFIG_PASSWORD"));
 
   _parseAsCString(MODEL, WebServer.arg("MODEL"));
-  _set_calib1_and_calib2();
 
   if (DEBUG) {
     Serial.println("POST CONFIG END!!");
   }
 
-   if (need_update != 0) {
-	   strcpy(THP_MODEL, "Non");
-	   strcpy(DUST_MODEL, "Non");
-	   saveConfig();
-	   _handle_config(true);
-	   delay(10);
-	if (need_update == 1) {
-		String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_PMS-SparkFunBME280.bin";
-		t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
-	    if (DEBUG) {
-			switch (ret) {
-				case HTTP_UPDATE_FAILED:
-	          Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-	          break;
-	        case HTTP_UPDATE_NO_UPDATES:
-	          Serial.println("No update needed!");
-	          break;
-	        case HTTP_UPDATE_OK:
-	          Serial.println("Update OK!");
-	          break;
-	        default:
-	          Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
-	          break;
-	      } 
-	      delay(1000);
-	      ESP.restart();
-	      delay(1000);
-		} 
-  	}
-	if (need_update == 2) {
-		String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_SDS011.bin";
-		t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
-	    if (DEBUG) {
-			switch (ret) {
-				case HTTP_UPDATE_FAILED:
-	          Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-	          break;
-	        case HTTP_UPDATE_NO_UPDATES:
-	          Serial.println("No update needed!");
-	          break;
-	        case HTTP_UPDATE_OK:
-	          Serial.println("Update OK!");
-	          break;
-	        default:
-	          Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
-	          break;
-	      } 
-	      delay(1000);
-	      ESP.restart();
-	      delay(1000);
-		} 
-	}
-	if (need_update == 3) {
-		String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_HPMA115S0.bin";
-		t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
-	    if (DEBUG) {
-			switch (ret) {
-				case HTTP_UPDATE_FAILED:
-	          Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-	          break;
-	        case HTTP_UPDATE_NO_UPDATES:
-	          Serial.println("No update needed!");
-	          break;
-	        case HTTP_UPDATE_OK:
-	          Serial.println("Update OK!");
-	          break;
-	        default:
-	          Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
-	          break;
-	      } 
-	      delay(1000);
-	      ESP.restart();
-	      delay(1000);
-		} 
-	}
-	if (need_update == 4) {
-		String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_PMS.bin";
-		t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
-	    if (DEBUG) {
-			switch (ret) {
-				case HTTP_UPDATE_FAILED:
-	          Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-	          break;
-	        case HTTP_UPDATE_NO_UPDATES:
-	          Serial.println("No update needed!");
-	          break;
-	        case HTTP_UPDATE_OK:
-	          Serial.println("Update OK!");
-	          break;
-	        default:
-	          Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
-	          break;
-	      } 
-	      delay(1000);
-	      ESP.restart();
-	      delay(1000);
-		} 
-	}
-	if (need_update >= 5) {
+  if (need_update != 0) {
+    strcpy(THP_MODEL, "Non");
+    strcpy(DUST_MODEL, "Non");
+    saveConfig();
+    _handle_config(true);
+    delay(10);
+    if (need_update == 1) {
+      String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_PMS-SparkFunBME280.bin";
+      t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
+      if (DEBUG) {
+        switch (ret) {
+          case HTTP_UPDATE_FAILED:
+            Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            break;
+          case HTTP_UPDATE_NO_UPDATES:
+            Serial.println("No update needed!");
+            break;
+          case HTTP_UPDATE_OK:
+            Serial.println("Update OK!");
+            break;
+          default:
+            Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
+            break;
+        }
+        delay(1000);
+        ESP.restart();
+        delay(1000);
+      }
+    }
+    if (need_update == 2) {
+      String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_SDS011.bin";
+      t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
+      if (DEBUG) {
+        switch (ret) {
+          case HTTP_UPDATE_FAILED:
+            Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            break;
+          case HTTP_UPDATE_NO_UPDATES:
+            Serial.println("No update needed!");
+            break;
+          case HTTP_UPDATE_OK:
+            Serial.println("Update OK!");
+            break;
+          default:
+            Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
+            break;
+        }
+        delay(1000);
+        ESP.restart();
+        delay(1000);
+      }
+    }
+    if (need_update == 3) {
+      String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_HPMA115S0.bin";
+      t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
+      if (DEBUG) {
+        switch (ret) {
+          case HTTP_UPDATE_FAILED:
+            Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            break;
+          case HTTP_UPDATE_NO_UPDATES:
+            Serial.println("No update needed!");
+            break;
+          case HTTP_UPDATE_OK:
+            Serial.println("Update OK!");
+            break;
+          default:
+            Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
+            break;
+        }
+        delay(1000);
+        ESP.restart();
+        delay(1000);
+      }
+    }
+    if (need_update == 4) {
+      String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_PMS.bin";
+      t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
+      if (DEBUG) {
+        switch (ret) {
+          case HTTP_UPDATE_FAILED:
+            Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            break;
+          case HTTP_UPDATE_NO_UPDATES:
+            Serial.println("No update needed!");
+            break;
+          case HTTP_UPDATE_OK:
+            Serial.println("Update OK!");
+            break;
+          default:
+            Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
+            break;
+        }
+        delay(1000);
+        ESP.restart();
+        delay(1000);
+      }
+    }
+    if (need_update >= 5) {
 
-	}
+    }
   }
 
   saveConfig();
@@ -917,7 +880,7 @@ void handle_update() {            //Handler for the handle_update
   message.replace("{TEXT_LATESTAVAILABLESOFT}", TEXT_LATESTAVAILABLESOFT);
   message.replace("{SMOGOMIERZRELEASES_LINK}", (SMOGOMIERZRELEASES_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
-  
+
   // init WiFi signal quality info - START
   String WiFiSSID = WiFi.SSID();
   int WiFiRSSI = WiFi.RSSI();
@@ -925,20 +888,20 @@ void handle_update() {            //Handler for the handle_update
   message.replace("{WiFiSSID}", (WiFiSSID));
   message.replace("{TEXT_WIFIRSSI}", (TEXT_WIFIRSSI));
   message.replace("{WiFiRSSI}", (String(WiFiRSSI) + " dBm"));
-  
+
   // https://stackoverflow.com/a/15798024
   int WiFiQuality;
-  if(WiFiRSSI <= -100) {
-         WiFiQuality = 0;
-  } else if(WiFiRSSI >= -50) {
-         WiFiQuality = 100;
+  if (WiFiRSSI <= -100) {
+    WiFiQuality = 0;
+  } else if (WiFiRSSI >= -50) {
+    WiFiQuality = 100;
   } else {
-         WiFiQuality = 2 * (WiFiRSSI + 100);
-	 }
+    WiFiQuality = 2 * (WiFiRSSI + 100);
+  }
   message.replace("{TEXT_WIFIQUALITY}", (TEXT_WIFIQUALITY));
   message.replace("{WiFiQuality}", (String(WiFiQuality) + " %"));
   // init WiFi signal quality info - END
-  
+
   message += FPSTR(WEB_PAGE_FOOTER);
   WebServer.send(200, "text/html", message);
 }
@@ -993,40 +956,42 @@ void handle_api() {
     json["pm25"] = averagePM25;
     json["pm10"] = averagePM10;
   }
-
+  if (strcmp(THP_MODEL, "Non")) {
+    takeTHPMeasurements();
+  }
   if (!strcmp(THP_MODEL, "BME280")) {
     if (checkBmeStatus()) {
-      json["temperature"] = float(BMESensor.temperature);
-      json["pressure"] = int(BMESensor.seaLevelForAltitude(MYALTITUDE));
-      json["humidity"] = int(BMESensor.humidity);
-      json["dewpoint"] = float(pow((BMESensor.humidity) / 100, 0.125) * (112 + 0.9 * (BMESensor.temperature)) + 0.1 * (BMESensor.temperature) - 112);
+      json["temperature"] = float(currentTemperature);
+      json["pressure"] = int(currentPressure);
+      json["humidity"] = int(currentHumidity);
+      json["dewpoint"] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
     }
   }
   if (!strcmp(THP_MODEL, "BMP280")) {
     if (checkBmpStatus()) {
-      json["temperature"] = float(bmp.readTemperature());
-      json["pressure"] = int((bmp.readPressure()) / 100);
+      json["temperature"] = float(currentTemperature);
+      json["pressure"] = int(currentPressure);
     }
   }
   if (!strcmp(THP_MODEL, "HTU21")) {
     if (checkHTU21DStatus()) {
-      json["temperature"] = float(myHTU21D.readTemperature());
-      json["humidity"] = int(myHTU21D.readCompensatedHumidity());
-      json["dewpoint"] = float(pow((myHTU21D.readCompensatedHumidity()) / 100, 0.125) * (112 + 0.9 * (myHTU21D.readTemperature())) + 0.1 * (myHTU21D.readTemperature()) - 112);
+      json["temperature"] = float(currentTemperature);
+      json["humidity"] = int(currentHumidity);
+      json["dewpoint"] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
     }
   }
   if (!strcmp(THP_MODEL, "DHT22")) {
     if (checkDHT22Status()) {
-      json["temperature"] = float(dht.readTemperature());
-      json["humidity"] = int(dht.readHumidity());
-      json["dewpoint"] = float(pow((dht.readHumidity()) / 100, 0.125) * (112 + 0.9 * (dht.readTemperature())) + 0.1 * (dht.readTemperature()) - 112);
+      json["temperature"] = float(currentTemperature);
+      json["humidity"] = int(currentHumidity);
+      json["dewpoint"] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
     }
   }
   if (!strcmp(THP_MODEL, "SHT1x")) {
     if (checkSHT1xStatus()) {
-      json["temperature"] = float(sht1x.readTemperatureC());
-      json["humidity"] = int(sht1x.readHumidity());
-      json["dewpoint"] = float(pow((sht1x.readHumidity()) / 100, 0.125) * (112 + 0.9 * (sht1x.readTemperatureC())) + 0.1 * (sht1x.readTemperatureC()) - 112);
+      json["temperature"] = float(currentTemperature);
+      json["humidity"] = int(currentHumidity);
+      json["dewpoint"] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
     }
   }
 

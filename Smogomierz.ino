@@ -10,14 +10,14 @@
 
 /*
 
-  Szkic używa 492824 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54168 bajtów (66%) pamięci dynamicznej, pozostawiając 27752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  Szkic używa 493352 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54312 bajtów (66%) pamięci dynamicznej, pozostawiając 27608 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  Szkic używa 495180 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 493340 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54332 bajtów (66%) pamięci dynamicznej, pozostawiając 27588 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 493388 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54332 bajtów (66%) pamięci dynamicznej, pozostawiając 27588 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 493196 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54300 bajtów (66%) pamięci dynamicznej, pozostawiając 27620 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 */
 
@@ -86,9 +86,9 @@ SHT1x sht1x(dataPin, clockPin);
 // TEMP/HUMI/PRESS Sensor config - END
 
 // DUST Sensor config - START
-// Serial for PMS7003 config
-SoftwareSerial mySerial(5, 4); // Change TX - D1 and RX - D2 pins
-PMS pms(mySerial);
+// Serial for PMSx003 config
+SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins
+PMS pms(PMS_Serial);
 PMS::DATA data;
 // DUST Sensor config - END
 
@@ -111,6 +111,7 @@ unsigned long previous_REBOOT_Millis = 0;
 
 int pmMeasurements[10][3];
 int iPM, averagePM1, averagePM25, averagePM4, averagePM10 = 0;
+float currentTemperature, currentHumidity, currentPressure = 0;
 float calib = 1;
 
 bool need_update = false;
@@ -235,7 +236,7 @@ void setup() {
 
   // DUST SENSOR setup - START
   if (!strcmp(DUST_MODEL, "PMS7003")) {
-    mySerial.begin(9600); //PMS7003 serial
+    PMS_Serial.begin(9600); //PMSx003 serial
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
       delay(500);
@@ -370,12 +371,6 @@ void loop() {
   }
   delay(10);
 
-  // TEMP/HUMI/PRESS Sensor - START
-  if (!strcmp(THP_MODEL, "BME280")) {
-    BMESensor.refresh();
-  }
-  // TEMP/HUMI/PRESS Sensor refresh data - END
-
   pm_calibration();
 
   // DUST SENSOR refresh data - START
@@ -408,9 +403,11 @@ void loop() {
       delay(10);
 
       if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+        takeTHPMeasurements();
         sendDataToExternalServices();
       }
       if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+        takeTHPMeasurements();
         sendDataToExternalDBs();
       }
 
@@ -436,9 +433,11 @@ void loop() {
         previous_2sec_Millis = millis();
       }
       if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+        takeTHPMeasurements();
         sendDataToExternalServices();
       }
       if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+        takeTHPMeasurements();
         sendDataToExternalDBs();
       }
       delay(10);
@@ -451,6 +450,7 @@ void loop() {
   if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
     unsigned long current_SENDING_FREQUENCY_Millis = millis();
     if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
+      takeTHPMeasurements();
       sendDataToExternalServices();
       previous_SENDING_FREQUENCY_Millis = millis();
     }
@@ -459,6 +459,7 @@ void loop() {
   if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
     unsigned long current_SENDING_DB_FREQUENCY_Millis = millis();
     if (current_SENDING_DB_FREQUENCY_Millis - previous_SENDING_DB_FREQUENCY_Millis >= SENDING_DB_FREQUENCY_interval) {
+      takeTHPMeasurements();
       sendDataToExternalDBs();
       previous_SENDING_DB_FREQUENCY_Millis = millis();
     }
@@ -478,21 +479,21 @@ void loop() {
 void sendDataToExternalServices() {
 
   if (LUFTDATEN_ON) {
-    sendDataToLuftdaten(BMESensor, averagePM1, averagePM25, averagePM10);
+    sendDataToLuftdaten(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
       Serial.println("Sending measurement data to the LuftDaten service!\n");
     }
   }
 
   if (AIRMONITOR_ON) {
-    sendDataToAirMonitor(BMESensor, averagePM1, averagePM25, averagePM10);
+    sendDataToAirMonitor(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
       Serial.println("Sending measurement data to the AirMonitor service!\n");
     }
   }
 
   if (SMOGLIST_ON) {
-    sendDataToSmogList(BMESensor, averagePM1, averagePM25, averagePM4, averagePM10);
+    sendDataToSmoglist(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
       Serial.println("Sending measurement data to the Smoglist service!\n");
     }
@@ -511,7 +512,7 @@ void sendDataToExternalDBs() {
   }
 
   if (THINGSPEAK_ON) {
-    sendDataToThingSpeak(BMESensor, averagePM1, averagePM25, averagePM10);
+    sendDataToThingSpeak(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
       Serial.println("Sending measurement data to the Thingspeak service!\n");
     }
@@ -524,28 +525,19 @@ void sendDataToExternalDBs() {
     } else {
       dbMeasurement row(device_name);
       if (!strcmp(DUST_MODEL, "PMS7003")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from PMS7003!\n");
-        }
         row.addField("pm1", averagePM1);
         row.addField("pm25", averagePM25);
         row.addField("pm10", averagePM10);
       } else {
         if (DEBUG) {
-          Serial.println("\nNo measurements from PMS7003!\n");
+          Serial.println("\nNo measurements from PMSx003!\n");
         }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
       }
       if (!strcmp(THP_MODEL, "BME280")) {
         if (checkBmeStatus() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from BME280!\n");
-          }
-          row.addField("temperature", (BMESensor.temperature));
-          row.addField("pressure", (BMESensor.seaLevelForAltitude(MYALTITUDE)));
-          row.addField("humidity", (BMESensor.humidity));
+          row.addField("temperature", (currentTemperature));
+          row.addField("pressure", (currentPressure));
+          row.addField("humidity", (currentHumidity));
         } else {
           if (DEBUG) {
             Serial.println("No measurements from BME280!\n");
@@ -553,11 +545,8 @@ void sendDataToExternalDBs() {
         }
       } else if (!strcmp(THP_MODEL, "HTU21")) {
         if (checkHTU21DStatus() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from HTU21!\n");
-          }
-          row.addField("temperature", (myHTU21D.readTemperature()));
-          row.addField("humidity", (myHTU21D.readHumidity()));
+          row.addField("temperature", (currentTemperature));
+          row.addField("humidity", (currentHumidity));
         } else {
           if (DEBUG) {
             Serial.println("No measurements from HTU21D!\n");
@@ -565,11 +554,8 @@ void sendDataToExternalDBs() {
         }
       } else if (!strcmp(THP_MODEL, "BMP280")) {
         if (checkBmpStatus() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from BMP280!\n");
-          }
-          row.addField("temperature", (bmp.readTemperature()));
-          row.addField("pressure", ((bmp.readPressure()) / 100));
+          row.addField("temperature", (currentTemperature));
+          row.addField("pressure", (currentPressure));
         } else {
           if (DEBUG) {
             Serial.println("No measurements from BMP280!\n");
@@ -577,11 +563,8 @@ void sendDataToExternalDBs() {
         }
       } else if (!strcmp(THP_MODEL, "DHT22")) {
         if (checkDHT22Status() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from DHT22!\n");
-          }
-          row.addField("temperature", (dht.readTemperature()));
-          row.addField("humidity", (dht.readHumidity()));
+          row.addField("temperature", (currentTemperature));
+          row.addField("humidity", (currentHumidity));
         } else {
           if (DEBUG) {
             Serial.println("No measurements from DHT22!\n");
@@ -589,11 +572,8 @@ void sendDataToExternalDBs() {
         }
       } else if (!strcmp(THP_MODEL, "SHT1x")) {
         if (checkSHT1xStatus() == true) {
-          if (DEBUG) {
-            Serial.println("Measurements from SHT1x!\n");
-          }
-          row.addField("temperature", (sht1x.readTemperatureC()));
-          row.addField("humidity", (sht1x.readHumidity()));
+          row.addField("temperature", (currentTemperature));
+          row.addField("humidity", (currentHumidity));
         } else {
           if (DEBUG) {
             Serial.println("No measurements from SHT1x!\n");
@@ -638,20 +618,130 @@ void sendDataToExternalDBs() {
     }
     if (!strcmp(THP_MODEL, "BME280")) {
       if (checkBmeStatus() == true) {
-        if (DEBUG) {
-          Serial.println("Measurements from BME280!\n");
-        }
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(BMESensor.temperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/pressure").c_str(), String(BMESensor.seaLevelForAltitude(MYALTITUDE)).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(BMESensor.humidity).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from BME280!\n");
         }
       }
     }
+
+    if (!strcmp(THP_MODEL, "BMP280")) {
+      if (checkBmpStatus() == true) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from BMP280!\n");
+        }
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "HTU21")) {
+      if (checkHTU21DStatus() == true) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from HTU21!\n");
+        }
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "DHT22")) {
+      if (checkDHT22Status() == true) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from DHT22!\n");
+        }
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "SHT1x")) {
+      if (checkDHT22Status() == true) {
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from SHT1x!\n");
+        }
+      }
+    }
+
     if (DEEPSLEEP_ON == true) {
       mqttclient.disconnect();
+    }
+  }
+
+}
+
+void takeTHPMeasurements() {
+  if (!strcmp(THP_MODEL, "BME280")) {
+    BMESensor.refresh();
+    delay(10);
+    if (checkBmeStatus() == true) {
+      if (DEBUG) {
+        Serial.println("Measurements from BME280!\n");
+      }
+      currentTemperature = BMESensor.temperature;
+      currentPressure = BMESensor.seaLevelForAltitude(MYALTITUDE);
+      currentHumidity = BMESensor.humidity;
+    } else {
+      if (DEBUG) {
+        Serial.println("No measurements from BME280!\n");
+      }
+    }
+  } else if (!strcmp(THP_MODEL, "HTU21")) {
+    if (checkHTU21DStatus() == true) {
+      if (DEBUG) {
+        Serial.println("Measurements from HTU21!\n");
+      }
+      currentTemperature = myHTU21D.readTemperature();
+      currentHumidity = myHTU21D.readHumidity();
+    } else {
+      if (DEBUG) {
+        Serial.println("No measurements from HTU21D!\n");
+      }
+    }
+  } else if (!strcmp(THP_MODEL, "BMP280")) {
+    if (checkBmpStatus() == true) {
+      if (DEBUG) {
+        Serial.println("Measurements from BMP280!\n");
+      }
+      currentTemperature = bmp.readTemperature();
+      currentPressure = (bmp.readPressure()) / 100;
+    } else {
+      if (DEBUG) {
+        Serial.println("No measurements from BMP280!\n");
+      }
+    }
+  } else if (!strcmp(THP_MODEL, "DHT22")) {
+    if (checkDHT22Status() == true) {
+      if (DEBUG) {
+        Serial.println("Measurements from DHT22!\n");
+      }
+      currentTemperature = dht.readTemperature();
+      currentHumidity = dht.readHumidity();
+    } else {
+      if (DEBUG) {
+        Serial.println("No measurements from DHT22!\n");
+      }
+    }
+  } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    if (checkSHT1xStatus() == true) {
+      if (DEBUG) {
+        Serial.println("Measurements from SHT1x!\n");
+      }
+      currentTemperature = sht1x.readTemperatureC();
+      currentHumidity = sht1x.readHumidity();
+    } else {
+      if (DEBUG) {
+        Serial.println("No measurements from SHT1x!\n");
+      }
     }
   }
 
@@ -722,51 +812,54 @@ void pm_calibration() {
   // Automatic calibration - START
   if (!strcmp(MODEL, "white")) {
     if (!strcmp(THP_MODEL, "BME280")) {
-      calib1 = float((200 - (BMESensor.humidity)) / 150);
-      calib2 = calib1 / 2;
+      BMESensor.refresh();
+      delay(10);
+      if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
+        calib1 = float((200 - (BMESensor.humidity)) / 150);
+        calib2 = calib1 / 2;
+        calib = calib2;
+      } else {
+        calib = calib1;
+      }
     } else if (!strcmp(THP_MODEL, "HTU21")) {
-      calib1 = float((200 - (myHTU21D.readCompensatedHumidity())) / 150);
-      calib2 = calib1 / 2;
+      if (int(myHTU21D.readTemperature()) < 5 or int(myHTU21D.readCompensatedHumidity()) > 60) {
+        calib1 = float((200 - (myHTU21D.readCompensatedHumidity())) / 150);
+        calib2 = calib1 / 2;
+        calib = calib2;
+      } else {
+        calib = calib1;
+      }
     } else if (!strcmp(THP_MODEL, "DHT22")) {
-      calib1 = float((200 - (dht.readHumidity())) / 150);
-      calib2 = calib1 / 2;
+      if (int(dht.readTemperature()) < 5 or int(dht.readHumidity()) > 60) {
+        calib1 = float((200 - (dht.readHumidity())) / 150);
+        calib2 = calib1 / 2;
+        calib = calib2;
+      } else {
+        calib = calib1;
+      }
+
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
-      calib1 = float((200 - (sht1x.readHumidity())) / 150);
-      calib2 = calib1 / 2;
+      if (int(sht1x.readTemperatureC()) < 5 or int(sht1x.readHumidity()) > 60) {
+        calib1 = float((200 - (sht1x.readHumidity())) / 150);
+        calib2 = calib1 / 2;
+        calib = calib2;
+      } else {
+        calib = calib1;
+      }
     }
   }
   // Automatic calibration - END
 
   if (!strcmp(THP_MODEL, "BME280")) {
-    if (int(BMESensor.temperature) < 5 and int(BMESensor.humidity) > 60) {
-      calib = calib2;
-    } else {
-      calib = calib1;
-    }
+    calib = calib1;
   } else if (!strcmp(THP_MODEL, "HTU21")) {
-    if (int(myHTU21D.readTemperature()) < 5 and int(myHTU21D.readCompensatedHumidity()) > 60) {
-      calib = calib2;
-    } else {
-      calib = calib1;
-    }
+    calib = calib1;
   } else if (!strcmp(THP_MODEL, "DHT22")) {
-    if (int(dht.readTemperature()) < 5 and int(dht.readHumidity()) > 60) {
-      calib = calib2;
-    } else {
-      calib = calib1;
-    }
+    calib = calib1;
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
-    if (int(sht1x.readTemperatureC()) < 5 and int(sht1x.readHumidity()) > 60) {
-      calib = calib2;
-    } else {
-      calib = calib1;
-    }
+    calib = calib1;
   } else if (!strcmp(THP_MODEL, "BMP280")) {
-    if (int(bmp.readTemperature()) < 5) {
-      calib = calib2;
-    } else {
-      calib = calib1;
-    }
+    calib = calib1;
   }
 
 }

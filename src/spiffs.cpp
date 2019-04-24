@@ -98,8 +98,6 @@ bool loadConfig() {
   _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password");
   
   _safeCpy(MODEL, json["MODEL"], "black");
-  calib1 = json["calib1"];
-  calib2 = json["calib2"];
 
   // Real world application would store these values in some variables for
   // later use.
@@ -197,11 +195,7 @@ bool loadConfig() {
 	
     Serial.print("Loaded MODEL: ");
     Serial.println(MODEL);
-    Serial.print("Loaded calib1: ");
-    Serial.println(calib1);
-    Serial.print("Loaded calib2: ");
-    Serial.println(calib2);
-	
+
     Serial.print("Loaded SOFTWAREVERSION: ");
     Serial.println(SOFTWAREVERSION);
     Serial.println("\n");
@@ -265,8 +259,6 @@ bool saveConfig() {
   json["CONFIG_PASSWORD"] = CONFIG_PASSWORD;
   
   json["MODEL"] = MODEL;
-  json["calib1"] = calib1;
-  json["calib2"] = calib2;
   
   File configFile = SPIFFS.open("/config.json", "w");
   if (!configFile) {

@@ -52,13 +52,11 @@ extern char CONFIG_USERNAME[255];
 extern char CONFIG_PASSWORD[255];
 
 extern char MODEL[255];
-extern float calib1;
-extern float calib2;
 
 const char PMSENSORVERSION[32] PROGMEM = "PMS";
 extern char SERVERSOFTWAREVERSION[255];
 extern char CURRENTSOFTWAREVERSION[255];
-const char SOFTWAREVERSION[40] PROGMEM = "2.6.8 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[40] PROGMEM = "2.6.9 build " __TIME__ " " __DATE__;
 #if defined(ARDUINO_ARCH_ESP8266)
 const char HARDWAREVERSION[40] PROGMEM = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)

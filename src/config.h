@@ -48,8 +48,8 @@ extern bool DEBUG;
 extern bool AUTOUPDATE_ON;
 
 extern bool CONFIG_AUTH;
-extern char CONFIG_USERNAME[255];
-extern char CONFIG_PASSWORD[255];
+extern char CONFIG_USERNAME[512];
+extern char CONFIG_PASSWORD[512];
 
 extern char MODEL[255];
 

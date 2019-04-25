@@ -48,8 +48,8 @@ bool DEBUG = false;
 bool AUTOUPDATE_ON = false;
 
 bool CONFIG_AUTH = false;
-char CONFIG_USERNAME[255] = "admin";
-char CONFIG_PASSWORD[255] = "password";
+char CONFIG_USERNAME[512] = "admin";
+char CONFIG_PASSWORD[512] = "password";
 
 char MODEL[255] = "white";
 float calib1 = 1.0;

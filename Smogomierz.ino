@@ -13,11 +13,8 @@
   Szkic używa 493340 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54332 bajtów (66%) pamięci dynamicznej, pozostawiając 27588 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 493388 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54332 bajtów (66%) pamięci dynamicznej, pozostawiając 27588 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  Szkic używa 493196 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54300 bajtów (66%) pamięci dynamicznej, pozostawiając 27620 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 493152 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54264 bajtów (66%) pamięci dynamicznej, pozostawiając 27656 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 */
 
@@ -318,7 +315,7 @@ void setup() {
   }
 
   // check update
-  if (checkUpdate() == true) {
+  if (checkUpdate(0) == true) {
     need_update = true;
   } else {
     need_update = false;
@@ -365,7 +362,7 @@ void setup() {
 void loop() {
   if (need_update == true && AUTOUPDATE_ON) {
     for (int i = 0; i < 5 ; i++) {
-      doUpdate();
+      doUpdate(0);
       delay(1000);
     }
   }

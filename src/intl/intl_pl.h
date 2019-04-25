@@ -106,7 +106,7 @@ char PL_INTL_UPDATEPAGEAUTOUPDATEWARNING[192] PROGMEM = "Automatyczne aktualizac
 
 char PL_INTL_SELECTUPDATEFILE[32] PROGMEM = "Wybierz plik .bin";
 char PL_INTL_SUBMITUPDATE[16] PROGMEM = "Update!";
-char PL_INTL_CURRENTSOFTVERSION[64] PROGMEM = "Aktualna wersja oprogramowania";
+char PL_INTL_CURRENTSOFTVERSION[64] PROGMEM = "Używana wersja oprogramowania";
 char PL_INTL_SERVERSOFTWAREVERSION[64] PROGMEM = "Najnowsza dostępna wersja oprogramowania";
 char PL_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Najnowszą wersję oprogramowania znajdziesz zawsze {SMOGOMIERZRELEASES_LINK}.";
 

@@ -723,99 +723,19 @@ void handle_config_post() {
     _handle_config(true);
     delay(10);
     if (need_update == 1) {
-      String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_PMS-SparkFunBME280.bin";
-      t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
-      if (DEBUG) {
-        switch (ret) {
-          case HTTP_UPDATE_FAILED:
-            Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-            break;
-          case HTTP_UPDATE_NO_UPDATES:
-            Serial.println("No update needed!");
-            break;
-          case HTTP_UPDATE_OK:
-            Serial.println("Update OK!");
-            break;
-          default:
-            Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
-            break;
-        }
-        delay(1000);
-        ESP.restart();
-        delay(1000);
-      }
+      doUpdate(1); // BME280-SparkFun
     }
     if (need_update == 2) {
-      String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_SDS011.bin";
-      t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
-      if (DEBUG) {
-        switch (ret) {
-          case HTTP_UPDATE_FAILED:
-            Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-            break;
-          case HTTP_UPDATE_NO_UPDATES:
-            Serial.println("No update needed!");
-            break;
-          case HTTP_UPDATE_OK:
-            Serial.println("Update OK!");
-            break;
-          default:
-            Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
-            break;
-        }
-        delay(1000);
-        ESP.restart();
-        delay(1000);
-      }
+      doUpdate(2); // SDS011
     }
     if (need_update == 3) {
-      String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_HPMA115S0.bin";
-      t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
-      if (DEBUG) {
-        switch (ret) {
-          case HTTP_UPDATE_FAILED:
-            Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-            break;
-          case HTTP_UPDATE_NO_UPDATES:
-            Serial.println("No update needed!");
-            break;
-          case HTTP_UPDATE_OK:
-            Serial.println("Update OK!");
-            break;
-          default:
-            Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
-            break;
-        }
-        delay(1000);
-        ESP.restart();
-        delay(1000);
-      }
+      doUpdate(3); // HPMA115S0
     }
     if (need_update == 4) {
-      String BinURL = "http://smogomierz.hs-silesia.pl/firmware/" + String(SERVERSOFTWAREVERSION) + "_PMS.bin";
-      t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
-      if (DEBUG) {
-        switch (ret) {
-          case HTTP_UPDATE_FAILED:
-            Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-            break;
-          case HTTP_UPDATE_NO_UPDATES:
-            Serial.println("No update needed!");
-            break;
-          case HTTP_UPDATE_OK:
-            Serial.println("Update OK!");
-            break;
-          default:
-            Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);
-            break;
-        }
-        delay(1000);
-        ESP.restart();
-        delay(1000);
-      }
+      doUpdate(4); // PMSx003
     }
     if (need_update >= 5) {
-
+	  doUpdate(0); // CURRENT SERVERSOFTWARE VERSION
     }
   }
 
@@ -927,7 +847,7 @@ void restore_config() {
 }
 
 void fwupdate() {
-  doUpdate();
+  doUpdate(0);
   delay(1000);
   WebServer.sendHeader("Location", "/", true);
   WebServer.send ( 302, "text/plain", "");

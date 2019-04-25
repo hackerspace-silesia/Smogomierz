@@ -735,7 +735,7 @@ void handle_config_post() {
       doUpdate(4); // PMSx003
     }
     if (need_update >= 5) {
-	  doUpdate(0); // CURRENT SERVERSOFTWARE VERSION
+      doUpdate(0); // CURRENT SERVERSOFTWARE VERSION
     }
   }
 
@@ -827,6 +827,12 @@ void handle_update() {            //Handler for the handle_update
 }
 
 void erase_wifi() {
+  if (CONFIG_AUTH == true) {
+    if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+      //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+      return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+    }
+  }
   Serial.println("Erasing Config...");
   ESP.eraseConfig();
   WebServer.sendHeader("Location", "/", true);
@@ -837,6 +843,12 @@ void erase_wifi() {
 }
 
 void restore_config() {
+  if (CONFIG_AUTH == true) {
+    if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+      //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+      return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+    }
+  }
   Serial.println("Restoring default settings...");
   deleteConfig();
   WebServer.sendHeader("Location", "/", true);
@@ -847,6 +859,12 @@ void restore_config() {
 }
 
 void fwupdate() {
+  if (CONFIG_AUTH == true) {
+    if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+      //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+      return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+    }
+  }
   doUpdate(0);
   delay(1000);
   WebServer.sendHeader("Location", "/", true);
@@ -855,6 +873,12 @@ void fwupdate() {
 }
 
 void autoupdateon() {
+  if (CONFIG_AUTH == true) {
+    if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+      //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+      return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+    }
+  }
   AUTOUPDATE_ON = true;
   saveConfig();
   delay(300);

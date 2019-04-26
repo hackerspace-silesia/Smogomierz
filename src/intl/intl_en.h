@@ -57,7 +57,7 @@ char EN_INTL_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz
 
 char EN_INTL_AIRMONITORSENDING[128] PROGMEM = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. {PMSENSORMODEL})";
 char EN_INTL_AIRMONITORCHARTS[64] PROGMEM = "Displaying charts from the AirMonitor site";
-char EN_INTL_AIRMONITORCOORDINATESINFO[80] PROGMEM = "Geographical coordinates(you can check it {LATLONG_LINK}";
+char EN_INTL_AIRMONITORCOORDINATESINFO[80] PROGMEM = "Geographical coordinates(you can check it {LATLONG_LINK})";
 char EN_INTL_AIRMONITORLATITUDE[32] PROGMEM = "Latitude";
 char EN_INTL_AIRMONITORLONGITUDE[32] PROGMEM = "Longitude";
 

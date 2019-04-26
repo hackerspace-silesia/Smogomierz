@@ -57,7 +57,7 @@ char PL_INTL_SMOGLISTINFO[256] = "Smoglist to serwis zbierający statystyki uży
 
 char PL_INTL_AIRMONITORSENDING[128] PROGMEM = "Wysyłanie danych do serwisu {AIRMONITOR_LINK} (wymaga wypełnienia {AIRMONITORFORM_LINK}; Sensor: np. {PMSENSORMODEL})";
 char PL_INTL_AIRMONITORCHARTS[64] PROGMEM = "Wyświetlanie wykresów z serwisu AirMonitor";
-char PL_INTL_AIRMONITORCOORDINATESINFO[80] PROGMEM = "Współrzędne geograficzne miernika(można sprawdzić {LATLONG_LINK}";
+char PL_INTL_AIRMONITORCOORDINATESINFO[80] PROGMEM = "Współrzędne geograficzne miernika(można sprawdzić {LATLONG_LINK})";
 char PL_INTL_AIRMONITORLATITUDE[32] PROGMEM = "Szerokość(latitude)";
 char PL_INTL_AIRMONITORLONGITUDE[32] PROGMEM = "Długość(longitude)";
 

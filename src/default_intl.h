@@ -57,7 +57,7 @@ extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogom
 
 extern char TEXT_AIRMONITORSENDING[128] = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. {PMSENSORMODEL})";
 extern char TEXT_AIRMONITORCHARTS[64] = "Displaying charts from the AirMonitor site";
-extern char TEXT_AIRMONITORCOORDINATESINFO[80] = "Geographical coordinates(you can check it {LATLONG_LINK}";
+extern char TEXT_AIRMONITORCOORDINATESINFO[80] = "Geographical coordinates(you can check it {LATLONG_LINK})";
 extern char TEXT_AIRMONITORLATITUDE[32] = "Latitude";
 extern char TEXT_AIRMONITORLONGITUDE[32] = "Longitude";
 

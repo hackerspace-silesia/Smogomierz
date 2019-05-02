@@ -114,6 +114,11 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 
 		strcpy(TEXT_HERE, EN_INTL_HERE);
 		strcpy(TEXT_THEFORM, EN_INTL_THEFORM);
+		
+		strcpy(TEXT_CONNECTEDWIFI, EN_INTL_CONNECTEDWIFI);
+		strcpy(TEXT_WIFIRSSI, EN_INTL_WIFIRSSI);
+		strcpy(TEXT_WIFIQUALITY, EN_INTL_WIFIQUALITY);
+		
 		*/
 	} else if (SELECTED_LANGUAGE == 2) { //polish translation
 		Serial.println("Polish Translation!\n");
@@ -224,6 +229,11 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 
 		strcpy(TEXT_HERE, PL_INTL_HERE);
 		strcpy(TEXT_THEFORM, PL_INTL_THEFORM);
+		
+		strcpy(TEXT_CONNECTEDWIFI, PL_INTL_CONNECTEDWIFI);
+		strcpy(TEXT_WIFIRSSI, PL_INTL_WIFIRSSI);
+		strcpy(TEXT_WIFIQUALITY, PL_INTL_WIFIQUALITY);
+
 	} else { //others future translations
 		Serial.println("Other Translation!\n");
 		

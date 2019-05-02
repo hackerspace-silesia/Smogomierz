@@ -113,6 +113,6 @@ char PL_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Najnowszą wersję oprogramowani
 char PL_INTL_HERE[16] PROGMEM = "tutaj";
 char PL_INTL_THEFORM[16] PROGMEM = "formularz";
 
-char PL_INTL_CONNECTEDWIFI[32] = "Połączony z WiFi(SSID)";
-char PL_INTL_WIFIRSSI[32] = "Siła sygnału WiFi(RSSI)";
-char PL_INTL_WIFIQUALITY[32] = "Jakość sygnału WiFi";
+char PL_INTL_CONNECTEDWIFI[32] PROGMEM = "Połączony z WiFi(SSID)";
+char PL_INTL_WIFIRSSI[32] PROGMEM = "Siła sygnału WiFi(RSSI)";
+char PL_INTL_WIFIQUALITY[32] PROGMEM = "Jakość sygnału WiFi";

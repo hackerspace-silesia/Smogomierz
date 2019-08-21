@@ -1,17 +1,53 @@
+<<<<<<< Updated upstream
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
 #include <SoftwareSerial.h>
 #include <ESP8266HTTPUpdateServer.h>
+=======
+#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.5.2 or later
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <ESP8266HTTPUpdateServer.h>
+#include <SoftwareSerial.h>
+#include <PubSubClient.h>
+#elif defined ARDUINO_ARCH_ESP32
+#include <WiFi.h>
+#endif
+
+/*
+
+  Szkic używa 493952 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54776 bajtów (66%) pamięci dynamicznej, pozostawiając 27144 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 500328 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54056 bajtów (65%) pamięci dynamicznej, pozostawiając 27864 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 526616 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 51764 bajtów (63%) pamięci dynamicznej, pozostawiając 30156 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+*/
+>>>>>>> Stashed changes
 
 #include <Wire.h>
 
 #include "FS.h"
+<<<<<<< Updated upstream
 #include "ArduinoJson.h" // 6.5.0 beta or later !!!
 #include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager
 #include "src/pms.h" // https://github.com/fu-hsi/PMS
 #include "src/bme280.h" // https://github.com/zen/BME280_light
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D
+=======
+#include <ArduinoJson.h> // 6.9.0 or later
+//#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager // 12.03.2019
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
+#include "src/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
+#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
+#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
+#include <DHT.h>
+>>>>>>> Stashed changes
 
 //#include "src/Adafruit_HTU21DF.h" // https://github.com/adafruit/Adafruit_HTU21DF_Library
 
@@ -91,6 +127,15 @@ float SDSpm25, SDSpm10;
 ESP8266WebServer WebServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 
+<<<<<<< Updated upstream
+=======
+WiFiClient espClient;
+PubSubClient mqttclient(espClient);
+
+WiFiManager wifiManager;
+
+// check TEMP/HUMI/PRESS Sensor - START
+>>>>>>> Stashed changes
 bool checkHTU21DStatus() {
   int temperature_HTU21D_Int = int(myHTU21D.readTemperature());
   int humidity_HTU21D_Int = int(myHTU21D.readHumidity());
@@ -215,19 +260,24 @@ void setup() {
 
   // get ESP id
   if (DEVICENAME_AUTO) {
+#ifdef ARDUINO_ARCH_ESP8266
     sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
+#elif defined ARDUINO_ARCH_ESP32
+    sprintf(device_name, "Smogomierz-%06X", ESP.getEfuseMac());
+#endif
   } else {
     strncpy(device_name, DEVICENAME, 20);
   }
 
   Serial.print("Device name: ");
   Serial.println(device_name);
+  /*
+    WiFiManager wifiManager;
+    wifiManager.autoConnect(device_name);
 
-  WiFiManager wifiManager;
-  wifiManager.autoConnect(device_name);
+    delay(250);
 
-  delay(250);
-
+<<<<<<< Updated upstream
   if (!wifiManager.autoConnect(device_name)) {
     Serial.println("failed to connect...");
     delay(1000);
@@ -239,6 +289,36 @@ void setup() {
     if (checkUpdate() == true) {
       bootupdate = 1;
     }
+=======
+    if (!wifiManager.autoConnect(device_name)) {
+      Serial.println("Failed to connect...");
+      delay(1000);
+      ESP.reset(); //reset and try again
+      delay(5000);
+    }
+  */
+
+  if (wifiManager.autoConnect(device_name)) {
+    Serial.println("connected...yeey :)");
+    //wifiManager.setConfigPortalBlocking(false);
+  } else {
+    Serial.println("Configportal running");
+    wifiManager.setConfigPortalBlocking(false);
+  }
+  delay(250);
+
+  /*
+    // check update
+    if (checkUpdate(0) == true) {
+      need_update = true;
+    } else {
+      need_update = false;
+    }
+  */
+
+  if (MQTT_ON) {
+    mqttclient.setServer(MQTT_HOST, MQTT_PORT);
+>>>>>>> Stashed changes
   }
 
   if (INFLUXDB_ON) {

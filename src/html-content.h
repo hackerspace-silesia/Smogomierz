@@ -45,7 +45,7 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = "<hr>\
 // MEASUREMENTS PAGE - END
 // CONFIG PAGE - Start
 
-const char WEB_CONFIG_PAGE_TOP[] PROGMEM = "<form method='POST' action='/config'>\
+const char WEB_CONFIG_PAGE_TOP[] PROGMEM = "<form method='POST' action='/config'>\ 
 	<main role='main' class='container'><div class='jumbotron'>\
 	<center><h1>Smogomierz - {TEXT_CONFIG_PAGE}</h1></center><br><br>\
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>\
@@ -74,7 +74,7 @@ const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = "<b>{TEXT_DEVICENAME}: </b>{device
 	{TEXT_SECURELOGOUTINFO}\
 	<hr>\
 	<b>{TEXT_SMOGLISTSENDING}: </b>{SMOGLIST_ON} {TEXT_SMOGLISTINFO}\
-	<hr>\
+	<hr>\	
 	<b>{TEXT_LUFTDATENSENDING}: </b>{LUFTDATEN_ON}\
 	<b>ChipID: </b>{ChipID}\
 	<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>\

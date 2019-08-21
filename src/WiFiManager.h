@@ -1,9 +1,9 @@
 /**
  * WiFiManager.h
- *
+ * 
  * WiFiManager, a library for the ESP8266/Arduino platform
  * for configuration of WiFi credentials using a Captive Portal
- *
+ * 
  * @author Creator tzapu
  * @author tablatronix
  * @version 0.0.0
@@ -24,11 +24,11 @@
 
 // #define WM_MDNS            // also set MDNS with sethostname
 // #define WM_FIXERASECONFIG  // use erase flash fix
-// #define WM_ERASE_NVS       // esp32 erase(true) will erase NVS
+// #define WM_ERASE_NVS       // esp32 erase(true) will erase NVS 
 // #define WM_RTC             // esp32 info page will include reset reasons
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_3_0
-#warning "ARDUINO_ESP8266_RELEASE_2_3_0, some WM features disabled"
+#warning "ARDUINO_ESP8266_RELEASE_2_3_0, some WM features disabled" 
 #define WM_NOASYNC         // esp8266 no async scan wifi
 #endif
 
@@ -57,8 +57,8 @@
 #elif defined(ESP32)
 
     #include <WiFi.h>
-    #include <esp_wifi.h>
-
+    #include <esp_wifi.h>  
+    
     #define WIFI_getChipId() (uint32_t)ESP.getEfuseMac()
     #define WM_WIFIOPEN   WIFI_AUTH_OPEN
 
@@ -103,7 +103,7 @@
 
 class WiFiManagerParameter {
   public:
-    /**
+    /** 
         Create custom parameters that can be added to the WiFiManager setup web page
         @id is used for HTTP queries and must not contain spaces nor other special characters
     */
@@ -157,8 +157,8 @@ class WiFiManager
 
     //manually stop the config portal if started manually, stop immediatly if non blocking, flag abort if blocking
     bool          stopConfigPortal();
-
-    //manually start the web portal, autoconnect does this automatically on connect failure
+    
+    //manually start the web portal, autoconnect does this automatically on connect failure    
     void          startWebPortal();
     //manually stop the web portal if started manually
     void          stopWebPortal();
@@ -225,7 +225,7 @@ class WiFiManager
     void          setSTAStaticIPConfig(IPAddress ip, IPAddress gw, IPAddress sn, IPAddress dns);
     //if this is set, it will exit after config, even if connection is unsuccessful.
     void          setBreakAfterConfig(boolean shouldBreak);
-    // if this is set, portal will be blocking and wait until save or exit,
+    // if this is set, portal will be blocking and wait until save or exit, 
     // is false user must manually `process()` to handle config portal,
     // setConfigPortalTimeout is ignored in this mode, user is responsible for closing configportal
     void          setConfigPortalBlocking(boolean shouldBlock);
@@ -243,7 +243,7 @@ class WiFiManager
     void          setCaptivePortalEnable(boolean enabled);
     //if false, timeout captive portal even if a STA client connected to softAP (false), suggest disabling if captiveportal is open
     void          setAPClientCheck(boolean enabled);
-    //if true, reset timeout when webclient connects (true), suggest disabling if captiveportal is open
+    //if true, reset timeout when webclient connects (true), suggest disabling if captiveportal is open    
     void          setWebPortalClientCheck(boolean enabled);
     // if true, enable autoreconnecting
     void          setWiFiAutoReconnect(boolean enabled);
@@ -264,7 +264,7 @@ class WiFiManager
     // get last connection result, includes autoconnect and wifisave
     uint8_t       getLastConxResult();
     // get a status as string
-    String        getWLStatusString(uint8_t status);
+    String        getWLStatusString(uint8_t status);    
     String        getModeString(uint8_t mode);
     // check if the module has a saved ap to connect to
     bool          getWiFiIsSaved();
@@ -274,7 +274,7 @@ class WiFiManager
     // debug output platform info and versioning
     void          debugPlatformInfo();
     String        htmlEntities(String str);
-
+    
     // set the country code for wifi settings
     void          setCountry(String cc);
     // set body class (invert)
@@ -287,7 +287,7 @@ class WiFiManager
     #else
         using WM_WebServer = ESP8266WebServer;
     #endif
-
+    
     std::unique_ptr<WM_WebServer> server;
 
   private:
@@ -310,7 +310,7 @@ class WiFiManager
     String        _apPassword             = "";
     String        _ssid                   = "";
     String        _pass                   = "";
-
+    
     // options flags
     unsigned long _configPortalTimeout    = 0; // ms close config portal loop if set (depending on  _cp/webClientCheck options)
     unsigned long _connectTimeout         = 0; // ms stop trying to connect to ap if set
@@ -325,7 +325,7 @@ class WiFiManager
     unsigned long _startscan              = 0; // ms for timing wifi scans
     int           _cpclosedelay           = 2000; // delay before wifisave, prevents captive portal from closing to fast.
     bool          _cleanConnect           = true; // disconnect before connect in connectwifi, increases stability on connects
-
+   
     bool          _disableSTA             = false; // disable sta when starting ap, always
     bool          _disableSTAConn         = true;  // disable sta when starting ap, if sta is not connected ( stability )
     bool          _channelSync            = false; // use wifi channel when starting ap
@@ -344,7 +344,7 @@ class WiFiManager
     int            _staShowDns            = 0;     // ternary always show dns, only if not set in code, never(cannot change dns via web!)
     boolean       _removeDuplicateAPs     = true;  // remove dup aps from wifiscan
     boolean       _shouldBreakAfterConfig = false; // stop configportal on save failure
-    boolean       _configPortalIsBlocking = true;  // configportal enters blocking loop
+    boolean       _configPortalIsBlocking = true;  // configportal enters blocking loop 
     boolean       _enableCaptivePortal    = true;  // enable captive portal redirection
     boolean       _userpersistent         = true;  // users preffered persistence to restore
     boolean       _wifiAutoReconnect      = true;  // there is no platform getter for this, we must assume its true and make it so
@@ -457,9 +457,9 @@ class WiFiManager
     boolean       webPortalActive     = false;
     boolean       portalTimeoutResult = false;
     boolean       portalAbortResult   = false;
-    boolean       storeSTAmode        = true; // option store persistent STA mode in connectwifi
+    boolean       storeSTAmode        = true; // option store persistent STA mode in connectwifi 
     int           timer               = 0;
-
+    
     // WiFiManagerParameter
     int         _paramsCount          = 0;
     int         _max_params;
@@ -477,7 +477,7 @@ class WiFiManager
     boolean       _debug              = true;
     uint8_t       _debugLevel         = DEBUG_DEV;
     Stream&     _debugPort; // debug output stream ref
-
+    
     template <typename Generic>
     void        DEBUG_WM(Generic text);
 

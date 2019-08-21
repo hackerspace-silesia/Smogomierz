@@ -381,7 +381,7 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_MEASUREMENTFREQUENCY}", (TEXT_MEASUREMENTFREQUENCY));
 
   message.replace("{FREQUENTMEASUREMENT_Select}", _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
-
+  
   if (FREQUENTMEASUREMENT == true) {
     message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_SECONDS}"));
     message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
@@ -426,7 +426,7 @@ void _handle_config(bool is_success) {
     message.replace("{SENDING_FREQUENCY}", String(SENDING_FREQUENCY));
     message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
   }
-
+  
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     message.replace("{DISPLAY_PM1}", _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1));
     message.replace("{TEXT_DISPLAYPM1}", (TEXT_DISPLAYPM1));
@@ -441,26 +441,26 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_SECURECONFIGUPDATEPAGE}", (TEXT_SECURECONFIGUPDATEPAGE));
   message.replace("{CONFIG_AUTH}", _addBoolSelect("CONFIG_AUTH", CONFIG_AUTH));
   message.replace("{TEXT_SECURELOGIN}", (TEXT_SECURELOGIN));
-
+  
   message.replace("{CONFIG_USERNAME}", _addTextInput("CONFIG_USERNAME", CONFIG_USERNAME));
   message.replace("{TEXT_SECUREPASSWD}", (TEXT_SECUREPASSWD));
-
+  
 Serial.println("CRASH - 1 - _addPasswdInput");
   //message.replace("{CONFIG_PASSWORD}", _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD)); // CRASH!!!
-
+  
   if (!CONFIG_AUTH) {
     message.replace("{TEXT_SECURELOGOUTINFO}", "");
   } else {
     message.replace("{TEXT_SECURELOGOUTINFO}", (TEXT_SECURELOGOUTINFO));
   }
-
+  
   message.replace("{TEXT_SMOGLISTSENDING}", (TEXT_SMOGLISTSENDING));
   message.replace("{SMOGLIST_LINK}", (SMOGLIST_LINK));
   message.replace("{SMOGLIST_ON}", _addBoolSelect("SMOGLIST_ON", SMOGLIST_ON));
   message.replace("{TEXT_SMOGLISTINFO}", (TEXT_SMOGLISTINFO));
 
   message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
-
+  
 Serial.println("CRASH - 2 - LINK");
   //message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK)); // CRASH!!!
   //message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK)); // CRASH!!!
@@ -471,7 +471,7 @@ Serial.println("CRASH - 2 - LINK");
   #elif defined ARDUINO_ARCH_ESP32
   	message.replace("{ChipID}", "smogomierz-" + String(ESP.getEfuseMac()));
   #endif
-
+    
   if (!strcmp(THP_MODEL, "BME280")) {
     message.replace("{THPSENSOR}", "BME280");
     message.replace("{THPXPIN}", "11");
@@ -505,7 +505,7 @@ Serial.println("CRASH - 2 - LINK");
   }
 
   message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
-
+  
   char PMSENSORMODEL[16];
   if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
     strcpy(PMSENSORMODEL, "PMS7003");
@@ -515,8 +515,8 @@ Serial.println("CRASH - 2 - LINK");
     strcpy(PMSENSORMODEL, "HPMA115S0");
   }
   message.replace("{PMSENSORMODEL}", PMSENSORMODEL);
-
-Serial.println("CRASH - 3 - LINK"); // CRASH!!!
+  
+Serial.println("CRASH - 3 - LINK"); // CRASH!!! 
 /*
   message.replace("{AIRMONITOR_LINK}", (AIRMONITOR_LINK));
   message.replace("{AIRMONITORFORM_LINK}", (AIRMONITORFORM_LINK));
@@ -532,7 +532,7 @@ Serial.println("CRASH - 3 - LINK"); // CRASH!!!
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
 Serial.println("CRASH - 4 - _addFloatInput");
-  //message.replace("{LATITUDE}", _addFloatInput("LATITUDE", LATITUDE, 6, "°")); // CRASH!!!
+  //message.replace("{LATITUDE}", _addFloatInput("LATITUDE", LATITUDE, 6, "°")); // CRASH!!! 
   message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
 Serial.println("CRASH - 5 - _addFloatInput");
   //message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", LONGITUDE, 6, "°")); // CRASH!!!
@@ -547,7 +547,7 @@ Serial.println("CRASH - 6 - LINK");
   message.replace("{THINGSPEAK_API_KEY}", _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY));
   message.replace("{TEXT_THINGSPEAKCHANNELID}", (TEXT_THINGSPEAKCHANNELID));
   message.replace("{THINGSPEAK_CHANNEL_ID}", _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID));
-
+  
   message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
   message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
   message.replace("{TEXT_INFLUXDBSERVER}", (TEXT_INFLUXDBSERVER));
@@ -587,13 +587,13 @@ Serial.println("CRASH - 8 - _addPasswdInput");
 
   message.replace("{TEXT_AUTOUPDATEON}", TEXT_AUTOUPDATEON);
   message.replace("{AUTOUPDATEON}", _addBoolSelect("AUTOUPDATE_ON", AUTOUPDATE_ON));
-
+  
 #ifdef ARDUINO_ARCH_ESP8266
   message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", TEXT_UPDATEPAGEAUTOUPDATEWARNING);
 #elif defined ARDUINO_ARCH_ESP32
   message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}<br>", "");
 #endif
-
+  
   message.replace("{WiFiEraseButton}", _addWiFiErase());
   message.replace("{RestoreConfigButton}", _addRestoreConfig());
   message.replace("{SubmitButton}", _addSubmit());
@@ -850,7 +850,7 @@ void handle_update() {            //Handler for the handle_update
   message.replace("{TEXT_WIFIQUALITY}", (TEXT_WIFIQUALITY));
   message.replace("{WiFiQuality}", (String(WiFiQuality) + " %"));
   // init WiFi signal quality info - END
-
+  
   message += FPSTR(WEB_PAGE_FOOTER);
   WebServer.send(200, "text/html", message);
 }
@@ -912,80 +912,6 @@ void autoupdateon() {
       return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
     }
   }
-  AUTOUPDATE_ON = true;
-  saveConfig();
-  delay(300);
-  WebServer.sendHeader("Location", "/", true);
-  WebServer.send ( 302, "text/plain", "");
-  delay(1000);
-  Serial.println("Restart");
-  ESP.restart();
-}
-
-  message.replace("{TEXT_CURRENTSOFTVERSION}", (TEXT_CURRENTSOFTVERSION));
-  message.replace("{SOFTWAREVERSION}", String(CURRENTSOFTWAREVERSION) + " " + String(PMSENSORVERSION));
-
-  message.replace("{TEXT_SERVERSOFTWAREVERSION}", (TEXT_SERVERSOFTWAREVERSION));
-  message.replace("{SERVERSOFTWAREVERSION}", String(SERVERSOFTWAREVERSION) + " " + String(PMSENSORVERSION));
-
-  message.replace("{TEXT_LATESTAVAILABLESOFT}", TEXT_LATESTAVAILABLESOFT);
-  message.replace("{SMOGOMIERZRELEASES_LINK}", (SMOGOMIERZRELEASES_LINK));
-  message.replace("{TEXT_HERE}", (TEXT_HERE));
-
-  // init WiFi signal quality info - START
-  String WiFiSSID = WiFi.SSID();
-  int WiFiRSSI = WiFi.RSSI();
-  message.replace("{TEXT_CONNECTEDWIFI}", (TEXT_CONNECTEDWIFI));
-  message.replace("{WiFiSSID}", (WiFiSSID));
-  message.replace("{TEXT_WIFIRSSI}", (TEXT_WIFIRSSI));
-  message.replace("{WiFiRSSI}", (String(WiFiRSSI) + " dBm"));
-
-  // https://stackoverflow.com/a/15798024
-  int WiFiQuality;
-  if(WiFiRSSI <= -100) {
-         WiFiQuality = 0;
-  } else if(WiFiRSSI >= -50) {
-         WiFiQuality = 100;
-  } else {
-         WiFiQuality = 2 * (WiFiRSSI + 100);
-	 }
-  message.replace("{TEXT_WIFIQUALITY}", (TEXT_WIFIQUALITY));
-  message.replace("{WiFiQuality}", (String(WiFiQuality) + " %"));
-  // init WiFi signal quality info - END
-
-  message += FPSTR(WEB_PAGE_FOOTER);
-  WebServer.send(200, "text/html", message);
-}
-
-void erase_wifi() {
-  Serial.println("Erasing Config...");
-  ESP.eraseConfig();
-  WebServer.sendHeader("Location", "/", true);
-  WebServer.send ( 302, "text/plain", "");
-  delay(1000);
-  Serial.println("Restart");
-  ESP.restart();
-}
-
-void restore_config() {
-  Serial.println("Restoring default settings...");
-  deleteConfig();
-  WebServer.sendHeader("Location", "/", true);
-  WebServer.send ( 302, "text/plain", "");
-  delay(1000);
-  Serial.println("Restart");
-  ESP.restart();
-}
-
-void fwupdate() {
-  doUpdate();
-  delay(1000);
-  WebServer.sendHeader("Location", "/", true);
-  WebServer.send ( 302, "text/plain", "");
-  delay(1000);
-}
-
-void autoupdateon() {
   AUTOUPDATE_ON = true;
   saveConfig();
   delay(300);

@@ -392,7 +392,7 @@ void sendTHPDatatoMadavide(float currentTemperature, float currentPressure, floa
 void sendDataToLuftdaten(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
   if (!(LUFTDATEN_ON)) {
     return;
-  }
+  }	
   sendDUSTDatatoLuftdaten(averagePM1, averagePM25, averagePM10);
   sendTHPDatatoLuftdaten(currentTemperature, currentPressure, currentHumidity);
   delay(10);

@@ -18,7 +18,7 @@ void sendJson(JsonObject& json) {
         return;
     }
 
-    delay(100);
+    delay(100); 
 
     client.println("POST /api HTTP/1.1");
     client.println("Content-Type: application/json");
@@ -104,3 +104,6 @@ void sendDataToAirMonitor(float currentTemperature, float currentPressure, float
     sendDUSTData(averagePM1, averagePM25, averagePM10);
     sendTHPData(currentTemperature, currentPressure, currentHumidity);
 }
+
+
+

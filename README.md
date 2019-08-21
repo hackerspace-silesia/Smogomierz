@@ -1,58 +1,43 @@
-### TODO
-- [ ] Dodanie obsługi SDS011/021
-- [X] Uśrednianie 10 ostatnich pomiarów PM
-- [X] Możliwość zmiany częstotliwaości wykonywania pomiarów PM
-- [X] Możliwośc wyboru liczny pomiarów do uśredniania
-- [X] Nowy design
-- [ ] Dodanie obsługi Honeywell HPMA115S0-XXX
-- [ ] Kropki a nie przecinki przy zmianie współrzędnych w /config
-- [X] Aktualizacja ArduinoJson do wersji 6 lub nowszej - [dokumentacja ArduinoJson 6](https://arduinojson.org/v6/doc/upgrade/)
-- [ ] Aktualizacja Instrukcji. Nowe zdjęcia np. z wycinania otworów w obudowach
-- [X] Automatyczne aktualizacje oprogramowania mierników – Zakomentowane i wyłączone, bo działają tylko z adresem HTTP - brakuje pamięci w ESP8266
+# Smogomierz [![Build Status](https://travis-ci.org/hackerspace-silesia/Smogomierz.svg?branch=master)](https://travis-ci.org/hackerspace-silesia/Smogomierz)
 
-- [ ] Przygotować "czysty" .bin bez obsługi żadnego miernika.
-- [ ] Przygotować oddzielne pliki .bin dla każdej konfiguracji sprzętu
-- [ ] Dodać automatyczną aktualizację oprogramowania po HHTPS z githubu
-- [ ] Przygotowanie aplikacji Smogomierz-firmware-flasher bazującej na [airrohr-firmware-flasher](https://github.com/opendata-stuttgart/airrohr-firmware-flasher)
+![Smogomierz1](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Smogomierz1.jpg)
 
+Smogomierz to niekomercyjny projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
 
-===
+Smogomierz nie wysyła Twoich danych do żadnego serwisu, jeśli nie wyrazisz na to zgody. Dane pomiarowe z Twojego miernika należą do Ciebie i to od Ciebie zależy co z nimi zrobisz i komu je udostępnisz. Jeśli tylko Ty chcesz mieć dostęp do swoich danych, to masz do tego prawo. Jeśli jednak chcesz się nimi podzielić, to w karcie Konfiguracji panelu Smogomierza masz możliwość wyboru kilku serwisów, do których możesz wysłać dane. Wśród nich znajdziesz między innymi serwis [AirMonitor](http://mapa.airmonitor.pl), [ThingSpeak](https://thingspeak.com), czy bazę danych [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/). Smogomierz posiada również [wtyczkę Homebridge](https://github.com/bfaliszek/homebridge-smogomierz).
 
+Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogomierz-deviceName"(np. "Smogomierz-328017"). Po podłączeniu się z nią, będziesz miał możliwość skonfigurowania połączenia WiFi z własną siecią domową. Z listy dostępnych sieci wybierz swoją własną i podaj do niej hasło. Smogomierz zapisze dane w swojej pamięci wewnętrznej i ponownie się uruchomienie. Dalszą konfigurację wykonasz już przez przeglądarkę internetową wchodząc pod adres Smogomierz-deviceName.local lub IP_Smogomierza(do sprawdzenia na routerze). 
 
-# Smogomierz
+Stworzyliśmy również aplikację dla systemów Windows, macOS oraz Linux), która umożliwia w łatwy sposób wgranie oprogramowania oraz znajdowanie adresu IP Twojego miernika! Możesz ją pobrać ze strony [github.com/hackerspace-silesia/Smogomierz-Flashing-Tool](https://github.com/hackerspace-silesia/Smogomierz-Flashing-Tool/releases).
 
-Smogomierz to projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
+## Darowizny
 
-Miernik wysyła dane na stronę - [mapa.airmonitor.pl](http://mapa.airmonitor.pl) oraz ma możliwość przesyłania pomiarów do serwisu [ThingSpeak](https://thingspeak.com) i baz danych [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/).
+Projekt Smogomierza jest rozwijany od ponad roku. Wszystko w ramach projektu Smogomierz robione jest za darmo, w ramach wolontariatu. Jeśli chcesz wesprzeć rozwój projektu, to możesz przekazać darowiznę na Stowarzyszenie Hackerspace Silesia. Najprościej można to zrobić przez specjalny formularz znajdujący się na stronie: [hs-silesia.pl/smogomierz](https://hs-silesia.pl/smogomierz/).
 
-Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogomierz-deviceName". "deviceName" generowane jest na podstawie unikalnego numeru Chip ID płytki ESP8266. Na początku pliku defaultConfig.h, możemy zmienić wartość "DEVICENAME_AUTO" z "true" na "false". Wówczas zamiast unikalnego numery Chip ID używana będzie nazwa z paramatru "DEVICENAME" w pliku defaultConfig.h. 
-
-Smogomierz obsługuje Zeroconf(Bonjour). Pozwala on na połączenie się z miernikiem będącym w naszej sieci, bez znajomości jego adresu IP. Po połączeniu miernika smogu z naszą siecią WiFi, możemy otworzyć przeglądarkę internetową i wpisać adres: "Smogomierz-deviceName.local". Zeroconf do działania potrzebuje doinstalowania na komputerze z Windowsem aplikacji [Bonjour](https://support.apple.com/kb/DL999?locale=pl_PL), a pod Linuksem – Avahi. 
-
-### Aktualizacje oprogramowania
-
-Zakładka Update w panelu Smogomierza pozwala na wgrywanie plików .bin z nową wersją oprgramowania dla miernika. Plik bin można stworzyć samemu z kodu dostępnego w tym repozytorium. Do zrobienia tego potrzebne jest ArduinoIDE – [Instrukcja instalacji wymaganego oprogramowania](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md). W "Plik > Preferencje" lub "Arduino > Preferences…" zaznaczamy przy "Pokaż szczegółowe informacje podczas:" opcję "Kompilacji". W czasie kompilowania naszego kodu, na dole ekranu ArduinoIDE pojawią się adresy(coś w stylu "/var/folders/k9/tbv_kmpn1dj5fl5spjk209480000gn/T/arduino_build_795090/Smogomierz.ino.bin"), gdzie zostanie zapisany plik Smogomierz.ino.bin. Plik ten to właśnie paczka z naszym oprogramowaniem, które możemy wgrać przez kartę Update w panelu Smogomierza.
-
-### Obsługa HomeKit dla systemu iOS
-
-Jeśli jesteś użytkownikiem urządzenia z systemem iOS, możesz użyć wtyczki dla [Homebridge](https://github.com/nfarina/homebridge), aby mieć dostęp do danych pomiarowych w aplikacji Dom na swoim iPhonie lub iPadzie. Wtyczka Homebridge-Smogomierz dostępna jest [tutaj](https://github.com/bfaliszek/homebridge-smogomierz).
+<a href="https://hs-silesia.pl/smogomierz/"><img align="left" width="1204" height="336" src="https://smogomierz.hs-silesia.pl/WsparcieSmogomierzeHS.jpg"></a>
 
 ## Instrukcje
 
-1. [Instrukcja instalacji wymaganego oprogramowania](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md)
+1. [Instrukcja zlutowania wymaganych elementów](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/soldering.md)
 
-2. [Rejestracja i tworzenie nowego kanału w serwisie ThingSpeak](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/thingspeak.md)
+2. [Instrukcja przygotowania obudowy oraz podłączenia elektroniki](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/hardware.md)
 
-3. [Instrukcja podłączenia elektroniki](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/hardware.md)
+3. [Instrukcja instalacji/aktualizacji oprogramowania z pliku .bin](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software-bin.md)
 
+4. [Konfiguracja i ustawienia obsługi zewnętrznych serwisów(AirMonitor, InfluxDB itd.)](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software-additionals.md)
 
 ## Parts / Potrzebne części
 
-https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/components.md
+Do zbudowania własnego Smogomierza wymagana jest lutownica(wraz z cyną) oraz pistolet do kleju na gorąco, wiertarka, nóż do tapet i śrubokręt do skręcenia obudowy oraz części z poniższej listy.
 
-![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/schemat.png)
+[Lista potrzebnych części](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/components.md)
 
+Gotowe zestawy części potrzebnych do zbudowania własnego Smogomierza, dostępne są również w sklepie Botland: [Zestaw DIY do budowy miernika smogu](https://botland.com.pl/pl/czujniki-czystosci-powietrza/13434-zestaw-diy-do-budowy-miernika-smogu-czujnik-czystosci-powietrza-pm25-i-pm10.html)
+
+## Zaawansowane
+
+[Instrukcja instalacji oprogramowania wymaganego do kompilacji oprogramowania z repozytorium](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md)
 
 ### Tested on:
 
-ArdinoIDE 1.8.5 – https://www.arduino.cc/en/main/software
+ArdinoIDE 1.8.9 – https://www.arduino.cc/en/main/software

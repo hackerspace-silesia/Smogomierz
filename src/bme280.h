@@ -177,8 +177,9 @@ public:
       return false;
 
     readCoefficients();
-    write8(BME280_REGISTER_CONTROLHUMID, 0x03); // Set before CONTROL (DS 5.4.3)
-    write8(BME280_REGISTER_CONTROL, 0x3F);
+    write8(BME280_REGISTER_CONTROLHUMID, 0x03); // Set before CONTROL (DS 5.4.3), hum: x4
+    write8(BME280_REGISTER_CONTROL, 0x27); // temp: x1, press: x1, mode: normal
+    write8(BME280_REGISTER_CONFIG, 0xA0); //standby: 1000ms (default: 0.5ms, 0x20: 62.5ms, 0x40: 125ms)
     return true;  
   };
   

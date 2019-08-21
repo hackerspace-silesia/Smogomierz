@@ -356,7 +356,7 @@ void _handle_config(bool is_success) {
   }
 
   message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
-  message.replace("{GITHUB_LINK}", (GITHUB_LINK));
+  message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
 
   message += FPSTR(WEB_CONFIG_PAGE_CONFIG);
@@ -434,7 +434,7 @@ void _handle_config(bool is_success) {
     message.replace("<b>{TEXT_DISPLAYPM1}: </b> {DISPLAY_PM1}", "");
   }
   message.replace("{TEXT_ALTITUDEINFO}", (TEXT_ALTITUDEINFO));
-  message.replace("{WSPOLRZEDNE_GPS_LINK}", (WSPOLRZEDNE_GPS_LINK));
+  message.replace("{WSPOLRZEDNE_GPS_LINK}", String(WSPOLRZEDNE_GPS_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
   message.replace("{MYALTITUDE}", _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m"));
 
@@ -455,7 +455,7 @@ Serial.println("CRASH - 1 - _addPasswdInput");
   }
   
   message.replace("{TEXT_SMOGLISTSENDING}", (TEXT_SMOGLISTSENDING));
-  message.replace("{SMOGLIST_LINK}", (SMOGLIST_LINK));
+  message.replace("{SMOGLIST_LINK}", String(SMOGLIST_LINK));
   message.replace("{SMOGLIST_ON}", _addBoolSelect("SMOGLIST_ON", SMOGLIST_ON));
   message.replace("{TEXT_SMOGLISTINFO}", (TEXT_SMOGLISTINFO));
 
@@ -540,6 +540,7 @@ Serial.println("CRASH - 5 - _addFloatInput");
   message.replace("{TEXT_THINGSPEAKSENDING}", (TEXT_THINGSPEAKSENDING));
 Serial.println("CRASH - 6 - LINK");
   //message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK)); // CRASH!!!
+
   message.replace("{THINGSPEAK_ON}", _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON));
   message.replace("{TEXT_THINGSPEAKCHARTS}", (TEXT_THINGSPEAKCHARTS));
   message.replace("{THINGSPEAK_GRAPH_ON}", _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON));

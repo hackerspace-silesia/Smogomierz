@@ -1,13 +1,21 @@
+#ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266WiFi.h>
-#include <ArduinoJson.h>
+#elif defined ARDUINO_ARCH_ESP32
+#include <WiFi.h>
+#include <WiFiClient.h>
+#endif
 
+#include <ArduinoJson.h>
 #include "config.h"
 
 const char *SmoglistServerName = "api.smoglist.pl"; // api.smoglist.pl:8090/postjson
 const uint16_t SmoglistPort = 8090;
 
 void sendSmoglistJson(JsonObject& json) {
+	 // CRASH!!!
+	/*
     WiFiClient client;
+	client.setTimeout(12000);
     Serial.print("\nconnecting to ");
     Serial.println(SmoglistServerName);
 
@@ -25,7 +33,8 @@ void sendSmoglistJson(JsonObject& json) {
     client.print("Content-Length: ");
 	client.println(measureJson(json));
     client.println();
-	serializeJson(json, client);
+	//serializeJson(json, client);
+	serializeJson(String(json), client); // ???
 
     String line = client.readStringUntil('\r');
     // TODO: Support wrong error (!= 200)
@@ -34,8 +43,8 @@ void sendSmoglistJson(JsonObject& json) {
 		serializeJsonPretty(json, Serial);
         Serial.println(line);
     }
-
     client.stop();
+	*/
 }
 
 void sendSmoglistData(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
@@ -118,7 +127,6 @@ void sendSmoglistData(float currentTemperature, float currentPressure, float cur
 		json["Humidity"] = 0;
 		json["Pressure"] = 0;
 	}
-	
     sendSmoglistJson(json);
 }
 

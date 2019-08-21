@@ -18,7 +18,7 @@ void sendSmoglistJson(JsonObject& json) {
         return;
     }
 
-    delay(100); 
+    delay(100);
 
     client.println("POST /postjson HTTP/1.1");
     client.println("Content-Type: application/json");
@@ -41,40 +41,40 @@ void sendSmoglistJson(JsonObject& json) {
 void sendSmoglistData(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
 	StaticJsonDocument<1000> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
-	
+
 	json["CHIPID"] = "Smogomierz-" + String(ESP.getChipId());
 	json["SOFTWAREVERSION"] = SOFTWAREVERSION;
 	json["HARDWAREVERSION"] = HARDWAREVERSION; // "1.0 - ESP8266" or "2.0 - ESP32"
 	json["PMSENSORVERSION"] = PMSENSORVERSION; // PMS, SDS, HPMA115S0 ora SPS30
-	
+
 	json["FREQUENTMEASUREMENT"] = FREQUENTMEASUREMENT; // frequent measurements - True or False
 	json["DISPLAY_PM1"] = DISPLAY_PM1; // True or False
-	
+
 	json["DUST_TIME"] = DUST_TIME; // frequency of PM measurements;  default - 1
 	json["NUMBEROFMEASUREMENTS"] = NUMBEROFMEASUREMENTS; //  default - 10
-	
+
 	json["SENDING_FREQUENCY"] = SENDING_FREQUENCY; // default - 2
 	json["SENDING_DB_FREQUENCY"] = SENDING_DB_FREQUENCY; //  default - 2
-	
+
 	json["LUFTDATEN_ON"] = LUFTDATEN_ON; // True or False
-	
+
 	json["AIRMONITOR_ON"] = AIRMONITOR_ON; // True or False
 	json["AIRMONITOR_GRAPH_ON"] = AIRMONITOR_GRAPH_ON; // True or False
-	
+
 	json["THINGSPEAK_ON"] = THINGSPEAK_ON; // True or False
 	json["THINGSPEAK_GRAPH_ON"] = THINGSPEAK_GRAPH_ON; // True or False
-	
+
 	json["INFLUXDB_ON"] = INFLUXDB_ON; // True or False
 	json["MQTT_ON"] = MQTT_ON; // True or False
-	
+
 	json["DEEPSLEEP_ON"] = DEEPSLEEP_ON; // True or False
 	json["AUTOUPDATE_ON"] = AUTOUPDATE_ON; // True or False
 	json["MODEL"] = MODEL; // default "white" - automatic calibration, "red" - without calibration
-	
+
 	json["LATITUDE"] = String(LATITUDE, 6); // default - 50.2639
     json["LONGITUDE"] = String(LONGITUDE, 6); //  default - 18.9957
 	json["MYALTITUDE"] = MYALTITUDE; // int;  default - 271.00
-	
+
 	//PM data
 	if (!strcmp(DUST_MODEL, "PMS7003")) {
 		json["DUST_MODEL"] = "PMS5003/7003";
@@ -95,7 +95,7 @@ void sendSmoglistData(float currentTemperature, float currentPressure, float cur
 	json["PM25"] = averagePM25;
 	json["PM4"] = averagePM4;
     json["PM10"] = averagePM10;
-	
+
 	// Temp/Humi/Pressure data
 	if (strcmp(THP_MODEL, "Non")) {
 		if (!strcmp(THP_MODEL, "BME280")) {
@@ -118,7 +118,7 @@ void sendSmoglistData(float currentTemperature, float currentPressure, float cur
 		json["Humidity"] = 0;
 		json["Pressure"] = 0;
 	}
-	
+
     sendSmoglistJson(json);
 }
 

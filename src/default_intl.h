@@ -1,7 +1,7 @@
 /*
- *  
+ *
  *  default translation file - english translation
- *  
+ *
  */
 
 #pragma once
@@ -50,7 +50,7 @@ extern char TEXT_SECURELOGIN[16] = "Login";
 extern char TEXT_SECUREPASSWD[16] = "Password";
 extern char TEXT_SECURELOGOUTINFO[64] = "Restart your web browser to log out!";
 
-extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
+extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})";
 
 extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the {SMOGLIST_LINK} service";
 extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
@@ -129,4 +129,3 @@ static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.l
 static char THINGSPEAK_LINK[] PROGMEM = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
 static char SMOGOMIERZRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] PROGMEM = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
-

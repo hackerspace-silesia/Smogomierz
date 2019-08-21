@@ -60,9 +60,9 @@ bool checkUpdate(int checkUpdateSW) {
   // Reading data over SSL may be slow, use an adequate timeout
   client.setTimeout(12000);
 #endif
-  
+
   HTTPClient http;
-  
+
 #if defined(ARDUINO_ARCH_ESP8266)
   String latestJSONlink = "http://smogomierz.hs-silesia.pl/firmware/latest.json";
 #elif defined(ARDUINO_ARCH_ESP32)
@@ -79,17 +79,17 @@ bool checkUpdate(int checkUpdateSW) {
       if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
         String payload = http.getString();
         delay(10);
-		
-        /* 
+
+        /*
 		Serial.println(payload);
 		Serial.println(PMSENSORVERSION);
 		Serial.println(checkUpdateSW);
 		*/
-		
+
         StaticJsonDocument<400> jsonBuffer;
         deserializeJson(jsonBuffer, payload);
         JsonObject json = jsonBuffer.as<JsonObject>();
-		
+
         if (checkUpdateSW == 0) {
           ServerSW = json[PMSENSORVERSION];
         } else if (checkUpdateSW == 1) {
@@ -171,7 +171,7 @@ void doUpdate(int doUpdateSW) {
   // Reading data over SSL may be slow, use an adequate timeout
   client.setTimeout(12000);
 #endif
-  
+
   if (checkUpdate(doUpdateSW)) {
     if (DEBUG) {
       Serial.println("Starting firmware update...\n");
@@ -226,7 +226,7 @@ void doUpdate(int doUpdateSW) {
 #elif defined(ARDUINO_ARCH_ESP32)
     t_httpUpdate_return ret = httpUpdate.update(client, BinURL);
 #endif
-	
+
     if (DEBUG) {
       switch (ret) {
         case HTTP_UPDATE_FAILED:
@@ -234,7 +234,7 @@ void doUpdate(int doUpdateSW) {
         Serial.printf("Updated FAILED (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
 #elif defined(ARDUINO_ARCH_ESP32)
         Serial.printf("Updated FAILED (%d): %s\n", httpUpdate.getLastError(), httpUpdate.getLastErrorString().c_str());
-#endif	
+#endif
           break;
         case HTTP_UPDATE_NO_UPDATES:
           Serial.println("No update needed!");

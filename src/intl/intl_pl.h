@@ -1,7 +1,7 @@
 /*
- * 
+ *
  *  translation file - polish translations
- * 
+ *
  */
 
 #pragma once

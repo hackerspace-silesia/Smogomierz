@@ -197,8 +197,7 @@ bool loadConfig() {
     Serial.println(MODEL);
 	
     Serial.print("Loaded SOFTWAREVERSION: ");
-    //Serial.println(SOFTWAREVERSION); // CRASH!!!
-    Serial.println(String(SOFTWAREVERSION)); // OK!!!
+    Serial.println(SOFTWAREVERSION);
     
 	Serial.println("\n");
   }

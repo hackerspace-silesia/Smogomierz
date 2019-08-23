@@ -460,17 +460,15 @@ Serial.println("CRASH - 1 - _addPasswdInput");
   message.replace("{TEXT_SMOGLISTINFO}", (TEXT_SMOGLISTINFO));
 
   message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
+  message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));
+  message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));
+  message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
   
-Serial.println("CRASH - 2 - LINK");
-  //message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK)); // CRASH!!!
-  //message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK)); // CRASH!!!
-
-    message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
-  #ifdef ARDUINO_ARCH_ESP8266
-      message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
-  #elif defined ARDUINO_ARCH_ESP32
-  	message.replace("{ChipID}", "smogomierz-" + String(ESP.getEfuseMac()));
-  #endif
+#ifdef ARDUINO_ARCH_ESP8266
+  message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
+#elif defined ARDUINO_ARCH_ESP32
+  message.replace("{ChipID}", "smogomierz-" + String(ESP.getEfuseMac()));
+#endif
     
   if (!strcmp(THP_MODEL, "BME280")) {
     message.replace("{THPSENSOR}", "BME280");
@@ -515,14 +513,10 @@ Serial.println("CRASH - 2 - LINK");
     strcpy(PMSENSORMODEL, "HPMA115S0");
   }
   message.replace("{PMSENSORMODEL}", PMSENSORMODEL);
-  
-Serial.println("CRASH - 3 - LINK"); // CRASH!!! 
-/*
+
   message.replace("{AIRMONITOR_LINK}", (AIRMONITOR_LINK));
   message.replace("{AIRMONITORFORM_LINK}", (AIRMONITORFORM_LINK));
   message.replace("{TEXT_THEFORM}", (TEXT_THEFORM));
-*/
-
   message.replace("{TEXT_AIRMONITORCHARTS}", (TEXT_AIRMONITORCHARTS));
   message.replace("{AIRMONITOR_ON}", _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON));
   message.replace("{TEXT_AIRMONITORCOORDINATESINFO}", (TEXT_AIRMONITORCOORDINATESINFO));
@@ -531,16 +525,14 @@ Serial.println("CRASH - 3 - LINK"); // CRASH!!!
   message.replace("{TEXT_HERE}", (TEXT_HERE));
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
-Serial.println("CRASH - 4 - _addFloatInput");
+Serial.println("CRASH - 2 - _addFloatInput");
   //message.replace("{LATITUDE}", _addFloatInput("LATITUDE", LATITUDE, 6, "°")); // CRASH!!! 
   message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
-Serial.println("CRASH - 5 - _addFloatInput");
+Serial.println("CRASH - 3 - _addFloatInput");
   //message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", LONGITUDE, 6, "°")); // CRASH!!!
 
   message.replace("{TEXT_THINGSPEAKSENDING}", (TEXT_THINGSPEAKSENDING));
-Serial.println("CRASH - 6 - LINK");
-  //message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK)); // CRASH!!!
-
+  message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK));
   message.replace("{THINGSPEAK_ON}", _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON));
   message.replace("{TEXT_THINGSPEAKCHARTS}", (TEXT_THINGSPEAKCHARTS));
   message.replace("{THINGSPEAK_GRAPH_ON}", _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON));
@@ -560,7 +552,7 @@ Serial.println("CRASH - 6 - LINK");
   message.replace("{TEXT_INFLUXDBUSER}", (TEXT_INFLUXDBUSER));
   message.replace("{DB_USER}", _addTextInput("DB_USER", DB_USER));
   message.replace("{TEXT_INFLUXDBPASSWD}", (TEXT_INFLUXDBPASSWD));
-Serial.println("CRASH - 7 - _addPasswdInput");
+Serial.println("CRASH - 4 - _addPasswdInput");
   //message.replace("{DB_PASSWORD}", _addPasswdInput("DB_PASSWORD", DB_PASSWORD)); // CRASH!!!
 
   message.replace("{TEXT_MQTTSENDING}", (TEXT_MQTTSENDING));
@@ -572,7 +564,7 @@ Serial.println("CRASH - 7 - _addPasswdInput");
   message.replace("{TEXT_MQTTUSER}", (TEXT_MQTTUSER));
   message.replace("{MQTT_USER}", _addTextInput("MQTT_USER", MQTT_USER));
   message.replace("{TEXT_MQTTPASSWD}", (TEXT_MQTTPASSWD));
-Serial.println("CRASH - 8 - _addPasswdInput");
+Serial.println("CRASH - 5 - _addPasswdInput\n");
   //message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD)); // CRASH!!!
 
   message.replace("{DEBUG}", _addBoolSelect("DEBUG", DEBUG));

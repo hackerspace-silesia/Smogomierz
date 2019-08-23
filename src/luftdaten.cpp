@@ -1,7 +1,18 @@
+#ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266WiFi.h>
-#include <ArduinoJson.h>
+#elif defined ARDUINO_ARCH_ESP32
+#include <WiFi.h>
+#include <WiFiClient.h>
+#endif
 
+#include <ArduinoJson.h>
 #include "config.h"
+
+#ifdef ARDUINO_ARCH_ESP8266
+String luftdatenChipId = String(ESP.getChipId());
+#elif defined ARDUINO_ARCH_ESP32
+String luftdatenChipId = String((uint32_t)(ESP.getEfuseMac()));
+#endif
 
 const char *luftdatenAPIHOST = "api.luftdaten.info";
 const char *luftdatenAPIURL = "/v1/push-sensor-data/";
@@ -27,7 +38,7 @@ void sendDUSTLuftdatenJson(JsonObject& json) {
   client.println("Host: " + String(luftdatenAPIHOST));
   client.println("Content-Type: application/json");
   client.println("X-PIN: 1");
-  client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
+  client.println("X-Sensor: smogomierz-" + luftdatenChipId);
   client.print("Content-Length: ");
   client.println(measureJson(json));
   client.println("Connection: close");
@@ -43,7 +54,7 @@ void sendDUSTLuftdatenJson(JsonObject& json) {
     Serial.println("Host: " + String(luftdatenAPIHOST));
     Serial.println("Content-Type: application/json");
     Serial.println("X-PIN: 1");
-    Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
+    Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
     Serial.print("Content-Length: ");
     Serial.println(measureJson(json));
     Serial.println("Connection: close");
@@ -80,7 +91,7 @@ void sendTHPLuftdatenJson(JsonObject& json) {
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     client.println("X-PIN: 12");
   }
-  client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
+  client.println("X-Sensor: smogomierz-" + luftdatenChipId);
   client.print("Content-Length: ");
   client.println(measureJson(json));
   client.println("Connection: close");
@@ -107,7 +118,7 @@ void sendTHPLuftdatenJson(JsonObject& json) {
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
       Serial.println("X-PIN: 12");
     }
-    Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
+    Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
     Serial.print("Content-Length: ");
     Serial.println(measureJson(json));
     Serial.println("Connection: close");
@@ -212,7 +223,7 @@ void sendDUSTMadavideJson(JsonObject& json) {
   client.println("Host: " + String(madavideAPIHOST));
   client.println("Content-Type: application/json");
   client.println("X-PIN: 1");
-  client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
+  client.println("X-Sensor: smogomierz-" + luftdatenChipId);
   client.print("Content-Length: ");
   client.println(measureJson(json));
   client.println("Connection: close");
@@ -229,7 +240,7 @@ void sendDUSTMadavideJson(JsonObject& json) {
     Serial.println("Host: " + String(madavideAPIHOST));
     Serial.println("Content-Type: application/json");
     Serial.println("X-PIN: 1");
-    Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
+    Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
     Serial.print("Content-Length: ");
     Serial.println(measureJson(json));
     Serial.println("Connection: close");
@@ -266,7 +277,7 @@ void sendTHPMadavideJson(JsonObject& json) {
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     client.println("X-PIN: 12");
   }
-  client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
+  client.println("X-Sensor: smogomierz-" + luftdatenChipId);
   client.print("Content-Length: ");
   client.println(measureJson(json));
   client.println("Connection: close");
@@ -293,7 +304,7 @@ void sendTHPMadavideJson(JsonObject& json) {
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
       Serial.println("X-PIN: 12");
     }
-    Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
+    Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
     Serial.print("Content-Length: ");
     Serial.println(measureJson(json));
     Serial.println("Connection: close");

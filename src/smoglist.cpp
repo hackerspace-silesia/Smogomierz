@@ -47,7 +47,11 @@ void sendSmoglistData(float currentTemperature, float currentPressure, float cur
 	StaticJsonDocument<1000> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
 	
+#ifdef ARDUINO_ARCH_ESP8266
 	json["CHIPID"] = "Smogomierz-" + String(ESP.getChipId());
+#elif defined ARDUINO_ARCH_ESP32
+	json["CHIPID"] = "Smogomierz-" + String((uint32_t)(ESP.getEfuseMac()));
+#endif
 	json["SOFTWAREVERSION"] = SOFTWAREVERSION;
 	json["HARDWAREVERSION"] = HARDWAREVERSION; // "1.0 - ESP8266" or "2.0 - ESP32"
 	json["PMSENSORVERSION"] = PMSENSORVERSION; // PMS, SDS, HPMA115S0 ora SPS30

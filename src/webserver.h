@@ -1,11 +1,11 @@
-#include <ArduinoJson.h> // 6.9.0 or later
+#ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266httpUpdate.h>
-#include "spiffs.h"
-
-#ifdef ARDUINO_ARCH_ESP32
+#elif defined ARDUINO_ARCH_ESP32
 #include <Update.h>
 #endif
 
+#include <ArduinoJson.h> // 6.9.0 or later
+#include "spiffs.h"
 #include <FS.h>
 
 const char* www_realm = "Custom Auth Realm";
@@ -367,6 +367,7 @@ void _handle_config(bool is_success) {
   } else {
     message.replace("{device_name}", _addTextInput("DEVICENAME", DEVICENAME));
   }
+  
   message.replace("{TEXT_DEVICENAMEAUTO}", (TEXT_DEVICENAMEAUTO));
   message.replace("{DEVICENAME_AUTO}", _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO));
   message.replace("{TEXT_SELECTEDLANGUAGE}", (TEXT_SELECTEDLANGUAGE));
@@ -465,7 +466,8 @@ void _handle_config(bool is_success) {
 #ifdef ARDUINO_ARCH_ESP8266
   message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
-  message.replace("{ChipID}", "smogomierz-" + String(ESP.getEfuseMac()));
+  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
+  message.replace("{ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));  
 #endif
     
   if (!strcmp(THP_MODEL, "BME280")) {
@@ -578,7 +580,7 @@ void _handle_config(bool is_success) {
 #ifdef ARDUINO_ARCH_ESP8266
   message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", TEXT_UPDATEPAGEAUTOUPDATEWARNING);
 #elif defined ARDUINO_ARCH_ESP32
-  message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}<br>", "");
+  message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", "");
 #endif
   
   message.replace("{WiFiEraseButton}", _addWiFiErase());

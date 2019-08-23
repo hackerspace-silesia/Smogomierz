@@ -117,7 +117,7 @@ extern char TEXT_CONNECTEDWIFI[32] = "Connected to a WiFi(SSID)";
 extern char TEXT_WIFIRSSI[32] = "WiFi Signal Strength(RSSI)";
 extern char TEXT_WIFIQUALITY[32] = "WiFi Signal Quality";
 
-
+#ifdef ARDUINO_ARCH_ESP8266
 static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
 static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
 static char LUFTDATEN_LINK[] = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
@@ -129,4 +129,16 @@ static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.l
 static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
 static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
-
+#elif defined ARDUINO_ARCH_ESP32
+static char GITHUB_LINK[] PROGMEM = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
+static char WSPOLRZEDNE_GPS_LINK[] PROGMEM = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
+static char LUFTDATEN_LINK[] PROGMEM = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
+static char LUFTDATENFORM_LINK[] PROGMEM = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
+static char SMOGLIST_LINK[] PROGMEM = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
+static char AIRMONITOR_LINK[] PROGMEM = "<a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>";
+static char AIRMONITORFORM_LINK[] PROGMEM = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
+static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
+static char THINGSPEAK_LINK[] PROGMEM = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
+static char SMOGOMIERZRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char MADAVI_LINK[] PROGMEM = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
+#endif

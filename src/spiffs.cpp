@@ -1,8 +1,10 @@
 #include <ArduinoJson.h>
 #include <FS.h>
+#ifdef ARDUINO_ARCH_ESP32
+#include <SPIFFS.h>
+#endif
 
 #include "config.h"
-
 
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "") {
   const char* val = obj.as<const char*>();

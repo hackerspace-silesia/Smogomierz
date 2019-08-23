@@ -1,6 +1,11 @@
+#ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266WiFi.h>
-#include <ArduinoJson.h>
+#elif defined ARDUINO_ARCH_ESP32
+#include <WiFi.h>
+#include <WiFiClient.h>
+#endif
 
+#include <ArduinoJson.h>
 #include "config.h"
 
 const char *airMonitorServerName = "api.airmonitor.pl";

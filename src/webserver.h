@@ -444,9 +444,7 @@ void _handle_config(bool is_success) {
   
   message.replace("{CONFIG_USERNAME}", _addTextInput("CONFIG_USERNAME", CONFIG_USERNAME));
   message.replace("{TEXT_SECUREPASSWD}", (TEXT_SECUREPASSWD));
-  
-Serial.println("CRASH - 1 - _addPasswdInput");
-  //message.replace("{CONFIG_PASSWORD}", _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD)); // CRASH!!!
+  message.replace("{CONFIG_PASSWORD}", _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD));
   
   if (!CONFIG_AUTH) {
     message.replace("{TEXT_SECURELOGOUTINFO}", "");
@@ -525,11 +523,9 @@ Serial.println("CRASH - 1 - _addPasswdInput");
   message.replace("{TEXT_HERE}", (TEXT_HERE));
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
-Serial.println("CRASH - 2 - _addFloatInput");
-  //message.replace("{LATITUDE}", _addFloatInput("LATITUDE", LATITUDE, 6, "°")); // CRASH!!! 
+  message.replace("{LATITUDE}", _addFloatInput("LATITUDE", LATITUDE, 6, "°"));
   message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
-Serial.println("CRASH - 3 - _addFloatInput");
-  //message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", LONGITUDE, 6, "°")); // CRASH!!!
+  message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", LONGITUDE, 6, "°"));
 
   message.replace("{TEXT_THINGSPEAKSENDING}", (TEXT_THINGSPEAKSENDING));
   message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK));
@@ -552,8 +548,7 @@ Serial.println("CRASH - 3 - _addFloatInput");
   message.replace("{TEXT_INFLUXDBUSER}", (TEXT_INFLUXDBUSER));
   message.replace("{DB_USER}", _addTextInput("DB_USER", DB_USER));
   message.replace("{TEXT_INFLUXDBPASSWD}", (TEXT_INFLUXDBPASSWD));
-Serial.println("CRASH - 4 - _addPasswdInput");
-  //message.replace("{DB_PASSWORD}", _addPasswdInput("DB_PASSWORD", DB_PASSWORD)); // CRASH!!!
+  message.replace("{DB_PASSWORD}", _addPasswdInput("DB_PASSWORD", DB_PASSWORD));
 
   message.replace("{TEXT_MQTTSENDING}", (TEXT_MQTTSENDING));
   message.replace("{MQTT_ON}", _addBoolSelect("MQTT_ON", MQTT_ON));
@@ -564,8 +559,7 @@ Serial.println("CRASH - 4 - _addPasswdInput");
   message.replace("{TEXT_MQTTUSER}", (TEXT_MQTTUSER));
   message.replace("{MQTT_USER}", _addTextInput("MQTT_USER", MQTT_USER));
   message.replace("{TEXT_MQTTPASSWD}", (TEXT_MQTTPASSWD));
-Serial.println("CRASH - 5 - _addPasswdInput\n");
-  //message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD)); // CRASH!!!
+  message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
 
   message.replace("{DEBUG}", _addBoolSelect("DEBUG", DEBUG));
   message.replace("{TEXT_CALIBMETHOD}", (TEXT_CALIBMETHOD));

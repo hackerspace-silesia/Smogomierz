@@ -10,14 +10,14 @@
 
 /*
 
-  Szkic używa 526616 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 51764 bajtów (63%) pamięci dynamicznej, pozostawiając 30156 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 525312 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 52996 bajtów (64%) pamięci dynamicznej, pozostawiając 28924 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   Szkic używa 525644 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 53000 bajtów (64%) pamięci dynamicznej, pozostawiając 28920 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 526596 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 53096 bajtów (64%) pamięci dynamicznej, pozostawiając 28824 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 */
 

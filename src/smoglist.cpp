@@ -12,7 +12,6 @@ const char *SmoglistServerName = "api.smoglist.pl"; // api.smoglist.pl:8090/post
 const uint16_t SmoglistPort = 8090;
 
 void sendSmoglistJson(JsonObject& json) {
-	 // CRASH!!!
 	
     WiFiClient client;
 	client.setTimeout(12000);

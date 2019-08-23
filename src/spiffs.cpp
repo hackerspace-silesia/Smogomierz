@@ -225,12 +225,8 @@ bool saveConfig() {
 
   json["AIRMONITOR_ON"] = AIRMONITOR_ON;
   json["AIRMONITOR_GRAPH_ON"] = AIRMONITOR_GRAPH_ON;
-  //json["LATITUDE"] = LATITUDE; // CRASH!!!
-  //json["LATITUDE"] = 50.2639;
-  json["LATITUDE"] = float(LATITUDE);
-  //json["LONGITUDE"] = LONGITUDE; // CRASH!!!
-  //json["LONGITUDE"] = 18.9957;
-  json["LONGITUDE"] = float(LONGITUDE);
+  json["LATITUDE"] = LATITUDE;
+ json["LONGITUDE"] = LONGITUDE;
   json["MYALTITUDE"] = MYALTITUDE;
 
   json["THINGSPEAK_ON"] = THINGSPEAK_ON;
@@ -243,16 +239,14 @@ bool saveConfig() {
   json["INFLUXDB_PORT"] = INFLUXDB_PORT;
   json["INFLUXDB_DATABASE"] = INFLUXDB_DATABASE;
   json["DB_USER"] = DB_USER;
-  //json["DB_PASSWORD"] = DB_PASSWORD; // CRASH!!!
-  //json["DB_PASSWORD"] = "password";
+  json["DB_PASSWORD"] = DB_PASSWORD;
   json["DB_PASSWORD"] = String(DB_PASSWORD);
   
   json["MQTT_ON"] = MQTT_ON;
   json["MQTT_HOST"] = MQTT_HOST;
   json["MQTT_PORT"] = MQTT_PORT;
   json["MQTT_USER"] = MQTT_USER;
-  //json["MQTT_PASSWORD"] = MQTT_PASSWORD; // CRASH!!!
-  //json["MQTT_PASSWORD"] = "password";
+  json["MQTT_PASSWORD"] = MQTT_PASSWORD;
   json["MQTT_PASSWORD"] = String(MQTT_PASSWORD);
 
   json["SENDING_FREQUENCY"] = SENDING_FREQUENCY;
@@ -265,8 +259,7 @@ bool saveConfig() {
   
   json["CONFIG_AUTH"] = CONFIG_AUTH;
   json["CONFIG_USERNAME"] = CONFIG_USERNAME;
-  //json["CONFIG_PASSWORD"] = CONFIG_PASSWORD; // CRASH!!!
-  //json["CONFIG_PASSWORD"] = "password";
+  json["CONFIG_PASSWORD"] = CONFIG_PASSWORD;
   json["CONFIG_PASSWORD"] = String(CONFIG_PASSWORD);
   
   json["MODEL"] = MODEL;

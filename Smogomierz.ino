@@ -10,14 +10,14 @@
 
 /*
 
-  Szkic używa 493952 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54776 bajtów (66%) pamięci dynamicznej, pozostawiając 27144 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  Szkic używa 500328 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54056 bajtów (65%) pamięci dynamicznej, pozostawiając 27864 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 526616 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 51764 bajtów (63%) pamięci dynamicznej, pozostawiając 30156 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 525312 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 52996 bajtów (64%) pamięci dynamicznej, pozostawiając 28924 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 525644 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 53000 bajtów (64%) pamięci dynamicznej, pozostawiając 28920 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 */
 
@@ -334,14 +334,14 @@ void setup() {
   }
   delay(250);
 
-  /*
-    // check update
-    if (checkUpdate(0) == true) {
-      need_update = true;
-    } else {
-      need_update = false;
-    }
-  */
+
+  // check update
+  if (checkUpdate(0) == true) {
+    need_update = true;
+  } else {
+    need_update = false;
+  }
+
 
   if (MQTT_ON) {
     mqttclient.setServer(MQTT_HOST, MQTT_PORT);

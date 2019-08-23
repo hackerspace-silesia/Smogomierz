@@ -13,7 +13,7 @@ const uint16_t SmoglistPort = 8090;
 
 void sendSmoglistJson(JsonObject& json) {
 	 // CRASH!!!
-	/*
+	
     WiFiClient client;
 	client.setTimeout(12000);
     Serial.print("\nconnecting to ");
@@ -25,7 +25,6 @@ void sendSmoglistJson(JsonObject& json) {
         delay(3000);
         return;
     }
-
     delay(100); 
 
     client.println("POST /postjson HTTP/1.1");
@@ -33,9 +32,7 @@ void sendSmoglistJson(JsonObject& json) {
     client.print("Content-Length: ");
 	client.println(measureJson(json));
     client.println();
-	//serializeJson(json, client);
-	serializeJson(String(json), client); // ???
-
+	serializeJson(json, client);
     String line = client.readStringUntil('\r');
     // TODO: Support wrong error (!= 200)
 
@@ -44,7 +41,7 @@ void sendSmoglistJson(JsonObject& json) {
         Serial.println(line);
     }
     client.stop();
-	*/
+	
 }
 
 void sendSmoglistData(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {

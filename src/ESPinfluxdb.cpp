@@ -31,12 +31,11 @@ DB_RESPONSE Influxdb::opendb(String db) {
                 _response = DB_SUCCESS;
                 String payload = http.getString();
                 http.end();
-
                 if (payload.indexOf("db") > 0) {
                         _db =  db;
                         Serial.println(payload);
                         return _response;
-                }
+				}
         }
         _response = DB_ERROR;
         DEBUG_PRINT("Database open failed");

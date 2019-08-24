@@ -18,21 +18,18 @@
 /*
   ESP8266
 
-  Szkic używa 525644 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 53000 bajtów (64%) pamięci dynamicznej, pozostawiając 28920 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 526596 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 53096 bajtów (64%) pamięci dynamicznej, pozostawiając 28824 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 526108 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 53128 bajtów (64%) pamięci dynamicznej, pozostawiając 28792 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 526132 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 53144 bajtów (64%) pamięci dynamicznej, pozostawiając 28776 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1245302 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 61028 bajtów (18%) pamięci dynamicznej, pozostawiając 266652 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1245330 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 61084 bajtów (18%) pamięci dynamicznej, pozostawiając 266596 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1245354 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 61084 bajtów (18%) pamięci dynamicznej, pozostawiając 266596 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -86,11 +83,11 @@
 
 // TEMP/HUMI/PRESS Sensor config - START
 // BME280 config
-#ifdef ARDUINO_ARCH_ESP8266
+#ifdef ARDUINO_ARCH_ESP8266 // VIN - 3V; GND - G; SCL - D4; SDA - D3
 #define ASCII_ESC 27
 char bufout[10];
 BME280<> BMESensor;
-#elif defined ARDUINO_ARCH_ESP32
+#elif defined ARDUINO_ARCH_ESP32 // VIN - 3V; GND - G; SCL - D17; SDA - D16
 #define I2C_SDA 16
 #define I2C_SCL 17
 Adafruit_BME280 bme(I2C_SDA, I2C_SCL); // I2C
@@ -120,7 +117,7 @@ SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
-HardwareSerial PMS_Serial(1);
+HardwareSerial PMS_Serial(1); // Change TX - D5 and RX - D4 pins
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #endif

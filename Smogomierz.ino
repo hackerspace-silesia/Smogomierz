@@ -16,6 +16,18 @@
 #endif
 
 /*
+   ESP32 wymaga zainstalowania „Arduino ESP32 Fileystem Uploader” i przesłania pustego obrazu SPIFFS.
+   Musisz to zrobić tylko raz.
+   Po tym cała konfiguracja i ustawienia zostaną zapisana w pamięci ESP32.
+
+  https://randomnerdtutorials.com/install-esp32-filesystem-uploader-arduino-ide/
+
+   ESP32 requires installing the "Arduino ESP32 Filesystem Uploader" and uploading a blank SPIFFS image.
+   You only have to do this once.
+   After that all configuration and settings will be saved in ESP32 memory.
+*/
+
+/*
   ESP8266
 
   Szkic używa 526596 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.

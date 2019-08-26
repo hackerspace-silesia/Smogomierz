@@ -210,9 +210,9 @@ void doUpdate(int doUpdateSW) {
     if (DEBUG) {
       Serial.println("Starting firmware upgrade...\n");
 #if defined(ARDUINO_ARCH_ESP8266)
-      Serial.println("Free Heap: " + (ESP.getFreeHeap()));
+      Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
       delay(10);
-      Serial.println("Sketch Space: " + (ESP.getFreeSketchSpace()));
+      Serial.println("Sketch Space: " + String(ESP.getFreeSketchSpace()));
       delay(10);
 #endif
     }

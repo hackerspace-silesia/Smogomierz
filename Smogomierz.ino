@@ -41,7 +41,7 @@
   Szkic używa 1245330 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 61084 bajtów (18%) pamięci dynamicznej, pozostawiając 266596 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1245354 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1245346 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 61084 bajtów (18%) pamięci dynamicznej, pozostawiając 266596 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -54,9 +54,9 @@
 //#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager // 12.03.2019
 #include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
 #ifdef ARDUINO_ARCH_ESP8266
-#include "src/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#include "src/esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
+#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
 #endif
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019

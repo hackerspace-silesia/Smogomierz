@@ -41,7 +41,6 @@ class Influxdb
 {
 public:
 Influxdb(const char* host, uint16_t port);
-
 DB_RESPONSE opendb(String db);
 DB_RESPONSE opendb(String db, String user, String password);
 DB_RESPONSE write(dbMeasurement data);

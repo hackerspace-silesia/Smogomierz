@@ -430,6 +430,32 @@ void setup() {
 
 #ifdef ARDUINO_ARCH_ESP8266
   httpUpdater.setup(&WebServer, "/update");
+#elif defined ARDUINO_ARCH_ESP32
+  /*handling uploading firmware file */
+  WebServer.on("/update", HTTP_POST, []() {
+    WebServer.sendHeader("Connection", "close");
+    WebServer.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    ESP.restart();
+  }, []() {
+    HTTPUpload& upload = WebServer.upload();
+    if (upload.status == UPLOAD_FILE_START) {
+      Serial.printf("Update: %s\n", upload.filename.c_str());
+      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) { //start with max available size
+        Update.printError(Serial);
+      }
+    } else if (upload.status == UPLOAD_FILE_WRITE) {
+      /* flashing firmware to ESP*/
+      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
+        Update.printError(Serial);
+      }
+    } else if (upload.status == UPLOAD_FILE_END) {
+      if (Update.end(true)) { //true to set the size to the current progress
+        Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+      } else {
+        Update.printError(Serial);
+      }
+    }
+  });
 #endif
   //  WebServer Config - End
 

@@ -328,6 +328,12 @@ void setup() {
     if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
     }
+#ifdef ARDUINO_ARCH_ESP32
+#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
+#define TIME_TO_SLEEP  int(SENDING_FREQUENCY_interval/1000)        /* Time ESP32 will go to sleep (in seconds) */
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+    Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds\n");
+#endif
   } else {
     if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
@@ -520,9 +526,16 @@ void loop() {
         sendDataToExternalDBs();
       }
 
+#ifdef ARDUINO_ARCH_ESP8266
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+      Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
       delay(10);
+#elif defined ARDUINO_ARCH_ESP32
+      Serial.println("Going to sleep now");
+      Serial.flush();
+      esp_deep_sleep_start();
+#endif
 
     } else {
       if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
@@ -550,9 +563,18 @@ void loop() {
         sendDataToExternalDBs();
       }
       delay(10);
+
+#ifdef ARDUINO_ARCH_ESP8266
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+      Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
       delay(10);
+#elif defined ARDUINO_ARCH_ESP32
+      Serial.println("Going to sleep now");
+      Serial.flush();
+      esp_deep_sleep_start();
+#endif
+
     }
   }
 

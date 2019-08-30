@@ -28,22 +28,21 @@
 */
 
 /*
-  ESP8266
+  ESP8266 - NodeMCU 1.0 - 1M SPIFFS
 
   Szkic używa 526596 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 53096 bajtów (64%) pamięci dynamicznej, pozostawiając 28824 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 526132 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 53144 bajtów (64%) pamięci dynamicznej, pozostawiając 28776 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 527300 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 53688 bajtów (65%) pamięci dynamicznej, pozostawiając 28232 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  ESP32 - 1.9MB APP with OTA - 190KB SPIFFS
+  ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
   Szkic używa 1245330 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 61084 bajtów (18%) pamięci dynamicznej, pozostawiając 266596 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1245346 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 61084 bajtów (18%) pamięci dynamicznej, pozostawiając 266596 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
+  Szkic używa 1247598 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62172 bajtów (18%) pamięci dynamicznej, pozostawiając 265508 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 */
 
 #include <PubSubClient.h>
@@ -51,7 +50,6 @@
 
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-//#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager // 12.03.2019
 #include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
 #ifdef ARDUINO_ARCH_ESP8266
 #include "src/esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019

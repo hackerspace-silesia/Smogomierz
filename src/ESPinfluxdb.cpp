@@ -1,7 +1,11 @@
 #include "Arduino.h"
 #include "ESPinfluxdb.h"
 
-
+#if defined(ARDUINO_ARCH_ESP32)
+#include <WiFi.h>
+#include <HTTPClient.h>
+#endif
+	
 //#define DEBUG_PRINT // comment this line to disable debug print
 
 #ifndef DEBUG_PRINT
@@ -18,30 +22,44 @@ Influxdb::Influxdb(const char *host, uint16_t port) {
 
 DB_RESPONSE Influxdb::opendb(String db, String user, String password) {
         _db = db + "&u=" + user + "&p=" + password;
+#if defined(ARDUINO_ARCH_ESP32)
+        HTTPClient http;
+        http.begin("http://" + String(_host) + ":" + String(_port) + "/query?q=show%20databases"); //HTTP
+        int httpCode = http.GET();
+        if (httpCode == 200) {
+                _response = DB_SUCCESS;
+                String payload = http.getString();
+                http.end();
+                if (payload.indexOf("db") > 0) {
+                        _db =  db;
+                        Serial.println(payload);
+                        return _response;
+				}
+        }
+        _response = DB_ERROR;
+        DEBUG_PRINT("Database open failed");
+        return _response;
+#endif
 }
 
 DB_RESPONSE Influxdb::opendb(String db) {
-
         HTTPClient http;
-        http.begin("http://" + _host + ":" + _port + "/query?q=show%20databases"); //HTTP
-
+        http.begin("http://" + String(_host) + ":" + String(_port) + "/query?q=show%20databases"); //HTTP
         int httpCode = http.GET();
 
         if (httpCode == 200) {
                 _response = DB_SUCCESS;
                 String payload = http.getString();
                 http.end();
-
                 if (payload.indexOf("db") > 0) {
                         _db =  db;
                         Serial.println(payload);
                         return _response;
-                }
+				}
         }
         _response = DB_ERROR;
         DEBUG_PRINT("Database open failed");
         return _response;
-
 }
 
 DB_RESPONSE Influxdb::write(dbMeasurement data) {
@@ -62,10 +80,11 @@ DB_RESPONSE Influxdb::write(String data) {
 
         if (httpResponseCode == 204) {
                 _response = DB_SUCCESS;
+#if defined(ARDUINO_ARCH_ESP8266)
                 String response = http.getString();    //Get the response to the request
                 DEBUG_PRINT(String(httpResponseCode)); //Print return code
                 DEBUG_PRINT(response);                 //Print request answer
-
+#endif
         } else {
                 DEBUG_PRINT("Error on sending POST:");
                 DEBUG_PRINT(String(httpResponseCode));

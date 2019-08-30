@@ -1,6 +1,11 @@
+#ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266WiFi.h>
-#include <ArduinoJson.h>
+#elif defined ARDUINO_ARCH_ESP32
+#include <WiFi.h>
+#include <WiFiClient.h>
+#endif
 
+#include <ArduinoJson.h>
 #include "config.h"
 
 const char *airMonitorServerName = "api.airmonitor.pl";
@@ -18,7 +23,7 @@ void sendJson(JsonObject& json) {
         return;
     }
 
-    delay(100); 
+    delay(100);
 
     client.println("POST /api HTTP/1.1");
     client.println("Content-Type: application/json");
@@ -104,6 +109,3 @@ void sendDataToAirMonitor(float currentTemperature, float currentPressure, float
     sendDUSTData(averagePM1, averagePM25, averagePM10);
     sendTHPData(currentTemperature, currentPressure, currentHumidity);
 }
-
-
-

@@ -1,6 +1,11 @@
+#ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266WiFi.h>
-#include "ThingSpeak.h"
+#elif defined ARDUINO_ARCH_ESP32
+#include <WiFi.h>
+#include <WiFiClient.h>
+#endif
 
+#include "ThingSpeak.h"
 #include "config.h"
 
 void sendDataToThingSpeak(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {

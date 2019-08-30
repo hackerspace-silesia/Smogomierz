@@ -1,29 +1,61 @@
-#ifdef ARDUINO_ARCH_ESP8266
+#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.5.2 or later
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <SoftwareSerial.h>
-#include <PubSubClient.h>
-#elif defined ARDUINO_ARCH_ESP32
+#elif defined ARDUINO_ARCH_ESP32 // Arduino core for the ESP32 - 1.0.3-rc2 or later
 #include <WiFi.h>
+#include <WiFiClient.h>
+#include <ESPmDNS.h>
+#include <WebServer.h>
+#include <Update.h>
+#include <HTTPClient.h>
+#include <HTTPUpdate.h>
+#include <time.h>
+#include <HardwareSerial.h>
 #endif
 
 /*
+   ESP32 wymaga zainstalowania „Arduino ESP32 Fileystem Uploader” i przesłania pustego obrazu SPIFFS.
+   Musisz to zrobić tylko raz.
+   Po tym cała konfiguracja i ustawienia zostaną zapisana w pamięci ESP32.
 
-  Szkic używa 493152 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54264 bajtów (66%) pamięci dynamicznej, pozostawiając 27656 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  https://randomnerdtutorials.com/install-esp32-filesystem-uploader-arduino-ide/
 
-  Szkic używa 493968 bajtów (47%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54776 bajtów (66%) pamięci dynamicznej, pozostawiając 27144 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
+   ESP32 requires installing the "Arduino ESP32 Filesystem Uploader" and uploading a blank SPIFFS image.
+   You only have to do this once.
+   After that all configuration and settings will be saved in ESP32 memory.
 */
 
+/*
+  ESP8266 - NodeMCU 1.0 - 1M SPIFFS
+
+  Szkic używa 526596 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 53096 bajtów (64%) pamięci dynamicznej, pozostawiając 28824 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 527300 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 53688 bajtów (65%) pamięci dynamicznej, pozostawiając 28232 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
+
+  Szkic używa 1245330 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 61084 bajtów (18%) pamięci dynamicznej, pozostawiając 266596 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1247598 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62172 bajtów (18%) pamięci dynamicznej, pozostawiając 265508 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+*/
+
+#include <PubSubClient.h>
 #include <Wire.h>
 
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager.h" // https://github.com/jakerabid/WiFiManager // 12.03.2019
-#include "src/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
+#ifdef ARDUINO_ARCH_ESP8266
+#include "src/esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#elif defined ARDUINO_ARCH_ESP32
+#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
+#endif
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
 #include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
@@ -61,9 +93,15 @@
 
 // TEMP/HUMI/PRESS Sensor config - START
 // BME280 config
+#ifdef ARDUINO_ARCH_ESP8266 // VIN - 3V; GND - G; SCL - D4; SDA - D3
 #define ASCII_ESC 27
 char bufout[10];
 BME280<> BMESensor;
+#elif defined ARDUINO_ARCH_ESP32 // VIN - 3V; GND - G; SCL - D17; SDA - D16
+#define I2C_SDA 16
+#define I2C_SCL 17
+Adafruit_BME280 bme(I2C_SDA, I2C_SCL); // I2C
+#endif
 
 // BMP280 config
 Adafruit_BMP280 bmp; //I2C
@@ -84,9 +122,15 @@ SHT1x sht1x(dataPin, clockPin);
 
 // DUST Sensor config - START
 // Serial for PMSx003 config
+#ifdef ARDUINO_ARCH_ESP8266
 SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins
 PMS pms(PMS_Serial);
 PMS::DATA data;
+#elif defined ARDUINO_ARCH_ESP32
+HardwareSerial PMS_Serial(1); // Change TX - D5 and RX - D4 pins
+PMS pms(PMS_Serial);
+PMS::DATA data;
+#endif
 // DUST Sensor config - END
 
 char device_name[20];
@@ -115,11 +159,17 @@ bool need_update = false;
 char SERVERSOFTWAREVERSION[255] = "";
 char CURRENTSOFTWAREVERSION[255] = "";
 
+#ifdef ARDUINO_ARCH_ESP8266
 ESP8266WebServer WebServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
+#elif defined ARDUINO_ARCH_ESP32
+WebServer WebServer(80);
+#endif
 
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
+
+WiFiManager wifiManager;
 
 // check TEMP/HUMI/PRESS Sensor - START
 bool checkHTU21DStatus() {
@@ -136,9 +186,15 @@ bool checkHTU21DStatus() {
 }
 
 bool checkBmeStatus() {
+#ifdef ARDUINO_ARCH_ESP8266
   int temperature_BME280_Int = BMESensor.temperature;
   int pressure_BME280_Int = (BMESensor.seaLevelForAltitude(MYALTITUDE));
   int humidity_BME280_Int = BMESensor.humidity;
+#elif defined ARDUINO_ARCH_ESP32
+  int temperature_BME280_Int = bme.readTemperature();
+  int pressure_BME280_Int = (bme.seaLevelForAltitude(MYALTITUDE, (bme.readPressure() / 100.0F)));
+  int humidity_BME280_Int = bme.readHumidity();
+#endif
   if (temperature_BME280_Int == 0 && pressure_BME280_Int == 0 && humidity_BME280_Int == 0) {
     if (DEBUG) {
       Serial.println("No data from BME280 sensor!\n");
@@ -233,7 +289,11 @@ void setup() {
 
   // DUST SENSOR setup - START
   if (!strcmp(DUST_MODEL, "PMS7003")) {
+#ifdef ARDUINO_ARCH_ESP8266
     PMS_Serial.begin(9600); //PMSx003 serial
+#elif defined ARDUINO_ARCH_ESP32
+    PMS_Serial.begin(9600, SERIAL_8N1, 5, 4); //PMSx003 serial
+#endif
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
       delay(500);
@@ -266,6 +326,12 @@ void setup() {
     if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
     }
+#ifdef ARDUINO_ARCH_ESP32
+#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
+#define TIME_TO_SLEEP  int(SENDING_FREQUENCY_interval/1000)        /* Time ESP32 will go to sleep (in seconds) */
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+    Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds\n");
+#endif
   } else {
     if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
@@ -278,8 +344,12 @@ void setup() {
 
   // TEMP/HUMI/PRESS Sensor seturp - START
   if (!strcmp(THP_MODEL, "BME280")) {
+#ifdef ARDUINO_ARCH_ESP8266
     Wire.begin(0, 2);
     BMESensor.begin();
+#elif defined ARDUINO_ARCH_ESP32
+    bme.begin();
+#endif
   } else if (!strcmp(THP_MODEL, "BMP280")) {
     Wire.begin(0, 2);
     bmp.begin();
@@ -294,25 +364,40 @@ void setup() {
 
   // get ESP id
   if (DEVICENAME_AUTO) {
+#ifdef ARDUINO_ARCH_ESP8266
     sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
+#elif defined ARDUINO_ARCH_ESP32
+    sprintf(device_name, "Smogomierz-%06X", ESP.getEfuseMac());
+#endif
   } else {
     strncpy(device_name, DEVICENAME, 20);
   }
 
   Serial.print("Device name: ");
   Serial.println(device_name);
+  /*
+    WiFiManager wifiManager;
+    wifiManager.autoConnect(device_name);
 
-  WiFiManager wifiManager;
-  wifiManager.autoConnect(device_name);
+    delay(250);
 
+    if (!wifiManager.autoConnect(device_name)) {
+      Serial.println("Failed to connect...");
+      delay(1000);
+      ESP.reset(); //reset and try again
+      delay(5000);
+    }
+  */
+
+  if (wifiManager.autoConnect(device_name)) {
+    Serial.println("connected...yeey :)");
+    //wifiManager.setConfigPortalBlocking(false);
+  } else {
+    Serial.println("Configportal running");
+    wifiManager.setConfigPortalBlocking(false);
+  }
   delay(250);
 
-  if (!wifiManager.autoConnect(device_name)) {
-    Serial.println("Failed to connect...");
-    delay(1000);
-    ESP.reset(); //reset and try again
-    delay(5000);
-  }
 
   // check update
   if (checkUpdate(0) == true) {
@@ -320,6 +405,7 @@ void setup() {
   } else {
     need_update = false;
   }
+
 
   if (MQTT_ON) {
     mqttclient.setServer(MQTT_HOST, MQTT_PORT);
@@ -346,7 +432,35 @@ void setup() {
   WebServer.on("/autoupdateon", HTTP_GET, autoupdateon);
   WebServer.onNotFound(handle_root);
 
+#ifdef ARDUINO_ARCH_ESP8266
   httpUpdater.setup(&WebServer, "/update");
+#elif defined ARDUINO_ARCH_ESP32
+  /*handling uploading firmware file */
+  WebServer.on("/update", HTTP_POST, []() {
+    WebServer.sendHeader("Connection", "close");
+    WebServer.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    ESP.restart();
+  }, []() {
+    HTTPUpload& upload = WebServer.upload();
+    if (upload.status == UPLOAD_FILE_START) {
+      Serial.printf("Update: %s\n", upload.filename.c_str());
+      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) { //start with max available size
+        Update.printError(Serial);
+      }
+    } else if (upload.status == UPLOAD_FILE_WRITE) {
+      /* flashing firmware to ESP*/
+      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
+        Update.printError(Serial);
+      }
+    } else if (upload.status == UPLOAD_FILE_END) {
+      if (Update.end(true)) { //true to set the size to the current progress
+        Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+      } else {
+        Update.printError(Serial);
+      }
+    }
+  });
+#endif
   //  WebServer Config - End
 
   // Check if config.h exist in ESP data folder
@@ -381,7 +495,9 @@ void loop() {
   WebServer.handleClient();
   delay(10);
 
+#ifdef ARDUINO_ARCH_ESP8266
   MDNS.update();
+#endif
 
   yield();
 
@@ -408,9 +524,16 @@ void loop() {
         sendDataToExternalDBs();
       }
 
+#ifdef ARDUINO_ARCH_ESP8266
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+      Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
       delay(10);
+#elif defined ARDUINO_ARCH_ESP32
+      Serial.println("Going to sleep now");
+      Serial.flush();
+      esp_deep_sleep_start();
+#endif
 
     } else {
       if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
@@ -438,9 +561,18 @@ void loop() {
         sendDataToExternalDBs();
       }
       delay(10);
+
+#ifdef ARDUINO_ARCH_ESP8266
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+      Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
       delay(10);
+#elif defined ARDUINO_ARCH_ESP32
+      Serial.println("Going to sleep now");
+      Serial.flush();
+      esp_deep_sleep_start();
+#endif
+
     }
   }
 
@@ -467,7 +599,11 @@ void loop() {
     Serial.println("autoreboot...");
     delay(1000);
     previous_REBOOT_Millis = millis();
+#ifdef ARDUINO_ARCH_ESP8266
     ESP.reset();
+#elif defined ARDUINO_ARCH_ESP32
+    ESP.restart();
+#endif
     delay(5000);
   }
 
@@ -592,32 +728,41 @@ void sendDataToExternalDBs() {
   }
 
   if (MQTT_ON) {
+#ifdef ARDUINO_ARCH_ESP8266
+    String mqttChipId = String(ESP.getChipId());
+#elif defined ARDUINO_ARCH_ESP32
+    String mqttChipId = String((uint32_t)(ESP.getEfuseMac()));
+#endif
     if (strcmp(DUST_MODEL, "Non")) {
       if (DEBUG) {
         Serial.println("Measurements from PM Sensor!\n");
       }
-      mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
-      mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
-      mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
+      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
+      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
+      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
       if (averagePM25 <= 10) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "EXCELLENT", true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "EXCELLENT", true);
       } else if (averagePM25 > 10 && averagePM25 <= 20) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "GOOD", true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "GOOD", true);
       } else if (averagePM25 > 20 && averagePM25 <= 25) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "FAIR", true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "FAIR", true);
       } else if (averagePM25 > 25 && averagePM25 <= 50) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "INFERIOR", true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "INFERIOR", true);
       } else if (averagePM25 > 50) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "POOR", true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "POOR", true);
       } else {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/airquality").c_str(), "UNKNOWN", true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "UNKNOWN", true);
       }
     }
+
+
     if (!strcmp(THP_MODEL, "BME280")) {
       if (checkBmeStatus() == true) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+
       } else {
         if (DEBUG) {
           Serial.println("No measurements from BME280!\n");
@@ -627,8 +772,10 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "BMP280")) {
       if (checkBmpStatus() == true) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+
       } else {
         if (DEBUG) {
           Serial.println("No measurements from BMP280!\n");
@@ -638,8 +785,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "HTU21")) {
       if (checkHTU21DStatus() == true) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from HTU21!\n");
@@ -649,8 +796,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "DHT22")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from DHT22!\n");
@@ -660,8 +807,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "SHT1x")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + String(ESP.getChipId()) + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from SHT1x!\n");
@@ -678,15 +825,24 @@ void sendDataToExternalDBs() {
 
 void takeTHPMeasurements() {
   if (!strcmp(THP_MODEL, "BME280")) {
+#ifdef ARDUINO_ARCH_ESP8266
     BMESensor.refresh();
     delay(10);
+#endif
     if (checkBmeStatus() == true) {
       if (DEBUG) {
         Serial.println("Measurements from BME280!\n");
       }
+#ifdef ARDUINO_ARCH_ESP8266
       currentTemperature = BMESensor.temperature;
       currentPressure = BMESensor.seaLevelForAltitude(MYALTITUDE);
       currentHumidity = BMESensor.humidity;
+#elif defined ARDUINO_ARCH_ESP32
+      currentTemperature = (bme.readTemperature()); // maybe *0.89 ?
+      currentPressure = (bme.seaLevelForAltitude(MYALTITUDE, (bme.readPressure() / 100.0F)));
+      currentHumidity = (bme.readHumidity()); // maybe *0.89 ?
+#endif
+
     } else {
       if (DEBUG) {
         Serial.println("No measurements from BME280!\n");
@@ -809,6 +965,7 @@ void pm_calibration() {
   // Automatic calibration - START
   if (!strcmp(MODEL, "white")) {
     if (!strcmp(THP_MODEL, "BME280")) {
+#ifdef ARDUINO_ARCH_ESP8266
       BMESensor.refresh();
       delay(10);
       if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
@@ -818,6 +975,15 @@ void pm_calibration() {
       } else {
         calib = calib1;
       }
+#elif defined ARDUINO_ARCH_ESP32
+      if (int(bme.readTemperature()) < 5 or int(bme.readHumidity()) > 60) {
+        calib1 = float((200 - (bme.readHumidity())) / 150);
+        calib2 = calib1 / 2;
+        calib = calib2;
+      } else {
+        calib = calib1;
+      }
+#endif
     } else if (!strcmp(THP_MODEL, "HTU21")) {
       if (int(myHTU21D.readTemperature()) < 5 or int(myHTU21D.readCompensatedHumidity()) > 60) {
         calib1 = float((200 - (myHTU21D.readCompensatedHumidity())) / 150);

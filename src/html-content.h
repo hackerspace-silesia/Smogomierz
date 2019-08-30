@@ -127,11 +127,11 @@ const char WEB_CONFIG_PAGE_ADDOPTION[] PROGMEM = "<option value='{value}' {srsly
 
 const char WEB_CONFIG_PAGE_TEXTIMPUT[] PROGMEM = "<input type='text' maxlength='255' size='20' name='{key}' value='{value}'> {postfix}<br />";
 
-const char WEB_CONFIG_PAGE_PASSWDINPUT[] PROGMEM = "<input type='password' maxlength='255' size='20' name='{key}' value='{value}'> {postfix}<br />";
+const char WEB_CONFIG_PAGE_PASSWDINPUT[] = "<input type='password' maxlength='255' size='20' name='{key}' value='{value}'> {postfix}<br />";
 
 const char WEB_CONFIG_PAGE_INTINPUT[] PROGMEM = "<input type='number' step='1' maxlength='255' name='{key}' value='{value}'> {postfix}<br />";
 
-const char WEB_CONFIG_PAGE_FLOATINPUT[] PROGMEM = "<input type='number' step='0.000001' maxlength='255' name='{key}' value='{value}'> {postfix}<br />";
+const char WEB_CONFIG_PAGE_FLOATINPUT[] = "<input type='number' step='0.000001' maxlength='255' name='{key}' value='{value}'> {postfix}<br />";
 
 const char WEB_CONFIG_PAGE_WIFIERASE[] PROGMEM = "<a href='/erase_wifi' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_ERASEWIFICONFIG}</a>";
 

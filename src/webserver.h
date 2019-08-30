@@ -1,6 +1,12 @@
-#include <ArduinoJson.h> // 6.9.0 or later
+#ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266httpUpdate.h>
+#elif defined ARDUINO_ARCH_ESP32
+#include <Update.h>
+#endif
+
+#include <ArduinoJson.h> // 6.9.0 or later
 #include "spiffs.h"
+#include <FS.h>
 
 const char* www_realm = "Custom Auth Realm";
 String authFailResponse = "<meta http-equiv='refresh' content='0; url=/' /> Authentication Failed! <p><a href='/'>Redirect</a></p>";
@@ -326,7 +332,6 @@ String _addRestoreConfig() {
 }
 
 void _handle_config(bool is_success) {
-
   if (CONFIG_AUTH == true) {
     if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
       //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
@@ -351,7 +356,7 @@ void _handle_config(bool is_success) {
   }
 
   message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
-  message.replace("{GITHUB_LINK}", (GITHUB_LINK));
+  message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
 
   message += FPSTR(WEB_CONFIG_PAGE_CONFIG);
@@ -362,6 +367,7 @@ void _handle_config(bool is_success) {
   } else {
     message.replace("{device_name}", _addTextInput("DEVICENAME", DEVICENAME));
   }
+
   message.replace("{TEXT_DEVICENAMEAUTO}", (TEXT_DEVICENAMEAUTO));
   message.replace("{DEVICENAME_AUTO}", _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO));
   message.replace("{TEXT_SELECTEDLANGUAGE}", (TEXT_SELECTEDLANGUAGE));
@@ -415,8 +421,11 @@ void _handle_config(bool is_success) {
       message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_MINUTES}"));
       message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
     }
-
+#ifdef ARDUINO_ARCH_ESP8266
     message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO);
+#elif defined ARDUINO_ARCH_ESP32
+    message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO_ESP32);
+#endif
     message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS) * 2 + 10 ));
     message.replace("{SENDING_FREQUENCY}", String(SENDING_FREQUENCY));
     message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
@@ -429,13 +438,14 @@ void _handle_config(bool is_success) {
     message.replace("<b>{TEXT_DISPLAYPM1}: </b> {DISPLAY_PM1}", "");
   }
   message.replace("{TEXT_ALTITUDEINFO}", (TEXT_ALTITUDEINFO));
-  message.replace("{WSPOLRZEDNE_GPS_LINK}", (WSPOLRZEDNE_GPS_LINK));
+  message.replace("{WSPOLRZEDNE_GPS_LINK}", String(WSPOLRZEDNE_GPS_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
   message.replace("{MYALTITUDE}", _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m"));
 
   message.replace("{TEXT_SECURECONFIGUPDATEPAGE}", (TEXT_SECURECONFIGUPDATEPAGE));
   message.replace("{CONFIG_AUTH}", _addBoolSelect("CONFIG_AUTH", CONFIG_AUTH));
   message.replace("{TEXT_SECURELOGIN}", (TEXT_SECURELOGIN));
+
   message.replace("{CONFIG_USERNAME}", _addTextInput("CONFIG_USERNAME", CONFIG_USERNAME));
   message.replace("{TEXT_SECUREPASSWD}", (TEXT_SECUREPASSWD));
   message.replace("{CONFIG_PASSWORD}", _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD));
@@ -447,16 +457,53 @@ void _handle_config(bool is_success) {
   }
 
   message.replace("{TEXT_SMOGLISTSENDING}", (TEXT_SMOGLISTSENDING));
-  message.replace("{SMOGLIST_LINK}", (SMOGLIST_LINK));
+  message.replace("{SMOGLIST_LINK}", String(SMOGLIST_LINK));
   message.replace("{SMOGLIST_ON}", _addBoolSelect("SMOGLIST_ON", SMOGLIST_ON));
   message.replace("{TEXT_SMOGLISTINFO}", (TEXT_SMOGLISTINFO));
 
   message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
   message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));
   message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));
-
   message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
+
+#ifdef ARDUINO_ARCH_ESP8266
   message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
+#elif defined ARDUINO_ARCH_ESP32
+  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
+  message.replace("{ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));
+#endif
+
+  if (!strcmp(THP_MODEL, "BME280")) {
+    message.replace("{THPSENSOR}", "BME280");
+    message.replace("{THPXPIN}", "11");
+  } else if (!strcmp(THP_MODEL, "BMP280")) {
+    message.replace("{THPSENSOR}", "BMP280");
+    message.replace("{THPXPIN}", "3");
+  } else if (!strcmp(THP_MODEL, "HTU21")) {
+    message.replace("{THPSENSOR}", "HTU21");
+    message.replace("{THPXPIN}", "7");
+  } else if (!strcmp(THP_MODEL, "DHT22")) {
+    message.replace("{THPSENSOR}", "DHT22");
+    message.replace("{THPXPIN}", "7");
+  } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    message.replace("{THPSENSOR}", "SHT1x");
+    message.replace("{THPXPIN}", "12");
+  } else {
+    message.replace("<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>", "");
+  }
+
+  if (!strcmp(DUST_MODEL, "PMS7003")) {
+    message.replace("{DUSTSENSOR}", "PMS5003/7003");
+    message.replace("{DUSTXPIN}", "1");
+  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+    message.replace("{DUSTSENSOR}", "SDS011/21");
+    message.replace("{DUSTXPIN}", "1");
+  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+    message.replace("{DUSTSENSOR}", "HPMA115S0");
+    message.replace("{DUSTXPIN}", "1");
+  } else {
+    message.replace("<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>", "");
+  }
 
   if (!strcmp(THP_MODEL, "BME280")) {
     message.replace("{THPSENSOR}", "BME280");
@@ -508,6 +555,7 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_AIRMONITORCHARTS}", (TEXT_AIRMONITORCHARTS));
   message.replace("{AIRMONITOR_ON}", _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON));
   message.replace("{TEXT_AIRMONITORCOORDINATESINFO}", (TEXT_AIRMONITORCOORDINATESINFO));
+
   message.replace("{LATLONG_LINK}", (LATLONG_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
@@ -563,7 +611,12 @@ void _handle_config(bool is_success) {
 
   message.replace("{TEXT_AUTOUPDATEON}", TEXT_AUTOUPDATEON);
   message.replace("{AUTOUPDATEON}", _addBoolSelect("AUTOUPDATE_ON", AUTOUPDATE_ON));
+
+#ifdef ARDUINO_ARCH_ESP8266
   message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", TEXT_UPDATEPAGEAUTOUPDATEWARNING);
+#elif defined ARDUINO_ARCH_ESP32
+  message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", "");
+#endif
 
   message.replace("{WiFiEraseButton}", _addWiFiErase());
   message.replace("{RestoreConfigButton}", _addRestoreConfig());
@@ -834,7 +887,11 @@ void erase_wifi() {
     }
   }
   Serial.println("Erasing Config...");
+#ifdef ARDUINO_ARCH_ESP8266
   ESP.eraseConfig();
+#elif defined ARDUINO_ARCH_ESP32
+  WiFi.disconnect(false, true);
+#endif
   WebServer.sendHeader("Location", "/", true);
   WebServer.send ( 302, "text/plain", "");
   delay(1000);

@@ -41,6 +41,7 @@ char EN_INTL_SECONDS[16] PROGMEM = "seconds";
 char EN_INTL_MINUTES[16] PROGMEM = "minutes";
 
 char EN_INTL_DEEPSLEEPINFO[544] PROGMEM = "DeepSleep put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services. DeepSleep requires connection of D0 and RST pins on ESP8266!";
+char EN_INTL_DEEPSLEEPINFO_ESP32[544] PROGMEM = "DeepSleep put the device into deep sleep between a series of measurements - significantly lower energy consumption (the possibility of working on the battery for several weeks), but lack of continuous access to the web interface. The web interface will only be available for about {INTERFACEWWWONTIME} seconds every {SENDING_FREQUENCY} minutes (and right after the device reboots). Sleep time will be the same as the period for sending measurements to external services.";
 
 char EN_INTL_DISPLAYPM1[32] PROGMEM = "Display of PM1 measurements";
 char EN_INTL_ALTITUDEINFO[128] PROGMEM = "Altitude above sea level (required for correct pressure measurements. You can check it {WSPOLRZEDNE_GPS_LINK})";

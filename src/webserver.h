@@ -421,8 +421,11 @@ void _handle_config(bool is_success) {
       message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_MINUTES}"));
       message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
     }
-
+#ifdef ARDUINO_ARCH_ESP8266
     message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO);
+#elif defined ARDUINO_ARCH_ESP32
+    message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO_ESP32);
+#endif
     message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS) * 2 + 10 ));
     message.replace("{SENDING_FREQUENCY}", String(SENDING_FREQUENCY));
     message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));

@@ -30,19 +30,19 @@
 /*
   ESP8266 - NodeMCU 1.0 - 1M SPIFFS
 
-  Szkic używa 526596 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 53096 bajtów (64%) pamięci dynamicznej, pozostawiając 28824 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 527300 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 53688 bajtów (65%) pamięci dynamicznej, pozostawiając 28232 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 527332 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 53688 bajtów (65%) pamięci dynamicznej, pozostawiając 28232 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1245330 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 61084 bajtów (18%) pamięci dynamicznej, pozostawiając 266596 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1247598 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62172 bajtów (18%) pamięci dynamicznej, pozostawiając 265508 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1247990 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62236 bajtów (18%) pamięci dynamicznej, pozostawiając 265444 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 */
 
 #include <PubSubClient.h>
@@ -392,6 +392,7 @@ void setup() {
   if (wifiManager.autoConnect(device_name)) {
     Serial.println("connected...yeey :)");
     //wifiManager.setConfigPortalBlocking(false);
+    WiFi.mode(WIFI_STA); // https://github.com/hackerspace-silesia/Smogomierz/issues/47#issue-496810438
   } else {
     Serial.println("Configportal running");
     wifiManager.setConfigPortalBlocking(false);

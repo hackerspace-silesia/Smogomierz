@@ -179,8 +179,8 @@ void handle_root() {
 
   if (AIRMONITOR_GRAPH_ON) {
     message += FPSTR(WEB_ROOT_PAGE_AIRMONITOR_GRAPH);
-    message.replace("{LATITUDE}", String(LATITUDE, 6));
-    message.replace("{LONGITUDE}", String(LONGITUDE, 6));
+    message.replace("{LATITUDE}", String(LATITUDE));
+    message.replace("{LONGITUDE}", String(LONGITUDE));
   }
 
   if (THINGSPEAK_GRAPH_ON) {
@@ -528,9 +528,12 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_HERE}", (TEXT_HERE));
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
-  message.replace("{LATITUDE}", _addFloatInput("LATITUDE", LATITUDE, 6, "°"));
+  //message.replace("{LATITUDE}", _addFloatInput("LATITUDE", LATITUDE, 6, "°"));
+  message.replace("{LATITUDE}", _addTextInput("LATITUDE", LATITUDE));
   message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
-  message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", LONGITUDE, 6, "°"));
+  //message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", LONGITUDE, 6, "°"));
+  message.replace("{LONGITUDE}", _addTextInput("LONGITUDE", LONGITUDE));
+  
 
   message.replace("{TEXT_THINGSPEAKSENDING}", (TEXT_THINGSPEAKSENDING));
   message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK));
@@ -698,8 +701,10 @@ void handle_config_post() {
 
   AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
   AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
-  LATITUDE = WebServer.arg("LATITUDE").toFloat();
-  LONGITUDE = WebServer.arg("LONGITUDE").toFloat();
+  //LATITUDE = WebServer.arg("LATITUDE").toFloat();
+  _parseAsCString(LATITUDE, WebServer.arg("LATITUDE"));
+  //LONGITUDE = WebServer.arg("LONGITUDE").toFloat();
+  _parseAsCString(LONGITUDE, WebServer.arg("LONGITUDE"));
   MYALTITUDE = WebServer.arg("MYALTITUDE").toInt();
 
   THINGSPEAK_ON = _parseAsBool(WebServer.arg("THINGSPEAK_ON"));

@@ -80,8 +80,9 @@ void sendSmoglistData(float currentTemperature, float currentPressure, float cur
 	json["AUTOUPDATE_ON"] = AUTOUPDATE_ON; // True or False
 	json["MODEL"] = MODEL; // default "white" - automatic calibration, "red" - without calibration
 	
-	json["LATITUDE"] = String(LATITUDE, 6); // default - 50.2639
-    json["LONGITUDE"] = String(LONGITUDE, 6); //  default - 18.9957
+	json["LATITUDE"] = String(LATITUDE); // default - 50.2639
+    json["LONGITUDE"] = String(LONGITUDE); //  default - 18.9957
+
 	json["MYALTITUDE"] = MYALTITUDE; // int;  default - 271.00
 	
 	//PM data

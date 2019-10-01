@@ -30,10 +30,10 @@
 /*
   ESP8266 - NodeMCU 1.0 - 1M SPIFFS
 
-  Szkic używa 527332 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 53688 bajtów (65%) pamięci dynamicznej, pozostawiając 28232 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 527448 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54108 bajtów (66%) pamięci dynamicznej, pozostawiając 27812 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 527192 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54108 bajtów (66%) pamięci dynamicznej, pozostawiając 27812 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
@@ -41,7 +41,7 @@
   Szkic używa 1247990 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62236 bajtów (18%) pamięci dynamicznej, pozostawiając 265444 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1249466 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1249210 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */

@@ -20,7 +20,7 @@ extern bool AIRMONITOR_ON;
 extern bool AIRMONITOR_GRAPH_ON;
 extern char LATITUDE[255];
 extern char LONGITUDE[255];
-extern float MYALTITUDE;
+extern int MYALTITUDE;
 
 extern bool THINGSPEAK_ON;
 extern bool THINGSPEAK_GRAPH_ON;

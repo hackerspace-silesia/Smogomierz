@@ -66,10 +66,8 @@ bool loadConfig() {
 
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
-  //LATITUDE = json["LATITUDE"];
-  _safeCpy(LATITUDE, json["LATITUDE"], "50.263900");
-  //LONGITUDE = json["LONGITUDE"];
-  _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995700");
+  _safeCpy(LATITUDE, json["LATITUDE"], "50.263911");
+  _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711");
   MYALTITUDE = json["MYALTITUDE"];
 
   THINGSPEAK_ON = json["THINGSPEAK_ON"];
@@ -230,7 +228,7 @@ bool saveConfig() {
   json["AIRMONITOR_ON"] = AIRMONITOR_ON;
   json["AIRMONITOR_GRAPH_ON"] = AIRMONITOR_GRAPH_ON;
   json["LATITUDE"] = LATITUDE;
- json["LONGITUDE"] = LONGITUDE;
+  json["LONGITUDE"] = LONGITUDE;
   json["MYALTITUDE"] = MYALTITUDE;
 
   json["THINGSPEAK_ON"] = THINGSPEAK_ON;

@@ -528,11 +528,11 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_HERE}", (TEXT_HERE));
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
-  message.replace("{LATITUDE}", _addTextInput("LATITUDE", LATITUDE));
-  message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
-  message.replace("{LONGITUDE}", _addTextInput("LONGITUDE", LONGITUDE));
   
-
+  message.replace("{LATITUDE}", _addFloatInput("LATITUDE", atof(LATITUDE), 6, "°"));
+  message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
+  message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", atof(LONGITUDE), 6, "°"));
+  
   message.replace("{TEXT_THINGSPEAKSENDING}", (TEXT_THINGSPEAKSENDING));
   message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK));
   message.replace("{THINGSPEAK_ON}", _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON));
@@ -699,6 +699,7 @@ void handle_config_post() {
 
   AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
   AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
+  
   _parseAsCString(LATITUDE, WebServer.arg("LATITUDE"));
   _parseAsCString(LONGITUDE, WebServer.arg("LONGITUDE"));
   MYALTITUDE = WebServer.arg("MYALTITUDE").toInt();

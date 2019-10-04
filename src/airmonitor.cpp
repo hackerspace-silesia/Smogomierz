@@ -23,7 +23,7 @@ void sendJson(JsonObject& json) {
         return;
     }
 
-    delay(100);
+    delay(100); 
 
     client.println("POST /api HTTP/1.1");
     client.println("Content-Type: application/json");
@@ -48,8 +48,8 @@ void sendDUSTData(int averagePM1, int averagePM25, int averagePM10) {
 	if (strcmp(DUST_MODEL, "Non")) {
 	StaticJsonDocument<400> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
-    json["lat"] = String(LATITUDE, 6);
-    json["long"] = String(LONGITUDE, 6);
+    json["lat"] = String(LATITUDE);
+    json["long"] = String(LONGITUDE);
     json["pm1"] = averagePM1;
     json["pm25"] = averagePM25;
     json["pm10"] = averagePM10;
@@ -73,8 +73,8 @@ void sendTHPData(float currentTemperature, float currentPressure, float currentH
 	if (strcmp(THP_MODEL, "Non")) {
 	StaticJsonDocument<400> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
-    json["lat"] = String(LATITUDE, 6);
-    json["long"] = String(LONGITUDE, 6);
+    json["lat"] = String(LATITUDE);
+    json["long"] = String(LONGITUDE);
 	if (!strcmp(THP_MODEL, "BME280")) {
 	    json["pressure"] = currentPressure;
 	    json["temperature"] = currentTemperature;
@@ -109,3 +109,6 @@ void sendDataToAirMonitor(float currentTemperature, float currentPressure, float
     sendDUSTData(averagePM1, averagePM25, averagePM10);
     sendTHPData(currentTemperature, currentPressure, currentHumidity);
 }
+
+
+

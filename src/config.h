@@ -18,9 +18,9 @@ extern bool SMOGLIST_ON;
 
 extern bool AIRMONITOR_ON;
 extern bool AIRMONITOR_GRAPH_ON;
-extern float LATITUDE;
-extern float LONGITUDE;
-extern float MYALTITUDE;
+extern char LATITUDE[255];
+extern char LONGITUDE[255];
+extern int MYALTITUDE;
 
 extern bool THINGSPEAK_ON;
 extern bool THINGSPEAK_GRAPH_ON;
@@ -57,9 +57,9 @@ const char PMSENSORVERSION[] = "PMS";
 extern char SERVERSOFTWAREVERSION[255];
 extern char CURRENTSOFTWAREVERSION[255];
 #if defined(ARDUINO_ARCH_ESP8266)
-const char SOFTWAREVERSION[] = "2.7.1 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[] = "2.7.2 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)
-const char SOFTWAREVERSION[40] PROGMEM = "2.7.1 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[40] PROGMEM = "2.7.2 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[40] PROGMEM = "2.0 - ESP32";
 #endif

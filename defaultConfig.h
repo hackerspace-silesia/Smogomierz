@@ -18,9 +18,9 @@ bool SMOGLIST_ON = true;
 
 bool AIRMONITOR_ON = false;
 bool AIRMONITOR_GRAPH_ON = true;
-float LATITUDE = 50.2639;
-float LONGITUDE = 18.9957;
-float MYALTITUDE = 271.00;
+char LATITUDE[255] = "50.263911";
+char LONGITUDE[255] = "18.995711";
+int MYALTITUDE = 271;
 
 bool THINGSPEAK_ON = false;
 bool THINGSPEAK_GRAPH_ON = false;

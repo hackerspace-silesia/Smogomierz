@@ -65,7 +65,7 @@
 
 #include "pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
 
-#include "spiffs.h"
+#include "smogomierz_spiffs.h"
 #include "config.h"
 #include "defaultConfig.h"
 #include "autoupdate.h"
@@ -271,15 +271,15 @@ void MQTTreconnect() {
 }
 
 // default translation - english
-#include "src/default_intl.h"
+#include "default_intl.h"
 
-#include "src/translator.h"
+#include "translator.h"
 
 // all HTML content
-#include "src/html-content.h"
+#include "html-content.h"
 
 // library doesnt support arguments :/
-#include "src/webserver.h"
+#include "smogomierz_webserver.h"
 
 void setup() {
   Serial.begin(115200);

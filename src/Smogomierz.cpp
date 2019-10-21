@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.5.2 or later
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
@@ -51,29 +52,31 @@
 
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
+#include "WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
 #ifdef ARDUINO_ARCH_ESP8266
-#include "src/esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#include "esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
+#include "esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
 #endif
-#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
-#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
-#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
+#include "HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
+#include "Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
+#include "SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
 #include <DHT.h>
 
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
+#include "pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
 
-#include "src/spiffs.h"
-#include "src/config.h"
+#include "smogomierz_spiffs.h"
+#include "config.h"
 #include "defaultConfig.h"
-#include "src/autoupdate.h"
-#include "src/smoglist.h"
+#include "autoupdate.h"
+#include "smoglist.h"
 
-#include "src/luftdaten.h"
-#include "src/airmonitor.h"
-#include "src/thing_speak.h"
-#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
+#include "luftdaten.h"
+#include "airmonitor.h"
+#include "thing_speak.h"
+#include "ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
+
+#include "Smogomierz.h"
 
 /*
   Podłączenie czujnikow dla ESP8266 NodeMCU:
@@ -268,15 +271,15 @@ void MQTTreconnect() {
 }
 
 // default translation - english
-#include "src/default_intl.h"
+#include "default_intl.h"
 
-#include "src/translator.h"
+#include "translator.h"
 
 // all HTML content
-#include "src/html-content.h"
+#include "html-content.h"
 
 // library doesnt support arguments :/
-#include "src/webserver.h"
+#include "smogomierz_webserver.h"
 
 void setup() {
   Serial.begin(115200);

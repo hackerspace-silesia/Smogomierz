@@ -58,16 +58,16 @@
   Szkic używa 527548 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54216 bajtów (66%) pamięci dynamicznej, pozostawiając 27704 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 529800 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54220 bajtów (66%) pamięci dynamicznej, pozostawiając 27700 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 530992 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54356 bajtów (66%) pamięci dynamicznej, pozostawiając 27564 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
   Szkic używa 1251682 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1254058 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  Szkic używa 1254542 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62784 bajtów (19%) pamięci dynamicznej, pozostawiając 264896 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -76,18 +76,18 @@
 
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 7.11.2019  DEV
 #ifdef ARDUINO_ARCH_ESP8266
-#include "src/esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#include "src/esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 7.11.2019
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
+#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 7.11.2019
 #endif
-#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
-#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
-#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
+#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 7.11.2019
+#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 7.11.2019
+#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 7.11.2019
 #include <DHT.h> // by Adafruit
 
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 7.11.2019
 
 #include "src/spiffs.h"
 #include "src/config.h"
@@ -98,7 +98,7 @@
 #include "src/luftdaten.h"
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
-#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
+#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 7.11.2019
 
 // TEMP/HUMI/PRESS Sensor config - START
 // BME280 config

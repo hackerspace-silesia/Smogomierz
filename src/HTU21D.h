@@ -67,7 +67,7 @@
 #define SI7013_CHIPID                0x0D      //device id SI7013
 #define SI7020_CHIPID                0x14      //device id SI7020
 #define SI7021_CHIPID                0x15      //device id SI7021
-#define HTU21D_CHIPID                0x32      //device id HTU21D/SHT21 
+#define HTU21D_CHIPID                0x32      //device id HTU21D/SHT21
 
 #define HTU21D_FIRMWARE_READ1        0x84      //read firmware revision, 1-st part of the command
 #define HTU21D_FIRMWARE_READ2        0xB8      //read firmware revision, 2-nd part of the command
@@ -75,7 +75,7 @@
 #define HTU21D_FIRMWARE_V1           0xFF      //sensor firmware v1.0
 #define HTU21D_FIRMWARE_V2           0x20      //sensor firmware 2.0
 
-#define HTU21D_TEMP_COEFFICIENT      -0.15     //temperature coefficient for RH compensation at range 0°C..80°C, for HTU21D & SHT21 only 
+#define HTU21D_TEMP_COEFFICIENT      -0.15     //temperature coefficient for RH compensation at range 0°C..80°C, for HTU21D & SHT21 only
 #define HTU21D_CRC8_POLYNOMINAL      0x13100   //crc8 polynomial for 16bit value, CRC8 -> x^8 + x^5 + x^4 + 1
 
 
@@ -122,6 +122,7 @@ class HTU21D
    HTU21D(HTU21D_RESOLUTION = HTU21D_RES_RH12_TEMP14);
 
    #if defined(ESP8266)
+   //bool     begin(uint8_t sda = SDA, uint8_t scl = SCL);
    bool     begin(uint8_t sda = 12, uint8_t scl = 14);
    #else
    bool     begin(void);

@@ -16,32 +16,57 @@
 #endif
 
 /*
-   ESP32 wymaga zainstalowania „Arduino ESP32 Fileystem Uploader” i przesłania pustego obrazu SPIFFS.
-   Musisz to zrobić tylko raz.
-   Po tym cała konfiguracja i ustawienia zostaną zapisana w pamięci ESP32.
 
-  https://randomnerdtutorials.com/install-esp32-filesystem-uploader-arduino-ide/
+   ESP8266
 
-   ESP32 requires installing the "Arduino ESP32 Filesystem Uploader" and uploading a blank SPIFFS image.
-   You only have to do this once.
-   After that all configuration and settings will be saved in ESP32 memory.
+  Podłączenie czujnikow dla ESP8266 NodeMCU:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
+
+
+  Connection of sensors on ESP8266 NodeMCU:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
+
+   ESP32
+
+  Podłączenie czujnikow dla ESP32:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D17; SDA - D16
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: Bialy - VIN/5V; Czarny - G; TX - D5; RX - D4
+
+  Connection of sensors on ESP32:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D17; SDA - D16
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: White - VIN/5V; Black - G; TX - D5; RX - D4
+
 */
 
 /*
   ESP8266 - NodeMCU 1.0 - 1M SPIFFS
 
-  Szkic używa 527448 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54108 bajtów (66%) pamięci dynamicznej, pozostawiając 27812 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 527548 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54216 bajtów (66%) pamięci dynamicznej, pozostawiając 27704 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  Szkic używa 529800 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54220 bajtów (66%) pamięci dynamicznej, pozostawiając 27700 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1247990 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 62236 bajtów (18%) pamięci dynamicznej, pozostawiając 265444 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1251682 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1254058 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -60,7 +85,7 @@
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
 #include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
-#include <DHT.h>
+#include <DHT.h> // by Adafruit
 
 #include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
 
@@ -74,23 +99,6 @@
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
 #include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
-
-/*
-  Podłączenie czujnikow dla ESP8266 NodeMCU:
-  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
-  DHT22: VIN - 3V; GND - G; D7
-  PMS5003/7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
-
-
-  Connection of sensors on ESP8266 NodeMCU:
-  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
-  DHT22: VIN - 3V; GND - G; D7
-  PMS5003/7003: White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
-*/
 
 // TEMP/HUMI/PRESS Sensor config - START
 // BME280 config
@@ -366,9 +374,9 @@ void setup() {
   // get ESP id
   if (DEVICENAME_AUTO) {
 #ifdef ARDUINO_ARCH_ESP8266
-    sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
+    sprintf(device_name, "Smogly-%06X", ESP.getChipId());
 #elif defined ARDUINO_ARCH_ESP32
-    sprintf(device_name, "Smogomierz-%06X", ESP.getEfuseMac());
+    sprintf(device_name, "Smogly-%06X", ESP.getEfuseMac());
 #endif
   } else {
     strncpy(device_name, DEVICENAME, 20);
@@ -739,21 +747,21 @@ void sendDataToExternalDBs() {
       if (DEBUG) {
         Serial.println("Measurements from PM Sensor!\n");
       }
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
+      mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
+      mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
+      mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
       if (averagePM25 <= 10) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "EXCELLENT", true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/airquality").c_str(), "EXCELLENT", true);
       } else if (averagePM25 > 10 && averagePM25 <= 20) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "GOOD", true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/airquality").c_str(), "GOOD", true);
       } else if (averagePM25 > 20 && averagePM25 <= 25) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "FAIR", true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/airquality").c_str(), "FAIR", true);
       } else if (averagePM25 > 25 && averagePM25 <= 50) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "INFERIOR", true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/airquality").c_str(), "INFERIOR", true);
       } else if (averagePM25 > 50) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "POOR", true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/airquality").c_str(), "POOR", true);
       } else {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "UNKNOWN", true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/airquality").c_str(), "UNKNOWN", true);
       }
     }
 
@@ -761,9 +769,9 @@ void sendDataToExternalDBs() {
     if (!strcmp(THP_MODEL, "BME280")) {
       if (checkBmeStatus() == true) {
 
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
 
       } else {
         if (DEBUG) {
@@ -775,8 +783,8 @@ void sendDataToExternalDBs() {
     if (!strcmp(THP_MODEL, "BMP280")) {
       if (checkBmpStatus() == true) {
 
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
 
       } else {
         if (DEBUG) {
@@ -787,8 +795,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "HTU21")) {
       if (checkHTU21DStatus() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from HTU21!\n");
@@ -798,8 +806,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "DHT22")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from DHT22!\n");
@@ -809,8 +817,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "SHT1x")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String("Smogly-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from SHT1x!\n");
@@ -907,7 +915,7 @@ void takeNormalnPMMeasurements() {
   pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
   pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
   if (DEBUG) {
-    Serial.print("\n\nPM measurement number: ");
+    Serial.print("\nPM measurement number: ");
     Serial.print(iPM);
     Serial.print("\nValue of PM1: ");
     Serial.print(pmMeasurements[iPM][0]);
@@ -915,6 +923,7 @@ void takeNormalnPMMeasurements() {
     Serial.print(pmMeasurements[iPM][1]);
     Serial.print("\nValue of PM10: ");
     Serial.print(pmMeasurements[iPM][2]);
+    Serial.print("\n");
   }
   if (++iPM == NUMBEROFMEASUREMENTS) {
     averagePM();

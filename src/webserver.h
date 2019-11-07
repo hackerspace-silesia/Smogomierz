@@ -6,7 +6,7 @@
 
 #include <ArduinoJson.h> // 6.9.0 or later
 #include "spiffs.h"
-#include <FS.h>
+//#include <FS.h>
 
 const char* www_realm = "Custom Auth Realm";
 String authFailResponse = "<meta http-equiv='refresh' content='0; url=/' /> Authentication Failed! <p><a href='/'>Redirect</a></p>";
@@ -367,7 +367,7 @@ void _handle_config(bool is_success) {
   } else {
     message.replace("{device_name}", _addTextInput("DEVICENAME", DEVICENAME));
   }
-  
+
   message.replace("{TEXT_DEVICENAMEAUTO}", (TEXT_DEVICENAMEAUTO));
   message.replace("{DEVICENAME_AUTO}", _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO));
   message.replace("{TEXT_SELECTEDLANGUAGE}", (TEXT_SELECTEDLANGUAGE));
@@ -382,7 +382,7 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_MEASUREMENTFREQUENCY}", (TEXT_MEASUREMENTFREQUENCY));
 
   message.replace("{FREQUENTMEASUREMENT_Select}", _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
-  
+
   if (FREQUENTMEASUREMENT == true) {
     message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_SECONDS}"));
     message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
@@ -430,7 +430,7 @@ void _handle_config(bool is_success) {
     message.replace("{SENDING_FREQUENCY}", String(SENDING_FREQUENCY));
     message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
   }
-  
+
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     message.replace("{DISPLAY_PM1}", _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1));
     message.replace("{TEXT_DISPLAYPM1}", (TEXT_DISPLAYPM1));
@@ -445,17 +445,17 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_SECURECONFIGUPDATEPAGE}", (TEXT_SECURECONFIGUPDATEPAGE));
   message.replace("{CONFIG_AUTH}", _addBoolSelect("CONFIG_AUTH", CONFIG_AUTH));
   message.replace("{TEXT_SECURELOGIN}", (TEXT_SECURELOGIN));
-  
+
   message.replace("{CONFIG_USERNAME}", _addTextInput("CONFIG_USERNAME", CONFIG_USERNAME));
   message.replace("{TEXT_SECUREPASSWD}", (TEXT_SECUREPASSWD));
   message.replace("{CONFIG_PASSWORD}", _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD));
-  
+
   if (!CONFIG_AUTH) {
     message.replace("{TEXT_SECURELOGOUTINFO}", "");
   } else {
     message.replace("{TEXT_SECURELOGOUTINFO}", (TEXT_SECURELOGOUTINFO));
   }
-  
+
   message.replace("{TEXT_SMOGLISTSENDING}", (TEXT_SMOGLISTSENDING));
   message.replace("{SMOGLIST_LINK}", String(SMOGLIST_LINK));
   message.replace("{SMOGLIST_ON}", _addBoolSelect("SMOGLIST_ON", SMOGLIST_ON));
@@ -465,14 +465,14 @@ void _handle_config(bool is_success) {
   message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));
   message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));
   message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
-  
+
 #ifdef ARDUINO_ARCH_ESP8266
-  message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
+  message.replace("{ChipID}", "smogly-" + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
-  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
-  message.replace("{ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));  
+  //message.replace("{ChipID}", "smogly-" + (ESP.getEfuseMac()));
+  message.replace("{ChipID}", "smogly-" + String((uint32_t)(ESP.getEfuseMac())));
 #endif
-    
+
   if (!strcmp(THP_MODEL, "BME280")) {
     message.replace("{THPSENSOR}", "BME280");
     message.replace("{THPXPIN}", "11");
@@ -506,7 +506,7 @@ void _handle_config(bool is_success) {
   }
 
   message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
-  
+
   char PMSENSORMODEL[16];
   if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
     strcpy(PMSENSORMODEL, "PMS7003");
@@ -528,11 +528,11 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_HERE}", (TEXT_HERE));
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
-  
+
   message.replace("{LATITUDE}", _addFloatInput("LATITUDE", atof(LATITUDE), 6, "°"));
   message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
   message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", atof(LONGITUDE), 6, "°"));
-  
+
   message.replace("{TEXT_THINGSPEAKSENDING}", (TEXT_THINGSPEAKSENDING));
   message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK));
   message.replace("{THINGSPEAK_ON}", _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON));
@@ -542,7 +542,7 @@ void _handle_config(bool is_success) {
   message.replace("{THINGSPEAK_API_KEY}", _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY));
   message.replace("{TEXT_THINGSPEAKCHANNELID}", (TEXT_THINGSPEAKCHANNELID));
   message.replace("{THINGSPEAK_CHANNEL_ID}", _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID));
-  
+
   message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
   message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
   message.replace("{TEXT_INFLUXDBSERVER}", (TEXT_INFLUXDBSERVER));
@@ -580,13 +580,13 @@ void _handle_config(bool is_success) {
 
   message.replace("{TEXT_AUTOUPDATEON}", TEXT_AUTOUPDATEON);
   message.replace("{AUTOUPDATEON}", _addBoolSelect("AUTOUPDATE_ON", AUTOUPDATE_ON));
-  
+
 #ifdef ARDUINO_ARCH_ESP8266
   message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", TEXT_UPDATEPAGEAUTOUPDATEWARNING);
 #elif defined ARDUINO_ARCH_ESP32
   message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", "");
 #endif
-  
+
   message.replace("{WiFiEraseButton}", _addWiFiErase());
   message.replace("{RestoreConfigButton}", _addRestoreConfig());
   message.replace("{SubmitButton}", _addSubmit());
@@ -699,7 +699,7 @@ void handle_config_post() {
 
   AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
   AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
-  
+
   _parseAsCString(LATITUDE, WebServer.arg("LATITUDE"));
   _parseAsCString(LONGITUDE, WebServer.arg("LONGITUDE"));
   MYALTITUDE = WebServer.arg("MYALTITUDE").toInt();
@@ -821,7 +821,7 @@ void handle_update() {            //Handler for the handle_update
   message.replace("{SERVERSOFTWAREVERSION}", String(SERVERSOFTWAREVERSION) + " " + String(PMSENSORVERSION));
 
   message.replace("{TEXT_LATESTAVAILABLESOFT}", TEXT_LATESTAVAILABLESOFT);
-  message.replace("{SMOGOMIERZRELEASES_LINK}", (SMOGOMIERZRELEASES_LINK));
+  message.replace("{SMOGLYRELEASES_LINK}", (SMOGLYRELEASES_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
 
   // init WiFi signal quality info - START
@@ -844,7 +844,7 @@ void handle_update() {            //Handler for the handle_update
   message.replace("{TEXT_WIFIQUALITY}", (TEXT_WIFIQUALITY));
   message.replace("{WiFiQuality}", (String(WiFiQuality) + " %"));
   // init WiFi signal quality info - END
-  
+
   message += FPSTR(WEB_PAGE_FOOTER);
   WebServer.send(200, "text/html", message);
 }

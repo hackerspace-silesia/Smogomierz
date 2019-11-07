@@ -1,7 +1,7 @@
 /*
- *  
+ *
  *  default translation file - english translation
- *  
+ *
  */
 
 #pragma once
@@ -21,7 +21,7 @@ extern char TEXT_DEWPOINT[16] = "Dewpoint";
 extern char TEXT_AIRPOLLUTION[32] = "Air pollution";
 extern char TEXT_SAVED[16] = "SAVED!";
 
-extern char TEXT_POSTCONFIG_INFO[64] = "everything looks OK, in a moment the Smogomierz will restart";
+extern char TEXT_POSTCONFIG_INFO[64] = "everything looks OK, in a moment the Smogly will restart";
 extern char TEXT_INSTRUCIONSLINK[80] = "All instructions and descriptions[in polish] are available {GITHUB_LINK}.";
 extern char TEXT_DEVICENAME[32] = "Device Name";
 extern char TEXT_DEVICENAMEAUTO[32] = "Automatic name generation";
@@ -51,10 +51,10 @@ extern char TEXT_SECURELOGIN[16] = "Login";
 extern char TEXT_SECUREPASSWD[16] = "Password";
 extern char TEXT_SECURELOGOUTINFO[64] = "Restart your web browser to log out!";
 
-extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
+extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})";
 
 extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the {SMOGLIST_LINK} service";
-extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
+extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogly usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
 
 extern char TEXT_AIRMONITORSENDING[128] = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. {PMSENSORMODEL})";
 extern char TEXT_AIRMONITORCHARTS[64] = "Displaying charts from the AirMonitor site";
@@ -109,7 +109,7 @@ extern char TEXT_SELECTUPDATEFILE[32] = "Select .bin file";
 extern char TEXT_SUBMITUPDATE[16] = "Update!";
 extern char TEXT_CURRENTSOFTVERSION[64] = "Currently used version of the firmware";
 extern char TEXT_SERVERSOFTWAREVERSION[64] = "The latest available firmware version";
-extern char TEXT_LATESTAVAILABLESOFT[96] = "Latest version of the software available {SMOGOMIERZRELEASES_LINK}.";
+extern char TEXT_LATESTAVAILABLESOFT[96] = "Latest version of the software available {SMOGLYRELEASES_LINK}.";
 
 extern char TEXT_HERE[16] = "here";
 extern char TEXT_THEFORM[16] = "the form";
@@ -128,7 +128,7 @@ static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='http://mapa.airmoni
 static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
 static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
 static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
-static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char SMOGLYRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
 #elif defined ARDUINO_ARCH_ESP32
 static char GITHUB_LINK[] PROGMEM = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
@@ -140,6 +140,6 @@ static char AIRMONITOR_LINK[] PROGMEM = "<a title='AirMonitor' href='http://mapa
 static char AIRMONITORFORM_LINK[] PROGMEM = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
 static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
 static char THINGSPEAK_LINK[] PROGMEM = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
-static char SMOGOMIERZRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char SMOGLYRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] PROGMEM = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
 #endif

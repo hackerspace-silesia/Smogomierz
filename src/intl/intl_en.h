@@ -1,7 +1,7 @@
 /*
- *  
+ *
  *  translation file - english translation
- *  
+ *
  */
 
 #pragma once
@@ -21,7 +21,7 @@ char EN_INTL_DEWPOINT[16] PROGMEM = "Dewpoint";
 char EN_INTL_AIRPOLLUTION[32] PROGMEM = "Air pollution";
 char EN_INTL_SAVED[16] PROGMEM = "SAVED!";
 
-char EN_INTL_POSTCONFIG_INFO[64] PROGMEM = "everything looks OK, in a moment the Smogomierz will restart";
+char EN_INTL_POSTCONFIG_INFO[64] PROGMEM = "everything looks OK, in a moment the Smogly will restart";
 char EN_INTL_INSTRUCIONSLINK[80] PROGMEM = "All instructions and descriptions[in polish] are available {GITHUB_LINK}.";
 char EN_INTL_DEVICENAME[32] PROGMEM = "Device Name";
 char EN_INTL_DEVICENAMEAUTO[32] PROGMEM = "Automatic name generation";
@@ -51,10 +51,10 @@ char EN_INTL_SECURELOGIN[16] PROGMEM = "Login";
 char EN_INTL_SECUREPASSWD[16] PROGMEM = "Password";
 char EN_INTL_SECURELOGOUTINFO[64] PROGMEM = "Restart your web browser to log out!";
 
-char EN_INTL_LUFTDATENSENDING[96] PROGMEM = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
+char EN_INTL_LUFTDATENSENDING[96] PROGMEM = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})";
 
 char EN_INTL_SMOGLISTSENDING[64] PROGMEM = "Sending data to the {SMOGLIST_LINK} service";
-char EN_INTL_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
+char EN_INTL_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogly usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
 
 char EN_INTL_AIRMONITORSENDING[128] PROGMEM = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. {PMSENSORMODEL})";
 char EN_INTL_AIRMONITORCHARTS[64] PROGMEM = "Displaying charts from the AirMonitor site";
@@ -109,7 +109,7 @@ char EN_INTL_SELECTUPDATEFILE[32] PROGMEM = "Select .bin file";
 char EN_INTL_SUBMITUPDATE[16] PROGMEM = "Update!";
 char EN_INTL_CURRENTSOFTVERSION[64] PROGMEM = "Currently used version of the firmware";
 char EN_INTL_SERVERSOFTWAREVERSION[64] PROGMEM = "The latest available firmware version";
-char EN_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Latest version of the software available {SMOGOMIERZRELEASES_LINK}.";
+char EN_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Latest version of the software available {SMOGLYRELEASES_LINK}.";
 
 char EN_INTL_HERE[16] PROGMEM = "here";
 char EN_INTL_THEFORM[16] PROGMEM = "the form";

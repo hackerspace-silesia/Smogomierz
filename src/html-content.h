@@ -1,4 +1,4 @@
-const char WEB_PAGE_HEADER[] PROGMEM = "<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogomierz - {CurrentPageTitle}</title>\
+const char WEB_PAGE_HEADER[] PROGMEM = "<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>\
 <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>\
 </head><body>\
 <nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>{IndexPageTitle}</a>\
@@ -19,7 +19,7 @@ const char WEB_PAGE_FOOTER[] PROGMEM = "<br><hr><center>Hackerspace Silesia &#98
 // MEASUREMENTS PAGE - START
 
 const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = "<main role='main' class='container'><div class='jumbotron'>\
-	<center><h1>Smogomierz</h1><br>\
+	<center><h1>Smogly</h1><br>\
 	{WEB_UPDATE_INFO_WARNING}\
 	<h2>{TEXT_WEATHER}:</h2>\
 	<h3>{TEXT_TEMPERATURE}: {Temperature} °C</h3>\
@@ -45,9 +45,9 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = "<hr>\
 // MEASUREMENTS PAGE - END
 // CONFIG PAGE - Start
 
-const char WEB_CONFIG_PAGE_TOP[] PROGMEM = "<form method='POST' action='/config'>\ 
+const char WEB_CONFIG_PAGE_TOP[] PROGMEM = "<form method='POST' action='/config'>\
 	<main role='main' class='container'><div class='jumbotron'>\
-	<center><h1>Smogomierz - {TEXT_CONFIG_PAGE}</h1></center><br><br>\
+	<center><h1>Smogly - {TEXT_CONFIG_PAGE}</h1></center><br><br>\
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>\
 	{TEXT_INSTRUCIONSLINK}<br><br> ";
 
@@ -74,7 +74,7 @@ const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = "<b>{TEXT_DEVICENAME}: </b>{device
 	{TEXT_SECURELOGOUTINFO}\
 	<hr>\
 	<b>{TEXT_SMOGLISTSENDING}: </b>{SMOGLIST_ON} {TEXT_SMOGLISTINFO}\
-	<hr>\	
+	<hr>\
 	<b>{TEXT_LUFTDATENSENDING}: </b>{LUFTDATEN_ON}\
 	<b>ChipID: </b>{ChipID}\
 	<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>\
@@ -153,7 +153,7 @@ const char WEB_UPDATE_INFO_WARNING[] PROGMEM = "<center><h2><b>{TEXT_FWUPDATEAVA
 
 const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = "<main role='main' class='container'><div class='jumbotron'>\
 	<form id='data' action='/update' method='POST' enctype='multipart/form-data'>\
-	<center><h1>Smogomierz - {TEXT_UPDATE_PAGE}</h1></center><br><br>\
+	<center><h1>Smogly - {TEXT_UPDATE_PAGE}</h1></center><br><br>\
 	{WEB_UPDATE_INFO_WARNING}\
 	<br><br><div class='input-group mb-3'><div class='custom-file'><input type='file' accept='.bin' class='custom-file-input' id='inputGroupFile04' name='update'><label class='custom-file-label' for='inputGroupFile04'>{TEXT_SELECTUPDATEFILE}</label></div><div class='input-group-append'><button class='btn btn-danger' type='submit'>{TEXT_SUBMITUPDATE}</button></div></div></form>\
 	<br>\

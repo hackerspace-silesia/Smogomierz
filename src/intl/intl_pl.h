@@ -1,7 +1,7 @@
 /*
- * 
+ *
  *  translation file - polish translations
- * 
+ *
  */
 
 #pragma once
@@ -21,7 +21,7 @@ char PL_INTL_DEWPOINT[16] PROGMEM = "Punkt rosy";
 char PL_INTL_AIRPOLLUTION[32] PROGMEM = "Pomiary zanieczyszczeń";
 char PL_INTL_SAVED[16] PROGMEM = "ZAPISANO";
 
-char PL_INTL_POSTCONFIG_INFO[64] PROGMEM = "wszystko wygląda OK, za chwilę nastąpi restart Smogomierza";
+char PL_INTL_POSTCONFIG_INFO[64] PROGMEM = "wszystko wygląda OK, za chwilę nastąpi restart Smogly";
 char PL_INTL_INSTRUCIONSLINK[80] PROGMEM = "Wszystkie instrukcje i opisy dostępne są {GITHUB_LINK}.";
 char PL_INTL_DEVICENAME[32] PROGMEM = "Nazwa urządzenia";
 char PL_INTL_DEVICENAMEAUTO[32] PROGMEM = "Automatyczne generowanie nazwy";
@@ -54,7 +54,7 @@ char PL_INTL_SECURELOGOUTINFO[64] PROGMEM = "Zrestartuj przeglądarkę w celu wy
 char PL_INTL_LUFTDATENSENDING[96] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga rejestracji {LUFTDATENFORM_LINK})";
 
 char PL_INTL_SMOGLISTSENDING[64] PROGMEM = "Wysyłanie danych do serwisu {SMOGLIST_LINK}";
-char PL_INTL_SMOGLISTINFO[256] = "Smoglist to serwis zbierający statystyki użytkowania Smogomierzy(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";
+char PL_INTL_SMOGLISTINFO[256] = "Smoglist to serwis zbierający statystyki użytkowania Smogly(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";
 
 char PL_INTL_AIRMONITORSENDING[128] PROGMEM = "Wysyłanie danych do serwisu {AIRMONITOR_LINK} (wymaga wypełnienia {AIRMONITORFORM_LINK}; Sensor: np. {PMSENSORMODEL})";
 char PL_INTL_AIRMONITORCHARTS[64] PROGMEM = "Wyświetlanie wykresów z serwisu AirMonitor";
@@ -109,7 +109,7 @@ char PL_INTL_SELECTUPDATEFILE[32] PROGMEM = "Wybierz plik .bin";
 char PL_INTL_SUBMITUPDATE[16] PROGMEM = "Update!";
 char PL_INTL_CURRENTSOFTVERSION[64] PROGMEM = "Używana wersja oprogramowania";
 char PL_INTL_SERVERSOFTWAREVERSION[64] PROGMEM = "Najnowsza dostępna wersja oprogramowania";
-char PL_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Najnowszą wersję oprogramowania znajdziesz zawsze {SMOGOMIERZRELEASES_LINK}.";
+char PL_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Najnowszą wersję oprogramowania znajdziesz zawsze {SMOGLYRELEASES_LINK}.";
 
 char PL_INTL_HERE[16] PROGMEM = "tutaj";
 char PL_INTL_THEFORM[16] PROGMEM = "formularz";

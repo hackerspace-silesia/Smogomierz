@@ -1,7 +1,7 @@
 #pragma once
 
 bool DEVICENAME_AUTO = true;
-char DEVICENAME[255] = "smogomierz1"; // Bez polskich znakow!! // Without Polish letters!!
+char DEVICENAME[255] = "Smogly"; // Bez polskich znakow!! // Without Polish letters!!
 bool DISPLAY_PM1 = false;
 char LANGUAGE[255] = "english"; // english or polish
 int SELECTED_LANGUAGE = 1; // en - 1; pl - 2

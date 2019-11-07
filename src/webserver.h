@@ -467,10 +467,10 @@ void _handle_config(bool is_success) {
   message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
 
 #ifdef ARDUINO_ARCH_ESP8266
-  message.replace("{ChipID}", "smogly-" + String(ESP.getChipId()));
+  message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
   //message.replace("{ChipID}", "smogly-" + (ESP.getEfuseMac()));
-  message.replace("{ChipID}", "smogly-" + String((uint32_t)(ESP.getEfuseMac())));
+  message.replace("{ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));
 #endif
 
   if (!strcmp(THP_MODEL, "BME280")) {

@@ -950,7 +950,7 @@ void WiFiManager::handleRoot() {
   page += str;
   page += FPSTR(HTTP_PORTAL_OPTIONS);
   page += getMenuOut();
-  reportStatus(page);
+  // reportStatus(page); // hide info about AP status on main page!
   page += FPSTR(HTTP_END);
 
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
@@ -992,7 +992,7 @@ void WiFiManager::handleWifi(boolean scan) {
   }
   page += FPSTR(HTTP_FORM_END);
   page += FPSTR(HTTP_SCAN_LINK);
-  reportStatus(page);
+  // reportStatus(page); // hide info about AP status on WiFi Config page!
   page += FPSTR(HTTP_END);
 
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
@@ -1362,6 +1362,7 @@ void WiFiManager::handleWifiSave() {
 
   String page = getHTTPHead(FPSTR(S_titlewifisaved)); // @token titlewifisaved
   page += FPSTR(HTTP_SAVED);
+  page.replace("{LinkToSmoglyLocal}", ("http://"+ String(_apName) +".local"));
   page += FPSTR(HTTP_END);
 
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
@@ -1434,7 +1435,7 @@ void WiFiManager::handleInfo() {
   DEBUG_WM(DEBUG_VERBOSE,F("<- HTTP Info"));
   handleRequest();
   String page = getHTTPHead(FPSTR(S_titleinfo)); // @token titleinfo
-  reportStatus(page);
+  // reportStatus(page);
 
   uint16_t infos = 0;
 
@@ -1504,7 +1505,7 @@ void WiFiManager::handleInfo() {
     if(infoids[i] != NULL) page += getInfoData(infoids[i]);
   }
   page += F("</dl>");
-  if(_showInfoErase) page += FPSTR(HTTP_ERASEBTN);
+  // if(_showInfoErase) page += FPSTR(HTTP_ERASEBTN);
   page += FPSTR(HTTP_HELP);
   page += FPSTR(HTTP_END);
 

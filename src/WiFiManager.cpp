@@ -1515,11 +1515,15 @@ void WiFiManager::handleInfo() {
   DEBUG_WM(DEBUG_DEV,F("Sent info page"));
 }
 
+// HTML Info page
 String WiFiManager::getInfoData(String id){
 
   String p;
   // @todo add versioning
   if(id==F("esphead"))p = FPSTR(HTTP_INFO_esphead);
+
+
+
   else if(id==F("wifihead"))p = FPSTR(HTTP_INFO_wifihead);
   else if(id==F("uptime")){
     // subject to rollover!
@@ -1702,6 +1706,10 @@ String WiFiManager::getInfoData(String id){
     p.replace(FPSTR(T_2),(String)((temperatureRead()+32)*1.8));
   }
   #endif
+
+
+
+  p += FPSTR(HTTP_END);
   return p;
 }
 

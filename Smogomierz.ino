@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.5.2 or later
+#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.0 or later
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
@@ -28,20 +28,55 @@
 */
 
 /*
-  ESP8266 - NodeMCU 1.0 - 1M SPIFFS
 
-  Szkic używa 527448 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54108 bajtów (66%) pamięci dynamicznej, pozostawiając 27812 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+   ESP8266
+
+  Podłączenie czujnikow dla ESP8266 NodeMCU:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
+
+  Connection of sensors on ESP8266 NodeMCU:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
+
+   ESP32
+
+  Podłączenie czujnikow dla ESP32:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D17; SDA - D16
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: Bialy - VIN/5V; Czarny - G; TX - D5; RX - D4
+
+  Connection of sensors on ESP32:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D17; SDA - D16
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: White - VIN/5V; Black - G; TX - D5; RX - D4
+*/
+
+/*
+  ESP8266 - NodeMCU 1.0 - 1M SPIFFS
 
   Szkic używa 527548 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54216 bajtów (66%) pamięci dynamicznej, pozostawiając 27704 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  Szkic używa 537408 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55128 bajtów (67%) pamięci dynamicznej, pozostawiając 26792 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1247990 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 62236 bajtów (18%) pamięci dynamicznej, pozostawiając 265444 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1251682 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1254026 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -75,23 +110,6 @@
 #include "src/thing_speak.h"
 #include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
 
-/*
-  Podłączenie czujnikow dla ESP8266 NodeMCU:
-  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
-  DHT22: VIN - 3V; GND - G; D7
-  PMS5003/7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
-
-
-  Connection of sensors on ESP8266 NodeMCU:
-  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
-  DHT22: VIN - 3V; GND - G; D7
-  PMS5003/7003: White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
-*/
-
 // TEMP/HUMI/PRESS Sensor config - START
 // BME280 config
 #ifdef ARDUINO_ARCH_ESP8266 // VIN - 3V; GND - G; SCL - D4; SDA - D3
@@ -124,7 +142,7 @@ SHT1x sht1x(dataPin, clockPin);
 // DUST Sensor config - START
 // Serial for PMSx003 config
 #ifdef ARDUINO_ARCH_ESP8266
-SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins
+SoftwareSerial PMS_Serial;
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
@@ -291,7 +309,7 @@ void setup() {
   // DUST SENSOR setup - START
   if (!strcmp(DUST_MODEL, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
-    PMS_Serial.begin(9600); //PMSx003 serial
+    PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins
 #elif defined ARDUINO_ARCH_ESP32
     PMS_Serial.begin(9600, SERIAL_8N1, 5, 4); //PMSx003 serial
 #endif

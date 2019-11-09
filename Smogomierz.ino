@@ -299,7 +299,7 @@ void setup() {
   // DUST SENSOR setup - START
   if (!strcmp(DUST_MODEL, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
-    PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins;
+    PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins
 #elif defined ARDUINO_ARCH_ESP32
     PMS_Serial.begin(9600, SERIAL_8N1, 5, 4); //PMSx003 serial
 #endif

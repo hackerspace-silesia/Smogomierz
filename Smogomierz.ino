@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.5.2 or later
+#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.0 or later
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
@@ -55,18 +55,18 @@
 /*
   ESP8266 - NodeMCU 1.0 - 1M SPIFFS
 
-  Szkic używa 527548 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54216 bajtów (66%) pamięci dynamicznej, pozostawiając 27704 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 531244 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54392 bajtów (66%) pamięci dynamicznej, pozostawiając 27528 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  Szkic używa 538796 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55308 bajtów (67%) pamięci dynamicznej, pozostawiając 26612 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1251682 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1254906 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62784 bajtów (19%) pamięci dynamicznej, pozostawiając 264896 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1254898 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62784 bajtów (19%) pamięci dynamicznej, pozostawiając 264896 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -132,7 +132,7 @@ SHT1x sht1x(dataPin, clockPin);
 // DUST Sensor config - START
 // Serial for PMSx003 config
 #ifdef ARDUINO_ARCH_ESP8266
-SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins
+SoftwareSerial PMS_Serial;
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
@@ -299,7 +299,7 @@ void setup() {
   // DUST SENSOR setup - START
   if (!strcmp(DUST_MODEL, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
-    PMS_Serial.begin(9600); //PMSx003 serial
+    PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins;
 #elif defined ARDUINO_ARCH_ESP32
     PMS_Serial.begin(9600, SERIAL_8N1, 5, 4); //PMSx003 serial
 #endif

@@ -63,10 +63,10 @@
 
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1254906 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1273950 bajtów (64%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62784 bajtów (19%) pamięci dynamicznej, pozostawiając 264896 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1254898 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1274018 bajtów (64%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62784 bajtów (19%) pamięci dynamicznej, pozostawiając 264896 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -76,7 +76,7 @@
 
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 7.11.2019  DEV
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 13.11.2019  DEV
 #ifdef ARDUINO_ARCH_ESP8266
 #include "src/esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 7.11.2019
 #elif defined ARDUINO_ARCH_ESP32

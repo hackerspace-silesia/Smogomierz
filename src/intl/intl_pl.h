@@ -9,8 +9,8 @@
 char PL_INTL_LANG[16] PROGMEM = "pl";
 
 char PL_INTL_INDEX_PAGE[16] PROGMEM = "Pomiary";
-char PL_INTL_CONFIG_PAGE[16] PROGMEM = "Konfiguracja";
-char PL_INTL_UPDATE_PAGE[16] PROGMEM = "Update";
+char PL_INTL_CONFIG_PAGE[16] PROGMEM = "Ustawienia";
+char PL_INTL_UPDATE_PAGE[16] PROGMEM = "Aktualizacje";
 
 char PL_INTL_WEATHER[16] PROGMEM = "Pogoda";
 char PL_INTL_TEMPERATURE[16] PROGMEM = "Temperatura";
@@ -46,7 +46,7 @@ char PL_INTL_DEEPSLEEPINFO_ESP32[544] PROGMEM = "DeepSleep wprowadza urządzenie
 char PL_INTL_DISPLAYPM1[32] PROGMEM = "Wyświetlanie pomiarów PM1";
 char PL_INTL_ALTITUDEINFO[128] PROGMEM = "Wysokość(wymagana do poprawnych pomiarów ciśnienia. Można sprawdzić {WSPOLRZEDNE_GPS_LINK})";
 
-char PL_INTL_SECURECONFIGUPDATEPAGE[96] PROGMEM = "Wymagaj hasła dla strony Konfiguracyjnej oraz Update(domyślne: admin/password)";
+char PL_INTL_SECURECONFIGUPDATEPAGE[96] PROGMEM = "Wymagaj hasła dla strony Ustawienia oraz Aktualizacje(domyślne: admin/password)";
 char PL_INTL_SECURELOGIN[16] PROGMEM = "Login";
 char PL_INTL_SECUREPASSWD[16] PROGMEM = "Hasło";
 char PL_INTL_SECURELOGOUTINFO[64] PROGMEM = "Zrestartuj przeglądarkę w celu wylogowania!";

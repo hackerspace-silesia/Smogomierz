@@ -40,11 +40,22 @@ void handle_root() {
   }
 
   if (!strcmp(THP_MODEL, "Non")) {
-    message.replace("{TEXT_WEATHER}:", "");
+    message.replace("<br><h3>{TEXT_WEATHER}:</h3>", "");
+#ifdef ARDUINO_ARCH_ESP8266
     message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
     message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
     message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
     message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#elif defined ARDUINO_ARCH_ESP32
+	message.replace("<th scope='col'><h3><b>{Temperature}</b></h3> °C</th>", "");
+	message.replace("<td><h5><i class='fas fa-thermometer-half'></i></h5></td>", "");
+    message.replace("<th scope='col'><h3><b>{Humidity}</b></h3> %</th>", "");
+	message.replace("<td><h5><i class='fas fa-tint'></i></h5></td>", "");
+    message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+	message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+	message.replace("<th scope='col'><h3><b>{Dewpoint}</b></h3> °C</th>", "");
+	message.replace("<td><h5>{TEXT_DEWPOINT}</h5></td>", "");
+#endif	
   } else {
     takeTHPMeasurements();
     message.replace("{TEXT_WEATHER}", (TEXT_WEATHER));
@@ -56,15 +67,26 @@ void handle_root() {
       message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
       message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
 
-      message.replace("{Temperature}", String(currentTemperature));
-      message.replace("{Pressure}", String(currentPressure));
-      message.replace("{Humidity}", String(currentHumidity));
-      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+      message.replace("{Temperature}", String(int(currentTemperature)));
+      message.replace("{Pressure}", String(int(currentPressure)));
+      message.replace("{Humidity}", String(int(currentHumidity)));
+      message.replace("{Dewpoint}", String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
-      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#ifdef ARDUINO_ARCH_ESP8266
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#elif defined ARDUINO_ARCH_ESP32
+		message.replace("<th scope='col'><h3><b>{Temperature}</b></h3> °C</th>", "");
+		message.replace("<td><h5><i class='fas fa-thermometer-half'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Humidity}</b></h3> %</th>", "");
+		message.replace("<td><h5><i class='fas fa-tint'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+		message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+		message.replace("<th scope='col'><h3><b>{Dewpoint}</b></h3> °C</th>", "");
+		message.replace("<td><h5>{TEXT_DEWPOINT}</h5></td>", "");
+#endif
     }
   } else if (!strcmp(THP_MODEL, "HTU21")) {
     if (checkHTU21DStatus()) {
@@ -73,61 +95,122 @@ void handle_root() {
       message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
 
       message.replace("{Temperature}", String(currentTemperature));
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{Humidity}", String(currentHumidity));
-      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+#ifdef ARDUINO_ARCH_ESP8266
+	  message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+#elif defined ARDUINO_ARCH_ESP32
+      message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+	  message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+#endif
+      message.replace("{Humidity}", String(int(currentHumidity)));
+      message.replace("{Dewpoint}", String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
-      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#ifdef ARDUINO_ARCH_ESP8266
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#elif defined ARDUINO_ARCH_ESP32
+		message.replace("<th scope='col'><h3><b>{Temperature}</b></h3> °C</th>", "");
+		message.replace("<td><h5><i class='fas fa-thermometer-half'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Humidity}</b></h3> %</th>", "");
+		message.replace("<td><h5><i class='fas fa-tint'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+		message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+		message.replace("<th scope='col'><h3><b>{Dewpoint}</b></h3> °C</th>", "");
+		message.replace("<td><h5>{TEXT_DEWPOINT}</h5></td>", "");
+#endif		
     }
   } else if (!strcmp(THP_MODEL, "DHT22")) {
     if (checkDHT22Status()) {
       message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
       message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
       message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
-
-      message.replace("{Temperature}", String(currentTemperature));
+	  
+      message.replace("{Temperature}", String(int(currentTemperature)));
+#ifdef ARDUINO_ARCH_ESP8266
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{Humidity}", String(currentHumidity));
-      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+#elif defined ARDUINO_ARCH_ESP32
+      message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+	  message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+#endif	  
+      message.replace("{Humidity}", String(int(currentHumidity)));
+      message.replace("{Dewpoint}", String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
-      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#ifdef ARDUINO_ARCH_ESP8266
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#elif defined ARDUINO_ARCH_ESP32
+		message.replace("<th scope='col'><h3><b>{Temperature}</b></h3> °C</th>", "");
+		message.replace("<td><h5><i class='fas fa-thermometer-half'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Humidity}</b></h3> %</th>", "");
+		message.replace("<td><h5><i class='fas fa-tint'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+		message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+		message.replace("<th scope='col'><h3><b>{Dewpoint}</b></h3> °C</th>", "");
+		message.replace("<td><h5>{TEXT_DEWPOINT}</h5></td>", "");
+#endif		
     }
   } else if (!strcmp(THP_MODEL, "BMP280")) {
     if (checkBmpStatus()) {
       message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
       message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
-
-      message.replace("{Temperature}", String(currentTemperature));
-      message.replace("{Pressure}", String(currentPressure));
+	  
+      message.replace("{Temperature}", String(int(currentTemperature)));
+      message.replace("{Pressure}", String(int(currentPressure)));
+#ifdef ARDUINO_ARCH_ESP8266
       message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-      message.replace("{TEXT_DEWPOINT}: {Pressure} °C", "");
-    } else {
-      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
       message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#elif defined ARDUINO_ARCH_ESP32
+      message.replace("<th scope='col'><h3><b>{Humidity}</b></h3> %</th>", "");
+	  message.replace("<td><h5><i class='fas fa-tint'></i></h5></td>", "");
+	  message.replace("<th scope='col'><h3><b>{Dewpoint}</b></h3> °C</th>", "");
+	  message.replace("<td><h5>{TEXT_DEWPOINT}</h5></td>", "");
+#endif
+    } else {
+#ifdef ARDUINO_ARCH_ESP8266
+#elif defined ARDUINO_ARCH_ESP32
+		message.replace("<th scope='col'><h3><b>{Temperature}</b></h3> °C</th>", "");
+		message.replace("<td><h5><i class='fas fa-thermometer-half'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Humidity}</b></h3> %</th>", "");
+		message.replace("<td><h5><i class='fas fa-tint'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+		message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+		message.replace("<th scope='col'><h3><b>{Dewpoint}</b></h3> °C</th>", "");
+		message.replace("<td><h5>{TEXT_DEWPOINT}</h5></td>", "");
+#endif		
     }
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     if (checkSHT1xStatus()) {
       message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
       message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
       message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
-
-      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{Temperature}", String(int(currentTemperature)));
+#ifdef ARDUINO_ARCH_ESP8266
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{Humidity}", String(float(currentHumidity)));
-      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+#elif defined ARDUINO_ARCH_ESP32
+      message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+	  message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+#endif	  
+      message.replace("{Humidity}", String(int(currentHumidity)));
+      message.replace("{Dewpoint}", String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
-      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
-      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
-      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#ifdef ARDUINO_ARCH_ESP8266
+	    message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+	    message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+	    message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+	    message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+#elif defined ARDUINO_ARCH_ESP32
+		message.replace("<th scope='col'><h3><b>{Temperature}</b></h3> °C</th>", "");
+		message.replace("<td><h5><i class='fas fa-thermometer-half'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Humidity}</b></h3> %</th>", "");
+		message.replace("<td><h5><i class='fas fa-tint'></i></h5></td>", "");
+	    message.replace("<th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>", "");
+		message.replace("<td><h5>{TEXT_PRESSURE}</h5></td>", "");
+		message.replace("<th scope='col'><h3><b>{Dewpoint}</b></h3> °C</th>", "");
+		message.replace("<td><h5>{TEXT_DEWPOINT}</h5></td>", "");
+#endif
     }
   }
 
@@ -137,7 +220,12 @@ void handle_root() {
     if (DISPLAY_PM1) {
       message.replace("{averagePM1}", String(averagePM1));
     } else {
+#ifdef ARDUINO_ARCH_ESP8266
       message.replace("PM1: {averagePM1} µg/m³", "");
+#elif defined ARDUINO_ARCH_ESP32
+  	  message.replace("<th scope='col'><h3><b>{averagePM1}</b></h3> µg/m³</th>", "");
+	  message.replace("<td><h5>PM1</h5></td>", "");
+#endif
     }
 
     if (averagePM25 <= 10) {
@@ -153,8 +241,7 @@ void handle_root() {
     } else {
       message.replace("{colorAveragePM25}", "<font>");
     }
-
-    message.replace("{averagePM25}", String(averagePM25) + "</font>");
+	  message.replace("{averagePM25}", String(int(averagePM25)) + "</font>");
 
     if (averagePM10 <= 20) {
       message.replace("{colorAveragePM10}", "<font color='#61EEE4'>");
@@ -169,12 +256,22 @@ void handle_root() {
     } else {
       message.replace("{colorAveragePM10}", "<font>");
     }
-    message.replace("{averagePM10}", String(averagePM10) + "</font>");
+    message.replace("{averagePM10}", String(int(averagePM10)) + "</font>");
   } else {
+#ifdef ARDUINO_ARCH_ESP8266	  
     message.replace("{TEXT_AIRPOLLUTION}:", "");
     message.replace("PM1: {averagePM1} µg/m³", "");
     message.replace("PM2.5: {colorAveragePM25} {averagePM25} µg/m³", "");
     message.replace("PM10: {colorAveragePM10} {averagePM10} µg/m³", "");
+#elif defined ARDUINO_ARCH_ESP32
+  message.replace("{TEXT_AIRPOLLUTION}:", "");
+  message.replace("<th scope='col'><h3><b>{averagePM1}</b></h3> µg/m³</th>", "");
+  message.replace("<td><h5>PM1</h5></td>", "");
+  message.replace("<th scope='col'><h3><b>{colorAveragePM25} {averagePM25}</b></h3> µg/m³</th>", "");
+  message.replace("<td><h5>PM2.5</h5></td>", "");
+  message.replace("<th scope='col'><h3><b>{colorAveragePM10} {averagePM10}</b></h3> µg/m³</th>", "");
+  message.replace("<td><h5>PM10</h5></td>", "");
+#endif
   }
 
   if (AIRMONITOR_GRAPH_ON) {
@@ -363,7 +460,8 @@ void _handle_config(bool is_success) {
 
   message.replace("{TEXT_DEVICENAME}", (TEXT_DEVICENAME));
   if (DEVICENAME_AUTO) {
-    message.replace("{device_name}", (device_name));
+    //message.replace("{device_name}", ("<a href='http://" + String(device_name) + ".local'>" + String(device_name) + ".local</a>"));
+	message.replace("{device_name}", (device_name));
   } else {
     message.replace("{device_name}", _addTextInput("DEVICENAME", DEVICENAME));
   }

@@ -2471,18 +2471,27 @@ void WiFiManager::DEBUG_WM(wm_debuglevel_t level,Generic text,Genericb textb) {
   if(!_debug || _debugLevel < level) return;
 
   if(_debugLevel >= DEBUG_MAX){
-    _debugPort.print("MEM: ");
-    _debugPort.println((String)ESP.getFreeHeap());
+      uint32_t free;
+      uint16_t max;
+      uint8_t frag;  
+#ifdef ARDUINO_ARCH_ESP8266
+      ESP.getHeapStats(&free, &max, &frag);
+      _debugPort.printf("[MEM] free: %5d | max: %5d | frag: %3d%% \n", free, max, frag);  
+#elif defined ARDUINO_ARCH_ESP32
+      // _debugPort.print((String)ESP.getFreeHeap());
+      // _debugPort.print((String)ESP.getMaxFreeBlockSize());
+      // _debugPort.print((String)ESP.getHeapFragmentation());
+#endif
+    }
+    _debugPort.print("*WM: ");
+    if(_debugLevel == DEBUG_DEV) _debugPort.print("["+(String)level+"] ");
+    _debugPort.print(text);
+    if(textb){
+      _debugPort.print(" ");
+      _debugPort.print(textb);
+    }
+    _debugPort.println();
   }
-  _debugPort.print("*WM: ");
-  if(_debugLevel == DEBUG_DEV) _debugPort.print("["+(String)level+"] ");
-  _debugPort.print(text);
-  if(textb){
-    _debugPort.print(" ");
-    _debugPort.print(textb);
-  }
-  _debugPort.println();
-}
 
 /**
  * [debugSoftAPConfig description]

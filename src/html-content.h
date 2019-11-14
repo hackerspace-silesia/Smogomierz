@@ -71,7 +71,7 @@ const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = "<main role='main' class='cont
 #elif defined ARDUINO_ARCH_ESP32
 const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = "<main role='main' class='container'><div class='jumbotron'>\
 	<center><h1>Smogly</h1><br>\
-	<br><h3>{TEXT_WEATHER}:</h3>\
+	<h2>{TEXT_WEATHER}:</h2>\
 	<table class='table table-borderless'>\
 		<thead>\
 	    <tr align='center'>\

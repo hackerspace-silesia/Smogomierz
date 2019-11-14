@@ -40,7 +40,7 @@ void handle_root() {
   }
 
   if (!strcmp(THP_MODEL, "Non")) {
-    message.replace("<br><h3>{TEXT_WEATHER}:</h3>", "");
+    message.replace("<h2>{TEXT_WEATHER}:</h2>", "");
 #ifdef ARDUINO_ARCH_ESP8266
     message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
     message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");

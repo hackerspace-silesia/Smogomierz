@@ -53,20 +53,20 @@
 */
 
 /*
-  ESP8266 - NodeMCU 1.0 - 1M SPIFFS
-
-  Szkic używa 531244 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54392 bajtów (66%) pamięci dynamicznej, pozostawiając 27528 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  ESP8266 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
 
   Szkic używa 538796 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 55308 bajtów (67%) pamięci dynamicznej, pozostawiając 26612 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  Szkic używa 540348 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55340 bajtów (67%) pamięci dynamicznej, pozostawiając 26580 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1273950 bajtów (64%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1274018 bajtów (64%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62784 bajtów (19%) pamięci dynamicznej, pozostawiając 264896 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1274018 bajtów (64%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1274086 bajtów (64%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62784 bajtów (19%) pamięci dynamicznej, pozostawiając 264896 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -397,7 +397,7 @@ void setup() {
       delay(5000);
     }
   */
-
+  wifiManager.setCountry("US");
   if (wifiManager.autoConnect(device_name)) {
     Serial.println("connected...yeey :)");
     //wifiManager.setConfigPortalBlocking(false);

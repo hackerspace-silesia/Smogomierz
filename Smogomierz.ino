@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.0 or later
+#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.1 or later
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
@@ -63,13 +63,14 @@
 */
 
 /*
-  ESP8266 - NodeMCU 1.0 - 1M SPIFFS
-
-  Szkic używa 527548 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54216 bajtów (66%) pamięci dynamicznej, pozostawiając 27704 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  ESP8266 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
 
   Szkic używa 537408 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 55128 bajtów (67%) pamięci dynamicznej, pozostawiając 26792 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 531864 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55140 bajtów (67%) pamięci dynamicznej, pozostawiając 26780 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
 
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
@@ -142,7 +143,8 @@ SHT1x sht1x(dataPin, clockPin);
 // DUST Sensor config - START
 // Serial for PMSx003 config
 #ifdef ARDUINO_ARCH_ESP8266
-SoftwareSerial PMS_Serial;
+// SoftwareSerial PMS_Serial; -- only for esp8266 core 2.6.0
+SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
@@ -309,7 +311,8 @@ void setup() {
   // DUST SENSOR setup - START
   if (!strcmp(DUST_MODEL, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
-    PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins
+    PMS_Serial.begin(9600); //PMSx003 serial -- esp8266 core 2.6.1 or later
+    //PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
 #elif defined ARDUINO_ARCH_ESP32
     PMS_Serial.begin(9600, SERIAL_8N1, 5, 4); //PMSx003 serial
 #endif

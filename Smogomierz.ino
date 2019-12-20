@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.1 or later
+#ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
@@ -65,12 +65,11 @@
 /*
   ESP8266 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
 
-  Szkic używa 537408 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 55128 bajtów (67%) pamięci dynamicznej, pozostawiając 26792 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  Szkic używa 531864 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 531816 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 55140 bajtów (67%) pamięci dynamicznej, pozostawiając 26780 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  Szkic używa 531556 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54380 bajtów (66%) pamięci dynamicznej, pozostawiając 27540 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
@@ -300,13 +299,13 @@ void MQTTreconnect() {
 
 void setup() {
   Serial.begin(115200);
-  delay(10);
+  yield();
 
   fs_setup();
-  delay(10);
+  yield();
 
   loadtranslation(SELECTED_LANGUAGE);
-  delay(10);
+  yield();
 
   // DUST SENSOR setup - START
   if (!strcmp(DUST_MODEL, "PMS7003")) {
@@ -326,7 +325,7 @@ void setup() {
       pms.sleep();
     }
   }
-  delay(10);
+  yield();
   // DUST SENSOR setup - END
 
   if (SENDING_FREQUENCY < DUST_TIME) {
@@ -335,7 +334,7 @@ void setup() {
   if (SENDING_DB_FREQUENCY == 0) {
     SENDING_DB_FREQUENCY = SENDING_FREQUENCY;
   }
-  delay(10);
+  yield();
 
   if (FREQUENTMEASUREMENT == true) {
     minutesToSeconds();
@@ -362,7 +361,7 @@ void setup() {
       SENDING_DB_FREQUENCY_interval = SENDING_DB_FREQUENCY_interval * SENDING_DB_FREQUENCY;
     }
   }
-  delay(10);
+  yield();
 
   // TEMP/HUMI/PRESS Sensor seturp - START
   if (!strcmp(THP_MODEL, "BME280")) {
@@ -381,7 +380,7 @@ void setup() {
     dht.begin();
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
   }
-  delay(10);
+  yield();
   // TEMP/HUMI/PRESS Sensor setup - END
 
   // get ESP id
@@ -503,7 +502,7 @@ void loop() {
       delay(1000);
     }
   }
-  delay(10);
+  yield();
 
   pm_calibration();
 
@@ -512,17 +511,16 @@ void loop() {
     pms.read(data);
   }
   // DUST SENSOR refresh data - END
-  delay(10);
+  yield();
 
   //webserverShowSite(WebServer, BMESensor, data);
   WebServer.handleClient();
-  delay(10);
 
-#ifdef ARDUINO_ARCH_ESP8266
-  MDNS.update();
-#endif
-
-  yield();
+  /*
+    #ifdef ARDUINO_ARCH_ESP8266
+    MDNS.update();
+    #endif
+  */
 
   if (strcmp(DUST_MODEL, "Non")) {
     unsigned long current_DUST_Millis = millis();
@@ -536,7 +534,7 @@ void loop() {
       Serial.println("\nDeepSleep Mode!\n");
 
       takeSleepPMMeasurements();
-      delay(10);
+      yield();
 
       if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         takeTHPMeasurements();
@@ -551,7 +549,7 @@ void loop() {
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
       Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
-      delay(10);
+      yield();
 #elif defined ARDUINO_ARCH_ESP32
       Serial.println("Going to sleep now");
       Serial.flush();
@@ -571,8 +569,6 @@ void loop() {
       previous_2sec_Millis = millis();
       while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
         WebServer.handleClient();
-        delay(10);
-        yield();
         previous_2sec_Millis = millis();
       }
       if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
@@ -583,13 +579,13 @@ void loop() {
         takeTHPMeasurements();
         sendDataToExternalDBs();
       }
-      delay(10);
+      yield();
 
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
       Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
-      delay(10);
+      yield();
 #elif defined ARDUINO_ARCH_ESP32
       Serial.println("Going to sleep now");
       Serial.flush();
@@ -664,7 +660,7 @@ void sendDataToExternalDBs() {
       MQTTreconnect();
     }
     mqttclient.loop();
-    delay(10);
+    yield();
   }
 
   if (THINGSPEAK_ON) {
@@ -850,7 +846,7 @@ void takeTHPMeasurements() {
   if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
     BMESensor.refresh();
-    delay(10);
+    yield();
 #endif
     if (checkBmeStatus() == true) {
       if (DEBUG) {
@@ -954,7 +950,6 @@ void takeSleepPMMeasurements() {
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
       WebServer.handleClient();
-      yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -972,8 +967,6 @@ void takeSleepPMMeasurements() {
       previous_2sec_Millis = millis();
     }
     WebServer.handleClient();
-    yield();
-    delay(10);
   }
   if (DEBUG) {
     Serial.print("\nTurning OFF PM sensor...\n");
@@ -990,7 +983,7 @@ void pm_calibration() {
     if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
       BMESensor.refresh();
-      delay(10);
+      yield();
       if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
         calib1 = float((200 - (BMESensor.humidity)) / 150);
         calib2 = calib1 / 2;

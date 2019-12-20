@@ -523,9 +523,9 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_AIRMONITORCHARTS}", (TEXT_AIRMONITORCHARTS));
   message.replace("{AIRMONITOR_ON}", _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON));
   message.replace("{TEXT_AIRMONITORCOORDINATESINFO}", (TEXT_AIRMONITORCOORDINATESINFO));
-
   message.replace("{LATLONG_LINK}", (LATLONG_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
+  
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
   
@@ -744,7 +744,7 @@ void handle_config_post() {
     strcpy(DUST_MODEL, "Non");
     saveConfig();
     _handle_config(true);
-    delay(10);
+    yield();
     if (need_update == 1) {
       doUpdate(1); // BME280-SparkFun
     }
@@ -766,7 +766,7 @@ void handle_config_post() {
   _handle_config(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
-  delay(300);
+  yield();
   ESP.restart();
 }
 
@@ -908,7 +908,7 @@ void autoupdateon() {
   }
   AUTOUPDATE_ON = true;
   saveConfig();
-  delay(300);
+  yield();
   WebServer.sendHeader("Location", "/", true);
   WebServer.send ( 302, "text/plain", "");
   delay(1000);

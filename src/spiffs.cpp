@@ -280,7 +280,7 @@ bool saveConfig() {
 }
 
 void fs_setup() {
-  delay(10);
+  yield();
   Serial.println("Mounting FS...");
 
   if (!SPIFFS.begin()) {

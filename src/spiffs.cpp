@@ -24,7 +24,7 @@ bool loadConfig() {
   }
 
   size_t size = configFile.size();
-  if (size > 1024) {
+  if (size > 1536) {
     Serial.println("Config file size is too large");
     return false;
   }
@@ -87,6 +87,10 @@ bool loadConfig() {
   MQTT_PORT = json["MQTT_PORT"];  
   _safeCpy(MQTT_USER, json["MQTT_USER"], "user");
   _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password");
+  
+  AQI_ECO_ON = json["AQI_ECO_ON"];
+  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host");
+  _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path");
   
   SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
   SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
@@ -176,6 +180,13 @@ bool loadConfig() {
     Serial.print("Loaded MQTT_PASSWORD: ");
     Serial.println(MQTT_PASSWORD);
     
+    Serial.print("Loaded AQI_ECO_ON: ");
+    Serial.println(AQI_ECO_ON);
+    Serial.print("Loaded AQI_ECO_HOST: ");
+    Serial.println(AQI_ECO_HOST);
+    Serial.print("Loaded AQI_ECO_PATH: ");
+    Serial.println(AQI_ECO_PATH);
+    
 	Serial.print("Loaded SENDING_FREQUENCY: ");
     Serial.println(SENDING_FREQUENCY);
 	Serial.print("Loaded SENDING_DB_FREQUENCY: ");
@@ -250,6 +261,11 @@ bool saveConfig() {
   json["MQTT_USER"] = MQTT_USER;
   json["MQTT_PASSWORD"] = MQTT_PASSWORD;
   json["MQTT_PASSWORD"] = String(MQTT_PASSWORD);
+
+  json["AQI_ECO_ON"] = AQI_ECO_ON;
+  json["AQI_ECO_HOST"] = AQI_ECO_HOST;
+  json["AQI_ECO_PATH"] = AQI_ECO_PATH;
+  json["AQI_ECO_PATH"] = String(AQI_ECO_PATH);
 
   json["SENDING_FREQUENCY"] = SENDING_FREQUENCY;
   json["SENDING_DB_FREQUENCY"] = SENDING_DB_FREQUENCY;

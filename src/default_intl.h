@@ -80,6 +80,10 @@ extern char TEXT_MQTTPORT[32] = "MQTT port";
 extern char TEXT_MQTTUSER[32] = "MQTT user";
 extern char TEXT_MQTTPASSWD[32] = "MQTT password";
 
+extern char TEXT_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
+extern char TEXT_AQIECOSERVER[32] = "aqi.eco server";
+extern char TEXT_AQIECOPATH[32] = "aqi.eco path";
+
 extern char TEXT_CALIBMETHOD[32] = "Calibration method";
 extern char TEXT_CALIB1[32] = "calib1";
 extern char TEXT_CALIB2[32] = "calib2";

@@ -40,6 +40,10 @@ extern uint16_t MQTT_PORT;
 extern char MQTT_USER[255];
 extern char MQTT_PASSWORD[255];
 
+extern bool AQI_ECO_ON;
+extern char AQI_ECO_HOST[255];
+extern char AQI_ECO_PATH[255];
+
 extern int SENDING_FREQUENCY;
 extern int SENDING_DB_FREQUENCY;
 extern bool DEEPSLEEP_ON;

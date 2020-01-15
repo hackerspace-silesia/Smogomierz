@@ -80,6 +80,10 @@ char PL_INTL_MQTTPORT[32] PROGMEM = "Port MQTT";
 char PL_INTL_MQTTUSER[32] PROGMEM = "Użytkownik MQTT";
 char PL_INTL_MQTTPASSWD[32] PROGMEM = "Hasło MQTT";
 
+char PL_INTL_AQIECOSENDING[64] PROGMEM = "Wysyłanie danych do aqi.eco";
+char PL_INTL_AQIECOSERVER[32] PROGMEM = "Adres serwera aqi.eco";
+char PL_INTL_AQIECOPATH[32] PROGMEM = "Ścieżka aqi.eco";
+
 char PL_INTL_CALIBMETHOD[32] PROGMEM = "Sposób kalibracji";
 char PL_INTL_CALIB1[32] PROGMEM = "Zmienna kalibracyjna calib1";
 char PL_INTL_CALIB2[32] PROGMEM = "Zmienna kalibracyjna calib2";

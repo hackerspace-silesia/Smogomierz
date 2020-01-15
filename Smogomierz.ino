@@ -108,6 +108,7 @@
 #include "src/luftdaten.h"
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
+#include "src/aqieco.h"
 #include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
 
 // TEMP/HUMI/PRESS Sensor config - START
@@ -344,7 +345,7 @@ void setup() {
     DUST_interval = DUST_interval * DUST_TIME;
   }
   if (DEEPSLEEP_ON == true) {
-    if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+    if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
     }
 #ifdef ARDUINO_ARCH_ESP32
@@ -354,7 +355,7 @@ void setup() {
     Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds\n");
 #endif
   } else {
-    if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+    if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
     }
     if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
@@ -536,7 +537,7 @@ void loop() {
       takeSleepPMMeasurements();
       yield();
 
-      if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+      if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         takeTHPMeasurements();
         sendDataToExternalServices();
       }
@@ -571,7 +572,7 @@ void loop() {
         WebServer.handleClient();
         previous_2sec_Millis = millis();
       }
-      if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+      if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         takeTHPMeasurements();
         sendDataToExternalServices();
       }
@@ -595,7 +596,7 @@ void loop() {
     }
   }
 
-  if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+  if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
     unsigned long current_SENDING_FREQUENCY_Millis = millis();
     if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
       takeTHPMeasurements();
@@ -648,6 +649,13 @@ void sendDataToExternalServices() {
     sendDataToSmoglist(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
       Serial.println("Sending measurement data to the Smoglist service!\n");
+    }
+  }
+
+  if (AQI_ECO_ON) {
+    sendDataToAqiEco(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
+    if (DEBUG) {
+      Serial.println("Sending measurement data to the aqi.eco service!\n");
     }
   }
 

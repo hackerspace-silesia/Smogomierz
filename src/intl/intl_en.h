@@ -80,6 +80,10 @@ char EN_INTL_MQTTPORT[32] PROGMEM = "MQTT port";
 char EN_INTL_MQTTUSER[32] PROGMEM = "MQTT user";
 char EN_INTL_MQTTPASSWD[32] PROGMEM = "MQTT password";
 
+char EN_INTL_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
+char EN_INTL_AQIECOSERVER[32] = "aqi.eco server";
+char EN_INTL_AQIECOPATH[32] = "aqi.eco path";
+
 char EN_INTL_CALIBMETHOD[32] PROGMEM = "Calibration method";
 char EN_INTL_CALIB1[32] PROGMEM = "calib1";
 char EN_INTL_CALIB2[32] PROGMEM = "calib2";

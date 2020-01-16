@@ -57,7 +57,18 @@ extern char CONFIG_PASSWORD[512];
 
 extern char MODEL[255];
 
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
 const char PMSENSORVERSION[] = "PMS";
+#elif defined DUSTSENSOR_SDS011_21
+const char PMSENSORVERSION[] = "SDS";
+#elif defined DUSTSENSOR_HPMA115S0
+const char PMSENSORVERSION[] = "HPMA115S0";
+#elif defined DUSTSENSOR_SPS30
+const char PMSENSORVERSION[] = "SPS30";
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+const char PMSENSORVERSION[] = "PMS";
+#endif
+
 extern char SERVERSOFTWAREVERSION[255];
 extern char CURRENTSOFTWAREVERSION[255];
 #if defined(ARDUINO_ARCH_ESP8266)

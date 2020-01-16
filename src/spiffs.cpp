@@ -5,6 +5,7 @@
 #endif
 
 #include "config.h"
+#define FORMAT_SPIFFS_IF_FAILED true
 
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "") {
   const char* val = obj.as<const char*>();
@@ -17,7 +18,12 @@ void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "") {
 
 
 bool loadConfig() {
+#ifdef ARDUINO_ARCH_ESP8266
   File configFile = SPIFFS.open("/config.json", "r");
+#elif defined ARDUINO_ARCH_ESP32
+  File configFile = SPIFFS.open("/config.json");
+#endif
+  
   if (!configFile) {
     Serial.println("Failed to open config file");
     return false;
@@ -299,10 +305,17 @@ void fs_setup() {
   yield();
   Serial.println("Mounting FS...");
 
+#ifdef ARDUINO_ARCH_ESP8266
   if (!SPIFFS.begin()) {
     Serial.println("Failed to mount file system");
     return;
   }
+#elif defined ARDUINO_ARCH_ESP32
+  if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
+    Serial.println("SPIFFS Mount Failed");
+    return;
+  }
+#endif
 
   if (!loadConfig()) {
     Serial.println("Failed to load config");

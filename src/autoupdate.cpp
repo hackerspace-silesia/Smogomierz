@@ -134,7 +134,9 @@ bool checkUpdate(int checkUpdateSW) {
           ServerSW = json["HPMA115S0"];
         } else if (checkUpdateSW == 4) {
           ServerSW = json["PMS"];
-        } else if (checkUpdateSW >= 5) {
+        } else if (checkUpdateSW == 5) {
+          ServerSW = json["SPS30"];
+        } else if (checkUpdateSW >= 6) {
           ServerSW = json[PMSENSORVERSION];
         }
       }
@@ -247,7 +249,13 @@ void doUpdate(int doUpdateSW) {
 #elif defined(ARDUINO_ARCH_ESP32)
       BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "PMS" + "_ESP32.bin";
 #endif
-    } else if (doUpdateSW >= 5) {
+    } else if (doUpdateSW == 5) {
+#if defined(ARDUINO_ARCH_ESP8266)
+      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + "SPS30" + "_ESP8266.bin";
+#elif defined(ARDUINO_ARCH_ESP32)
+      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "SPS30" + "_ESP32.bin";
+#endif
+    } else if (doUpdateSW >= 6) {
 #if defined(ARDUINO_ARCH_ESP8266)
       BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + "_ESP8266.bin";
 #elif defined(ARDUINO_ARCH_ESP32)

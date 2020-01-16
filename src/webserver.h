@@ -259,6 +259,7 @@ String _addDUST_MODELSelect(const String &key, const String &value) {
   input += _addOption("PMS7003", "PMS5003/7003", value);
   input += _addOption("SDS011/21", "SDS011/21", value);
   input += _addOption("HPMA115S0", "HPMA115S0", value);
+  input += _addOption("SPS30", "SPS30", value);
 
   input += _addOption("Non", (TEXT_WITHOUTSENSOR), value);
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
@@ -431,7 +432,7 @@ void _handle_config(bool is_success) {
     message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
   }
   
-  if (!strcmp(DUST_MODEL, "PMS7003")) {
+  if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "SPS30")) {
     message.replace("{DISPLAY_PM1}", _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1));
     message.replace("{TEXT_DISPLAYPM1}", (TEXT_DISPLAYPM1));
   } else {
@@ -501,6 +502,9 @@ void _handle_config(bool is_success) {
   } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
     message.replace("{DUSTSENSOR}", "HPMA115S0");
     message.replace("{DUSTXPIN}", "1");
+  } else if (!strcmp(DUST_MODEL, "SPS30")) {
+    message.replace("{DUSTSENSOR}", "SPS30");
+    message.replace("{DUSTXPIN}", "1");
   } else {
     message.replace("<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>", "");
   }
@@ -514,6 +518,8 @@ void _handle_config(bool is_success) {
     strcpy(PMSENSORMODEL, "SDS011");
   } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
     strcpy(PMSENSORMODEL, "HPMA115S0");
+  } else if (!strcmp(DUST_MODEL, "SPS30")) {
+    strcpy(PMSENSORMODEL, "SPS30");
   }
   message.replace("{PMSENSORMODEL}", PMSENSORMODEL);
 
@@ -667,9 +673,11 @@ void handle_config_post() {
     if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
       need_update = 2;
     }
-
     if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
       need_update = 3;
+    }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+      need_update = 5;
     }
   } else if (!strcmp(PMSENSORVERSION, "SDS")) {
     if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
@@ -678,9 +686,25 @@ void handle_config_post() {
     if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
       need_update = 4;
     }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+      need_update = 5;
+    }
   } else if (!strcmp(PMSENSORVERSION, "HPMA115S0")) {
     if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
       need_update = 2;
+    }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+      need_update = 4;
+    }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+      need_update = 5;
+    }
+  } else if (!strcmp(PMSENSORVERSION, "SPS30")) {
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+      need_update = 2;
+    }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+      need_update = 3;
     }
     if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
       need_update = 4;
@@ -689,9 +713,11 @@ void handle_config_post() {
     if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
       need_update = 2;
     }
-
     if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
       need_update = 3;
+    }
+    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+      need_update = 5;
     }
   }
   // DUST Sensor config - END
@@ -769,6 +795,9 @@ void handle_config_post() {
       doUpdate(4); // PMSx003
     }
     if (need_update >= 5) {
+      doUpdate(5); // SPS30
+    }
+    if (need_update >= 6) {
       doUpdate(0); // CURRENT SERVERSOFTWARE VERSION
     }
   }

@@ -1,7 +1,132 @@
+// ****** CHOOSE(uncomment) ONLY ONE!!! ******
+
+#define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
+// #define DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMS5003 / PMS7003 - BME280_0x77
+// #define DUSTSENSOR_SDS011_21 // Nova Fitness SDS011 / SDS021
+// #define DUSTSENSOR_HPMA115S0 // Honeywell HPMA115S0
+// #define DUSTSENSOR_SPS30 // Sensirion SPS30
+
+// *******************************************
+
+/*
+
+   ESP8266
+
+  Podłączenie czujnikow dla ESP8266 NodeMCU:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: VIN - VIN/5V; GND - G; Zielony/TX - D1; Niebieski/RX - D2
+  HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
+  SDS011/21: VIN - 5V; GND - G; TX - D1; RX - D2
+  Sensirion SPS30: VIN - 5V; GND - G; TX - D1; RX - D2
+
+  Connection of sensors on ESP8266 NodeMCU:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: VIN - VIN/5V; GND - G; Green/TX - D1; Blue/RX - D2
+  HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
+  SDS011/21: VIN - 5V; GND - G; TX - D1; RX - D2
+  Sensirion SPS30: VIN - 5V; GND - G; TX - D1; RX - D2
+
+
+   ESP32
+
+  Podłączenie czujnikow dla ESP32:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D17; SDA - D16
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: VIN - VIN/5V; GND - G; TX - D5; RX - D4
+  HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
+  SDS011/21: VIN - 5V; GND - G; TX - D5; RX - D4
+  Sensirion SPS30: VIN - 5V; GND - G; TX - D5; RX - D4
+
+  Connection of sensors on ESP32:
+  BME280/BMP280: VIN - 3V; GND - G; SCL - D17; SDA - D16
+  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
+  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
+  DHT22: VIN - 3V; GND - G; D7
+  PMS5003/7003: VIN - VIN/5V; GND - G; TX - D5; RX - D4
+  HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
+  SDS011/21: VIN - 5V; GND - G; TX - D5; RX - D4
+  Sensirion SPS30: VIN - 5V; GND - G; TX - D5; RX - D4
+*/
+
+/*
+  ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
+
+  Szkic używa 531556 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 54380 bajtów (66%) pamięci dynamicznej, pozostawiając 27540 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 537924 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55860 bajtów (68%) pamięci dynamicznej, pozostawiając 26060 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
+
+  Szkic używa 1251682 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1254026 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+
+*/
+
+#include "FS.h"
+#include <ArduinoJson.h> // 6.9.0 or later
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
+#ifdef ARDUINO_ARCH_ESP8266
+#ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
+#include "src/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#else
+#include "src/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#endif
+#elif defined ARDUINO_ARCH_ESP32
+#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
+#endif
+#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
+#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
+#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
+#include <DHT.h>
+
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
+#elif defined DUSTSENSOR_SDS011_21
+#ifdef ARDUINO_ARCH_ESP8266
+#include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 25.08.2019
+#elif defined ARDUINO_ARCH_ESP32
+#include "src/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 25.08.2019
+#endif
+#elif defined DUSTSENSOR_HPMA115S0
+#include "src/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 26.08.2019
+#elif defined DUSTSENSOR_SPS30
+#include "src/sps30.h" // https://github.com/paulvha/sps30 // 16.01.2020
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
+#endif
+
+#include "src/spiffs.h"
+#include "src/config.h"
+#include "defaultConfig.h"
+#include "src/autoupdate.h"
+#include "src/smoglist.h"
+
+#include "src/luftdaten.h"
+#include "src/airmonitor.h"
+#include "src/thing_speak.h"
+#include "src/aqieco.h"
+#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
+
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+#ifndef DUSTSENSOR_SPS30
 #include <ESP8266HTTPUpdateServer.h>
+#endif
 #include <SoftwareSerial.h>
 #elif defined ARDUINO_ARCH_ESP32 // Arduino core for the ESP32 - 1.0.4-rc1 or later // at 1.0.3 autoupdate doesn't work !!!
 #include <WiFi.h>
@@ -15,102 +140,8 @@
 #include <HardwareSerial.h>
 #endif
 
-/*
-   ESP32 wymaga zainstalowania „Arduino ESP32 Fileystem Uploader” i przesłania pustego obrazu SPIFFS.
-   Musisz to zrobić tylko raz.
-   Po tym cała konfiguracja i ustawienia zostaną zapisana w pamięci ESP32.
-
-  https://randomnerdtutorials.com/install-esp32-filesystem-uploader-arduino-ide/
-
-   ESP32 requires installing the "Arduino ESP32 Filesystem Uploader" and uploading a blank SPIFFS image.
-   You only have to do this once.
-   After that all configuration and settings will be saved in ESP32 memory.
-*/
-
-/*
-
-   ESP8266
-
-  Podłączenie czujnikow dla ESP8266 NodeMCU:
-  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
-  DHT22: VIN - 3V; GND - G; D7
-  PMS5003/7003: Bialy - VIN/5V; Czarny - G; Zielony/TX - D1; Niebieski/RX - D2
-
-  Connection of sensors on ESP8266 NodeMCU:
-  BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
-  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
-  DHT22: VIN - 3V; GND - G; D7
-  PMS5003/7003: White - VIN/5V; Black - G; Green/TX - D1; Blue/RX - D2
-
-   ESP32
-
-  Podłączenie czujnikow dla ESP32:
-  BME280/BMP280: VIN - 3V; GND - G; SCL - D17; SDA - D16
-  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
-  DHT22: VIN - 3V; GND - G; D7
-  PMS5003/7003: Bialy - VIN/5V; Czarny - G; TX - D5; RX - D4
-
-  Connection of sensors on ESP32:
-  BME280/BMP280: VIN - 3V; GND - G; SCL - D17; SDA - D16
-  SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
-  SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
-  DHT22: VIN - 3V; GND - G; D7
-  PMS5003/7003: White - VIN/5V; Black - G; TX - D5; RX - D4
-*/
-
-/*
-  ESP8266 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
-
-  Szkic używa 531556 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54380 bajtów (66%) pamięci dynamicznej, pozostawiając 27540 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  Szkic używa 536376 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 55536 bajtów (67%) pamięci dynamicznej, pozostawiając 26384 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
-
-  Szkic używa 1251682 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
-  Szkic używa 1254026 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
-
-*/
-
 #include <PubSubClient.h>
 #include <Wire.h>
-
-#include "FS.h"
-#include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
-#ifdef ARDUINO_ARCH_ESP8266
-#include "src/esp8266/bme280.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
-#elif defined ARDUINO_ARCH_ESP32
-#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
-#endif
-#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
-#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
-#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
-#include <DHT.h>
-
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
-
-#include "src/spiffs.h"
-#include "src/config.h"
-#include "defaultConfig.h"
-#include "src/autoupdate.h"
-#include "src/smoglist.h"
-
-#include "src/luftdaten.h"
-#include "src/airmonitor.h"
-#include "src/thing_speak.h"
-#include "src/aqieco.h"
-#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
 
 // TEMP/HUMI/PRESS Sensor config - START
 // BME280 config
@@ -142,7 +173,9 @@ SHT1x sht1x(dataPin, clockPin);
 // TEMP/HUMI/PRESS Sensor config - END
 
 // DUST Sensor config - START
-// Serial for PMSx003 config
+
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
+//***PMSx003 - START***
 #ifdef ARDUINO_ARCH_ESP8266
 // SoftwareSerial PMS_Serial; -- only for esp8266 core 2.6.0
 SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
@@ -153,6 +186,64 @@ HardwareSerial PMS_Serial(1); // Change TX - D5 and RX - D4 pins
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #endif
+//***PMSx003 - END***
+#elif defined DUSTSENSOR_SDS011_21
+//***SDS0x1 - START***
+#ifdef ARDUINO_ARCH_ESP8266
+// SDS011/21 config
+SdsDustSensor sds(5, 4); // Change TX - D1 and RX - D2 pins
+#elif defined ARDUINO_ARCH_ESP32
+// SDS011/21 config
+HardwareSerial sds_port(2); // Change TX - D5 and RX - D4 pins
+SDS011 my_sds;
+int err;
+float SDSpm25, SDSpm10;
+#endif
+//***SDS0x1 - END***
+#elif defined DUSTSENSOR_HPMA115S0
+//***HPMA115S0 - START***
+#ifdef ARDUINO_ARCH_ESP8266
+SoftwareSerial hpmaSerial(5, 4); // TX/RX – D1/D2
+HPMA115S0 hpma115S0(hpmaSerial);
+#elif defined ARDUINO_ARCH_ESP32
+HardwareSerial hpmaSerial(1); // Change TX - D5 and RX - D4 pins
+HPMA115S0 hpma115S0(hpmaSerial);
+#endif
+unsigned int hpma115S0_pm25, hpma115S0_pm10;
+//***HPMA115S0 - END***
+#elif defined DUSTSENSOR_SPS30
+//***SPS30 - START***
+#ifdef ARDUINO_ARCH_ESP32
+#define SPS30_RX_PIN 4           // D4
+#define SPS30_TX_PIN 5           // D5
+#else
+#define SPS30_RX_PIN 4            // D2
+#define SPS30_TX_PIN 5            // D1
+#endif
+#define SP30_COMMS SERIALPORT1
+#define SPS30_AUTOCLEANINTERVAL -1
+#define SPS30_PERFORMCLEANNOW 1
+#define SPS30_DEBUG 0
+// create constructor
+SPS30 sps30;
+float SPS30_PM1, SPS30_PM25, SPS30_PM4, SPS30_PM10;
+//***SPS30 - END***
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+//***PMSx003 - START***
+#ifdef ARDUINO_ARCH_ESP8266
+// SoftwareSerial PMS_Serial; -- only for esp8266 core 2.6.0
+SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
+PMS pms(PMS_Serial);
+PMS::DATA data;
+#elif defined ARDUINO_ARCH_ESP32
+HardwareSerial PMS_Serial(1); // Change TX - D5 and RX - D4 pins
+PMS pms(PMS_Serial);
+PMS::DATA data;
+#endif
+//***PMSx003 - END***
+#endif
+
+
 // DUST Sensor config - END
 
 char device_name[20];
@@ -183,7 +274,9 @@ char CURRENTSOFTWAREVERSION[255] = "";
 
 #ifdef ARDUINO_ARCH_ESP8266
 ESP8266WebServer WebServer(80);
+#ifndef DUSTSENSOR_SPS30
 ESP8266HTTPUpdateServer httpUpdater;
+#endif
 #elif defined ARDUINO_ARCH_ESP32
 WebServer WebServer(80);
 #endif
@@ -310,6 +403,7 @@ void setup() {
   yield();
 
   // DUST SENSOR setup - START
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
   if (!strcmp(DUST_MODEL, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
     PMS_Serial.begin(9600); //PMSx003 serial -- esp8266 core 2.6.1 or later
@@ -327,6 +421,131 @@ void setup() {
       pms.sleep();
     }
   }
+#elif defined DUSTSENSOR_SDS011_21
+  if (!strcmp(DUST_MODEL, "SDS011/21")) {
+#ifdef ARDUINO_ARCH_ESP8266
+    sds.begin();  //SDS011/21 sensor begin
+#elif defined ARDUINO_ARCH_ESP32
+    sds_port.begin(9600, SERIAL_8N1, 5, 4);  //SDS011/21 sensor begin
+    my_sds.begin(&sds_port);
+#endif
+    if (FREQUENTMEASUREMENT == true) {
+#ifdef ARDUINO_ARCH_ESP8266
+      sds.wakeup();
+      sds.setQueryReportingMode().toString(); // ensures sensor is in 'query' reporting mode
+      sds.setContinuousWorkingPeriod().toString(); // ensures sensor has continuous working period - default but not recommended
+#elif defined ARDUINO_ARCH_ESP32
+      err = my_sds.read(&SDSpm25, &SDSpm10);
+      if (!err) {
+        Serial.println("Data from SDS011!\n");
+      }
+#endif
+    } else {
+#ifdef ARDUINO_ARCH_ESP8266
+      sds.setCustomWorkingPeriod(1);
+      WorkingStateResult state = sds.sleep();
+#elif defined ARDUINO_ARCH_ESP32
+      err = my_sds.read(&SDSpm25, &SDSpm10);
+      if (!err) {
+        Serial.println("Data from SDS011!\n");
+      }
+#endif
+    }
+  }
+  delay(10);
+#elif defined DUSTSENSOR_HPMA115S0
+  if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+#ifdef ARDUINO_ARCH_ESP8266
+    hpmaSerial.begin(9600); //HPMA115S0 serial
+#elif defined ARDUINO_ARCH_ESP32
+    hpmaSerial.begin(9600, SERIAL_8N1, 5, 4); //HPMA115S0 serial
+#endif
+    delay(100);
+    if (FREQUENTMEASUREMENT == true) {
+      hpma115S0.Init();
+      delay(100);
+      hpma115S0.EnableAutoSend();
+      delay(100);
+      hpma115S0.StartParticleMeasurement();
+    } else {
+      hpma115S0.Init();
+      delay(100);
+      hpma115S0.StopParticleMeasurement();
+    }
+  }
+  delay(10);
+#elif defined DUSTSENSOR_SPS30
+  if (!strcmp(DUST_MODEL, "SPS30")) {
+    Serial.println(F("Trying to connect to SPS30..."));
+
+    // set driver debug level
+    sps30.EnableDebugging(SPS30_DEBUG);
+
+    // set pins to use for softserial and Serial1 on ESP32
+    if (SPS30_TX_PIN != 0 && SPS30_RX_PIN != 0) sps30.SetSerialPin(SPS30_RX_PIN, SPS30_TX_PIN);
+
+    // Begin communication channel;
+    if (sps30.begin(SP30_COMMS) == false) {
+      Errorloop("could not initialize communication channel.", 0);
+    }
+
+    // check for SPS30 connection
+    if (sps30.probe() == false) {
+      Errorloop("could not probe / connect with SPS30.", 0);
+    }
+    else
+      Serial.println(F("Detected SPS30."));
+
+    // reset SPS30 connection
+    if (sps30.reset() == false) {
+      Errorloop("could not reset.", 0);
+    }
+
+    // read device info
+    GetDeviceInfo();
+
+    // do Auto Clean interval
+    SetAutoClean();
+
+    // start measurement
+    if (sps30.start() == true)
+      Serial.println(F("\nMeasurement started"));
+    else
+      Errorloop("Could NOT start measurement", 0);
+
+    // clean now requested
+    if (SPS30_PERFORMCLEANNOW) {
+      // clean now
+      if (sps30.clean() == true)
+        Serial.println(F("fan-cleaning manually started"));
+      else
+        Serial.println(F("Could NOT manually start fan-cleaning"));
+    }
+
+    if (SP30_COMMS == I2C_COMMS) {
+      if (sps30.I2C_expect() == 4)
+        Serial.println(F(" !!! Due to I2C buffersize only the SPS30 MASS concentration is available !!! \n"));
+    }
+  }
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+  if (!strcmp(DUST_MODEL, "PMS7003")) {
+#ifdef ARDUINO_ARCH_ESP8266
+    PMS_Serial.begin(9600); //PMSx003 serial -- esp8266 core 2.6.1 or later
+    //PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
+#elif defined ARDUINO_ARCH_ESP32
+    PMS_Serial.begin(9600, SERIAL_8N1, 5, 4); //PMSx003 serial
+#endif
+    if (FREQUENTMEASUREMENT == true) {
+      pms.wakeUp();
+      delay(500);
+      pms.activeMode();
+    } else {
+      pms.passiveMode();
+      delay(500);
+      pms.sleep();
+    }
+  }
+#endif
   yield();
   // DUST SENSOR setup - END
 
@@ -457,7 +676,9 @@ void setup() {
   WebServer.onNotFound(handle_root);
 
 #ifdef ARDUINO_ARCH_ESP8266
+#ifndef DUSTSENSOR_SPS30
   httpUpdater.setup(&WebServer, "/update");
+#endif
 #elif defined ARDUINO_ARCH_ESP32
   /*handling uploading firmware file */
   WebServer.on("/update", HTTP_POST, []() {
@@ -467,7 +688,8 @@ void setup() {
   }, []() {
     HTTPUpload& upload = WebServer.upload();
     if (upload.status == UPLOAD_FILE_START) {
-      Serial.printf("Update: %s\n", upload.filename.c_str());
+      //Serial.printf("Update: %s\n", upload.filename.c_str());
+      Serial.print("Update: " + String(upload.filename.c_str()) + "\n");
       if (!Update.begin(UPDATE_SIZE_UNKNOWN)) { //start with max available size
         Update.printError(Serial);
       }
@@ -478,7 +700,8 @@ void setup() {
       }
     } else if (upload.status == UPLOAD_FILE_END) {
       if (Update.end(true)) { //true to set the size to the current progress
-        Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+        //Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+        Serial.print("Update Success: " + String(upload.totalSize) + "\nRebooting...\n");
       } else {
         Update.printError(Serial);
       }
@@ -493,7 +716,8 @@ void setup() {
   MDNS.begin(device_name);
 
   MDNS.addService("http", "tcp", 80);
-  Serial.printf("HTTPServer ready! http://%s.local/\n", device_name);
+  //Serial.printf("HTTPServer ready! http://%s.local/\n", device_name);
+  Serial.print("HTTPServer ready! http://" + String(device_name) + ".local/\n");
   delay(300);
 }
 
@@ -509,9 +733,21 @@ void loop() {
   pm_calibration();
 
   // DUST SENSOR refresh data - START
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.read(data);
   }
+#elif defined DUSTSENSOR_SDS011_21
+#ifdef ARDUINO_ARCH_ESP8266
+  PmResult SDSdata = sds.queryPm();
+#endif
+#elif defined DUSTSENSOR_HPMA115S0
+#elif defined DUSTSENSOR_SPS30
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+  if (!strcmp(DUST_MODEL, "PMS7003")) {
+    pms.read(data);
+  }
+#endif
   // DUST SENSOR refresh data - END
   yield();
 
@@ -685,13 +921,38 @@ void sendDataToExternalDBs() {
       Serial.println("Opening database failed");
     } else {
       dbMeasurement row(device_name);
+
       if (!strcmp(DUST_MODEL, "PMS7003")) {
+        if (DEBUG) {
+          Serial.println("\nMeasurements from PMSx003!\n");
+        }
+        row.addField("pm1", averagePM1);
+        row.addField("pm25", averagePM25);
+        row.addField("pm10", averagePM10);
+      } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+        if (DEBUG) {
+          Serial.println("\nMeasurements from SDS0x1!\n");
+        }
+        row.addField("pm1", averagePM1);
+        row.addField("pm25", averagePM25);
+        row.addField("pm10", averagePM10);
+      } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+        if (DEBUG) {
+          Serial.println("\nMeasurements from SDS!\n");
+        }
+        row.addField("pm1", averagePM1);
+        row.addField("pm25", averagePM25);
+        row.addField("pm10", averagePM10);
+      } else if (!strcmp(DUST_MODEL, "SPS30")) {
+        if (DEBUG) {
+          Serial.println("\nMeasurements from SPS30!\n");
+        }
         row.addField("pm1", averagePM1);
         row.addField("pm25", averagePM25);
         row.addField("pm10", averagePM10);
       } else {
         if (DEBUG) {
-          Serial.println("\nNo measurements from PMSx003!\n");
+          Serial.println("\nNo measurements from Dust Sensor!\n");
         }
       }
       if (!strcmp(THP_MODEL, "BME280")) {
@@ -929,9 +1190,57 @@ void takeTHPMeasurements() {
 }
 
 void takeNormalnPMMeasurements() {
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
   pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
   pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
   pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+#elif defined DUSTSENSOR_SDS011_21
+#ifdef ARDUINO_ARCH_ESP8266
+  PmResult SDSdata = sds.queryPm();
+  delay(1000);
+  if (SDSdata.isOk()) {
+    pmMeasurements[iPM][0] = int(calib * 0);
+    pmMeasurements[iPM][1] = int(calib * SDSdata.pm25);
+    pmMeasurements[iPM][2] = int(calib * SDSdata.pm10);
+  } else {
+    Serial.println("\nCould not read values from SDS sensor :( ");
+  }
+#elif defined ARDUINO_ARCH_ESP32
+  err = my_sds.read(&SDSpm25, &SDSpm10);
+  if (!err) {
+    pmMeasurements[iPM][0] = int(calib * 0);
+    pmMeasurements[iPM][1] = int(calib * SDSpm25);
+    pmMeasurements[iPM][2] = int(calib * SDSpm10);
+  } else {
+    Serial.println("\nCould not read values from SDS sensor :( ");
+  }
+#endif
+#elif defined DUSTSENSOR_HPMA115S0
+  if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
+    if (hpma115S0_pm25 == 0 and hpma115S0_pm10 == 0) {
+      delay(100);
+      hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10);
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
+      pmMeasurements[iPM][2] = int(calib * hpma115S0_pm10);
+    } else {
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
+      pmMeasurements[iPM][2] = int(calib * hpma115S0_pm10);
+    }
+  }
+#elif defined DUSTSENSOR_SPS30
+  read_sps30_data();
+
+  pmMeasurements[iPM][0] = int(calib * SPS30_PM1);
+  pmMeasurements[iPM][1] = int(calib * SPS30_PM25);
+  pmMeasurements[iPM][2] = int(calib * SPS30_PM10);
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+  pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+  pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+  pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+#endif
+
   if (DEBUG) {
     Serial.print("\n\nPM measurement number: ");
     Serial.print(iPM);
@@ -953,6 +1262,7 @@ void takeSleepPMMeasurements() {
     Serial.print("\nTurning ON PM sensor...");
   }
 
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.wakeUp();
     unsigned long current_2sec_Millis = millis();
@@ -969,10 +1279,12 @@ void takeSleepPMMeasurements() {
   while (counterNM1 < NUMBEROFMEASUREMENTS) {
     unsigned long current_2sec_Millis = millis();
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
+
       if (pms.readUntil(data)) {
         takeNormalnPMMeasurements();
         counterNM1++;
       }
+
       previous_2sec_Millis = millis();
     }
     WebServer.handleClient();
@@ -984,6 +1296,169 @@ void takeSleepPMMeasurements() {
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.sleep();
   }
+#elif defined DUSTSENSOR_SDS011_21
+  if (!strcmp(DUST_MODEL, "SDS011/21")) {
+#ifdef ARDUINO_ARCH_ESP8266
+    sds.wakeup();
+    sds.setQueryReportingMode().toString(); // ensures sensor is in 'query' reporting mode
+    sds.setContinuousWorkingPeriod().toString(); // ensures sensor has continuous working period - default but not recommended
+#elif defined ARDUINO_ARCH_ESP32
+
+#endif
+
+    unsigned long current_2sec_Millis = millis();
+    previous_2sec_Millis = millis();
+    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
+      WebServer.handleClient();
+      yield();
+      previous_2sec_Millis = millis();
+    }
+    previous_2sec_Millis = 0;
+  }
+
+  int counterNM1 = 0;
+  while (counterNM1 < NUMBEROFMEASUREMENTS) {
+    unsigned long current_2sec_Millis = millis();
+    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
+#ifdef ARDUINO_ARCH_ESP8266
+      PmResult SDSdata = sds.queryPm();
+#elif defined ARDUINO_ARCH_ESP32
+
+#endif
+      delay(1000);
+      takeNormalnPMMeasurements();
+      counterNM1++;
+      previous_2sec_Millis = millis();
+    }
+    WebServer.handleClient();
+    yield();
+    delay(10);
+  }
+  if (DEBUG) {
+    Serial.print("\nTurning OFF PM sensor...\n");
+  }
+
+  if (!strcmp(DUST_MODEL, "SDS011/21")) {
+#ifdef ARDUINO_ARCH_ESP8266
+    sds.setCustomWorkingPeriod(1);
+    WorkingStateResult state = sds.sleep();
+#elif defined ARDUINO_ARCH_ESP32
+
+#endif
+  }
+#elif defined DUSTSENSOR_HPMA115S0
+  if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+    hpma115S0.Init();
+    delay(10);
+    hpma115S0.EnableAutoSend();
+    delay(10);
+    hpma115S0.StartParticleMeasurement();
+
+    unsigned long current_2sec_Millis = millis();
+    previous_2sec_Millis = millis();
+    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
+      WebServer.handleClient();
+      delay(10);
+      yield();
+      previous_2sec_Millis = millis();
+    }
+    previous_2sec_Millis = 0;
+  }
+  int counterNM1 = 0;
+  while (counterNM1 < NUMBEROFMEASUREMENTS) {
+    unsigned long current_2sec_Millis = millis();
+    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
+      if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
+        takeNormalnPMMeasurements();
+        counterNM1++;
+      }
+      previous_2sec_Millis = millis();
+    }
+    WebServer.handleClient();
+    yield();
+    delay(10);
+  }
+  if (DEBUG) {
+    Serial.print("\nTurning OFF PM sensor...\n");
+  }
+
+  if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+    hpma115S0.DisableAutoSend();
+    delay(10);
+    hpma115S0.StopParticleMeasurement();
+  }
+#elif defined DUSTSENSOR_SPS30
+  if (!strcmp(DUST_MODEL, "SPS30")) {
+
+    // WAKE UP SPS30!!
+
+    unsigned long current_2sec_Millis = millis();
+    previous_2sec_Millis = millis();
+    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
+      WebServer.handleClient();
+      delay(10);
+      yield();
+      previous_2sec_Millis = millis();
+    }
+    previous_2sec_Millis = 0;
+  }
+  int counterNM1 = 0;
+  while (counterNM1 < NUMBEROFMEASUREMENTS) {
+    unsigned long current_2sec_Millis = millis();
+    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
+
+      read_sps30_data();
+      takeNormalnPMMeasurements();
+      counterNM1++;
+
+      previous_2sec_Millis = millis();
+    }
+    WebServer.handleClient();
+    yield();
+    delay(10);
+  }
+  if (DEBUG) {
+    Serial.print("\nTurning OFF PM sensor...\n");
+  }
+
+  if (!strcmp(DUST_MODEL, "SPS30")) {
+    // GO TO SLEEP SPS30!!
+  }
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+  if (!strcmp(DUST_MODEL, "PMS7003")) {
+    pms.wakeUp();
+    unsigned long current_2sec_Millis = millis();
+    previous_2sec_Millis = millis();
+    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
+      WebServer.handleClient();
+      previous_2sec_Millis = millis();
+    }
+    previous_2sec_Millis = 0;
+    pms.requestRead();
+  }
+
+  int counterNM1 = 0;
+  while (counterNM1 < NUMBEROFMEASUREMENTS) {
+    unsigned long current_2sec_Millis = millis();
+    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
+
+      if (pms.readUntil(data)) {
+        takeNormalnPMMeasurements();
+        counterNM1++;
+      }
+
+      previous_2sec_Millis = millis();
+    }
+    WebServer.handleClient();
+  }
+  if (DEBUG) {
+    Serial.print("\nTurning OFF PM sensor...\n");
+  }
+
+  if (!strcmp(DUST_MODEL, "PMS7003")) {
+    pms.sleep();
+  }
+#endif
 }
 
 void pm_calibration() {
@@ -1073,3 +1548,133 @@ void averagePM() {
     Serial.print(averagePM10);
   }
 }
+
+#ifdef DUSTSENSOR_SPS30
+bool read_sps30_data()
+{
+  static bool header = true;
+  uint8_t ret, error_cnt = 0;
+  struct sps_values val;
+
+  // loop to get data
+  do {
+
+    ret = sps30.GetValues(&val);
+
+    // data might not have been ready
+    if (ret == ERR_DATALENGTH) {
+
+      if (error_cnt++ > 3) {
+        ErrtoMess("Error during reading values: ", ret);
+        return (false);
+      }
+      delay(1000);
+    }
+
+    // if other error
+    else if (ret != SPS30_ERR_OK) {
+      ErrtoMess("Error during reading values: ", ret);
+      return (false);
+    }
+
+  } while (ret != SPS30_ERR_OK);
+
+  SPS30_PM1 = val.MassPM1;
+  SPS30_PM25 = val.MassPM2;
+  SPS30_PM4 = val.MassPM4;
+  SPS30_PM10 = val.MassPM10;
+}
+
+void GetDeviceInfo()
+{
+  char buf[32];
+  uint8_t ret;
+  //try to read serial number
+  ret = sps30.GetSerialNumber(buf, 32);
+  if (ret == SPS30_ERR_OK) {
+    Serial.print(F("Serial number : "));
+
+    if (strlen(buf) > 0)  Serial.println(buf);
+    else Serial.println(F("not available"));
+  }
+  else
+    ErrtoMess("could not get serial number", ret);
+  // try to get product name
+  ret = sps30.GetProductName(buf, 32);
+  if (ret == SPS30_ERR_OK)  {
+    Serial.print(F("Product name  : "));
+
+    if (strlen(buf) > 0)  Serial.println(buf);
+    else Serial.println(F("not available"));
+  }
+  else
+    ErrtoMess("could not get product name.", ret);
+  // try to get article code
+  ret = sps30.GetArticleCode(buf, 32);
+  if (ret == SPS30_ERR_OK)  {
+    Serial.print(F("Article code  : "));
+
+    if (strlen(buf) > 0)  Serial.println(buf);
+    else Serial.println(F("not available"));
+  }
+  else
+    ErrtoMess("could not get Article code .", ret);
+}
+
+void SetAutoClean()
+{
+  uint32_t interval;
+  uint8_t ret;
+  // try to get interval
+  ret = sps30.GetAutoCleanInt(&interval);
+  if (ret == SPS30_ERR_OK) {
+    Serial.print(F("Current Auto Clean interval: "));
+    Serial.print(interval);
+    Serial.println(F(" seconds"));
+  }
+  else
+    ErrtoMess("could not get clean interval.", ret);
+  // only if requested
+  if (SPS30_AUTOCLEANINTERVAL == -1) {
+    Serial.println(F("No Auto Clean interval change requested."));
+    return;
+  }
+  // try to set interval
+  interval = SPS30_AUTOCLEANINTERVAL;
+  ret = sps30.SetAutoCleanInt(interval);
+  if (ret == SPS30_ERR_OK) {
+    Serial.print(F("Auto Clean interval now set : "));
+    Serial.print(interval);
+    Serial.println(F(" seconds"));
+  }
+  else
+    ErrtoMess("could not set clean interval.", ret);
+  // try to get interval
+  ret = sps30.GetAutoCleanInt(&interval);
+  if (ret == SPS30_ERR_OK) {
+    Serial.print(F("Current Auto Clean interval: "));
+    Serial.print(interval);
+    Serial.println(F(" seconds"));
+  }
+  else
+    ErrtoMess("could not get clean interval.", ret);
+}
+
+void Errorloop(char *mess, uint8_t r)
+{
+  if (r) ErrtoMess(mess, r);
+  else Serial.println(mess);
+  /*
+    Serial.println(F("Program on hold"));
+    for (;;) delay(100000);
+  */
+}
+
+void ErrtoMess(char *mess, uint8_t r)
+{
+  char buf[80];
+  Serial.print(mess);
+  sps30.GetErrDescription(r, buf, 80);
+  Serial.println(buf);
+}
+#endif

@@ -107,7 +107,6 @@ const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = "<b>{TEXT_DEVICENAME}: </b>{device
 	<b>{TEXT_AQIECOSENDING}: </b>{AQI_ECO_ON}\
 	<b>{TEXT_AQIECOSERVER}: </b>{AQI_ECO_HOST}\
 	<b>{TEXT_AQIECOPATH}: </b>{AQI_ECO_PATH}\
-	                                              \
 	<hr>\
 	<b>Debug: </b>{DEBUG}\
 	<b>{TEXT_CALIBMETHOD}: </b>{CalibrationModelSelect}\

@@ -9,7 +9,7 @@
 extern char TEXT_LANG[16] = "en";
 
 extern char TEXT_INDEX_PAGE[16] = "Measurements";
-extern char TEXT_CONFIG_PAGE[16] = "Configuration";
+extern char TEXT_CONFIG_PAGE[16] = "Settings";
 extern char TEXT_UPDATE_PAGE[16] = "Update";
 
 extern char TEXT_WEATHER[16] = "Weather";

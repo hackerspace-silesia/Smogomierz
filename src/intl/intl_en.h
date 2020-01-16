@@ -9,7 +9,7 @@
 char EN_INTL_LANG[16] PROGMEM = "en";
 
 char EN_INTL_INDEX_PAGE[16] PROGMEM = "Measurements";
-char EN_INTL_CONFIG_PAGE[16] PROGMEM = "Configuration";
+char EN_INTL_CONFIG_PAGE[16] PROGMEM = "Settings";
 char EN_INTL_UPDATE_PAGE[16] PROGMEM = "Update";
 
 char EN_INTL_WEATHER[16] PROGMEM = "Weather";

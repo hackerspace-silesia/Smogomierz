@@ -40,6 +40,10 @@ extern uint16_t MQTT_PORT;
 extern char MQTT_USER[255];
 extern char MQTT_PASSWORD[255];
 
+extern bool AQI_ECO_ON;
+extern char AQI_ECO_HOST[255];
+extern char AQI_ECO_PATH[255];
+
 extern int SENDING_FREQUENCY;
 extern int SENDING_DB_FREQUENCY;
 extern bool DEEPSLEEP_ON;
@@ -57,9 +61,9 @@ const char PMSENSORVERSION[] = "PMS";
 extern char SERVERSOFTWAREVERSION[255];
 extern char CURRENTSOFTWAREVERSION[255];
 #if defined(ARDUINO_ARCH_ESP8266)
-const char SOFTWAREVERSION[] = "2.7.2 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[] = "2.7.3 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)
-const char SOFTWAREVERSION[40] PROGMEM = "2.7.2 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[40] PROGMEM = "2.7.3 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[40] PROGMEM = "2.0 - ESP32";
 #endif

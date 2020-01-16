@@ -65,11 +65,11 @@
 /*
   ESP8266 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
 
-  Szkic używa 531816 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 55140 bajtów (67%) pamięci dynamicznej, pozostawiając 26780 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 531556 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54380 bajtów (66%) pamięci dynamicznej, pozostawiając 27540 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 536376 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55536 bajtów (67%) pamięci dynamicznej, pozostawiając 26384 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module - 1.9MB APP with OTA - 190KB SPIFFS
 
@@ -78,6 +78,7 @@
 
   Szkic używa 1254026 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
 
 */
 
@@ -108,6 +109,7 @@
 #include "src/luftdaten.h"
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
+#include "src/aqieco.h"
 #include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
 
 // TEMP/HUMI/PRESS Sensor config - START
@@ -344,7 +346,7 @@ void setup() {
     DUST_interval = DUST_interval * DUST_TIME;
   }
   if (DEEPSLEEP_ON == true) {
-    if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
+    if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON or THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
     }
 #ifdef ARDUINO_ARCH_ESP32
@@ -354,7 +356,7 @@ void setup() {
     Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds\n");
 #endif
   } else {
-    if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+    if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
     }
     if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
@@ -536,7 +538,7 @@ void loop() {
       takeSleepPMMeasurements();
       yield();
 
-      if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+      if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         takeTHPMeasurements();
         sendDataToExternalServices();
       }
@@ -571,7 +573,7 @@ void loop() {
         WebServer.handleClient();
         previous_2sec_Millis = millis();
       }
-      if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+      if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         takeTHPMeasurements();
         sendDataToExternalServices();
       }
@@ -595,7 +597,7 @@ void loop() {
     }
   }
 
-  if (LUFTDATEN_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+  if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
     unsigned long current_SENDING_FREQUENCY_Millis = millis();
     if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
       takeTHPMeasurements();
@@ -648,6 +650,13 @@ void sendDataToExternalServices() {
     sendDataToSmoglist(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
       Serial.println("Sending measurement data to the Smoglist service!\n");
+    }
+  }
+
+  if (AQI_ECO_ON) {
+    sendDataToAqiEco(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
+    if (DEBUG) {
+      Serial.println("Sending measurement data to the aqi.eco service!\n");
     }
   }
 

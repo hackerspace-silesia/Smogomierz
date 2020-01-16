@@ -9,7 +9,7 @@
 char EN_INTL_LANG[16] PROGMEM = "en";
 
 char EN_INTL_INDEX_PAGE[16] PROGMEM = "Measurements";
-char EN_INTL_CONFIG_PAGE[16] PROGMEM = "Configuration";
+char EN_INTL_CONFIG_PAGE[16] PROGMEM = "Settings";
 char EN_INTL_UPDATE_PAGE[16] PROGMEM = "Update";
 
 char EN_INTL_WEATHER[16] PROGMEM = "Weather";
@@ -79,6 +79,10 @@ char EN_INTL_MQTTSERVER[32] PROGMEM = "MQTT server address";
 char EN_INTL_MQTTPORT[32] PROGMEM = "MQTT port";
 char EN_INTL_MQTTUSER[32] PROGMEM = "MQTT user";
 char EN_INTL_MQTTPASSWD[32] PROGMEM = "MQTT password";
+
+char EN_INTL_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
+char EN_INTL_AQIECOSERVER[32] = "aqi.eco server";
+char EN_INTL_AQIECOPATH[32] = "aqi.eco path";
 
 char EN_INTL_CALIBMETHOD[32] PROGMEM = "Calibration method";
 char EN_INTL_CALIB1[32] PROGMEM = "calib1";

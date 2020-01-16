@@ -9,7 +9,7 @@
 extern char TEXT_LANG[16] = "en";
 
 extern char TEXT_INDEX_PAGE[16] = "Measurements";
-extern char TEXT_CONFIG_PAGE[16] = "Configuration";
+extern char TEXT_CONFIG_PAGE[16] = "Settings";
 extern char TEXT_UPDATE_PAGE[16] = "Update";
 
 extern char TEXT_WEATHER[16] = "Weather";
@@ -79,6 +79,10 @@ extern char TEXT_MQTTSERVER[32] = "MQTT server address";
 extern char TEXT_MQTTPORT[32] = "MQTT port";
 extern char TEXT_MQTTUSER[32] = "MQTT user";
 extern char TEXT_MQTTPASSWD[32] = "MQTT password";
+
+extern char TEXT_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
+extern char TEXT_AQIECOSERVER[32] = "aqi.eco server";
+extern char TEXT_AQIECOPATH[32] = "aqi.eco path";
 
 extern char TEXT_CALIBMETHOD[32] = "Calibration method";
 extern char TEXT_CALIB1[32] = "calib1";

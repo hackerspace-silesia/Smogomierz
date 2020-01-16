@@ -567,6 +567,13 @@ void _handle_config(bool is_success) {
   message.replace("{TEXT_MQTTPASSWD}", (TEXT_MQTTPASSWD));
   message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
 
+  message.replace("{TEXT_AQIECOSENDING}", (TEXT_AQIECOSENDING));
+  message.replace("{AQI_ECO_ON}", _addBoolSelect("AQI_ECO_ON", AQI_ECO_ON));
+  message.replace("{TEXT_AQIECOSERVER}", (TEXT_AQIECOSERVER));
+  message.replace("{AQI_ECO_HOST}", _addTextInput("AQI_ECO_HOST", AQI_ECO_HOST));
+  message.replace("{TEXT_AQIECOPATH}", (TEXT_AQIECOPATH));
+  message.replace("{AQI_ECO_PATH}", _addTextInput("AQI_ECO_PATH", AQI_ECO_PATH));
+
   message.replace("{DEBUG}", _addBoolSelect("DEBUG", DEBUG));
   message.replace("{TEXT_CALIBMETHOD}", (TEXT_CALIBMETHOD));
   message.replace("{CalibrationModelSelect}", _addModelSelect("MODEL", MODEL));
@@ -721,6 +728,10 @@ void handle_config_post() {
   MQTT_PORT = WebServer.arg("MQTT_PORT").toInt();
   _parseAsCString(MQTT_USER, WebServer.arg("MQTT_USER"));
   _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"));
+
+  AQI_ECO_ON = _parseAsBool(WebServer.arg("AQI_ECO_ON"));
+  _parseAsCString(AQI_ECO_HOST, WebServer.arg("AQI_ECO_HOST"));
+  _parseAsCString(AQI_ECO_PATH, WebServer.arg("AQI_ECO_PATH"));
 
   SENDING_FREQUENCY = WebServer.arg("SENDING_FREQUENCY").toInt();
   SENDING_DB_FREQUENCY = WebServer.arg("SENDING_DB_FREQUENCY").toInt();

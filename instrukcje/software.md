@@ -77,4 +77,4 @@ Po zainstalowaniu ArduinoIDE, musisz dodać w nim obsługę płytek ESP8266.
 
 8. Teraz możemy zweryfikować nasz kod(Punkt 3., podpunkt 1.). Jeśli wszystko poprawnie się skompiluje możemy przejść do składania fizycznych części naszego miernika smogu. Dokładny opis w [Instrukcja podłączenia elektroniki](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/hardware.md).
 
-9. Wszystkie wartości podane w pliku defaultConfig.h są domyślnymi wartościami potrzebnymi przy pierwszym uruchomieniu miernika. Każdą z tych pozycji można w dowolnej chwili zmienić w zakładce Konfiguracja w panelu Smogomierza.
+9.  Wszystkie wartości podane w pliku defaultConfig.h są domyślnymi wartościami potrzebnymi przy pierwszym uruchomieniu miernika. Każdą z tych pozycji można w dowolnej chwili zmienić w zakładce Konfiguracja w panelu Smogomierza.

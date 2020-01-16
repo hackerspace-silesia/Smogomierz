@@ -53,41 +53,41 @@ void sendDataToAqiEco(float currentTemperature, float currentPressure, float cur
 
   if (!strcmp(THP_MODEL, "BME280")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
-    temperature["value_type"] = "temperature";
+    temperature["value_type"] = "BME280_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
-    humidity["value_type"] = "humidity";
+    humidity["value_type"] = "BME280_humidity";
     humidity["value"] = String(currentHumidity);
     JsonObject pressure = sensordatavalues.createNestedObject();
-    pressure["value_type"] = "pressure";
+    pressure["value_type"] = "BME280_pressure";
     pressure["value"] = String(currentPressure * 100); //hPa -> Pa
   } else if (!strcmp(THP_MODEL, "BMP280")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
-    temperature["value_type"] = "temperature";
+    temperature["value_type"] = "BMP280_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject pressure = sensordatavalues.createNestedObject();
-    pressure["value_type"] = "pressure";
+    pressure["value_type"] = "BMP280_pressure";
     pressure["value"] = String(currentPressure * 100); //hPa -> Pa
   } else if (!strcmp(THP_MODEL, "HTU21")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
-    temperature["value_type"] = "temperature";
+    temperature["value_type"] = "HTU21_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
-    humidity["value_type"] = "humidity";
+    humidity["value_type"] = "HTU21_humidity";
     humidity["value"] = String(currentHumidity);
   } else if (!strcmp(THP_MODEL, "DHT22")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
-    temperature["value_type"] = "temperature";
+    temperature["value_type"] = "DHT22_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
-    humidity["value_type"] = "humidity";
+    humidity["value_type"] = "DHT22_humidity";
     humidity["value"] = String(currentHumidity);
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
-    temperature["value_type"] = "temperature";
+    temperature["value_type"] = "SHT1x_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
-    humidity["value_type"] = "humidity";
+    humidity["value_type"] = "SHT1x_humidity";
     humidity["value"] = String(currentHumidity);
   }
 

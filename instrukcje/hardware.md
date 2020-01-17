@@ -38,10 +38,17 @@ SHT1x zasilamy z pinu 3V na ESP8266. Podpinamy go do VCC na SHT1x. GND łączymy
 Jeśli zamiast **BME280** chcesz użyć HTU21D. Podłącz go w następujący sposób: 
 VIN z HTU21D do pinu 3V na ESP8266. GND łączymy z dowolnym G(GND) na ESP8266. SCL podpinamy do pinu D5, SDA do D6 na ESP8266.
 
-## DHT22 - miernik temperatury i wilgotności powietrza
+## DHT22/AM2302 - miernik temperatury i wilgotności powietrza
 
 Jeśli zamiast **BME280** chcesz użyć DHT22. Podłącz go w następujący sposób: 
-VIN z HTU21D do pinu 3V na ESP8266. GND łączymy z dowolnym G(GND) na ESP8266. Pin z danymi pomiarowymi podepnij do D7 na płytce ESP8266.
+VIN z DHT22/AM2302 do pinu 3V na ESP8266. GND łączymy z dowolnym G(GND) na ESP8266. Pin z danymi pomiarowymi podepnij do D7 na płytce ESP8266.
+
+Kolejność pinów od lewej strony:
+- VIN
+- DATA
+- nieużywany
+- GND
+
 
 ## PMS7003 - laserowy miernik pyłu
 
@@ -58,6 +65,9 @@ Honeywell HPMA115S0 to laserowy miernik pyłu zawieszonego w powietrzu, który p
 ## SDS011
 
 SDS011 to laserowy miernik pyłu zawieszonego w powietrzu, który podane pomiary PM2.5 oraz PM10. Posiada wbudowany wiatraczek. Urządzenia zasilane jest 5V i wyniki podaje poprzez UART. W naszym projekcie korzystamy z dwóch pinów RX oraz TX do pobierania wyników pomiarów oraz z pinu 5V i GND do zasilania SDS011. Pozostałe dostępne w mierniku SDS011 nie będą przez nas wykorzystywane.
+
+Pin TXD podłącz do D1 na ESP, natomiast pin RXD do D2.
+Zwróć uwagę na sposób montażu ([dokumentacja](http://www.inovafitness.com/en/a/chanpinzhongxin/95.html)) - w zmontowanym urządzeniu wlot powietrza miernika powinien być od góry, lub z lewej strony.
 
 ## Obudowa
 

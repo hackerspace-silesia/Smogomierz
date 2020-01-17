@@ -4,7 +4,7 @@
 
 Smogomierz to niekomercyjny projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
 
-Smogomierz nie wysyła Twoich danych do żadnego serwisu, jeśli nie wyrazisz na to zgody. Dane pomiarowe z Twojego miernika należą do Ciebie i to od Ciebie zależy co z nimi zrobisz i komu je udostępnisz. Jeśli tylko Ty chcesz mieć dostęp do swoich danych, to masz do tego prawo. Jeśli jednak chcesz się nimi podzielić, to w karcie Konfiguracji panelu Smogomierza masz możliwość wyboru kilku serwisów, do których możesz wysłać dane. Wśród nich znajdziesz między innymi serwis [AirMonitor](http://mapa.airmonitor.pl), [ThingSpeak](https://thingspeak.com), czy bazę danych [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/). Smogomierz posiada również [wtyczkę Homebridge](https://github.com/bfaliszek/homebridge-smogomierz).
+Smogomierz nie wysyła Twoich danych do żadnego serwisu, jeśli nie wyrazisz na to zgody. Dane pomiarowe z Twojego miernika należą do Ciebie i to od Ciebie zależy co z nimi zrobisz i komu je udostępnisz. Jeśli tylko Ty chcesz mieć dostęp do swoich danych, to masz do tego prawo. Jeśli jednak chcesz się nimi podzielić, to w karcie Konfiguracji panelu Smogomierza masz możliwość wyboru kilku serwisów, do których możesz wysłać dane. Wśród nich znajdziesz między innymi serwis [AirMonitor](http://mapa.airmonitor.pl), [ThingSpeak](https://thingspeak.com), [aqi.eco](https://aqi.eco/), czy bazę danych [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/). Smogomierz posiada również [wtyczkę Homebridge](https://github.com/bfaliszek/homebridge-smogomierz).
 
 Smogomierz po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogomierz-deviceName"(np. "Smogomierz-328017"). Po podłączeniu się z nią, będziesz miał możliwość skonfigurowania połączenia WiFi z własną siecią domową. Z listy dostępnych sieci wybierz swoją własną i podaj do niej hasło. Smogomierz zapisze dane w swojej pamięci wewnętrznej i ponownie się uruchomienie. Dalszą konfigurację wykonasz już przez przeglądarkę internetową wchodząc pod adres Smogomierz-deviceName.local lub IP_Smogomierza(do sprawdzenia na routerze). 
 
@@ -38,6 +38,3 @@ Gotowe zestawy części potrzebnych do zbudowania własnego Smogomierza, dostęp
 
 [Instrukcja instalacji oprogramowania wymaganego do kompilacji oprogramowania z repozytorium](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md)
 
-### Tested on:
-
-ArdinoIDE 1.8.9 – https://www.arduino.cc/en/main/software

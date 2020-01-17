@@ -13,6 +13,6 @@ W przypadku obu tych elementów sprawa jest dosyć prosta. Musimy w otwory w mie
 
 ## Rozdzielacz 5V
 
-W celu jednoczesnego zasilania ESP8266 oraz miernika zanieczyszczeń powietrza, musimy przygotować rozdzielacz napięcia 5V. Nie jest to nic skomplikowanego. Można go zrobić na wiele sposobów. Postanowiliśmy użyć do tego trzech goldpinów i je ze sobą zlutować.
+W celu jednoczesnego zasilania ESP oraz miernika zanieczyszczeń powietrza, musimy przygotować rozdzielacz napięcia 5V. Nie jest to nic skomplikowanego. Można go zrobić na wiele sposobów. Postanowiliśmy użyć do tego trzech goldpinów i je ze sobą zlutować.
 
 ![Lutowanie_Rozdzielacz5V](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Lutowanie_Rozdzielacz5V.jpg)

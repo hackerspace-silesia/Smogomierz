@@ -62,51 +62,50 @@
   Szkic używa 531556 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 54380 bajtów (66%) pamięci dynamicznej, pozostawiając 27540 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 537924 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 55860 bajtów (68%) pamięci dynamicznej, pozostawiając 26060 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 541500 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 56072 bajtów (68%) pamięci dynamicznej, pozostawiając 25848 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
   Szkic używa 1251682 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1254026 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
+  Szkic używa 1255726 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 61336 bajtów (18%) pamięci dynamicznej, pozostawiając 266344 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 20.08.2019  DEV
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 17.01.2020  DEV
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
-#include "src/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#include "src/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 17.01.2020
 #else
-#include "src/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 8.04.2019
+#include "src/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 17.01.2020
 #endif
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 24.05.2019
+#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 17.01.2020
 #endif
-#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 12.03.2019
-#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 12.03.2019
-#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 12.03.2019
+#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 17.01.2020
+#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 17.01.2020
+#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 17.01.2020
 #include <DHT.h>
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 17.01.2020
 #elif defined DUSTSENSOR_SDS011_21
 #ifdef ARDUINO_ARCH_ESP8266
-#include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 25.08.2019
+#include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 17.01.2020
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 25.08.2019
+#include "src/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 17.01.2020
 #endif
 #elif defined DUSTSENSOR_HPMA115S0
-#include "src/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 26.08.2019
+#include "src/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 17.01.2020
 #elif defined DUSTSENSOR_SPS30
-#include "src/sps30.h" // https://github.com/paulvha/sps30 // 16.01.2020
+#include "src/sps30.h" // https://github.com/paulvha/sps30 // 17.01.2020
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 12.03.2019
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 17.01.2020
 #endif
 
 #include "src/spiffs.h"
@@ -119,7 +118,7 @@
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
 #include "src/aqieco.h"
-#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 12.03.2019
+#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 17.01.2020
 
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
 #include <ESP8266WebServer.h>
@@ -263,7 +262,11 @@ unsigned long TwoSec_interval = 2 * 1000; // 2 second
 unsigned long REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned long previous_REBOOT_Millis = 0;
 
+#ifdef DUSTSENSOR_SPS30
+int pmMeasurements[10][4];
+#else
 int pmMeasurements[10][3];
+#endif
 int iPM, averagePM1, averagePM25, averagePM4, averagePM10 = 0;
 float currentTemperature, currentHumidity, currentPressure = 0;
 float calib = 1;
@@ -398,6 +401,11 @@ void setup() {
 
   fs_setup();
   yield();
+
+#ifdef ARDUINO_ARCH_ESP32
+  disableCore0WDT();
+  //disableCore1WDT(); // ESP32-solo-1 so only CORE0!
+#endif
 
   loadtranslation(SELECTED_LANGUAGE);
   yield();
@@ -617,30 +625,21 @@ void setup() {
 
   Serial.print("Device name: ");
   Serial.println(device_name);
-  /*
-    WiFiManager wifiManager;
-    wifiManager.autoConnect(device_name);
 
-    delay(250);
-
-    if (!wifiManager.autoConnect(device_name)) {
-      Serial.println("Failed to connect...");
-      delay(1000);
-      ESP.reset(); //reset and try again
-      delay(5000);
-    }
-  */
+  wifiManager.setCountry("US");
 
   if (wifiManager.autoConnect(device_name)) {
     Serial.println("connected...yeey :)");
     //wifiManager.setConfigPortalBlocking(false);
     WiFi.mode(WIFI_STA); // https://github.com/hackerspace-silesia/Smogomierz/issues/47#issue-496810438
+#ifdef ARDUINO_ARCH_ESP32
+    WiFi.setSleep(false); // https://github.com/espressif/arduino-esp32/issues/962#issuecomment-522899519
+#endif
   } else {
     Serial.println("Configportal running");
     wifiManager.setConfigPortalBlocking(false);
   }
   delay(250);
-
 
   // check update
   if (checkUpdate(0) == true) {
@@ -648,7 +647,6 @@ void setup() {
   } else {
     need_update = false;
   }
-
 
   if (MQTT_ON) {
     mqttclient.setServer(MQTT_HOST, MQTT_PORT);
@@ -1235,6 +1233,7 @@ void takeNormalnPMMeasurements() {
   pmMeasurements[iPM][0] = int(calib * SPS30_PM1);
   pmMeasurements[iPM][1] = int(calib * SPS30_PM25);
   pmMeasurements[iPM][2] = int(calib * SPS30_PM10);
+  pmMeasurements[iPM][3] = int(calib * SPS30_PM4);
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
   pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
@@ -1248,6 +1247,10 @@ void takeNormalnPMMeasurements() {
     Serial.print(pmMeasurements[iPM][0]);
     Serial.print("\nValue of PM2.5: ");
     Serial.print(pmMeasurements[iPM][1]);
+#ifdef DUSTSENSOR_SPS30
+    Serial.print("\nValue of PM4: ");
+    Serial.print(pmMeasurements[iPM][3]);
+#endif
     Serial.print("\nValue of PM10: ");
     Serial.print(pmMeasurements[iPM][2]);
   }
@@ -1531,19 +1534,32 @@ void averagePM() {
   averagePM1 = 0;
   averagePM25 = 0;
   averagePM10 = 0;
+#ifdef DUSTSENSOR_SPS30
+  averagePM4 = 0;
+#endif
   for (int i = 0; i < NUMBEROFMEASUREMENTS; i++) {
     averagePM1 += pmMeasurements[i][0];
     averagePM25 += pmMeasurements[i][1];
     averagePM10  += pmMeasurements[i][2];
+#ifdef DUSTSENSOR_SPS30
+    averagePM4 += pmMeasurements[i][3];
+#endif
   }
   averagePM1 = averagePM1 / NUMBEROFMEASUREMENTS;
   averagePM25 = averagePM25 / NUMBEROFMEASUREMENTS;
   averagePM10 = averagePM10 / NUMBEROFMEASUREMENTS;
+#ifdef DUSTSENSOR_SPS30
+  averagePM4 = averagePM4 / NUMBEROFMEASUREMENTS;
+#endif
   if (DEBUG) {
     Serial.print("\n\nAverage PM1: ");
     Serial.print(averagePM1);
     Serial.print("\nAverage PM2.5: ");
     Serial.print(averagePM25);
+#ifdef DUSTSENSOR_SPS30
+    Serial.print("\nAverage PM4: ");
+    Serial.print(averagePM4);
+#endif
     Serial.print("\nAverage PM10: ");
     Serial.print(averagePM10);
   }

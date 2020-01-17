@@ -239,6 +239,8 @@ class WiFiManager
     void          setShowStaticFields(boolean alwaysShow);
     //if true, always show static dns, esle only show if set via setSTAStaticIPConfig
     void          setShowDnsFields(boolean alwaysShow);
+    // toggle showing the saved wifi password in wifi form, could be a security issue.
+    void          setShowPassword(boolean show);
     //if false, disable captive portal redirection
     void          setCaptivePortalEnable(boolean enabled);
     //if false, timeout captive portal even if a STA client connected to softAP (false), suggest disabling if captiveportal is open
@@ -255,11 +257,18 @@ class WiFiManager
     bool          setHostname(const char * hostname);
     // show erase wifi onfig button on info page, true
     void          setShowInfoErase(boolean enabled);
+    // set ap channel
+    void          setWiFiAPChannel(int32_t channel);
+    // set ap hidden
+    void          setWiFiAPHidden(bool hidden); // default false
     // set custom menu
 
     // set custom menu items and order
     void          setMenu(std::vector<const char*>& menu);
     void          setMenu(const char* menu[], uint8_t size);
+    
+    // add params to its own menu page and remove from wifi, NOT TO BE COMBINED WITH setMenu!
+    void          setParamsPage(bool enable);
 
     // get last connection result, includes autoconnect and wifisave
     uint8_t       getLastConxResult();
@@ -268,6 +277,11 @@ class WiFiManager
     String        getModeString(uint8_t mode);
     // check if the module has a saved ap to connect to
     bool          getWiFiIsSaved();
+
+    // helper to get saved ssid, if persistent get stored, else get current if connected
+    String        getWiFiPass(bool persistent = false);
+    // helper to get saved password, if persistent get stored, else get current if connected
+    String        getWiFiSSID(bool persistent = false);
 
     // debug output the softap config
     void          debugSoftAPConfig();
@@ -279,7 +293,8 @@ class WiFiManager
     void          setCountry(String cc);
     // set body class (invert)
     void          setClass(String str);
-
+    String        getDefaultAPName();
+    
     std::unique_ptr<DNSServer>        dnsServer;
 
     #if defined(ESP32) && defined(WM_WEBSERVERSHIM)
@@ -328,7 +343,9 @@ class WiFiManager
    
     bool          _disableSTA             = false; // disable sta when starting ap, always
     bool          _disableSTAConn         = true;  // disable sta when starting ap, if sta is not connected ( stability )
-    bool          _channelSync            = false; // use wifi channel when starting ap
+    bool          _channelSync            = false; // use same wifi sta channel when starting ap
+    int32_t       _apChannel              = 0; // channel to use for ap
+    bool          _apHidden               = false; // store softap hidden value
 
     #ifdef ESP32
     static uint8_t _lastconxresulttmp; // tmp var for esp32 callback
@@ -340,9 +357,10 @@ class WiFiManager
 
     // parameter options
     int           _minimumQuality         = -1;    // filter wifiscan ap by this rssi
-    int            _staShowStaticFields   = 0;     // ternary always show static ip fields, only if not set in code, never(cannot change ips via web!)
-    int            _staShowDns            = 0;     // ternary always show dns, only if not set in code, never(cannot change dns via web!)
+    int            _staShowStaticFields   = 0;     // ternary 1=always show static ip fields, 0=only if set, -1=never(cannot change ips via web!)
+    int            _staShowDns            = 0;     // ternary 1=always show dns, 0=only if set, -1=never(cannot change dns via web!)
     boolean       _removeDuplicateAPs     = true;  // remove dup aps from wifiscan
+    boolean       _showPassword           = false; // show or hide saved password on wifi form, might be a security issue!
     boolean       _shouldBreakAfterConfig = false; // stop configportal on save failure
     boolean       _configPortalIsBlocking = true;  // configportal enters blocking loop 
     boolean       _enableCaptivePortal    = true;  // enable captive portal redirection
@@ -361,7 +379,9 @@ class WiFiManager
 
     // internal options
     boolean       _preloadwifiscan        = true;  // preload wifiscan if true
-    boolean       _disableIpFields        = false; // edge case, if true, showxFields(false) forces ip fields off instead of default show when set
+    boolean       _asyncScan              = false;
+    unsigned int  _scancachetime          = 30000; // ms cache time for background scans
+    boolean       _disableIpFields        = false; // modify function of setShow_X_Fields(false), forces ip fields off instead of default show if set, eg. _staShowStaticFields=-1
 
     String        _wificountry            = "";  // country code, @todo define in strings lang
 
@@ -422,7 +442,8 @@ class WiFiManager
     uint8_t       WiFi_softap_num_stations();
     bool          WiFi_hasAutoConnect();
     void          WiFi_autoReconnect();
-    String        WiFi_SSID();
+    String        WiFi_SSID(bool persistent = false) const;
+    String        WiFi_psk(bool persistent = false) const;
     bool          WiFi_scanNetworks();
     bool          WiFi_scanNetworks(bool force,bool async);
     bool          WiFi_scanNetworks(unsigned int cachetime,bool async);
@@ -468,16 +489,29 @@ class WiFiManager
     // debugging
     typedef enum {
         DEBUG_ERROR     = 0,
-        DEBUG_NOTIFY    = 1, // default
+        DEBUG_NOTIFY    = 1, // default stable
         DEBUG_VERBOSE   = 2,
-        DEBUG_DEV       = 3,
+        DEBUG_DEV       = 3, // default dev
         DEBUG_MAX       = 4
     } wm_debuglevel_t;
 
-    boolean       _debug              = true;
-    uint8_t       _debugLevel         = DEBUG_DEV;
-    Stream&     _debugPort; // debug output stream ref
+    boolean _debug  = true;
     
+    // build debuglevel support
+    // @todo use DEBUG_ESP_x?
+    #ifdef WM_DEBUG_LEVEL
+    uint8_t _debugLevel = (uint8_t)WM_DEBUG_LEVEL;
+    #else 
+    uint8_t _debugLevel = DEBUG_DEV; // default debug level
+    #endif
+
+    // @todo use DEBUG_ESP_PORT ?
+    #ifdef WM_DEBUG_PORT
+    Stream& _debugPort = WM_DEBUG_PORT;
+    #else
+    Stream& _debugPort = Serial; // debug output stream ref
+    #endif
+
     template <typename Generic>
     void        DEBUG_WM(Generic text);
 

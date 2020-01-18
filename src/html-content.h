@@ -1,7 +1,6 @@
 #ifdef ARDUINO_ARCH_ESP8266
 const char WEB_PAGE_HEADER[] PROGMEM = "<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>\
-<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>\
-<script src='https://kit.fontawesome.com/d0f07436c6.js' crossorigin='anonymous'></script>\
+<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>\
 </head><body>\
 <nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>{IndexPageTitle}</a>\
 <a href='/config' class='navbar-brand'>{ConfigPageTitle}</a>\
@@ -9,7 +8,7 @@ const char WEB_PAGE_HEADER[] PROGMEM = "<html lang='{Language}'><head><meta char
 </div></nav> ";
 #elif defined ARDUINO_ARCH_ESP32
 const char WEB_PAGE_HEADER[] PROGMEM = "<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>\
-<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>\
+<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>\
 <script src='https://kit.fontawesome.com/d0f07436c6.js' crossorigin='anonymous'></script>\
 </head><body>\
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15%'>\
@@ -38,9 +37,9 @@ const char WEB_PAGE_FOOTER[] PROGMEM = "<br><hr><center>Hackerspace Silesia &#98
   		document.write(new Date().getFullYear());\
 	</script>\
 	</center></div></main></form>\
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js'></script>\
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/esm/popper.min.js'></script>\
-	<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous'></script>\
+	<script src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous'></script>\
+	<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous'></script>\
+	<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous'></script>\
 	</body></html>\r\n";
 #elif defined ARDUINO_ARCH_ESP32
 const char WEB_PAGE_FOOTER[] PROGMEM = "<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830; \
@@ -48,14 +47,13 @@ const char WEB_PAGE_FOOTER[] PROGMEM = "<br><hr><center><a href='https://smogly.
   		document.write(new Date().getFullYear());\
 	</script>\
 	</center></div></main></form>\
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js'></script>\
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/esm/popper.min.js'></script>\
-	<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous'></script>\
-	</body></html>\r\n";
+			<script src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous'></script>\
+			<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous'></script>\
+			<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous'></script>\
+			</body></html>\r\n";
 #endif
-	
+
 // MEASUREMENTS PAGE - START
-#ifdef ARDUINO_ARCH_ESP8266
 const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = "<main role='main' class='container'><div class='jumbotron'>\
 	<center><h1>Smogly</h1><br>\
 	{WEB_UPDATE_INFO_WARNING}\
@@ -68,46 +66,6 @@ const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = "<main role='main' class='cont
 	<h3>PM1: {averagePM1} µg/m³</h3>\
 	<h3>PM2.5: {colorAveragePM25} {averagePM25} µg/m³</h3>\
 	<h3>PM10: {colorAveragePM10} {averagePM10} µg/m³</h3> ";
-#elif defined ARDUINO_ARCH_ESP32
-const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = "<main role='main' class='container'><div class='jumbotron'>\
-	<center><h1>Smogly</h1><br>\
-	<h2>{TEXT_WEATHER}:</h2>\
-	<table class='table table-borderless'>\
-		<thead>\
-	    <tr align='center'>\
-	      <th scope='col'><h3><b>{Temperature}</b></h3> °C</th>\
-	      <th scope='col'><h3><b>{Humidity}</b></h3> %</th>\
-	      <th scope='col'><h3><b>{Pressure}</b></h3> hPa</th>\
-	      <th scope='col'><h3><b>{Dewpoint}</b></h3> °C</th>\
-	    </tr>\
-	  </thead>\
-	  <tbody>\
-	    <tr align='center'>\
-	      	  	<td><h5><i class='fas fa-thermometer-half'></i></h5></td>\
-				<td><h5><i class='fas fa-tint'></i></h5></td>\
-				<td><h5>{TEXT_PRESSURE}</h5></td>\
-				<td><h5>{TEXT_DEWPOINT}</h5></td>\
-	    </tr>\
-	  </tbody>\
-	</table>\
-	<h3>{TEXT_AIRPOLLUTION}:</h3>\		
-	<table class='table table-borderless'>\
-			<thead>\
-			<tr align='center'>\
-				<th scope='col'><h3><b>{averagePM1}</b></h3> µg/m³</th>\
-				<th scope='col'><h3><b>{colorAveragePM25} {averagePM25}</b></h3> µg/m³</th>\
-				<th scope='col'><h3><b>{colorAveragePM10} {averagePM10}</b></h3> µg/m³</th>\
-			</tr>\
-			</thead>\
-			<tbody>\
-			<tr align='center'>\
-				<td><h5>PM1</h5></td>\
-				<td><h5>PM2.5</h5></td>\
-				<td><h5>PM10</h5></td>\
-			</tr>\
-			</tbody>\
-			</table>";
-#endif
 
 const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = "<hr>\
 	<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>\
@@ -123,7 +81,7 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = "<hr>\
 // MEASUREMENTS PAGE - END
 // CONFIG PAGE - Start
 
-const char WEB_CONFIG_PAGE_TOP[] PROGMEM = "<form method='POST' action='/config'>\
+const char WEB_CONFIG_PAGE_TOP[] PROGMEM = "<form method='POST' action='/config'>\ 
 	<main role='main' class='container'><div class='jumbotron'>\
 	<center><h1>Smogly - {TEXT_CONFIG_PAGE}</h1></center><br><br>\
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>\
@@ -152,7 +110,7 @@ const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = "<b>{TEXT_DEVICENAME}: </b>{device
 	{TEXT_SECURELOGOUTINFO}\
 	<hr>\
 	<b>{TEXT_SMOGLISTSENDING}: </b>{SMOGLIST_ON} {TEXT_SMOGLISTINFO}\
-	<hr>\
+	<hr>\	
 	<b>{TEXT_LUFTDATENSENDING}: </b>{LUFTDATEN_ON}\
 	<b>ChipID: </b>{ChipID}\
 	<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>\
@@ -181,6 +139,10 @@ const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = "<b>{TEXT_DEVICENAME}: </b>{device
 	<b>{TEXT_MQTTPORT}: </b>{MQTT_PORT}\
 	<b>{TEXT_MQTTUSER}: </b>{MQTT_USER}\
 	<b>{TEXT_MQTTPASSWD}: </b>{MQTT_PASSWORD}\
+	<hr>\
+	<b>{TEXT_AQIECOSENDING}: </b>{AQI_ECO_ON}\
+	<b>{TEXT_AQIECOSERVER}: </b>{AQI_ECO_HOST}\
+	<b>{TEXT_AQIECOPATH}: </b>{AQI_ECO_PATH}\
 	<hr>\
 	<b>Debug: </b>{DEBUG}\
 	<b>{TEXT_CALIBMETHOD}: </b>{CalibrationModelSelect}\

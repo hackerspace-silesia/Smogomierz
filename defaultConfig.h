@@ -1,7 +1,7 @@
 #pragma once
 
 bool DEVICENAME_AUTO = true;
-char DEVICENAME[255] = "Smogly"; // Bez polskich znakow!! // Without Polish letters!!
+char DEVICENAME[255] = "Smogly1"; // Bez polskich znakow!! // Without Polish letters!!
 bool DISPLAY_PM1 = false;
 char LANGUAGE[255] = "english"; // english or polish
 int SELECTED_LANGUAGE = 1; // en - 1; pl - 2
@@ -39,6 +39,10 @@ char MQTT_HOST[255] = "MQTT_ADRESS";
 uint16_t MQTT_PORT = 1883;
 char MQTT_USER[255] = "username";
 char MQTT_PASSWORD[255] = "password";
+
+bool AQI_ECO_ON = false;
+char AQI_ECO_HOST[255] = "???.aqi.eco";
+char AQI_ECO_PATH[255] = "/u/???";
 
 int SENDING_FREQUENCY = 3;
 int SENDING_DB_FREQUENCY = 3;

@@ -21,9 +21,10 @@
 #ifndef __BMP280_H__
 #define __BMP280_H__
 
+#include "Adafruit_Sensor.h"
 #include "Arduino.h"
-#include <Wire.h>
 #include <SPI.h>
+#include <Wire.h>
 
 /*!
  *  I2C ADDRESS/BITS/SETTINGS
@@ -33,9 +34,10 @@
   (0x76)                     /**< Alternative I2C address for the sensor. */
 #define BMP280_CHIPID (0x58) /**< Default chip ID. */
 
-//  Forward declarations of Wire and SPI for board/variant combinations that don't have a default 'Wire' or 'SPI' 
-extern TwoWire Wire;  /**< Forward declaration of Wire object */
-extern SPIClass SPI;  /**< Forward declaration of SPI object */
+//  Forward declarations of Wire and SPI for board/variant combinations that
+//  don't have a default 'Wire' or 'SPI'
+extern TwoWire Wire; /**< Forward declaration of Wire object */
+extern SPIClass SPI; /**< Forward declaration of SPI object */
 
 /*!
  * Registers available on the sensor.
@@ -57,6 +59,7 @@ enum {
   BMP280_REGISTER_VERSION = 0xD1,
   BMP280_REGISTER_SOFTRESET = 0xE0,
   BMP280_REGISTER_CAL26 = 0xE1, /**< R calibration = 0xE1-0xF0 */
+  BMP280_REGISTER_STATUS = 0xF3,
   BMP280_REGISTER_CONTROL = 0xF4,
   BMP280_REGISTER_CONFIG = 0xF5,
   BMP280_REGISTER_PRESSUREDATA = 0xF7,
@@ -81,6 +84,36 @@ typedef struct {
   int16_t dig_P8;  /**< dig_P8 cal register. */
   int16_t dig_P9;  /**< dig_P9 cal register. */
 } bmp280_calib_data;
+
+class Adafruit_BMP280;
+
+/** Adafruit Unified Sensor interface for temperature component of BMP280 */
+class Adafruit_BMP280_Temp : public Adafruit_Sensor {
+public:
+  /** @brief Create an Adafruit_Sensor compatible object for the temp sensor
+      @param parent A pointer to the BMP280 class */
+  Adafruit_BMP280_Temp(Adafruit_BMP280 *parent) { _theBMP280 = parent; }
+  bool getEvent(sensors_event_t *);
+  void getSensor(sensor_t *);
+
+private:
+  int _sensorID = 280;
+  Adafruit_BMP280 *_theBMP280 = NULL;
+};
+
+/** Adafruit Unified Sensor interface for pressure component of BMP280 */
+class Adafruit_BMP280_Pressure : public Adafruit_Sensor {
+public:
+  /** @brief Create an Adafruit_Sensor compatible object for the pressure sensor
+      @param parent A pointer to the BMP280 class */
+  Adafruit_BMP280_Pressure(Adafruit_BMP280 *parent) { _theBMP280 = parent; }
+  bool getEvent(sensors_event_t *);
+  void getSensor(sensor_t *);
+
+private:
+  int _sensorID = 0;
+  Adafruit_BMP280 *_theBMP280 = NULL;
+};
 
 /**
  * Driver for the Adafruit BMP280 barometric pressure sensor.
@@ -131,7 +164,7 @@ public:
 
   /** Standby duration in ms */
   enum standby_duration {
-    /** 0.5 ms standby. */
+    /** 1 ms standby. */
     STANDBY_MS_1 = 0x00,
     /** 62.5 ms standby. */
     STANDBY_MS_63 = 0x01,
@@ -152,29 +185,34 @@ public:
   Adafruit_BMP280(TwoWire *theWire = &Wire);
   Adafruit_BMP280(int8_t cspin, SPIClass *theSPI = &SPI);
   Adafruit_BMP280(int8_t cspin, int8_t mosipin, int8_t misopin, int8_t sckpin);
+  ~Adafruit_BMP280(void);
 
   bool begin(uint8_t addr = BMP280_ADDRESS, uint8_t chipid = BMP280_CHIPID);
+  void reset(void);
+  uint8_t getStatus(void);
 
   float readTemperature();
-
+  float readPressure(void);
+  float readAltitude(float seaLevelhPa = 1013.25);
   float seaLevelForAltitude(float altitude, float atmospheric);
 
-  float readPressure(void);
-
-  float readAltitude(float seaLevelhPa = 1013.25);
+  Adafruit_Sensor *getTemperatureSensor(void);
+  Adafruit_Sensor *getPressureSensor(void);
 
   // void takeForcedMeasurement();
-
   void setSampling(sensor_mode mode = MODE_NORMAL,
                    sensor_sampling tempSampling = SAMPLING_X16,
                    sensor_sampling pressSampling = SAMPLING_X16,
                    sensor_filter filter = FILTER_OFF,
                    standby_duration duration = STANDBY_MS_1);
-  
+
+private:
   TwoWire *_wire; /**< Wire object */
   SPIClass *_spi; /**< SPI object */
 
-private:
+  Adafruit_BMP280_Temp *temp_sensor = NULL;
+  Adafruit_BMP280_Pressure *pressure_sensor = NULL;
+
   /** Encapsulates the config register */
   struct config {
     /** Inactive duration (standby time) in normal mode */
@@ -212,7 +250,6 @@ private:
   int16_t readS16_LE(byte reg);
 
   uint8_t _i2caddr;
-
 
   int32_t _sensorID;
   int32_t t_fine;

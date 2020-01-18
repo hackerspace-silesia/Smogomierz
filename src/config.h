@@ -40,6 +40,10 @@ extern uint16_t MQTT_PORT;
 extern char MQTT_USER[255];
 extern char MQTT_PASSWORD[255];
 
+extern bool AQI_ECO_ON;
+extern char AQI_ECO_HOST[255];
+extern char AQI_ECO_PATH[255];
+
 extern int SENDING_FREQUENCY;
 extern int SENDING_DB_FREQUENCY;
 extern bool DEEPSLEEP_ON;
@@ -53,13 +57,24 @@ extern char CONFIG_PASSWORD[512];
 
 extern char MODEL[255];
 
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
 const char PMSENSORVERSION[] = "PMS";
+#elif defined DUSTSENSOR_SDS011_21
+const char PMSENSORVERSION[] = "SDS";
+#elif defined DUSTSENSOR_HPMA115S0
+const char PMSENSORVERSION[] = "HPMA115S0";
+#elif defined DUSTSENSOR_SPS30
+const char PMSENSORVERSION[] = "SPS30";
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+const char PMSENSORVERSION[] = "PMS";
+#endif
+
 extern char SERVERSOFTWAREVERSION[255];
 extern char CURRENTSOFTWAREVERSION[255];
 #if defined(ARDUINO_ARCH_ESP8266)
-const char SOFTWAREVERSION[] = "2.7.3 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[] = "2.7.4 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)
-const char SOFTWAREVERSION[40] PROGMEM = "2.7.3 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[40] PROGMEM = "2.7.4 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[40] PROGMEM = "2.0 - ESP32";
 #endif

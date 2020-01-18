@@ -1,7 +1,7 @@
 /*
- *
+ *  
  *  default translation file - english translation
- *
+ *  
  */
 
 #pragma once
@@ -9,7 +9,7 @@
 extern char TEXT_LANG[16] = "en";
 
 extern char TEXT_INDEX_PAGE[16] = "Measurements";
-extern char TEXT_CONFIG_PAGE[16] = "Configuration";
+extern char TEXT_CONFIG_PAGE[16] = "Settings";
 extern char TEXT_UPDATE_PAGE[16] = "Update";
 
 extern char TEXT_WEATHER[16] = "Weather";
@@ -51,7 +51,7 @@ extern char TEXT_SECURELOGIN[16] = "Login";
 extern char TEXT_SECUREPASSWD[16] = "Password";
 extern char TEXT_SECURELOGOUTINFO[64] = "Restart your web browser to log out!";
 
-extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})";
+extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
 
 extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the {SMOGLIST_LINK} service";
 extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogly usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
@@ -79,6 +79,10 @@ extern char TEXT_MQTTSERVER[32] = "MQTT server address";
 extern char TEXT_MQTTPORT[32] = "MQTT port";
 extern char TEXT_MQTTUSER[32] = "MQTT user";
 extern char TEXT_MQTTPASSWD[32] = "MQTT password";
+
+extern char TEXT_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
+extern char TEXT_AQIECOSERVER[32] = "aqi.eco server";
+extern char TEXT_AQIECOPATH[32] = "aqi.eco path";
 
 extern char TEXT_CALIBMETHOD[32] = "Calibration method";
 extern char TEXT_CALIB1[32] = "calib1";
@@ -109,7 +113,7 @@ extern char TEXT_SELECTUPDATEFILE[32] = "Select .bin file";
 extern char TEXT_SUBMITUPDATE[16] = "Update!";
 extern char TEXT_CURRENTSOFTVERSION[64] = "Currently used version of the firmware";
 extern char TEXT_SERVERSOFTWAREVERSION[64] = "The latest available firmware version";
-extern char TEXT_LATESTAVAILABLESOFT[96] = "Latest version of the software available {SMOGLYRELEASES_LINK}.";
+extern char TEXT_LATESTAVAILABLESOFT[96] = "Latest version of the software available {SMOGOMIERZRELEASES_LINK}.";
 
 extern char TEXT_HERE[16] = "here";
 extern char TEXT_THEFORM[16] = "the form";
@@ -128,7 +132,7 @@ static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='http://mapa.airmoni
 static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
 static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
 static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
-static char SMOGLYRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
 #elif defined ARDUINO_ARCH_ESP32
 static char GITHUB_LINK[] PROGMEM = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
@@ -140,6 +144,6 @@ static char AIRMONITOR_LINK[] PROGMEM = "<a title='AirMonitor' href='http://mapa
 static char AIRMONITORFORM_LINK[] PROGMEM = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
 static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
 static char THINGSPEAK_LINK[] PROGMEM = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
-static char SMOGLYRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char SMOGOMIERZRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] PROGMEM = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
 #endif

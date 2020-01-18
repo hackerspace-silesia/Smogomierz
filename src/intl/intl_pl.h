@@ -1,7 +1,7 @@
 /*
- *
+ * 
  *  translation file - polish translations
- *
+ * 
  */
 
 #pragma once
@@ -46,7 +46,7 @@ char PL_INTL_DEEPSLEEPINFO_ESP32[544] PROGMEM = "DeepSleep wprowadza urządzenie
 char PL_INTL_DISPLAYPM1[32] PROGMEM = "Wyświetlanie pomiarów PM1";
 char PL_INTL_ALTITUDEINFO[128] PROGMEM = "Wysokość(wymagana do poprawnych pomiarów ciśnienia. Można sprawdzić {WSPOLRZEDNE_GPS_LINK})";
 
-char PL_INTL_SECURECONFIGUPDATEPAGE[96] PROGMEM = "Wymagaj hasła dla strony Ustawienia oraz Aktualizacje(domyślne: admin/password)";
+char PL_INTL_SECURECONFIGUPDATEPAGE[96] PROGMEM = "Wymagaj hasła dla strony Konfiguracyjnej oraz Update(domyślne: admin/password)";
 char PL_INTL_SECURELOGIN[16] PROGMEM = "Login";
 char PL_INTL_SECUREPASSWD[16] PROGMEM = "Hasło";
 char PL_INTL_SECURELOGOUTINFO[64] PROGMEM = "Zrestartuj przeglądarkę w celu wylogowania!";
@@ -80,6 +80,10 @@ char PL_INTL_MQTTPORT[32] PROGMEM = "Port MQTT";
 char PL_INTL_MQTTUSER[32] PROGMEM = "Użytkownik MQTT";
 char PL_INTL_MQTTPASSWD[32] PROGMEM = "Hasło MQTT";
 
+char PL_INTL_AQIECOSENDING[64] PROGMEM = "Wysyłanie danych do aqi.eco";
+char PL_INTL_AQIECOSERVER[32] PROGMEM = "Adres serwera aqi.eco";
+char PL_INTL_AQIECOPATH[32] PROGMEM = "Ścieżka aqi.eco";
+
 char PL_INTL_CALIBMETHOD[32] PROGMEM = "Sposób kalibracji";
 char PL_INTL_CALIB1[32] PROGMEM = "Zmienna kalibracyjna calib1";
 char PL_INTL_CALIB2[32] PROGMEM = "Zmienna kalibracyjna calib2";
@@ -109,7 +113,7 @@ char PL_INTL_SELECTUPDATEFILE[32] PROGMEM = "Wybierz plik .bin";
 char PL_INTL_SUBMITUPDATE[16] PROGMEM = "Update!";
 char PL_INTL_CURRENTSOFTVERSION[64] PROGMEM = "Używana wersja oprogramowania";
 char PL_INTL_SERVERSOFTWAREVERSION[64] PROGMEM = "Najnowsza dostępna wersja oprogramowania";
-char PL_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Najnowszą wersję oprogramowania znajdziesz zawsze {SMOGLYRELEASES_LINK}.";
+char PL_INTL_LATESTAVAILABLESOFT[96] PROGMEM = "Najnowszą wersję oprogramowania znajdziesz zawsze {SMOGOMIERZRELEASES_LINK}.";
 
 char PL_INTL_HERE[16] PROGMEM = "tutaj";
 char PL_INTL_THEFORM[16] PROGMEM = "formularz";

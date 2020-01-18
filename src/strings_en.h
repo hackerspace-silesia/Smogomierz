@@ -3,7 +3,7 @@
  * engligh strings for
  * WiFiManager, a library for the ESP8266/Arduino platform
  * for configuration of WiFi credentials using a Captive Portal
- *
+ * 
  * @author Creator tzapu
  * @author tablatronix
  * @version 0.0.0
@@ -47,7 +47,7 @@ const char HTTP_ITEM[]             PROGMEM = "<div><a href='#p' onclick='c(this)
 // const char HTTP_ITEM[]            PROGMEM = "<div><a href='#p' onclick='c(this)'>{v}</a> {R} {r}% {q} {e}</div>"; // test all tokens
 
 const char HTTP_FORM_START[]       PROGMEM = "<form method='POST' action='{v}'>";
-const char HTTP_FORM_WIFI[]        PROGMEM = "<label for='s'>SSID</label><input id='s' name='s' maxlength='32' autocorrect='off' autocapitalize='none' placeholder='{v}'><br/><label for='p'>Password</label><input id='p' name='p' maxlength='64' type='password' placeholder=''>";
+const char HTTP_FORM_WIFI[]        PROGMEM = "<label for='s'>SSID</label><input id='s' name='s' maxlength='32' autocorrect='off' autocapitalize='none' placeholder='{v}'><br/><label for='p'>Password</label><input id='p' name='p' maxlength='64' type='password' placeholder='{p}'>";
 const char HTTP_FORM_WIFI_END[]    PROGMEM = "";
 const char HTTP_FORM_STATIC_HEAD[] PROGMEM = "<hr><br/>";
 const char HTTP_FORM_END[]         PROGMEM = "<br/><br/><button type='submit'>Save</button></form>";
@@ -56,7 +56,7 @@ const char HTTP_FORM_PARAM_HEAD[]  PROGMEM = "<hr><br/>";
 const char HTTP_FORM_PARAM[]       PROGMEM = "<br/><input id='{i}' name='{n}' maxlength='{l}' value='{v}' {c}>";
 
 const char HTTP_SCAN_LINK[]        PROGMEM = "<br/><form action='/wifi?refresh=1' method='POST'><button name='refresh' value='1'>Refresh</button></form>";
-const char HTTP_SAVED[]            PROGMEM = "<div class='msg'>Saving Credentials<br/>Trying to connect ESP to network.<br />If it fails reconnect to AP to try again.<br/><br/><a href='{LinkToSmoglyLocal}' target='_blank'>{LinkToSmoglyLocal}</a></div>";
+const char HTTP_SAVED[]            PROGMEM = "<div class='msg'>Saving Credentials<br/>Trying to connect ESP to network.<br />If it fails reconnect to AP to try again</div>";
 const char HTTP_PARAMSAVED[]       PROGMEM = "<div class='msg'>Saved<br/></div>";
 const char HTTP_END[]              PROGMEM = "</div></body></html>";
 const char HTTP_ERASEBTN[]         PROGMEM = "<br/><form action='/erase' method='get'><button class='D'>Erase WiFi Config</button></form>";
@@ -124,7 +124,7 @@ const char HTTP_HELP[]             PROGMEM =
  "<p/>More information about WiFiManager at <a href='https://github.com/tzapu/WiFiManager'>https://github.com/tzapu/WiFiManager</a>.";
 
 #ifdef JSTEST
-const char HTTP_JS[] PROGMEM =
+const char HTTP_JS[] PROGMEM = 
 "<script>function postAjax(url, data, success) {"
 "    var params = typeof data == 'string' ? data : Object.keys(data).map("
 "            function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }"
@@ -148,8 +148,8 @@ const char HTTP_JS[] PROGMEM =
 	const char HTTP_INFO_esphead[]    PROGMEM = "<h3>esp32</h3><hr><dl>";
 	const char HTTP_INFO_chiprev[]    PROGMEM = "<dt>Chip Rev</dt><dd>{1}</dd>";
   const char HTTP_INFO_lastreset[]    PROGMEM = "<dt>Last reset reason</dt><dd>CPU0: {1}<br/>CPU1: {2}</dd>";
-  const char HTTP_INFO_aphost[]       PROGMEM = "<dt>Acccess Point Hostname</dt><dd>{1}</dd>";
-#else
+  const char HTTP_INFO_aphost[]       PROGMEM = "<dt>Acccess Point Hostname</dt><dd>{1}</dd>";  
+#else 
 	const char HTTP_INFO_esphead[]    PROGMEM = "<h3>esp8266</h3><hr><dl>";
 	const char HTTP_INFO_flashsize[]  PROGMEM = "<dt>Real Flash Size</dt><dd>{1} bytes</dd>";
 	const char HTTP_INFO_fchipid[]    PROGMEM = "<dt>Flash Chip ID</dt><dd>{1}</dd>";
@@ -160,7 +160,7 @@ const char HTTP_JS[] PROGMEM =
 	const char HTTP_INFO_lastreset[]  PROGMEM = "<dt>Last reset reason</dt><dd>{1}</dd>";
 #endif
 
-const char HTTP_INFO_freeheap[]   PROGMEM = "<dt>Memory - Free Heap</dt><dd>{1} bytes available</dd>";
+const char HTTP_INFO_freeheap[]   PROGMEM = "<dt>Memory - Free Heap</dt><dd>{1} bytes available</dd>"; 
 const char HTTP_INFO_wifihead[]   PROGMEM = "<br/><h3>WiFi</h3><hr>";
 const char HTTP_INFO_uptime[]     PROGMEM = "<dt>Uptime</dt><dd>{1} Mins {2} Secs</dd>";
 const char HTTP_INFO_chipid[]     PROGMEM = "<dt>Chip ID</dt><dd>{1}</dd>";
@@ -189,8 +189,9 @@ const char S_disable[]            PROGMEM = "Disabled";
 const char S_GET[]                PROGMEM = "GET";
 const char S_POST[]               PROGMEM = "POST";
 const char S_NA[]                 PROGMEM = "Unknown";
-
+const char S_passph[]             PROGMEM = "********";
 const char S_titlewifisaved[]     PROGMEM = "Credentials Saved";
+const char S_titlewifisettings[]  PROGMEM = "Settings Saved";
 const char S_titlewifi[]          PROGMEM = "Config ESP";
 const char S_titleinfo[]          PROGMEM = "Info";
 const char S_titleparam[]         PROGMEM = "Setup";
@@ -247,7 +248,7 @@ const char R_paramsave[]          PROGMEM = "/paramsave";
 const char R_restart[]            PROGMEM = "/restart";
 const char R_exit[]               PROGMEM = "/exit";
 const char R_close[]              PROGMEM = "/close";
-const char R_erase[]              PROGMEM = "/erase";
+const char R_erase[]              PROGMEM = "/erase"; 
 const char R_status[]             PROGMEM = "/status";
 
 
@@ -301,19 +302,19 @@ const char * const WIFI_STA_STATUS[] PROGMEM
   "WL_CONNECTED",       // 3 STATION_GOT_IP
   "WL_CONNECT_FAILED",  // 4 STATION_CONNECT_FAIL, STATION_WRONG_PASSWORD(NI)
   "WL_CONNECTION_LOST", // 5
-  "WL_DISCONNECTED",    // 6
-  "WL_STATION_WRONG_PASSWORD" // 7 KLUDGE
+  "WL_DISCONNECTED",    // 6 
+  "WL_STATION_WRONG_PASSWORD" // 7 KLUDGE 
 };
 
 #ifdef ESP32
 const char * const AUTH_MODE_NAMES[] PROGMEM
 {
     "OPEN",
-    "WEP",
-    "WPA_PSK",
-    "WPA2_PSK",
-    "WPA_WPA2_PSK",
-    "WPA2_ENTERPRISE",
+    "WEP",             
+    "WPA_PSK",         
+    "WPA2_PSK",        
+    "WPA_WPA2_PSK",    
+    "WPA2_ENTERPRISE", 
     "MAX"
 };
 #elif defined(ESP8266)
@@ -353,9 +354,9 @@ const wifi_country_t WM_COUNTRY_JP{"JP",1,14,CONFIG_ESP32_PHY_MAX_TX_POWER,WIFI_
 //     uint8_t nchan;            /**< total channel number */
 //     uint8_t policy;           /**< country policy */
 // } wifi_country_t;
-static wifi_country_t WM_COUNTRY_US{"US",1,11,WIFI_COUNTRY_POLICY_AUTO};
-static wifi_country_t WM_COUNTRY_CN{"CN",1,13,WIFI_COUNTRY_POLICY_AUTO};
-static wifi_country_t WM_COUNTRY_JP{"JP",1,14,WIFI_COUNTRY_POLICY_AUTO};
+const wifi_country_t WM_COUNTRY_US{"US",1,11,WIFI_COUNTRY_POLICY_AUTO};
+const wifi_country_t WM_COUNTRY_CN{"CN",1,13,WIFI_COUNTRY_POLICY_AUTO};
+const wifi_country_t WM_COUNTRY_JP{"JP",1,14,WIFI_COUNTRY_POLICY_AUTO};
 #endif
 
 #endif

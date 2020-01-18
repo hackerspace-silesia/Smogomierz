@@ -31,6 +31,13 @@
 Adafruit_BMP280::Adafruit_BMP280(TwoWire *theWire)
     : _cs(-1), _mosi(-1), _miso(-1), _sck(-1) {
   _wire = theWire;
+  temp_sensor = new Adafruit_BMP280_Temp(this);
+  pressure_sensor = new Adafruit_BMP280_Pressure(this);
+}
+
+Adafruit_BMP280::~Adafruit_BMP280(void) {
+  delete temp_sensor;
+  delete pressure_sensor;
 }
 
 /*!
@@ -324,7 +331,7 @@ float Adafruit_BMP280::readTemperature() {
 
 /*!
  * Reads the barometric pressure from the device.
- * @return Barometric pressure in hPa.
+ * @return Barometric pressure in Pa.
  */
 float Adafruit_BMP280::readPressure() {
   int64_t var1, var2, p;
@@ -412,3 +419,115 @@ void Adafruit_BMP280::takeForcedMeasurement()
     }
 }
 */
+
+/*!
+ *  @brief  Resets the chip via soft reset
+ */
+void Adafruit_BMP280::reset(void) {
+  write8(BMP280_REGISTER_SOFTRESET, MODE_SOFT_RESET_CODE);
+}
+
+/*!
+    @brief  Gets the most recent sensor event from the hardware status register.
+    @return Sensor status as a byte.
+ */
+uint8_t Adafruit_BMP280::getStatus(void) {
+  return read8(BMP280_REGISTER_STATUS);
+}
+
+/*!
+    @brief  Gets an Adafruit Unified Sensor object for the temp sensor component
+    @return Adafruit_Sensor pointer to temperature sensor
+ */
+Adafruit_Sensor *Adafruit_BMP280::getTemperatureSensor(void) {
+  return temp_sensor;
+}
+
+/*!
+    @brief  Gets an Adafruit Unified Sensor object for the pressure sensor
+   component
+    @return Adafruit_Sensor pointer to pressure sensor
+ */
+Adafruit_Sensor *Adafruit_BMP280::getPressureSensor(void) {
+  return pressure_sensor;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Gets the sensor_t data for the BMP280's temperature sensor
+*/
+/**************************************************************************/
+void Adafruit_BMP280_Temp::getSensor(sensor_t *sensor) {
+  /* Clear the sensor_t object */
+  memset(sensor, 0, sizeof(sensor_t));
+
+  /* Insert the sensor name in the fixed length char array */
+  strncpy(sensor->name, "BMP280", sizeof(sensor->name) - 1);
+  sensor->name[sizeof(sensor->name) - 1] = 0;
+  sensor->version = 1;
+  sensor->sensor_id = _sensorID;
+  sensor->type = SENSOR_TYPE_AMBIENT_TEMPERATURE;
+  sensor->min_delay = 0;
+  sensor->max_value = -40.0; /* Temperature range -40 ~ +85 C  */
+  sensor->min_value = +85.0;
+  sensor->resolution = 0.01; /*  0.01 C */
+}
+
+/**************************************************************************/
+/*!
+    @brief  Gets the temperature as a standard sensor event
+    @param  event Sensor event object that will be populated
+    @returns True
+*/
+/**************************************************************************/
+bool Adafruit_BMP280_Temp::getEvent(sensors_event_t *event) {
+  /* Clear the event */
+  memset(event, 0, sizeof(sensors_event_t));
+
+  event->version = sizeof(sensors_event_t);
+  event->sensor_id = _sensorID;
+  event->type = SENSOR_TYPE_AMBIENT_TEMPERATURE;
+  event->timestamp = millis();
+  event->temperature = _theBMP280->readTemperature();
+  return true;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Gets the sensor_t data for the BMP280's pressure sensor
+*/
+/**************************************************************************/
+void Adafruit_BMP280_Pressure::getSensor(sensor_t *sensor) {
+  /* Clear the sensor_t object */
+  memset(sensor, 0, sizeof(sensor_t));
+
+  /* Insert the sensor name in the fixed length char array */
+  strncpy(sensor->name, "BMP280", sizeof(sensor->name) - 1);
+  sensor->name[sizeof(sensor->name) - 1] = 0;
+  sensor->version = 1;
+  sensor->sensor_id = _sensorID;
+  sensor->type = SENSOR_TYPE_PRESSURE;
+  sensor->min_delay = 0;
+  sensor->max_value = 300.0; /* 300 ~ 1100 hPa  */
+  sensor->min_value = 1100.0;
+  sensor->resolution = 0.012; /* 0.12 hPa relative */
+}
+
+/**************************************************************************/
+/*!
+    @brief  Gets the pressure as a standard sensor event
+    @param  event Sensor event object that will be populated
+    @returns True
+*/
+/**************************************************************************/
+bool Adafruit_BMP280_Pressure::getEvent(sensors_event_t *event) {
+  /* Clear the event */
+  memset(event, 0, sizeof(sensors_event_t));
+
+  event->version = sizeof(sensors_event_t);
+  event->sensor_id = _sensorID;
+  event->type = SENSOR_TYPE_PRESSURE;
+  event->timestamp = millis();
+  event->pressure = _theBMP280->readPressure() / 100; // convert Pa to hPa
+  return true;
+}

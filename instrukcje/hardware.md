@@ -8,9 +8,15 @@ Całościowy schemat podłączenia:
 
 ![Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/schemat.png)
 
+## ESP32
+
+Moduł ESP, to główny element miernika. To właśnie na tę płytkę wgrywamy oprogramowanie. Ma ona wbudowany moduł WiFi, który pozwala na tworzenie sieci bezprzewodowej i wysyłanie danych z pozostałych czujników. Wszystkie piny GND na płytce są ze sobą połączone i można z nich korzystać zamiennie. Podobnie z pinami 3V. Jeśli zdecydujemy się na Smogomierz oparty o ESP32(zalecane, ma znacznie więcej pamięci niż ESP8266), to nie musimy już zamawiać ESP8266. 
+
+![ESP32 Pinour](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/esp32_pins.jpg)
+
 ## ESP8266 - NodeMCU V3
 
-Główny element miernika. To właśnie na tę płytkę wgrywamy oprogramowanie. Ma ona wbudowany moduł WiFi, który pozwala na tworzenie sieci bezprzewodowej i wysyłanie danych z pozostałych czujników. Wszystkie piny GND na płytce są ze sobą połączone i można z nich korzystać zamiennie. Podobnie z pinami 3V.
+Moduł ESP, to główny element miernika. To właśnie na tę płytkę wgrywamy oprogramowanie. Ma ona wbudowany moduł WiFi, który pozwala na tworzenie sieci bezprzewodowej i wysyłanie danych z pozostałych czujników. Wszystkie piny GND na płytce są ze sobą połączone i można z nich korzystać zamiennie. Podobnie z pinami 3V. Jeśli zdecydujemy się na Smogomierz oparty o ESP8266, to nie musimy już zamawiać ESP32(zalecany jest jednak wybór ESP32, ma znacznie więcej pamięci niż ESP8266). 
 
 ![ESP8266 NodeMCU V3 Pinout](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/nodemcu_pins.png)
 
@@ -38,10 +44,17 @@ SHT1x zasilamy z pinu 3V na ESP8266. Podpinamy go do VCC na SHT1x. GND łączymy
 Jeśli zamiast **BME280** chcesz użyć HTU21D. Podłącz go w następujący sposób: 
 VIN z HTU21D do pinu 3V na ESP8266. GND łączymy z dowolnym G(GND) na ESP8266. SCL podpinamy do pinu D5, SDA do D6 na ESP8266.
 
-## DHT22 - miernik temperatury i wilgotności powietrza
+## DHT22/AM2302 - miernik temperatury i wilgotności powietrza
 
 Jeśli zamiast **BME280** chcesz użyć DHT22. Podłącz go w następujący sposób: 
-VIN z HTU21D do pinu 3V na ESP8266. GND łączymy z dowolnym G(GND) na ESP8266. Pin z danymi pomiarowymi podepnij do D7 na płytce ESP8266.
+VIN z DHT22/AM2302 do pinu 3V na ESP8266. GND łączymy z dowolnym G(GND) na ESP8266. Pin z danymi pomiarowymi podepnij do D7 na płytce ESP8266.
+
+Kolejność pinów od lewej strony:
+- VIN
+- DATA
+- nieużywany
+- GND
+
 
 ## PMS7003 - laserowy miernik pyłu
 
@@ -51,6 +64,14 @@ PMS7003 zasilamy bezpośrednio z pinu 5V wyprowadzonego z portu microUSB w obudo
 
 ![PMS7003 Schemat](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/PMS7003_schemat.png)
 
+## Sensirion SPS30
+
+Sensirion SPS30 to laserowy miernik pyłu zawieszonego w powietrzu, który podane pomiary PM1, PM2.5, PM4 oraz PM10. Posiada wbudowany wiatraczek. Urządzenia zasilane jest 5V i wyniki podaje poprzez UART. W naszym projekcie korzystamy z dwóch pinów RX oraz TX do pobierania wyników pomiarów oraz z pinu 5V i GND do zasilania SPS30. Pozostałe piny dostępne w mierniku SPS30 nie będą przez nas wykorzystywane. Sensirion SPS30 posiada system automatyczne czyszczenia kurzu osadzającego się wewnątrz miernika oraz żywotność aż 8 lat. Pomiary z Sensirion SPS30 są jednymi z najbardziej dokładnych. Jest on jednak jednym z droższych mierników. Kosztuje w Polsce około 140 zł.
+
+SPS30 zasilamy bezpośrednio z pinu 5V wyprowadzonego z portu microUSB w obudowie urządzenia. Piny GND podpinamy do dowolnego pinu G(GND) na płytce ESP8266. Pin TX podpinamy do pinu D1 na płytce ESP8266. Pin RX podpinamy do pinu D2 na ESP8266. 
+
+Pełną ([dokumentację](https://www.sensirion.com/en/environmental-sensors/particulate-matter-sensors-pm25/)) możemy znaleźć na stronie producenta Sensiriona SPS30. Warto również pamiętać, że SPS30 posiada dość nietypową wtyczkę: JST ZH 1.5. Wtyczka posiada 5 pinów i raster 1,5mm.
+
 ## HPMA115S0
 
 Honeywell HPMA115S0 to laserowy miernik pyłu zawieszonego w powietrzu, który podane pomiary PM1, PM2.5 oraz PM10. Posiada wbudowany wiatraczek. Urządzenia zasilane jest 5V i wyniki podaje poprzez UART. W naszym projekcie korzystamy z dwóch pinów RX oraz TX do pobierania wyników pomiarów oraz z pinu 5V i GND do zasilania HPMA115S0. Pozostałe dostępne w mierniku HPMA115S0 nie będą przez nas wykorzystywane.
@@ -58,6 +79,9 @@ Honeywell HPMA115S0 to laserowy miernik pyłu zawieszonego w powietrzu, który p
 ## SDS011
 
 SDS011 to laserowy miernik pyłu zawieszonego w powietrzu, który podane pomiary PM2.5 oraz PM10. Posiada wbudowany wiatraczek. Urządzenia zasilane jest 5V i wyniki podaje poprzez UART. W naszym projekcie korzystamy z dwóch pinów RX oraz TX do pobierania wyników pomiarów oraz z pinu 5V i GND do zasilania SDS011. Pozostałe dostępne w mierniku SDS011 nie będą przez nas wykorzystywane.
+
+Pin TXD podłącz do D1 na ESP, natomiast pin RXD do D2.
+Zwróć uwagę na sposób montażu ([dokumentacja](http://www.inovafitness.com/en/a/chanpinzhongxin/95.html)) - w zmontowanym urządzeniu wlot powietrza miernika powinien być od góry, lub z lewej strony.
 
 ## Obudowa
 

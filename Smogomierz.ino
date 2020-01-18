@@ -1,10 +1,10 @@
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
 
-// #define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
+#define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
 // #define DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMS5003 / PMS7003 - BME280_0x77
 // #define DUSTSENSOR_SDS011_21 // Nova Fitness SDS011 / SDS021
 // #define DUSTSENSOR_HPMA115S0 // Honeywell HPMA115S0
-#define DUSTSENSOR_SPS30 // Sensirion SPS30
+// #define DUSTSENSOR_SPS30 // Sensirion SPS30
 
 // *******************************************
 
@@ -615,9 +615,9 @@ void setup() {
   // get ESP id
   if (DEVICENAME_AUTO) {
 #ifdef ARDUINO_ARCH_ESP8266
-    sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
+    sprintf(device_name, "Smogly-%06X", ESP.getChipId());
 #elif defined ARDUINO_ARCH_ESP32
-    sprintf(device_name, "Smogomierz-%06X", ESP.getEfuseMac());
+    sprintf(device_name, "Smogly-%06X", ESP.getEfuseMac());
 #endif
   } else {
     strncpy(device_name, DEVICENAME, 20);
@@ -1023,6 +1023,9 @@ void sendDataToExternalDBs() {
   }
 
   if (MQTT_ON) {
+    //String MQTT_DEVICE_NAME = "Smogomierz";
+    String MQTT_DEVICE_NAME = "Smogly";
+
 #ifdef ARDUINO_ARCH_ESP8266
     String mqttChipId = String(ESP.getChipId());
 #elif defined ARDUINO_ARCH_ESP32
@@ -1032,21 +1035,21 @@ void sendDataToExternalDBs() {
       if (DEBUG) {
         Serial.println("Measurements from PM Sensor!\n");
       }
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
+      mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
+      mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
+      mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
       if (averagePM25 <= 10) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "EXCELLENT", true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/airquality").c_str(), "EXCELLENT", true);
       } else if (averagePM25 > 10 && averagePM25 <= 20) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "GOOD", true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/airquality").c_str(), "GOOD", true);
       } else if (averagePM25 > 20 && averagePM25 <= 25) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "FAIR", true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/airquality").c_str(), "FAIR", true);
       } else if (averagePM25 > 25 && averagePM25 <= 50) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "INFERIOR", true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/airquality").c_str(), "INFERIOR", true);
       } else if (averagePM25 > 50) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "POOR", true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/airquality").c_str(), "POOR", true);
       } else {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "UNKNOWN", true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/airquality").c_str(), "UNKNOWN", true);
       }
     }
 
@@ -1054,9 +1057,9 @@ void sendDataToExternalDBs() {
     if (!strcmp(THP_MODEL, "BME280")) {
       if (checkBmeStatus() == true) {
 
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
 
       } else {
         if (DEBUG) {
@@ -1068,8 +1071,8 @@ void sendDataToExternalDBs() {
     if (!strcmp(THP_MODEL, "BMP280")) {
       if (checkBmpStatus() == true) {
 
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
 
       } else {
         if (DEBUG) {
@@ -1080,8 +1083,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "HTU21")) {
       if (checkHTU21DStatus() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from HTU21!\n");
@@ -1091,8 +1094,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "DHT22")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from DHT22!\n");
@@ -1102,8 +1105,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "SHT1x")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish(String(MQTT_DEVICE_NAME + "-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from SHT1x!\n");

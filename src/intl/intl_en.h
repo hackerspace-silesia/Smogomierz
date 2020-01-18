@@ -10,6 +10,8 @@ char EN_INTL_LANG[16] PROGMEM = "en";
 
 char EN_INTL_INDEX_PAGE[16] PROGMEM = "Measurements";
 char EN_INTL_CONFIG_PAGE[16] PROGMEM = "Settings";
+char EN_INTL_CONFIG_DEVICE_PAGE[32] PROGMEM = "Device Settings";
+char EN_INTL_CONFIG_SERVICES_PAGE[32] PROGMEM = "Services Settings";
 char EN_INTL_UPDATE_PAGE[16] PROGMEM = "Update";
 
 char EN_INTL_WEATHER[16] PROGMEM = "Weather";
@@ -35,7 +37,7 @@ char EN_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Make PM measurements every";
 char EN_INTL_AVERAGELASTRESULT[32] PROGMEM = "Average result from last";
 char EN_INTL_PMMEASUREMENTS[32] PROGMEM = "PM measurements";
 char EN_INTL_SENDINGINTERVAL[64] PROGMEM = "Sending data to external services every";
-char EN_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Sending data to AirMonitor/Luftdaten/Smoglist every";
+char EN_INTL_SERVICESSENDINGINTERVAL[128] PROGMEM = "Sending data to AirMonitor/Luftdaten/Smoglist/aqi.eco every";
 char EN_INTL_DBSENDINGINTERVAL[64] PROGMEM = "Sending data to ThingSpeak/InfluxDB/MQTT every";
 char EN_INTL_SECONDS[16] PROGMEM = "seconds";
 char EN_INTL_MINUTES[16] PROGMEM = "minutes";
@@ -80,9 +82,9 @@ char EN_INTL_MQTTPORT[32] PROGMEM = "MQTT port";
 char EN_INTL_MQTTUSER[32] PROGMEM = "MQTT user";
 char EN_INTL_MQTTPASSWD[32] PROGMEM = "MQTT password";
 
-char EN_INTL_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
-char EN_INTL_AQIECOSERVER[32] = "aqi.eco server";
-char EN_INTL_AQIECOPATH[32] = "aqi.eco path";
+char EN_INTL_AQIECOSENDING[128] PROGMEM = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
+char EN_INTL_AQIECOSERVER[32] PROGMEM = "aqi.eco server";
+char EN_INTL_AQIECOPATH[32] PROGMEM = "aqi.eco path";
 
 char EN_INTL_CALIBMETHOD[32] PROGMEM = "Calibration method";
 char EN_INTL_CALIB1[32] PROGMEM = "calib1";

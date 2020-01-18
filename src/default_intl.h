@@ -10,6 +10,8 @@ extern char TEXT_LANG[16] = "en";
 
 extern char TEXT_INDEX_PAGE[16] = "Measurements";
 extern char TEXT_CONFIG_PAGE[16] = "Settings";
+extern char TEXT_CONFIG_DEVICE_PAGE[32] = "Device Settings";
+extern char TEXT_CONFIG_SERVICES_PAGE[32] = "Services Settings";
 extern char TEXT_UPDATE_PAGE[16] = "Update";
 
 extern char TEXT_WEATHER[16] = "Weather";
@@ -35,7 +37,7 @@ extern char TEXT_MEASUREMENTFREQUENCY[32] = "Make PM measurements every";
 extern char TEXT_AVERAGELASTRESULT[32] = "Average result from last";
 extern char TEXT_PMMEASUREMENTS[32] = "PM measurements";
 extern char TEXT_SENDINGINTERVAL[64] = "Sending data to external services every";
-extern char TEXT_SERVICESSENDINGINTERVAL[64] = "Sending data to AirMonitor/Luftdaten/Smoglist every";
+extern char TEXT_SERVICESSENDINGINTERVAL[128] = "Sending data to AirMonitor/Luftdaten/Smoglist/aqi.eco every";
 extern char TEXT_DBSENDINGINTERVAL[64] = "Sending data to ThingSpeak/InfluxDB/MQTT every";
 extern char TEXT_SECONDS[16] = "seconds";
 extern char TEXT_MINUTES[16] = "minutes";
@@ -80,7 +82,7 @@ extern char TEXT_MQTTPORT[32] = "MQTT port";
 extern char TEXT_MQTTUSER[32] = "MQTT user";
 extern char TEXT_MQTTPASSWD[32] = "MQTT password";
 
-extern char TEXT_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
+extern char TEXT_AQIECOSENDING[128] = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
 extern char TEXT_AQIECOSERVER[32] = "aqi.eco server";
 extern char TEXT_AQIECOPATH[32] = "aqi.eco path";
 

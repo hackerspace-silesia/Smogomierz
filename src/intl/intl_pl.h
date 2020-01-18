@@ -10,6 +10,8 @@ char PL_INTL_LANG[16] PROGMEM = "pl";
 
 char PL_INTL_INDEX_PAGE[16] PROGMEM = "Pomiary";
 char PL_INTL_CONFIG_PAGE[16] PROGMEM = "Ustawienia";
+char PL_INTL_CONFIG_DEVICE_PAGE[32] PROGMEM = "Ustawienia Urządzenia";
+char PL_INTL_CONFIG_SERVICES_PAGE[32] PROGMEM = "Ustawienia Serwisów";
 char PL_INTL_UPDATE_PAGE[16] PROGMEM = "Aktualizacje";
 
 char PL_INTL_WEATHER[16] PROGMEM = "Pogoda";
@@ -35,7 +37,7 @@ char PL_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Wykonywanie pomiarów PM co";
 char PL_INTL_AVERAGELASTRESULT[32] PROGMEM = "Uśredniaj wynik z ostatnich";
 char PL_INTL_PMMEASUREMENTS[32] PROGMEM = "pomiarów PM";
 char PL_INTL_SENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do serwisów zewnętrznych co";
-char PL_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do AirMonitor/Luftdaten/Smoglist co";
+char PL_INTL_SERVICESSENDINGINTERVAL[128] PROGMEM = "Wysyłanie danych do AirMonitor/Luftdaten/Smoglist/aqi.eco co";
 char PL_INTL_DBSENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do ThingSpeak/InfluxDB/MQTT co";
 char PL_INTL_SECONDS[16] PROGMEM = "sekund";
 char PL_INTL_MINUTES[16] PROGMEM = "minut";
@@ -54,7 +56,7 @@ char PL_INTL_SECURELOGOUTINFO[64] PROGMEM = "Zrestartuj przeglądarkę w celu wy
 char PL_INTL_LUFTDATENSENDING[96] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga rejestracji {LUFTDATENFORM_LINK})";
 
 char PL_INTL_SMOGLISTSENDING[64] PROGMEM = "Wysyłanie danych do serwisu {SMOGLIST_LINK}";
-char PL_INTL_SMOGLISTINFO[256] = "Smoglist to serwis zbierający statystyki użytkowania Smogly(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";
+char PL_INTL_SMOGLISTINFO[256] PROGMEM = "Smoglist to serwis zbierający statystyki użytkowania Smogly(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";
 
 char PL_INTL_AIRMONITORSENDING[128] PROGMEM = "Wysyłanie danych do serwisu {AIRMONITOR_LINK} (wymaga wypełnienia {AIRMONITORFORM_LINK}; Sensor: np. {PMSENSORMODEL})";
 char PL_INTL_AIRMONITORCHARTS[64] PROGMEM = "Wyświetlanie wykresów z serwisu AirMonitor";
@@ -80,7 +82,7 @@ char PL_INTL_MQTTPORT[32] PROGMEM = "Port MQTT";
 char PL_INTL_MQTTUSER[32] PROGMEM = "Użytkownik MQTT";
 char PL_INTL_MQTTPASSWD[32] PROGMEM = "Hasło MQTT";
 
-char PL_INTL_AQIECOSENDING[64] PROGMEM = "Wysyłanie danych do aqi.eco";
+char PL_INTL_AQIECOSENDING[128] PROGMEM = "Wysyłanie danych do <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a>";
 char PL_INTL_AQIECOSERVER[32] PROGMEM = "Adres serwera aqi.eco";
 char PL_INTL_AQIECOPATH[32] PROGMEM = "Ścieżka aqi.eco";
 

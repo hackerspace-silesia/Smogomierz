@@ -48,7 +48,7 @@ int SENDING_FREQUENCY = 3;
 int SENDING_DB_FREQUENCY = 3;
 bool DEEPSLEEP_ON = false;
 
-bool DEBUG = false;
+bool DEBUG = true;
 #ifdef ARDUINO_ARCH_ESP8266
 bool AUTOUPDATE_ON = false;
 #elif defined ARDUINO_ARCH_ESP32

@@ -368,7 +368,7 @@ bool loadDeviceConfig() {
   // Real world application would store these values in some variables for
   // later use.
   if (DEBUG) {
-	Serial.print("Loaded device_config!");
+	Serial.println("Loaded device_config!");
 	  
     Serial.print("Loaded DEVICENAME_AUTO: ");
     Serial.println(DEVICENAME_AUTO);
@@ -494,7 +494,7 @@ bool loadServicesConfig() {
   // Real world application would store these values in some variables for
   // later use.
   if (DEBUG) {
-	Serial.print("Loaded services_config!");
+	Serial.println("Loaded services_config!");
 	  
 	Serial.print("Loaded LUFTDATEN_ON: ");
 	Serial.println(LUFTDATEN_ON);
@@ -595,6 +595,7 @@ bool saveDeviceConfig() {
     }
 
     serializeJson(json, configFile);
+	configFile.close();
     if (DEBUG) {
       Serial.println("device_config saved");
     }
@@ -604,7 +605,6 @@ bool saveDeviceConfig() {
 bool saveServicesConfig() {
     StaticJsonDocument<2000> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-	
     json["LUFTDATEN_ON"] = LUFTDATEN_ON;
     json["SMOGLIST_ON"] = SMOGLIST_ON;
 
@@ -624,19 +624,19 @@ bool saveServicesConfig() {
     json["INFLUXDB_PORT"] = INFLUXDB_PORT;
     json["INFLUXDB_DATABASE"] = INFLUXDB_DATABASE;
     json["DB_USER"] = DB_USER;
-    json["DB_PASSWORD"] = DB_PASSWORD;
+    //json["DB_PASSWORD"] = DB_PASSWORD;
     json["DB_PASSWORD"] = String(DB_PASSWORD);
   
     json["MQTT_ON"] = MQTT_ON;
     json["MQTT_HOST"] = MQTT_HOST;
     json["MQTT_PORT"] = MQTT_PORT;
     json["MQTT_USER"] = MQTT_USER;
-    json["MQTT_PASSWORD"] = MQTT_PASSWORD;
+    //json["MQTT_PASSWORD"] = MQTT_PASSWORD;
     json["MQTT_PASSWORD"] = String(MQTT_PASSWORD);
 
     json["AQI_ECO_ON"] = AQI_ECO_ON;
     json["AQI_ECO_HOST"] = AQI_ECO_HOST;
-    json["AQI_ECO_PATH"] = AQI_ECO_PATH;
+    //json["AQI_ECO_PATH"] = AQI_ECO_PATH;
     json["AQI_ECO_PATH"] = String(AQI_ECO_PATH);
 
     json["SENDING_FREQUENCY"] = SENDING_FREQUENCY;
@@ -649,6 +649,7 @@ bool saveServicesConfig() {
     }
 
     serializeJson(json, configFile);
+	configFile.close();
     if (DEBUG) {
       Serial.println("services_config saved");
     }

@@ -370,6 +370,7 @@ void _handle_config_device(bool is_success) {
       return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
     }
   }
+  loadServicesConfig();
   String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
@@ -500,6 +501,7 @@ void _handle_config_services(bool is_success) {
       return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
     }
   }
+  loadDeviceConfig();
   String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
@@ -797,7 +799,7 @@ void handle_config_device_post() {
     }
   }
   // DUST Sensor config - END
-
+  yield();
   FREQUENTMEASUREMENT = _parseAsBool(WebServer.arg("FREQUENTMEASUREMENT"));
 
   DUST_TIME = WebServer.arg("DUST_TIME").toInt();
@@ -822,6 +824,7 @@ void handle_config_device_post() {
     strcpy(DUST_MODEL, "Non");
     //saveConfig();
 	saveDeviceConfig();
+	saveServicesConfig();
     _handle_config_device(true);
     yield();
     if (need_update == 1) {
@@ -846,6 +849,8 @@ void handle_config_device_post() {
 
   //saveConfig();
   saveDeviceConfig();
+  saveServicesConfig();
+  //delay(250);
   _handle_config_device(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
@@ -869,9 +874,16 @@ void handle_config_services_post() {
   }
 
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
-  LUFTDATEN_ON = _parseAsBool(WebServer.arg("LUFTDATEN_ON"));
-  SMOGLIST_ON = _parseAsBool(WebServer.arg("SMOGLIST_ON"));
+  SENDING_FREQUENCY = WebServer.arg("SENDING_FREQUENCY").toInt();
+  SENDING_DB_FREQUENCY = WebServer.arg("SENDING_DB_FREQUENCY").toInt(); 
 
+  SMOGLIST_ON = _parseAsBool(WebServer.arg("SMOGLIST_ON"));  
+  LUFTDATEN_ON = _parseAsBool(WebServer.arg("LUFTDATEN_ON"));
+  
+  AQI_ECO_ON = _parseAsBool(WebServer.arg("AQI_ECO_ON"));
+  _parseAsCString(AQI_ECO_HOST, WebServer.arg("AQI_ECO_HOST"));
+  _parseAsCString(AQI_ECO_PATH, WebServer.arg("AQI_ECO_PATH"));
+  
   AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
   AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
   
@@ -889,26 +901,21 @@ void handle_config_services_post() {
   _parseAsCString(INFLUXDB_DATABASE, WebServer.arg("INFLUXDB_DATABASE"));
   _parseAsCString(DB_USER, WebServer.arg("DB_USER"));
   _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"));
-
-  MQTT_ON = _parseAsBool(WebServer.arg("MQTT_ON"));
+ 
+   MQTT_ON = _parseAsBool(WebServer.arg("MQTT_ON"));
   _parseAsCString(MQTT_HOST, WebServer.arg("MQTT_HOST"));
   MQTT_PORT = WebServer.arg("MQTT_PORT").toInt();
   _parseAsCString(MQTT_USER, WebServer.arg("MQTT_USER"));
   _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"));
-
-  AQI_ECO_ON = _parseAsBool(WebServer.arg("AQI_ECO_ON"));
-  _parseAsCString(AQI_ECO_HOST, WebServer.arg("AQI_ECO_HOST"));
-  _parseAsCString(AQI_ECO_PATH, WebServer.arg("AQI_ECO_PATH"));
-
-  SENDING_FREQUENCY = WebServer.arg("SENDING_FREQUENCY").toInt();
-  SENDING_DB_FREQUENCY = WebServer.arg("SENDING_DB_FREQUENCY").toInt();
-
+  
   if (DEBUG) {
     Serial.println("POST CONFIG END!!");
   }
   
   //saveConfig();
   saveServicesConfig();
+  saveDeviceConfig();
+  //delay(250);
   _handle_config_services(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();

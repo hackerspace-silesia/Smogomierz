@@ -8,6 +8,8 @@
 
 // *******************************************
 
+// #define ASYNC_WEBSERVER_ON - EXPERIMENTAL
+
 /*
 
    ESP8266
@@ -73,11 +75,23 @@
   Szkic używa 1272630 bajtów (64%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 61336 bajtów (18%) pamięci dynamicznej, pozostawiając 266344 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
+  ASYNC_WEBSERVER_ON
+  ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
+
+  Szkic używa 514236 bajtów (49%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55464 bajtów (67%) pamięci dynamicznej, pozostawiając 26456 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
+
 */
 
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
+#ifdef ASYNC_WEBSERVER_ON
+#include "src/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 17.01.2020
+#else
 #include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 17.01.2020  DEV
+#endif
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
 #include "src/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 17.01.2020
@@ -121,17 +135,29 @@
 #include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 17.01.2020
 
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
+#ifdef ASYNC_WEBSERVER_ON
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#else
 #include <ESP8266WebServer.h>
+#endif
 #include <ESP8266mDNS.h>
 #ifndef DUSTSENSOR_SPS30
+#ifndef ASYNC_WEBSERVER_ON
 #include <ESP8266HTTPUpdateServer.h>
+#endif
 #endif
 #include <SoftwareSerial.h>
 #elif defined ARDUINO_ARCH_ESP32 // Arduino core for the ESP32 - 1.0.4-rc1 or later // at 1.0.3 autoupdate doesn't work !!!
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <ESPmDNS.h>
+#ifdef ASYNC_WEBSERVER_ON
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#else
 #include <WebServer.h>
+#endif
 #include <Update.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
@@ -275,6 +301,9 @@ bool need_update = false;
 char SERVERSOFTWAREVERSION[255] = "";
 char CURRENTSOFTWAREVERSION[255] = "";
 
+#ifdef ASYNC_WEBSERVER_ON
+AsyncWebServer server(80);
+#else
 #ifdef ARDUINO_ARCH_ESP8266
 ESP8266WebServer WebServer(80);
 #ifndef DUSTSENSOR_SPS30
@@ -283,11 +312,14 @@ ESP8266HTTPUpdateServer httpUpdater;
 #elif defined ARDUINO_ARCH_ESP32
 WebServer WebServer(80);
 #endif
+#endif
 
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 
+#ifndef ASYNC_WEBSERVER_ON
 WiFiManager wifiManager;
+#endif
 
 // check TEMP/HUMI/PRESS Sensor - START
 bool checkHTU21DStatus() {
@@ -393,7 +425,11 @@ void MQTTreconnect() {
 #include "src/html-content.h"
 
 // library doesnt support arguments :/
+#ifdef ASYNC_WEBSERVER_ON
+#include "src/Asyncwebserver.h"
+#else
 #include "src/webserver.h"
+#endif
 
 void setup() {
   Serial.begin(115200);
@@ -626,7 +662,14 @@ void setup() {
   Serial.print("Device name: ");
   Serial.println(device_name);
 
+#ifdef ASYNC_WEBSERVER_ON
+  DNSServer dns;
+  AsyncWiFiManager wifiManager(&server, &dns);
+#endif
+
+#ifndef ASYNC_WEBSERVER_ON
   wifiManager.setCountry("US");
+#endif
 
   if (wifiManager.autoConnect(device_name)) {
     Serial.println("connected...yeey :)");
@@ -637,9 +680,17 @@ void setup() {
 #endif
   } else {
     Serial.println("Configportal running");
+#ifdef ASYNC_WEBSERVER_ON
+    wifiManager.startConfigPortal(device_name);
+#else
     wifiManager.setConfigPortalBlocking(false);
+#endif
   }
   delay(250);
+
+#ifdef ASYNC_WEBSERVER_ON
+  Serial.println("\nIP Address: " + String(WiFi.localIP().toString()));
+#endif
 
   // check update
   if (checkUpdate(0) == true) {
@@ -661,17 +712,33 @@ void setup() {
     }
   }
 
+  //  ASYNC_WebServer config - Start
+#ifdef ASYNC_WEBSERVER_ON
+  server.on("/", HTTP_GET, handle_root);
+  server.on("/config", HTTP_GET, handle_config);
+  server.on("/config_device", HTTP_POST, handle_config_device_post);
+  server.on("/config_device", HTTP_GET, handle_config_device);
+  server.on("/config_services", HTTP_POST, handle_config_services_post);
+  server.on("/config_services", HTTP_GET, handle_config_services);
+  //server.on("/update", HTTP_GET, handle_update);
+  server.on("/api", HTTP_GET, handle_api);
+  server.on("/erase_wifi", HTTP_GET, erase_wifi);
+  server.on("/restore_config", HTTP_GET, restore_config);
+  server.on("/fwupdate", HTTP_GET, fwupdate);
+  server.on("/autoupdate_on", HTTP_GET, autoupdate_on);
+  server.onNotFound(handle_root);
+#ifdef ARDUINO_ARCH_ESP32
+  // httpUpdater.setup(&server, "/update");
+#endif
+  server.begin();
+#else
   //  WebServer config - Start
   WebServer.on("/", HTTP_GET,  handle_root);
-
   WebServer.on("/config", HTTP_GET, handle_config);
-
   WebServer.on("/config_device", HTTP_POST, handle_config_device_post);
   WebServer.on("/config_device", HTTP_GET, handle_config_device);
-
   WebServer.on("/config_services", HTTP_POST, handle_config_services_post);
   WebServer.on("/config_services", HTTP_GET, handle_config_services);
-
   WebServer.on("/update", HTTP_GET, handle_update);
   WebServer.on("/api", HTTP_GET, handle_api);
   WebServer.on("/erase_wifi", HTTP_GET, erase_wifi);
@@ -714,9 +781,14 @@ void setup() {
   });
 #endif
   //  WebServer Config - End
+#endif
 
   // Check if config.h exist in ESP data folder
+#ifdef ASYNC_WEBSERVER_ON
+  server.begin();
+#else
   WebServer.begin();
+#endif
 
   MDNS.begin(device_name);
 
@@ -757,7 +829,9 @@ void loop() {
   yield();
 
   //webserverShowSite(WebServer, BMESensor, data);
+#ifndef ASYNC_WEBSERVER_ON
   WebServer.handleClient();
+#endif
 
   /*
     #ifdef ARDUINO_ARCH_ESP8266
@@ -811,7 +885,9 @@ void loop() {
       unsigned long current_2sec_Millis = millis();
       previous_2sec_Millis = millis();
       while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
+#ifndef ASYNC_WEBSERVER_ON
         WebServer.handleClient();
+#endif
         previous_2sec_Millis = millis();
       }
       if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
@@ -1282,7 +1358,9 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1301,7 +1379,9 @@ void takeSleepPMMeasurements() {
 
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
+#endif
   }
   if (DEBUG) {
     Serial.print("\nTurning OFF PM sensor...\n");
@@ -1323,7 +1403,9 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
       yield();
       previous_2sec_Millis = millis();
     }
@@ -1344,7 +1426,9 @@ void takeSleepPMMeasurements() {
       counterNM1++;
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
+#endif
     yield();
     delay(10);
   }
@@ -1371,7 +1455,9 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
       delay(10);
       yield();
       previous_2sec_Millis = millis();
@@ -1388,7 +1474,9 @@ void takeSleepPMMeasurements() {
       }
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
+#endif
     yield();
     delay(10);
   }
@@ -1409,7 +1497,9 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
       delay(10);
       yield();
       previous_2sec_Millis = millis();
@@ -1427,7 +1517,9 @@ void takeSleepPMMeasurements() {
 
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
+#endif
     yield();
     delay(10);
   }
@@ -1444,7 +1536,9 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1463,7 +1557,9 @@ void takeSleepPMMeasurements() {
 
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
+#endif
   }
   if (DEBUG) {
     Serial.print("\nTurning OFF PM sensor...\n");

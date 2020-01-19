@@ -1,5 +1,5 @@
 #ifdef ARDUINO_ARCH_ESP8266
-const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>
+const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<!DOCTYPE HTML><html><html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>
 <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>
 </head><body>
 <nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>{IndexPageTitle}</a>

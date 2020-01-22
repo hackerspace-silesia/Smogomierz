@@ -101,9 +101,9 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 		<br></center>
 		)rawliteral";
 	
-	const char WEB_CONFIG_PAGE_SUBMIT_DEVICE_BUTTON[] PROGMEM = "<input type='submit' name='submit1' class='btn btn-outline-danger' value='{TEXT_SAVE}' />";
+	const char WEB_CONFIG_PAGE_SUBMIT_DEVICE_BUTTON[] PROGMEM = "<input type='submit' name='submit1' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";	
 
-	const char WEB_CONFIG_PAGE_SUBMIT_SERVICES_BUTTON[] PROGMEM = "<input type='submit' name='submit2' class='btn btn-outline-danger' value='{TEXT_SAVE}' />";
+	const char WEB_CONFIG_PAGE_SUBMIT_SERVICES_BUTTON[] PROGMEM = "<input type='submit' name='submit2' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
 
 	const char WEB_CONFIG_PAGE_SELECT[] PROGMEM = "<select name='{key}'>";
 
@@ -129,13 +129,18 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 
 // CONFIG PAGE - END
 // CONFIG DEVICE PAGE - Start
-const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_device'> 
+const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_device_save'> 
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_DEVICE_PAGE}</h1></center><br><br>
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
 	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
-
+/*
+const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_device'>
+  <main role='main' class='container'><div class='jumbotron'>
+  <center><h1>{TEXT_CONFIG_PAGE}</h1></center><br><br>
+  <div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>)rawliteral";
+*/
 const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVICENAME}: </b>{device_name} <br>
 	<b>{TEXT_DEVICENAMEAUTO}: </b>{DEVICENAME_AUTO}
 	<b>{TEXT_SELECTEDLANGUAGE}: </b>{LanguageSelect}
@@ -171,7 +176,7 @@ const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVIC
 	)rawliteral";
 // CONFIG DEVICE PAGE - END
 // CONFIG SERVICES PAGE - Start
-const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_device'> 
+const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_services_save'> 
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br><br>
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
@@ -184,13 +189,14 @@ const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SEN
 	<b>{TEXT_SMOGLISTSENDING}: </b>{SMOGLIST_ON} {TEXT_SMOGLISTINFO}
 	<hr>	
 	<b>{TEXT_LUFTDATENSENDING}: </b>{LUFTDATEN_ON}
-	<b>ChipID: </b>{ChipID}
+	<b>ChipID: </b>{LUFTDATEN_ChipID}
 	<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>
 	<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>
 	<hr>
 	<b>{TEXT_AQIECOSENDING}: </b>{AQI_ECO_ON}
 	<b>{TEXT_AQIECOSERVER}: </b>{AQI_ECO_HOST}
 	<b>{TEXT_AQIECOPATH}: </b>{AQI_ECO_PATH}
+	<b>{ESP_MODEL} ID: </b>{AQI_ECO_ChipID}
 	<hr>
 	<b>{TEXT_AIRMONITORSENDING}: </b>{AIRMONITOR_ON}
 	<b>{TEXT_AIRMONITORCHARTS}: </b>{AIRMONITOR_GRAPH_ON}

@@ -380,7 +380,6 @@ void handle_config_device(AsyncWebServerRequest *request) {
 	        request->requestAuthentication(NULL,false); // force basic auth
 	      }
   }
-  //loadServicesConfig();
   String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
@@ -399,9 +398,11 @@ void handle_config_device(AsyncWebServerRequest *request) {
     message.replace("{TEXT_POSTCONFIG_INFO}", (TEXT_POSTCONFIG_INFO));
   }
 */
+  message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
+  
   message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
-  //message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
-  //message.replace("{TEXT_HERE}", (TEXT_HERE));
+  message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
+  message.replace("{TEXT_HERE}", (TEXT_HERE));
  
   message += FPSTR(WEB_CONFIG_DEVICE_PAGE_CONFIG);
 
@@ -523,7 +524,7 @@ void handle_config_services(AsyncWebServerRequest *request) {
 		        request->requestAuthentication(NULL,false); // force basic auth
 		      }
 	  }
-  //loadDeviceConfig();
+
   String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
@@ -541,14 +542,15 @@ void handle_config_services(AsyncWebServerRequest *request) {
     message.replace("{TEXT_POSTCONFIG_INFO}", (TEXT_POSTCONFIG_INFO));
   }
   */
-  /*
+  
+  message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
+  
   message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
   message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
-*/
   
   message += FPSTR(WEB_CONFIG_SERVICES_PAGE_CONFIG);
-  /*
+  
   if (FREQUENTMEASUREMENT == true) {
     message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
     message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_SECONDS}"));
@@ -586,10 +588,10 @@ void handle_config_services(AsyncWebServerRequest *request) {
   message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
   
 #ifdef ARDUINO_ARCH_ESP8266
-  message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
+  message.replace("{LUFTDATEN_ChipID}", "smogomierz-" + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
   //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
-  message.replace("{ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));  
+  message.replace("{LUFTDATEN_ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));  
 #endif
     
   if (!strcmp(THP_MODEL, "BME280")) {
@@ -634,6 +636,15 @@ void handle_config_services(AsyncWebServerRequest *request) {
   message.replace("{TEXT_AQIECOPATH}", (TEXT_AQIECOPATH));
   message.replace("{AQI_ECO_PATH}", _addTextInput("AQI_ECO_PATH", AQI_ECO_PATH));
 
+#ifdef ARDUINO_ARCH_ESP8266
+  message.replace("{ESP_MODEL}", "ESP8266");
+  message.replace("{AQI_ECO_ChipID}", String(ESP.getChipId()));
+#elif defined ARDUINO_ARCH_ESP32
+  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
+  message.replace("{ESP_MODEL}", "ESP32");
+  message.replace("{AQI_ECO_ChipID}", String((uint32_t)(ESP.getEfuseMac())));  
+#endif
+
   message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
   
   char PMSENSORMODEL[16];
@@ -653,12 +664,10 @@ void handle_config_services(AsyncWebServerRequest *request) {
   message.replace("{TEXT_THEFORM}", (TEXT_THEFORM));
   message.replace("{TEXT_AIRMONITORCHARTS}", (TEXT_AIRMONITORCHARTS));
   message.replace("{AIRMONITOR_ON}", _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON));
-  */
-  /*
+  
   message.replace("{TEXT_AIRMONITORCOORDINATESINFO}", (TEXT_AIRMONITORCOORDINATESINFO));
   message.replace("{LATLONG_LINK}", (LATLONG_LINK));
   message.replace("{TEXT_HERE}", (TEXT_HERE));
-  */
   
   message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
@@ -739,7 +748,7 @@ void handle_config_services() {
 */
 
 //void handle_config_device_post() {
-void handle_config_device_post(AsyncWebServerRequest *request) {
+void handle_config_device_save(AsyncWebServerRequest *request) {
   int need_update = 0;
   /*
   if (DEBUG) {
@@ -757,105 +766,147 @@ void handle_config_device_post(AsyncWebServerRequest *request) {
   }
 
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
-  DEVICENAME_AUTO = _parseAsBool(WebServer.arg("DEVICENAME_AUTO"));
-  if (!DEVICENAME_AUTO) {
-    _parseAsCString(DEVICENAME, WebServer.arg("DEVICENAME"));
-  }
-  DISPLAY_PM1 = _parseAsBool(WebServer.arg("DISPLAY_PM1"));
-  _parseAsCString(LANGUAGE, WebServer.arg("LANGUAGE"));
-  _set_language();
+  */
 
-  char oldTHP_MODEL[32];
-  strcpy(oldTHP_MODEL, THP_MODEL);
-  _parseAsCString(THP_MODEL, WebServer.arg("THP_MODEL"));
+	if (request->hasParam("DEVICENAME_AUTO")) {
+		DEVICENAME_AUTO = _parseAsBool(request->getParam("DEVICENAME_AUTO")->value());
+	}
+	
+if (!DEVICENAME_AUTO) {
+	if (request->hasParam("DEVICENAME")) {
+		_parseAsCString(DEVICENAME, request->getParam("DEVICENAME")->value());
+	}
+}	
+	if (request->hasParam("DISPLAY_PM1")) {
+		DISPLAY_PM1 = _parseAsBool(request->getParam("DISPLAY_PM1")->value());
+	}
+	
+	if (request->hasParam("LANGUAGE")) {
+    	_parseAsCString(LANGUAGE, request->getParam("LANGUAGE")->value());
+    	_set_language();
+	}
+	
+    char oldTHP_MODEL[32];
+    strcpy(oldTHP_MODEL, THP_MODEL);
+	if (request->hasParam("THP_MODEL")) {
+		_parseAsCString(THP_MODEL, request->getParam("THP_MODEL")->value());
+	}
+    if (strcmp(THP_MODEL, oldTHP_MODEL) and !strcmp(THP_MODEL, "BME280-SparkFun")) {
+      need_update = 1;
+    }
+	
+    char oldDUST_MODEL[32];
+    strcpy(oldDUST_MODEL, DUST_MODEL);
+	if (request->hasParam("DUST_MODEL")) {
+		_parseAsCString(DUST_MODEL, request->getParam("DUST_MODEL")->value());
+	}
+	
+    // DUST Sensor config - START
+    if (!strcmp(PMSENSORVERSION, "PMS")) {
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+        need_update = 2;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+        need_update = 3;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+        need_update = 5;
+      }
+    } else if (!strcmp(PMSENSORVERSION, "SDS")) {
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+        need_update = 3;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+        need_update = 4;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+        need_update = 5;
+      }
+    } else if (!strcmp(PMSENSORVERSION, "HPMA115S0")) {
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+        need_update = 2;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+        need_update = 4;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+        need_update = 5;
+      }
+    } else if (!strcmp(PMSENSORVERSION, "SPS30")) {
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+        need_update = 2;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+        need_update = 3;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+        need_update = 4;
+      }
+    } else if (!strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+        need_update = 2;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+        need_update = 3;
+      }
+      if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+        need_update = 5;
+      }
+    }
+    // DUST Sensor config - END
+	
+	if (request->hasParam("FREQUENTMEASUREMENT")) {
+		FREQUENTMEASUREMENT = _parseAsBool(request->getParam("FREQUENTMEASUREMENT")->value());
+	}
+	
+	if (request->hasParam("DUST_TIME")) {
+		DUST_TIME = (request->getParam("DUST_TIME")->value()).toInt();
+	}
+	
+	if (request->hasParam("NUMBEROFMEASUREMENTS")) {
+		NUMBEROFMEASUREMENTS = (request->getParam("NUMBEROFMEASUREMENTS")->value()).toInt();
+	}
+	
+	if (request->hasParam("DEEPSLEEP_ON")) {
+		DEEPSLEEP_ON = _parseAsBool(request->getParam("DEEPSLEEP_ON")->value());
+	}
+	
+	if (request->hasParam("MYALTITUDE")) {
+		MYALTITUDE = (request->getParam("MYALTITUDE")->value()).toInt();
+	}
+	
+	if (request->hasParam("CONFIG_AUTH")) {
+		CONFIG_AUTH = _parseAsBool(request->getParam("CONFIG_AUTH")->value());
+	}
+	
+	if (request->hasParam("CONFIG_USERNAME")) {
+		_parseAsCString(CONFIG_USERNAME, request->getParam("CONFIG_USERNAME")->value());
+	}
+	
+	if (request->hasParam("CONFIG_PASSWORD")) {
+		_parseAsCString(CONFIG_PASSWORD, request->getParam("CONFIG_PASSWORD")->value());
+	}
+	
+	if (request->hasParam("DEBUG")) {
+		DEBUG = _parseAsBool(request->getParam("DEBUG")->value());
+	}
+	
+	if (request->hasParam("MODEL")) {
+		_parseAsCString(MODEL, request->getParam("MODEL")->value());
+	}
+	
+	if (request->hasParam("AUTOUPDATE_ON")) {
+		AUTOUPDATE_ON = _parseAsBool(request->getParam("AUTOUPDATE_ON")->value());
+	}
 
-  if (strcmp(THP_MODEL, oldTHP_MODEL) and !strcmp(THP_MODEL, "BME280-SparkFun")) {
-    need_update = 1;
-  }
-
-  char oldDUST_MODEL[32];
-  strcpy(oldDUST_MODEL, DUST_MODEL);
-  _parseAsCString(DUST_MODEL, WebServer.arg("DUST_MODEL"));
-
-  // DUST Sensor config - START
-  if (!strcmp(PMSENSORVERSION, "PMS")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
-      need_update = 2;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
-      need_update = 3;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
-      need_update = 5;
-    }
-  } else if (!strcmp(PMSENSORVERSION, "SDS")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
-      need_update = 3;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
-      need_update = 4;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
-      need_update = 5;
-    }
-  } else if (!strcmp(PMSENSORVERSION, "HPMA115S0")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
-      need_update = 2;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
-      need_update = 4;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
-      need_update = 5;
-    }
-  } else if (!strcmp(PMSENSORVERSION, "SPS30")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
-      need_update = 2;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
-      need_update = 3;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
-      need_update = 4;
-    }
-  } else if (!strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
-      need_update = 2;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
-      need_update = 3;
-    }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
-      need_update = 5;
-    }
-  }
-  // DUST Sensor config - END
-  yield();
-  FREQUENTMEASUREMENT = _parseAsBool(WebServer.arg("FREQUENTMEASUREMENT"));
-
-  DUST_TIME = WebServer.arg("DUST_TIME").toInt();
-  NUMBEROFMEASUREMENTS = WebServer.arg("NUMBEROFMEASUREMENTS").toInt();
-  DEEPSLEEP_ON = _parseAsBool(WebServer.arg("DEEPSLEEP_ON"));
-  
-  DEBUG = _parseAsBool(WebServer.arg("DEBUG"));
-  AUTOUPDATE_ON = _parseAsBool(WebServer.arg("AUTOUPDATE_ON"));
-
-  CONFIG_AUTH = _parseAsBool(WebServer.arg("CONFIG_AUTH"));
-  _parseAsCString(CONFIG_USERNAME, WebServer.arg("CONFIG_USERNAME"));
-  _parseAsCString(CONFIG_PASSWORD, WebServer.arg("CONFIG_PASSWORD"));
-
-  _parseAsCString(MODEL, WebServer.arg("MODEL"));
-*/
   if (DEBUG) {
-    Serial.println("POST CONFIG END!!");
+    Serial.println("POST DEVICE CONFIG END!!");
   }
 
   if (need_update != 0) {
     strcpy(THP_MODEL, "Non");
     strcpy(DUST_MODEL, "Non");
-    //saveConfig();
-	saveDeviceConfig();
-	saveServicesConfig();
+    saveConfig();
     //_handle_config_device(true);
     yield();
     if (need_update == 1) {
@@ -878,18 +929,27 @@ void handle_config_device_post(AsyncWebServerRequest *request) {
     }
   }
 
-  //saveConfig();
-  saveDeviceConfig();
-  saveServicesConfig();
+  saveConfig();
   //delay(250);
   //_handle_config_device(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
+  delay(300);
+  request->redirect("/");
+    /*
+  int redirect_interval = 3 * 1000; // 3 seconds
+  unsigned long current_redirect_Millis = millis();
+  unsigned long previous_redirect_Millis = millis();
+  while (previous_redirect_Millis - current_redirect_Millis <= redirect_interval * 1) {
+	  previous_redirect_Millis = millis();
+  }
+  */
+  delay(1000);
   ESP.restart();
 }
 
 //void handle_config_services_post() {
-void handle_config_services_post(AsyncWebServerRequest *request) {
+void handle_config_services_save(AsyncWebServerRequest *request) {
 	/*
   if (DEBUG) {
     Serial.println("POST CONFIG START!!");
@@ -906,51 +966,123 @@ void handle_config_services_post(AsyncWebServerRequest *request) {
   }
 
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
-  SENDING_FREQUENCY = WebServer.arg("SENDING_FREQUENCY").toInt();
-  SENDING_DB_FREQUENCY = WebServer.arg("SENDING_DB_FREQUENCY").toInt(); 
-
-  SMOGLIST_ON = _parseAsBool(WebServer.arg("SMOGLIST_ON"));  
-  LUFTDATEN_ON = _parseAsBool(WebServer.arg("LUFTDATEN_ON"));
-  
-  AQI_ECO_ON = _parseAsBool(WebServer.arg("AQI_ECO_ON"));
-  _parseAsCString(AQI_ECO_HOST, WebServer.arg("AQI_ECO_HOST"));
-  _parseAsCString(AQI_ECO_PATH, WebServer.arg("AQI_ECO_PATH"));
-  
-  AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
-  AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
-  
-  _parseAsCString(LATITUDE, WebServer.arg("LATITUDE"));
-  _parseAsCString(LONGITUDE, WebServer.arg("LONGITUDE"));
-
-  THINGSPEAK_ON = _parseAsBool(WebServer.arg("THINGSPEAK_ON"));
-  THINGSPEAK_GRAPH_ON = _parseAsBool(WebServer.arg("THINGSPEAK_GRAPH_ON"));
-  _parseAsCString(THINGSPEAK_API_KEY, WebServer.arg("THINGSPEAK_API_KEY"));
-  THINGSPEAK_CHANNEL_ID = WebServer.arg("THINGSPEAK_CHANNEL_ID").toInt();
-
-  INFLUXDB_ON = _parseAsBool(WebServer.arg("INFLUXDB_ON"));
-  _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"));
-  INFLUXDB_PORT = WebServer.arg("INFLUXDB_PORT").toInt();
-  _parseAsCString(INFLUXDB_DATABASE, WebServer.arg("INFLUXDB_DATABASE"));
-  _parseAsCString(DB_USER, WebServer.arg("DB_USER"));
-  _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"));
- 
-   MQTT_ON = _parseAsBool(WebServer.arg("MQTT_ON"));
-  _parseAsCString(MQTT_HOST, WebServer.arg("MQTT_HOST"));
-  MQTT_PORT = WebServer.arg("MQTT_PORT").toInt();
-  _parseAsCString(MQTT_USER, WebServer.arg("MQTT_USER"));
-  _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"));
   */
+	if (request->hasParam("SENDING_FREQUENCY")) {
+    	SENDING_FREQUENCY = (request->getParam("SENDING_FREQUENCY")->value()).toInt();
+	}
+
+	if (request->hasParam("SENDING_DB_FREQUENCY")) {
+		SENDING_DB_FREQUENCY = (request->getParam("SENDING_DB_FREQUENCY")->value()).toInt();
+	}
+
+	if (request->hasParam("SMOGLIST_ON")) {
+		SMOGLIST_ON = _parseAsBool(request->getParam("SMOGLIST_ON")->value());
+	}
+	
+	if (request->hasParam("LUFTDATEN_ON")) {
+		LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
+	}
+
+	if (request->hasParam("AQI_ECO_ON")) {
+		AQI_ECO_ON = _parseAsBool(request->getParam("AQI_ECO_ON")->value());
+	}
+
+	if (request->hasParam("AQI_ECO_HOST")) {
+		_parseAsCString(AQI_ECO_HOST, request->getParam("AQI_ECO_HOST")->value());
+	}
+	
+	if (request->hasParam("AQI_ECO_PATH")) {
+		_parseAsCString(AQI_ECO_PATH, request->getParam("AQI_ECO_PATH")->value());
+	}
+	
+	if (request->hasParam("AIRMONITOR_ON")) {
+		AIRMONITOR_ON = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
+	}
+
+	if (request->hasParam("AIRMONITOR_GRAPH_ON")) {
+		AIRMONITOR_GRAPH_ON = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
+	}
+	
+	if (request->hasParam("LATITUDE")) {
+		_parseAsCString(LATITUDE, request->getParam("LATITUDE")->value());
+	}
+	
+	if (request->hasParam("LONGITUDE")) {
+		_parseAsCString(LONGITUDE, request->getParam("LONGITUDE")->value());
+	}
+	
+	if (request->hasParam("THINGSPEAK_ON")) {
+		THINGSPEAK_ON = _parseAsBool(request->getParam("THINGSPEAK_ON")->value());
+	}
+
+	if (request->hasParam("THINGSPEAK_GRAPH_ON")) {
+		THINGSPEAK_GRAPH_ON = _parseAsBool(request->getParam("THINGSPEAK_GRAPH_ON")->value());
+	}
+	
+	if (request->hasParam("THINGSPEAK_API_KEY")) {
+		_parseAsCString(THINGSPEAK_API_KEY, request->getParam("THINGSPEAK_API_KEY")->value());
+	}
+	
+	if (request->hasParam("THINGSPEAK_CHANNEL_ID")) {
+		THINGSPEAK_CHANNEL_ID = (request->getParam("THINGSPEAK_CHANNEL_ID")->value()).toInt();
+	}
+	
+	if (request->hasParam("INFLUXDB_ON")) {
+		INFLUXDB_ON = _parseAsBool(request->getParam("INFLUXDB_ON")->value());
+	}
+	
+	if (request->hasParam("INFLUXDB_HOST")) {
+		_parseAsCString(INFLUXDB_HOST, request->getParam("INFLUXDB_HOST")->value());
+	}
+	
+	if (request->hasParam("INFLUXDB_PORT")) {
+		INFLUXDB_PORT = (request->getParam("INFLUXDB_PORT")->value()).toInt();
+	}
+	
+	if (request->hasParam("INFLUXDB_DATABASE")) {
+		_parseAsCString(INFLUXDB_DATABASE, request->getParam("INFLUXDB_DATABASE")->value());
+	}
+	
+	if (request->hasParam("DB_USER")) {
+		_parseAsCString(DB_USER, request->getParam("DB_USER")->value());
+	}
+	
+	if (request->hasParam("DB_PASSWORD")) {
+		_parseAsCString(DB_PASSWORD, request->getParam("DB_PASSWORD")->value());
+	}
+	
+	if (request->hasParam("MQTT_ON")) {
+		MQTT_ON = _parseAsBool(request->getParam("MQTT_ON")->value());
+	}
+	
+	if (request->hasParam("MQTT_HOST")) {
+		_parseAsCString(MQTT_HOST, request->getParam("MQTT_HOST")->value());
+	}
+	
+	if (request->hasParam("MQTT_PORT")) {
+		MQTT_PORT = (request->getParam("MQTT_PORT")->value()).toInt();
+	}
+	
+	if (request->hasParam("MQTT_USER")) {
+		_parseAsCString(MQTT_USER, request->getParam("MQTT_USER")->value());
+	}
+	
+	if (request->hasParam("MQTT_PASSWORD")) {
+		_parseAsCString(MQTT_PASSWORD, request->getParam("MQTT_PASSWORD")->value());
+	}
+
   if (DEBUG) {
-    Serial.println("POST CONFIG END!!");
+    Serial.println("POST SERVICES CONFIG END!!");
   }
   
-  //saveConfig();
-  saveServicesConfig();
-  saveDeviceConfig();
+  saveConfig();
   //delay(250);
   //_handle_config_services(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
+  delay(300);
+  request->redirect("/");
+  delay(1000);
   ESP.restart();
 }
 
@@ -1131,9 +1263,7 @@ void autoupdate_on(AsyncWebServerRequest *request) {
   	      }
     }
   AUTOUPDATE_ON = true;
-  //saveConfig();
-  saveDeviceConfig();
-  saveServicesConfig();
+  saveConfig();
   /*
   WebServer.sendHeader("Location", "/", true);
   WebServer.send ( 302, "text/plain", "");

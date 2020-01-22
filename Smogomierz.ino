@@ -8,7 +8,7 @@
 
 // *******************************************
 
-// #define ASYNC_WEBSERVER_ON - EXPERIMENTAL
+//#define ASYNC_WEBSERVER_ON - EXPERIMENTAL
 
 /*
 
@@ -689,7 +689,7 @@ void setup() {
   delay(250);
 
 #ifdef ASYNC_WEBSERVER_ON
-  Serial.println("\nIP Address: " + String(WiFi.localIP().toString()));
+  Serial.println("\nIP Address: " + String(WiFi.localIP().toString()) + "\n");
 #endif
 
   // check update
@@ -716,9 +716,9 @@ void setup() {
 #ifdef ASYNC_WEBSERVER_ON
   server.on("/", HTTP_GET, handle_root);
   server.on("/config", HTTP_GET, handle_config);
-  server.on("/config_device", HTTP_POST, handle_config_device_post);
+  server.on("/config_device_save", HTTP_GET, handle_config_device_save);
   server.on("/config_device", HTTP_GET, handle_config_device);
-  server.on("/config_services", HTTP_POST, handle_config_services_post);
+  server.on("/config_services_save", HTTP_GET, handle_config_services_save);
   server.on("/config_services", HTTP_GET, handle_config_services);
   //server.on("/update", HTTP_GET, handle_update);
   server.on("/api", HTTP_GET, handle_api);

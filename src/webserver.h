@@ -562,10 +562,10 @@ void _handle_config_services(bool is_success) {
   message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
   
 #ifdef ARDUINO_ARCH_ESP8266
-  message.replace("{ChipID}", "smogomierz-" + String(ESP.getChipId()));
+  message.replace("{LUFTDATEN_ChipID}", "smogomierz-" + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
   //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
-  message.replace("{ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));  
+  message.replace("{LUFTDATEN_ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));  
 #endif
     
   if (!strcmp(THP_MODEL, "BME280")) {
@@ -610,6 +610,15 @@ void _handle_config_services(bool is_success) {
   message.replace("{TEXT_AQIECOPATH}", (TEXT_AQIECOPATH));
   message.replace("{AQI_ECO_PATH}", _addTextInput("AQI_ECO_PATH", AQI_ECO_PATH));
 
+#ifdef ARDUINO_ARCH_ESP8266
+  message.replace("{ESP_MODEL}", "ESP8266");
+  message.replace("{AQI_ECO_ChipID}", String(ESP.getChipId()));
+#elif defined ARDUINO_ARCH_ESP32
+  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
+  message.replace("{ESP_MODEL}", "ESP32");
+  message.replace("{AQI_ECO_ChipID}", String((uint32_t)(ESP.getEfuseMac())));  
+#endif
+  
   message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
   
   char PMSENSORMODEL[16];

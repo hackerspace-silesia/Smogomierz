@@ -380,6 +380,129 @@ void handle_config_device(AsyncWebServerRequest *request) {
 	        request->requestAuthentication(NULL,false); // force basic auth
 	      }
   }
+  
+#ifdef ARDUINO_ARCH_ESP8266
+  String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{Language}", (TEXT_LANG));
+  message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
+  message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
+  message.replace("{ConfigPageTitle}", (TEXT_CONFIG_PAGE));
+  message.replace("{UpdatePageTitle}", (TEXT_UPDATE_PAGE));
+
+  message += FPSTR(WEB_CONFIG_DEVICE_PAGE_TOP);
+
+  message.replace("{TEXT_CONFIG_DEVICE_PAGE}", (TEXT_CONFIG_DEVICE_PAGE));
+
+  message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
+
+  message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
+  message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
+  message.replace("{TEXT_HERE}", (TEXT_HERE));
+  
+  message += FPSTR(WEB_CONFIG_DEVICE_PAGE_CONFIG);
+
+  message.replace("{TEXT_DEVICENAME}", (TEXT_DEVICENAME));
+  
+  if (DEVICENAME_AUTO) {
+    message.replace("{device_name}", (device_name));
+  } else {
+    message.replace("{device_name}", _addTextInput("DEVICENAME", DEVICENAME));
+  }
+
+  message.replace("{TEXT_DEVICENAMEAUTO}", (TEXT_DEVICENAMEAUTO));
+  message.replace("{DEVICENAME_AUTO}", _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO));
+  message.replace("{TEXT_SELECTEDLANGUAGE}", (TEXT_SELECTEDLANGUAGE));
+  message.replace("{LanguageSelect}", _addLanguageSelect("LANGUAGE", LANGUAGE));
+  message.replace("{TEXT_TEMPHUMIPRESSSENSOR}", (TEXT_TEMPHUMIPRESSSENSOR));
+  message.replace("{THP_MODELSelect}", _addTHP_MODELSelect("THP_MODEL", THP_MODEL));
+  message.replace("{TEXT_PMSENSOR}", (TEXT_PMSENSOR));
+  message.replace("{DUST_MODELSelect}", _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL));
+
+  message.replace("{TEXT_FREQUENTMEASUREMENTONOFF}", (TEXT_FREQUENTMEASUREMENTONOFF));
+  message.replace("{TEXT_FREQUENTMEASUREMENTINFO}", (TEXT_FREQUENTMEASUREMENTINFO));
+  message.replace("{TEXT_MEASUREMENTFREQUENCY}", (TEXT_MEASUREMENTFREQUENCY));
+  
+  message.replace("{FREQUENTMEASUREMENT_Select}", _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
+  
+  if (FREQUENTMEASUREMENT == true) {
+    message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_SECONDS}"));
+    message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
+  } else {
+    message.replace("{FREQUENTMEASUREMENT_time}", _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_MINUTES}"));
+    message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+  }
+
+  message.replace("{TEXT_AVERAGELASTRESULT}", (TEXT_AVERAGELASTRESULT));
+  message.replace("{NUMBEROFMEASUREMENTS}", _addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "{TEXT_PMMEASUREMENTS}"));
+  message.replace("{TEXT_PMMEASUREMENTS}", (TEXT_PMMEASUREMENTS));
+
+  if (FREQUENTMEASUREMENT == true) {
+    message.replace("<hr><b>DeepSleep: </b>{DEEPSLEEP_ON} {TEXT_DEEPSLEEPINFO}", "");
+  } else {
+#ifdef ARDUINO_ARCH_ESP8266
+    message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO);
+#elif defined ARDUINO_ARCH_ESP32
+    message.replace("{TEXT_DEEPSLEEPINFO}", TEXT_DEEPSLEEPINFO_ESP32);
+#endif
+    message.replace("{INTERFACEWWWONTIME}", String(int(NUMBEROFMEASUREMENTS) * 2 + 10 ));
+    message.replace("{SENDING_FREQUENCY}", String(SENDING_FREQUENCY));
+    message.replace("{DEEPSLEEP_ON}", _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
+  }
+
+  if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "SPS30")) {
+	message.replace("{DISPLAY_PM1}", _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1)); // ERROR
+    message.replace("{TEXT_DISPLAYPM1}", (TEXT_DISPLAYPM1));
+  } else {
+    message.replace("<b>{TEXT_DISPLAYPM1}: </b> {DISPLAY_PM1}", "");
+  }
+
+  message.replace("{TEXT_ALTITUDEINFO}", (TEXT_ALTITUDEINFO));
+  message.replace("{WSPOLRZEDNE_GPS_LINK}", String(WSPOLRZEDNE_GPS_LINK));
+  message.replace("{TEXT_HERE}", (TEXT_HERE));
+  message.replace("{MYALTITUDE}", _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m"));
+
+  message.replace("{TEXT_SECURECONFIGUPDATEPAGE}", (TEXT_SECURECONFIGUPDATEPAGE));
+  message.replace("{CONFIG_AUTH}", _addBoolSelect("CONFIG_AUTH", CONFIG_AUTH));
+  message.replace("{TEXT_SECURELOGIN}", (TEXT_SECURELOGIN));
+
+  message.replace("{CONFIG_USERNAME}", _addTextInput("CONFIG_USERNAME", CONFIG_USERNAME));
+  message.replace("{TEXT_SECUREPASSWD}", (TEXT_SECUREPASSWD));
+  message.replace("{CONFIG_PASSWORD}", _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD));
+  /*
+  if (!CONFIG_AUTH) {
+    message.replace("{TEXT_SECURELOGOUTINFO}", "");
+  } else {
+    message.replace("{TEXT_SECURELOGOUTINFO}", (TEXT_SECURELOGOUTINFO));
+  }
+  */
+  message.replace("{DEBUG}", _addBoolSelect("DEBUG", DEBUG));
+  message.replace("{TEXT_CALIBMETHOD}", (TEXT_CALIBMETHOD));
+  message.replace("{CalibrationModelSelect}", _addModelSelect("MODEL", MODEL));
+  /*
+  message.replace("{TEXT_CALIB1}", (TEXT_CALIB1));
+  message.replace("{calib1}", String(float(calib1)));
+  
+  message.replace("{TEXT_CALIB2}", (TEXT_CALIB2));
+  message.replace("{calib2}", String(float(calib2)));
+  
+  message.replace("{TEXT_SOFTWATEVERSION}", (TEXT_SOFTWATEVERSION));
+  message.replace("{SOFTWAREVERSION}", SOFTWAREVERSION);
+
+  message.replace("{TEXT_AUTOUPDATEON}", TEXT_AUTOUPDATEON);
+  message.replace("{AUTOUPDATEON}", _addBoolSelect("AUTOUPDATE_ON", AUTOUPDATE_ON));
+
+#ifdef ARDUINO_ARCH_ESP8266
+  message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", TEXT_UPDATEPAGEAUTOUPDATEWARNING);
+#elif defined ARDUINO_ARCH_ESP32
+  message.replace("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}", "");
+#endif
+*/
+  message.replace("{WiFiEraseButton}", _addWiFiErase());
+  message.replace("{RestoreConfigButton}", _addRestoreConfig());
+  message.replace("{SubmitButton}", _addSubmitDevice());
+  message += FPSTR(WEB_PAGE_FOOTER);
+
+#elif defined ARDUINO_ARCH_ESP32
   String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
@@ -506,7 +629,7 @@ void handle_config_device(AsyncWebServerRequest *request) {
   message.replace("{RestoreConfigButton}", _addRestoreConfig());
   message.replace("{SubmitButton}", _addSubmitDevice());
   message += FPSTR(WEB_PAGE_FOOTER);
-
+#endif
   //WebServer.send(200, "text/html", message);
   request->send(200, "text/html", message);
 }
@@ -524,196 +647,216 @@ void handle_config_services(AsyncWebServerRequest *request) {
 		        request->requestAuthentication(NULL,false); // force basic auth
 		      }
 	  }
+#ifdef ARDUINO_ARCH_ESP8266
+	  String message = FPSTR(WEB_PAGE_HEADER);
+	  message.replace("{Language}", (TEXT_LANG));
+	  message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
+	  message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
+	  message.replace("{ConfigPageTitle}", (TEXT_CONFIG_PAGE));
+	  message.replace("{UpdatePageTitle}", (TEXT_UPDATE_PAGE));
 
-  String message = FPSTR(WEB_PAGE_HEADER);
-  message.replace("{Language}", (TEXT_LANG));
-  message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
-  message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
-  message.replace("{ConfigPageTitle}", (TEXT_CONFIG_PAGE));
-  message.replace("{UpdatePageTitle}", (TEXT_UPDATE_PAGE));
-
-  message += FPSTR(WEB_CONFIG_SERVICES_PAGE_TOP);
-  message.replace("{TEXT_CONFIG_SERVICES_PAGE}", (TEXT_CONFIG_SERVICES_PAGE));  
-  /*
-  if (!is_success) {
-    message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
-  } else {
-    message.replace("{TEXT_SAVED}", (TEXT_SAVED));
-    message.replace("{TEXT_POSTCONFIG_INFO}", (TEXT_POSTCONFIG_INFO));
-  }
-  */
+	  message += FPSTR(WEB_CONFIG_SERVICES_PAGE_TOP);
+	  message.replace("{TEXT_CONFIG_SERVICES_PAGE}", (TEXT_CONFIG_SERVICES_PAGE));  
   
-  message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
+	  message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
   
-  message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
-  message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
-  message.replace("{TEXT_HERE}", (TEXT_HERE));
+	  message += FPSTR(WEB_CONFIG_SERVICES_PAGE_CONFIG);
   
-  message += FPSTR(WEB_CONFIG_SERVICES_PAGE_CONFIG);
+	  message.replace("{WiFiEraseButton}", _addWiFiErase());
+	  message.replace("{RestoreConfigButton}", _addRestoreConfig());
+	  message.replace("{SubmitButton}", _addSubmitServices());
+	  message += FPSTR(WEB_PAGE_FOOTER);
+#elif defined ARDUINO_ARCH_ESP32
+	  String message = FPSTR(WEB_PAGE_HEADER);
+	  message.replace("{Language}", (TEXT_LANG));
+	  message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
+	  message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
+	  message.replace("{ConfigPageTitle}", (TEXT_CONFIG_PAGE));
+	  message.replace("{UpdatePageTitle}", (TEXT_UPDATE_PAGE));
+
+	  message += FPSTR(WEB_CONFIG_SERVICES_PAGE_TOP);
+	  message.replace("{TEXT_CONFIG_SERVICES_PAGE}", (TEXT_CONFIG_SERVICES_PAGE));  
+	  /*
+	  if (!is_success) {
+	    message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
+	  } else {
+	    message.replace("{TEXT_SAVED}", (TEXT_SAVED));
+	    message.replace("{TEXT_POSTCONFIG_INFO}", (TEXT_POSTCONFIG_INFO));
+	  }
+	  */
   
-  if (FREQUENTMEASUREMENT == true) {
-    message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
-    message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_SECONDS}"));
-    message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
+	  message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
+  
+	  message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
+	  message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
+	  message.replace("{TEXT_HERE}", (TEXT_HERE));
+  
+	  message += FPSTR(WEB_CONFIG_SERVICES_PAGE_CONFIG);
+  
+	  if (FREQUENTMEASUREMENT == true) {
+	    message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
+	    message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_SECONDS}"));
+	    message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
 
-    message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
-    message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_SECONDS}"));
-    message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
-  } else {
-    if (DEEPSLEEP_ON == true) {
-      message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
-      message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
-      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+	    message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
+	    message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_SECONDS}"));
+	    message.replace("{TEXT_SECONDS}", (TEXT_SECONDS));
+	  } else {
+	    if (DEEPSLEEP_ON == true) {
+	      message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SENDINGINTERVAL));
+	      message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
+	      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
 
-      message.replace("<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}", "");
-    } else {
-      message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
-      message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
-      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+	      message.replace("<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}", "");
+	    } else {
+	      message.replace("{TEXT_SENDINGINTERVAL}", (TEXT_SERVICESSENDINGINTERVAL));
+	      message.replace("{SENDING_FREQUENCY}", _addIntInput("SENDING_FREQUENCY", SENDING_FREQUENCY, "{TEXT_MINUTES}"));
+	      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
 
-      message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
-      message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_MINUTES}"));
-      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
-    }
-}
+	      message.replace("{TEXT_DBSENDINGINTERVAL}", (TEXT_DBSENDINGINTERVAL));
+	      message.replace("{SENDING_DB_FREQUENCY}", _addIntInput("SENDING_DB_FREQUENCY", SENDING_DB_FREQUENCY, "{TEXT_MINUTES}"));
+	      message.replace("{TEXT_MINUTES}", (TEXT_MINUTES));
+	    }
+	}
    
-  message.replace("{TEXT_SMOGLISTSENDING}", (TEXT_SMOGLISTSENDING));
-  message.replace("{SMOGLIST_LINK}", String(SMOGLIST_LINK));
-  message.replace("{SMOGLIST_ON}", _addBoolSelect("SMOGLIST_ON", SMOGLIST_ON));
-  message.replace("{TEXT_SMOGLISTINFO}", (TEXT_SMOGLISTINFO));
+	  message.replace("{TEXT_SMOGLISTSENDING}", (TEXT_SMOGLISTSENDING));
+	  message.replace("{SMOGLIST_LINK}", String(SMOGLIST_LINK));
+	  message.replace("{SMOGLIST_ON}", _addBoolSelect("SMOGLIST_ON", SMOGLIST_ON));
+	  message.replace("{TEXT_SMOGLISTINFO}", (TEXT_SMOGLISTINFO));
 
-  message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
-  message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));
-  message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));
-  message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
+	  message.replace("{TEXT_LUFTDATENSENDING}", (TEXT_LUFTDATENSENDING));
+	  message.replace("{LUFTDATEN_LINK}", (LUFTDATEN_LINK));
+	  message.replace("{LUFTDATENFORM_LINK}", (LUFTDATENFORM_LINK));
+	  message.replace("{LUFTDATEN_ON}", _addBoolSelect("LUFTDATEN_ON", LUFTDATEN_ON));
   
-#ifdef ARDUINO_ARCH_ESP8266
-  message.replace("{LUFTDATEN_ChipID}", "smogomierz-" + String(ESP.getChipId()));
-#elif defined ARDUINO_ARCH_ESP32
-  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
-  message.replace("{LUFTDATEN_ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));  
-#endif
+	#ifdef ARDUINO_ARCH_ESP8266
+	  message.replace("{LUFTDATEN_ChipID}", "smogomierz-" + String(ESP.getChipId()));
+	#elif defined ARDUINO_ARCH_ESP32
+	  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
+	  message.replace("{LUFTDATEN_ChipID}", "smogomierz-" + String((uint32_t)(ESP.getEfuseMac())));  
+	#endif
     
-  if (!strcmp(THP_MODEL, "BME280")) {
-    message.replace("{THPSENSOR}", "BME280");
-    message.replace("{THPXPIN}", "11");
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
-    message.replace("{THPSENSOR}", "BMP280");
-    message.replace("{THPXPIN}", "3");
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
-    message.replace("{THPSENSOR}", "HTU21");
-    message.replace("{THPXPIN}", "7");
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
-    message.replace("{THPSENSOR}", "DHT22");
-    message.replace("{THPXPIN}", "7");
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
-    message.replace("{THPSENSOR}", "SHT1x");
-    message.replace("{THPXPIN}", "12");
-  } else {
-    message.replace("<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>", "");
-  }
+	  if (!strcmp(THP_MODEL, "BME280")) {
+	    message.replace("{THPSENSOR}", "BME280");
+	    message.replace("{THPXPIN}", "11");
+	  } else if (!strcmp(THP_MODEL, "BMP280")) {
+	    message.replace("{THPSENSOR}", "BMP280");
+	    message.replace("{THPXPIN}", "3");
+	  } else if (!strcmp(THP_MODEL, "HTU21")) {
+	    message.replace("{THPSENSOR}", "HTU21");
+	    message.replace("{THPXPIN}", "7");
+	  } else if (!strcmp(THP_MODEL, "DHT22")) {
+	    message.replace("{THPSENSOR}", "DHT22");
+	    message.replace("{THPXPIN}", "7");
+	  } else if (!strcmp(THP_MODEL, "SHT1x")) {
+	    message.replace("{THPSENSOR}", "SHT1x");
+	    message.replace("{THPXPIN}", "12");
+	  } else {
+	    message.replace("<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>", "");
+	  }
 
-  if (!strcmp(DUST_MODEL, "PMS7003")) {
-    message.replace("{DUSTSENSOR}", "PMS5003/7003");
-    message.replace("{DUSTXPIN}", "1");
-  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
-    message.replace("{DUSTSENSOR}", "SDS011/21");
-    message.replace("{DUSTXPIN}", "1");
-  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
-    message.replace("{DUSTSENSOR}", "HPMA115S0");
-    message.replace("{DUSTXPIN}", "1");
-  } else if (!strcmp(DUST_MODEL, "SPS30")) {
-    message.replace("{DUSTSENSOR}", "SPS30");
-    message.replace("{DUSTXPIN}", "1");
-  } else {
-    message.replace("<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>", "");
-  }
+	  if (!strcmp(DUST_MODEL, "PMS7003")) {
+	    message.replace("{DUSTSENSOR}", "PMS5003/7003");
+	    message.replace("{DUSTXPIN}", "1");
+	  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+	    message.replace("{DUSTSENSOR}", "SDS011/21");
+	    message.replace("{DUSTXPIN}", "1");
+	  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+	    message.replace("{DUSTSENSOR}", "HPMA115S0");
+	    message.replace("{DUSTXPIN}", "1");
+	  } else if (!strcmp(DUST_MODEL, "SPS30")) {
+	    message.replace("{DUSTSENSOR}", "SPS30");
+	    message.replace("{DUSTXPIN}", "1");
+	  } else {
+	    message.replace("<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>", "");
+	  }
 
-  message.replace("{TEXT_AQIECOSENDING}", (TEXT_AQIECOSENDING));
-  message.replace("{AQI_ECO_ON}", _addBoolSelect("AQI_ECO_ON", AQI_ECO_ON));
-  message.replace("{TEXT_AQIECOSERVER}", (TEXT_AQIECOSERVER));
-  message.replace("{AQI_ECO_HOST}", _addTextInput("AQI_ECO_HOST", AQI_ECO_HOST));
-  message.replace("{TEXT_AQIECOPATH}", (TEXT_AQIECOPATH));
-  message.replace("{AQI_ECO_PATH}", _addTextInput("AQI_ECO_PATH", AQI_ECO_PATH));
+	  message.replace("{TEXT_AQIECOSENDING}", (TEXT_AQIECOSENDING));
+	  message.replace("{AQI_ECO_ON}", _addBoolSelect("AQI_ECO_ON", AQI_ECO_ON));
+	  message.replace("{TEXT_AQIECOSERVER}", (TEXT_AQIECOSERVER));
+	  message.replace("{AQI_ECO_HOST}", _addTextInput("AQI_ECO_HOST", AQI_ECO_HOST));
+	  message.replace("{TEXT_AQIECOPATH}", (TEXT_AQIECOPATH));
+	  message.replace("{AQI_ECO_PATH}", _addTextInput("AQI_ECO_PATH", AQI_ECO_PATH));
 
-#ifdef ARDUINO_ARCH_ESP8266
-  message.replace("{ESP_MODEL}", "ESP8266");
-  message.replace("{AQI_ECO_ChipID}", String(ESP.getChipId()));
-#elif defined ARDUINO_ARCH_ESP32
-  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
-  message.replace("{ESP_MODEL}", "ESP32");
-  message.replace("{AQI_ECO_ChipID}", String((uint32_t)(ESP.getEfuseMac())));  
-#endif
+	#ifdef ARDUINO_ARCH_ESP8266
+	  message.replace("{ESP_MODEL}", "ESP8266");
+	  message.replace("{AQI_ECO_ChipID}", String(ESP.getChipId()));
+	#elif defined ARDUINO_ARCH_ESP32
+	  //message.replace("{ChipID}", "smogomierz-" + (ESP.getEfuseMac()));
+	  message.replace("{ESP_MODEL}", "ESP32");
+	  message.replace("{AQI_ECO_ChipID}", String((uint32_t)(ESP.getEfuseMac())));  
+	#endif
 
-  message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
+	  message.replace("{TEXT_AIRMONITORSENDING}", (TEXT_AIRMONITORSENDING));
   
-  char PMSENSORMODEL[16];
-  if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
-    strcpy(PMSENSORMODEL, "PMS7003");
-  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
-    strcpy(PMSENSORMODEL, "SDS011");
-  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
-    strcpy(PMSENSORMODEL, "HPMA115S0");
-  } else if (!strcmp(DUST_MODEL, "SPS30")) {
-    strcpy(PMSENSORMODEL, "SPS30");
-  }
-  message.replace("{PMSENSORMODEL}", PMSENSORMODEL);
+	  char PMSENSORMODEL[16];
+	  if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
+	    strcpy(PMSENSORMODEL, "PMS7003");
+	  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+	    strcpy(PMSENSORMODEL, "SDS011");
+	  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+	    strcpy(PMSENSORMODEL, "HPMA115S0");
+	  } else if (!strcmp(DUST_MODEL, "SPS30")) {
+	    strcpy(PMSENSORMODEL, "SPS30");
+	  }
+	  message.replace("{PMSENSORMODEL}", PMSENSORMODEL);
 
-  message.replace("{AIRMONITOR_LINK}", (AIRMONITOR_LINK));
-  message.replace("{AIRMONITORFORM_LINK}", (AIRMONITORFORM_LINK));
-  message.replace("{TEXT_THEFORM}", (TEXT_THEFORM));
-  message.replace("{TEXT_AIRMONITORCHARTS}", (TEXT_AIRMONITORCHARTS));
-  message.replace("{AIRMONITOR_ON}", _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON));
+	  message.replace("{AIRMONITOR_LINK}", (AIRMONITOR_LINK));
+	  message.replace("{AIRMONITORFORM_LINK}", (AIRMONITORFORM_LINK));
+	  message.replace("{TEXT_THEFORM}", (TEXT_THEFORM));
+	  message.replace("{TEXT_AIRMONITORCHARTS}", (TEXT_AIRMONITORCHARTS));
+	  message.replace("{AIRMONITOR_ON}", _addBoolSelect("AIRMONITOR_ON", AIRMONITOR_ON));
   
-  message.replace("{TEXT_AIRMONITORCOORDINATESINFO}", (TEXT_AIRMONITORCOORDINATESINFO));
-  message.replace("{LATLONG_LINK}", (LATLONG_LINK));
-  message.replace("{TEXT_HERE}", (TEXT_HERE));
+	  message.replace("{TEXT_AIRMONITORCOORDINATESINFO}", (TEXT_AIRMONITORCOORDINATESINFO));
+	  message.replace("{LATLONG_LINK}", (LATLONG_LINK));
+	  message.replace("{TEXT_HERE}", (TEXT_HERE));
   
-  message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
-  message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
+	  message.replace("{AIRMONITOR_GRAPH_ON}", _addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
+	  message.replace("{TEXT_AIRMONITORLATITUDE}", (TEXT_AIRMONITORLATITUDE));
   
-  message.replace("{LATITUDE}", _addFloatInput("LATITUDE", atof(LATITUDE), 6, "°"));
-  message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
-  message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", atof(LONGITUDE), 6, "°"));
+	  message.replace("{LATITUDE}", _addFloatInput("LATITUDE", atof(LATITUDE), 6, "°"));
+	  message.replace("{TEXT_AIRMONITORLONGITUDE}", (TEXT_AIRMONITORLONGITUDE));
+	  message.replace("{LONGITUDE}", _addFloatInput("LONGITUDE", atof(LONGITUDE), 6, "°"));
   
-  message.replace("{TEXT_THINGSPEAKSENDING}", (TEXT_THINGSPEAKSENDING));
-  message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK));
-  message.replace("{THINGSPEAK_ON}", _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON));
-  message.replace("{TEXT_THINGSPEAKCHARTS}", (TEXT_THINGSPEAKCHARTS));
-  message.replace("{THINGSPEAK_GRAPH_ON}", _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON));
-  message.replace("{TEXT_THINGSPEAKAPIKEY}", (TEXT_THINGSPEAKAPIKEY));
-  message.replace("{THINGSPEAK_API_KEY}", _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY));
-  message.replace("{TEXT_THINGSPEAKCHANNELID}", (TEXT_THINGSPEAKCHANNELID));
-  message.replace("{THINGSPEAK_CHANNEL_ID}", _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID));
+	  message.replace("{TEXT_THINGSPEAKSENDING}", (TEXT_THINGSPEAKSENDING));
+	  message.replace("{THINGSPEAK_LINK}", (THINGSPEAK_LINK));
+	  message.replace("{THINGSPEAK_ON}", _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON));
+	  message.replace("{TEXT_THINGSPEAKCHARTS}", (TEXT_THINGSPEAKCHARTS));
+	  message.replace("{THINGSPEAK_GRAPH_ON}", _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON));
+	  message.replace("{TEXT_THINGSPEAKAPIKEY}", (TEXT_THINGSPEAKAPIKEY));
+	  message.replace("{THINGSPEAK_API_KEY}", _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY));
+	  message.replace("{TEXT_THINGSPEAKCHANNELID}", (TEXT_THINGSPEAKCHANNELID));
+	  message.replace("{THINGSPEAK_CHANNEL_ID}", _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID));
   
-  message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
-  message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
-  message.replace("{TEXT_INFLUXDBSERVER}", (TEXT_INFLUXDBSERVER));
-  message.replace("{INFLUXDB_HOST}", _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST));
-  message.replace("{TEXT_INFLUXDBPORT}", (TEXT_INFLUXDBPORT));
-  message.replace("{INFLUXDB_PORT}", _addIntInput("INFLUXDB_PORT", INFLUXDB_PORT));
-  message.replace("{TEXT_INFLUXDBNAME}", (TEXT_INFLUXDBNAME));
-  message.replace("{INFLUXDB_DATABASE}", _addTextInput("INFLUXDB_DATABASE", INFLUXDB_DATABASE));
-  message.replace("{TEXT_INFLUXDBUSER}", (TEXT_INFLUXDBUSER));
-  message.replace("{DB_USER}", _addTextInput("DB_USER", DB_USER));
-  message.replace("{TEXT_INFLUXDBPASSWD}", (TEXT_INFLUXDBPASSWD));
-  message.replace("{DB_PASSWORD}", _addPasswdInput("DB_PASSWORD", DB_PASSWORD));
+	  message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
+	  message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
+	  message.replace("{TEXT_INFLUXDBSERVER}", (TEXT_INFLUXDBSERVER));
+	  message.replace("{INFLUXDB_HOST}", _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST));
+	  message.replace("{TEXT_INFLUXDBPORT}", (TEXT_INFLUXDBPORT));
+	  message.replace("{INFLUXDB_PORT}", _addIntInput("INFLUXDB_PORT", INFLUXDB_PORT));
+	  message.replace("{TEXT_INFLUXDBNAME}", (TEXT_INFLUXDBNAME));
+	  message.replace("{INFLUXDB_DATABASE}", _addTextInput("INFLUXDB_DATABASE", INFLUXDB_DATABASE));
+	  message.replace("{TEXT_INFLUXDBUSER}", (TEXT_INFLUXDBUSER));
+	  message.replace("{DB_USER}", _addTextInput("DB_USER", DB_USER));
+	  message.replace("{TEXT_INFLUXDBPASSWD}", (TEXT_INFLUXDBPASSWD));
+	  message.replace("{DB_PASSWORD}", _addPasswdInput("DB_PASSWORD", DB_PASSWORD));
 
-  message.replace("{TEXT_MQTTSENDING}", (TEXT_MQTTSENDING));
-  message.replace("{MQTT_ON}", _addBoolSelect("MQTT_ON", MQTT_ON));
-  message.replace("{TEXT_MQTTSERVER}", (TEXT_MQTTSERVER));
-  message.replace("{MQTT_HOST}", _addTextInput("MQTT_HOST", MQTT_HOST));
-  message.replace("{TEXT_MQTTPORT}", (TEXT_MQTTPORT));
-  message.replace("{MQTT_PORT}", _addIntInput("MQTT_PORT", MQTT_PORT));
-  message.replace("{TEXT_MQTTUSER}", (TEXT_MQTTUSER));
-  message.replace("{MQTT_USER}", _addTextInput("MQTT_USER", MQTT_USER));
-  message.replace("{TEXT_MQTTPASSWD}", (TEXT_MQTTPASSWD));
-  message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
+	  message.replace("{TEXT_MQTTSENDING}", (TEXT_MQTTSENDING));
+	  message.replace("{MQTT_ON}", _addBoolSelect("MQTT_ON", MQTT_ON));
+	  message.replace("{TEXT_MQTTSERVER}", (TEXT_MQTTSERVER));
+	  message.replace("{MQTT_HOST}", _addTextInput("MQTT_HOST", MQTT_HOST));
+	  message.replace("{TEXT_MQTTPORT}", (TEXT_MQTTPORT));
+	  message.replace("{MQTT_PORT}", _addIntInput("MQTT_PORT", MQTT_PORT));
+	  message.replace("{TEXT_MQTTUSER}", (TEXT_MQTTUSER));
+	  message.replace("{MQTT_USER}", _addTextInput("MQTT_USER", MQTT_USER));
+	  message.replace("{TEXT_MQTTPASSWD}", (TEXT_MQTTPASSWD));
+	  message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
  
-  message.replace("{WiFiEraseButton}", _addWiFiErase());
-  message.replace("{RestoreConfigButton}", _addRestoreConfig());
-  message.replace("{SubmitButton}", _addSubmitServices());
-  message += FPSTR(WEB_PAGE_FOOTER);
+	  message.replace("{WiFiEraseButton}", _addWiFiErase());
+	  message.replace("{RestoreConfigButton}", _addRestoreConfig());
+	  message.replace("{SubmitButton}", _addSubmitServices());
+	  message += FPSTR(WEB_PAGE_FOOTER);
+#endif
 
   //WebServer.send(200, "text/html", message);
   request->send(200, "text/html", message);
@@ -908,7 +1051,6 @@ if (!DEVICENAME_AUTO) {
     strcpy(DUST_MODEL, "Non");
     saveConfig();
     //_handle_config_device(true);
-    yield();
     if (need_update == 1) {
       doUpdate(1); // BME280-SparkFun
     }

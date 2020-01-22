@@ -370,7 +370,7 @@ void _handle_config_device(bool is_success) {
       return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
     }
   }
-  loadServicesConfig();
+
   String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
@@ -501,7 +501,7 @@ void _handle_config_services(bool is_success) {
       return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
     }
   }
-  loadDeviceConfig();
+
   String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
@@ -831,9 +831,7 @@ void handle_config_device_post() {
   if (need_update != 0) {
     strcpy(THP_MODEL, "Non");
     strcpy(DUST_MODEL, "Non");
-    //saveConfig();
-	saveDeviceConfig();
-	saveServicesConfig();
+    saveConfig();
     _handle_config_device(true);
     yield();
     if (need_update == 1) {
@@ -856,9 +854,7 @@ void handle_config_device_post() {
     }
   }
 
-  //saveConfig();
-  saveDeviceConfig();
-  saveServicesConfig();
+  saveConfig();
   //delay(250);
   _handle_config_device(true);
   // https://github.com/esp8266/Arduino/issues/1722
@@ -921,9 +917,7 @@ void handle_config_services_post() {
     Serial.println("POST CONFIG END!!");
   }
   
-  //saveConfig();
-  saveServicesConfig();
-  saveDeviceConfig();
+  saveConfig();
   //delay(250);
   _handle_config_services(true);
   // https://github.com/esp8266/Arduino/issues/1722
@@ -1069,9 +1063,7 @@ void autoupdate_on() {
     }
   }
   AUTOUPDATE_ON = true;
-  //saveConfig();
-  saveDeviceConfig();
-  saveServicesConfig();
+  saveConfig();
   yield();
   WebServer.sendHeader("Location", "/", true);
   WebServer.send ( 302, "text/plain", "");

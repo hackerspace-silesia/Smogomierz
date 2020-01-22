@@ -129,12 +129,21 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 
 // CONFIG PAGE - END
 // CONFIG DEVICE PAGE - Start
+#ifdef ASYNC_WEBSERVER_ON
 const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_device_save'> 
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_DEVICE_PAGE}</h1></center><br><br>
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
 	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
+#else
+const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_device'> 
+	<main role='main' class='container'><div class='jumbotron'>
+	<center><h1>Smogly - {TEXT_CONFIG_DEVICE_PAGE}</h1></center><br><br>
+	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
+	{TEXT_INSTRUCIONSLINK}<br><br>
+	)rawliteral";
+#endif
 /*
 const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_device'>
   <main role='main' class='container'><div class='jumbotron'>
@@ -176,13 +185,21 @@ const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVIC
 	)rawliteral";
 // CONFIG DEVICE PAGE - END
 // CONFIG SERVICES PAGE - Start
+#ifdef ASYNC_WEBSERVER_ON
 const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_services_save'> 
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br><br>
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
 	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
-
+#else
+const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_services'> 
+	<main role='main' class='container'><div class='jumbotron'>
+	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br><br>
+	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
+	{TEXT_INSTRUCIONSLINK}<br><br>
+	)rawliteral";
+#endif
 const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SENDINGINTERVAL}: </b>{SENDING_FREQUENCY}
 	<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}
 	<hr>

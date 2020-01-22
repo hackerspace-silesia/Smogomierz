@@ -8,7 +8,7 @@
 
 // *******************************************
 
-//#define ASYNC_WEBSERVER_ON - EXPERIMENTAL
+//#define ASYNC_WEBSERVER_ON // - EXPERIMENTAL
 
 /*
 
@@ -826,7 +826,7 @@ void loop() {
   }
 #endif
   // DUST SENSOR refresh data - END
-  yield();
+  //yield();
 
   //webserverShowSite(WebServer, BMESensor, data);
 #ifndef ASYNC_WEBSERVER_ON
@@ -986,7 +986,7 @@ void sendDataToExternalDBs() {
       MQTTreconnect();
     }
     mqttclient.loop();
-    yield();
+    //yield();
   }
 
   if (THINGSPEAK_ON) {
@@ -1201,7 +1201,7 @@ void takeTHPMeasurements() {
   if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
     BMESensor.refresh();
-    yield();
+    //yield();
 #endif
     if (checkBmeStatus() == true) {
       if (DEBUG) {
@@ -1406,7 +1406,7 @@ void takeSleepPMMeasurements() {
 #ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
 #endif
-      yield();
+      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1429,7 +1429,7 @@ void takeSleepPMMeasurements() {
 #ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
 #endif
-    yield();
+    //yield();
     delay(10);
   }
   if (DEBUG) {
@@ -1459,7 +1459,7 @@ void takeSleepPMMeasurements() {
       WebServer.handleClient();
 #endif
       delay(10);
-      yield();
+      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1477,7 +1477,7 @@ void takeSleepPMMeasurements() {
 #ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
 #endif
-    yield();
+    //yield();
     delay(10);
   }
   if (DEBUG) {
@@ -1501,7 +1501,7 @@ void takeSleepPMMeasurements() {
       WebServer.handleClient();
 #endif
       delay(10);
-      yield();
+      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1520,7 +1520,7 @@ void takeSleepPMMeasurements() {
 #ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
 #endif
-    yield();
+    //yield();
     delay(10);
   }
   if (DEBUG) {
@@ -1577,7 +1577,7 @@ void pm_calibration() {
     if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
       BMESensor.refresh();
-      yield();
+      //yield();
       if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
         calib1 = float((200 - (BMESensor.humidity)) / 150);
         calib2 = calib1 / 2;

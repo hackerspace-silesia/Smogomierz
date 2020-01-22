@@ -306,7 +306,7 @@ bool saveConfig() {
 }
 
 void fs_setup() {
-  yield();
+  //yield();
   Serial.println("Mounting FS...");
 
 #ifdef ARDUINO_ARCH_ESP8266

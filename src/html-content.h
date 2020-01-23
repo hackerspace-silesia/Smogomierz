@@ -1,12 +1,27 @@
 #ifdef ARDUINO_ARCH_ESP8266
-const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<!DOCTYPE HTML><html><html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>
+const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>
 <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>
+<script src='https://kit.fontawesome.com/d0f07436c6.js' crossorigin='anonymous'></script>
 </head><body>
-<nav class='navbar navbar-expand-md navbar-dark bg-dark mb-4'><div class='container'><a href='/' class='navbar-brand'>{IndexPageTitle}</a>
-<a href='/config' class='navbar-brand'>{ConfigPageTitle}</a>
-<a href='/update' class='navbar-brand'>{UpdatePageTitle}</a>
+	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15%'>
+	<a class='navbar-brand' href='/'>Smogly</a>
+	  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarColor02' aria-controls='navbarColor02' aria-expanded='false' aria-label='Toggle navigation'>
+	  <span class='navbar-toggler-icon'></span>
+	  </button>
+	  <div class='collapse navbar-collapse' id='navbarColor02' style='padding-left:2rem'>
+	    <ul class='navbar-nav mr-auto'>
+	      <li class='nav-item'>
+	        <a class='nav-link' href='/'>{IndexPageTitle}</a>
+	      </li>
+	      <li class='nav-item'>
+	        <a class='nav-link' href='/config'>{ConfigPageTitle}</a>
+	      </li>
+		  <li class='nav-item'>
+		  	<a class='nav-link' href='/update'>{UpdatePageTitle}</a>
+		  </li>
+	    </ul>
 </div></nav>
-)rawliteral";
+		)rawliteral";
 #elif defined ARDUINO_ARCH_ESP32
 const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>
 <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>
@@ -34,15 +49,27 @@ const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><hea
 #endif
 
 #ifdef ARDUINO_ARCH_ESP8266
-const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center>Hackerspace Silesia &#9830; 
+/*
+const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center>Hackerspace Silesia &#9830;
+		<script type='text/javascript'>
+	  		document.write(new Date().getFullYear());
+		</script>
+		</center></div></main></form>
+		<script src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous'></script>
+		<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous'></script>
+		<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous'></script>
+		</body></html>
+	)rawliteral";
+*/
+const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830; 
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>
 	</center></div></main></form>
-	<script src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous'></script>
-	<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous'></script>
-	<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous'></script>
-	</body></html>
+			<script src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous'></script>
+			<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous'></script>
+			<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous'></script>
+			</body></html>
 	)rawliteral";
 #elif defined ARDUINO_ARCH_ESP32
 const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830; 
@@ -74,7 +101,7 @@ const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = R"rawliteral(<main role='main'
 
 const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>
-    <iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>
+	<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>
 	)rawliteral";
 	
 const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
@@ -144,12 +171,6 @@ const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POS
 	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 #endif
-/*
-const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_device'>
-  <main role='main' class='container'><div class='jumbotron'>
-  <center><h1>{TEXT_CONFIG_PAGE}</h1></center><br><br>
-  <div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>)rawliteral";
-*/
 const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVICENAME}: </b>{device_name} <br>
 	<b>{TEXT_DEVICENAMEAUTO}: </b>{DEVICENAME_AUTO}
 	<b>{TEXT_SELECTEDLANGUAGE}: </b>{LanguageSelect}

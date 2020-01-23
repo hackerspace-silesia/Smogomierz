@@ -817,6 +817,7 @@ void handle_config_device_post() {
   DUST_TIME = WebServer.arg("DUST_TIME").toInt();
   NUMBEROFMEASUREMENTS = WebServer.arg("NUMBEROFMEASUREMENTS").toInt();
   DEEPSLEEP_ON = _parseAsBool(WebServer.arg("DEEPSLEEP_ON"));
+  MYALTITUDE = WebServer.arg("MYALTITUDE").toInt();
   
   DEBUG = _parseAsBool(WebServer.arg("DEBUG"));
   AUTOUPDATE_ON = _parseAsBool(WebServer.arg("AUTOUPDATE_ON"));

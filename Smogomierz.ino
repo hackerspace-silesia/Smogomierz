@@ -64,7 +64,7 @@
   Szkic używa 541500 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 56072 bajtów (68%) pamięci dynamicznej, pozostawiając 25848 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 546608 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 546640 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 56756 bajtów (69%) pamięci dynamicznej, pozostawiając 25164 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
@@ -142,10 +142,8 @@
 #include <ESP8266WebServer.h>
 #endif
 #include <ESP8266mDNS.h>
-#ifndef DUSTSENSOR_SPS30
 #ifndef ASYNC_WEBSERVER_ON
 #include <ESP8266HTTPUpdateServer.h>
-#endif
 #endif
 #include <SoftwareSerial.h>
 #elif defined ARDUINO_ARCH_ESP32 // Arduino core for the ESP32 - 1.0.4-rc1 or later // at 1.0.3 autoupdate doesn't work !!!

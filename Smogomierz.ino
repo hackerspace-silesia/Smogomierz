@@ -304,9 +304,7 @@ AsyncWebServer server(80);
 #else
 #ifdef ARDUINO_ARCH_ESP8266
 ESP8266WebServer WebServer(80);
-#ifndef DUSTSENSOR_SPS30
 ESP8266HTTPUpdateServer httpUpdater;
-#endif
 #elif defined ARDUINO_ARCH_ESP32
 WebServer WebServer(80);
 #endif
@@ -746,9 +744,7 @@ void setup() {
   WebServer.onNotFound(handle_root);
 
 #ifdef ARDUINO_ARCH_ESP8266
-#ifndef DUSTSENSOR_SPS30
   httpUpdater.setup(&WebServer, "/update");
-#endif
 #elif defined ARDUINO_ARCH_ESP32
   /*handling uploading firmware file */
   WebServer.on("/update", HTTP_POST, []() {

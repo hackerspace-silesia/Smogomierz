@@ -444,7 +444,7 @@ boolean WiFiManager::configPortalHasTimeout(){
         DEBUG_WM(DEBUG_VERBOSE,"NUM CLIENTS: " + (String)WiFi_softap_num_stations());
 		NoWiFiCounter++;
 		        DEBUG_WM("NoWiFiCounter: " + String(NoWiFiCounter));
-		        if (NoWiFiCounter >= 30) { // reset every 15 minutes without WiFi access!
+		        if (NoWiFiCounter >= 10) { // reset every 5 minutes without WiFi access!
 				        DEBUG_WM(F("RESETTING ESP"));
 				        delay(1000);
 				        reboot();

@@ -66,8 +66,9 @@ extern char TEXT_AIRMONITORLONGITUDE[32] = "Longitude";
 
 extern char TEXT_THINGSPEAKSENDING[64] = "Sending data to the {THINGSPEAK_LINK} service:";
 extern char TEXT_THINGSPEAKCHARTS[64] = "Displaying charts from the ThingSpeak site";
-extern char TEXT_THINGSPEAKAPIKEY[32] = "ThingSpeak API_KEY";
+extern char TEXT_THINGSPEAK_WRITE_API_KEY[32] = "ThingSpeak Write API Key";
 extern char TEXT_THINGSPEAKCHANNELID[32] = "ThingSpeak Channel ID";
+extern char TEXT_THINGSPEAK_READ_API_KEY[32] = "ThingSpeak Read API Key";
 
 extern char TEXT_INFLUXDBSENDING[64] = "Sending data to the InfluxDB";
 extern char TEXT_INFLUXDBSERVER[64] = "InfluxDB database address";

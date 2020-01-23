@@ -186,6 +186,7 @@ void handle_root() {
   if (THINGSPEAK_GRAPH_ON) {
     message += FPSTR(WEB_ROOT_PAGE_THINGSPEAK_GRAPH);
     message.replace("{THINGSPEAK_CHANNEL_ID}", String(THINGSPEAK_CHANNEL_ID));
+	message.replace("{THINGSPEAK_READ_API_KEY}", String(THINGSPEAK_READ_API_KEY));
   }
 
   message += FPSTR(WEB_PAGE_FOOTER);
@@ -655,10 +656,12 @@ void _handle_config_services(bool is_success) {
   message.replace("{THINGSPEAK_ON}", _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON));
   message.replace("{TEXT_THINGSPEAKCHARTS}", (TEXT_THINGSPEAKCHARTS));
   message.replace("{THINGSPEAK_GRAPH_ON}", _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON));
-  message.replace("{TEXT_THINGSPEAKAPIKEY}", (TEXT_THINGSPEAKAPIKEY));
+  message.replace("{TEXT_THINGSPEAK_WRITE_API_KEY}", (TEXT_THINGSPEAK_WRITE_API_KEY));
   message.replace("{THINGSPEAK_API_KEY}", _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY));
   message.replace("{TEXT_THINGSPEAKCHANNELID}", (TEXT_THINGSPEAKCHANNELID));
   message.replace("{THINGSPEAK_CHANNEL_ID}", _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID));
+  message.replace("{TEXT_THINGSPEAK_READ_API_KEY}", (TEXT_THINGSPEAK_READ_API_KEY));
+  message.replace("{THINGSPEAK_READ_API_KEY}", _addTextInput("THINGSPEAK_READ_API_KEY", THINGSPEAK_READ_API_KEY));
   
   message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
   message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
@@ -898,7 +901,8 @@ void handle_config_services_post() {
   THINGSPEAK_ON = _parseAsBool(WebServer.arg("THINGSPEAK_ON"));
   THINGSPEAK_GRAPH_ON = _parseAsBool(WebServer.arg("THINGSPEAK_GRAPH_ON"));
   _parseAsCString(THINGSPEAK_API_KEY, WebServer.arg("THINGSPEAK_API_KEY"));
-  THINGSPEAK_CHANNEL_ID = WebServer.arg("THINGSPEAK_CHANNEL_ID").toInt();
+  THINGSPEAK_CHANNEL_ID = WebServer.arg("THINGSPEAK_CHANNEL_ID").toInt(); 
+  _parseAsCString(THINGSPEAK_READ_API_KEY, WebServer.arg("THINGSPEAK_READ_API_KEY"));
 
   INFLUXDB_ON = _parseAsBool(WebServer.arg("INFLUXDB_ON"));
   _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"));

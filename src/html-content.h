@@ -105,11 +105,11 @@ const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	)rawliteral";
 	
 const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
-	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM2.5&type=line&yaxis=ug%2Fm3&update=15'></iframe>
-    <iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM10&type=line&yaxis=ug%2Fm3&update=15'></iframe>
-	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Temperatura&type=line&update=15'></iframe>
-	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/5?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Ci%C5%9Bnienie&type=line&update=15'></iframe>
-	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Wilgotno%C5%9B%C4%87&type=line&update=15'></iframe>
+	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM2.5&type=line&yaxis=ug%2Fm3&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
+    <iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM10&type=line&yaxis=ug%2Fm3&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
+	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Temperatura&type=line&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
+	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/5?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Ci%C5%9Bnienie&type=line&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
+	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Wilgotno%C5%9B%C4%87&type=line&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
 	)rawliteral";
 
 // MEASUREMENTS PAGE - END
@@ -244,8 +244,9 @@ const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SEN
 	<hr>
 	<b>{TEXT_THINGSPEAKSENDING}: </b>{THINGSPEAK_ON}
 	<b>{TEXT_THINGSPEAKCHARTS}: </b>{THINGSPEAK_GRAPH_ON}
-	<b>{TEXT_THINGSPEAKAPIKEY}: </b>{THINGSPEAK_API_KEY}
+	<b>{TEXT_THINGSPEAK_WRITE_API_KEY}: </b>{THINGSPEAK_API_KEY}
 	<b>{TEXT_THINGSPEAKCHANNELID}: </b>{THINGSPEAK_CHANNEL_ID}
+	<b>{TEXT_THINGSPEAK_READ_API_KEY}: </b>{THINGSPEAK_READ_API_KEY}
 	<hr>
 	<b>{TEXT_INFLUXDBSENDING}: </b>{INFLUXDB_ON}
 	<b>{TEXT_INFLUXDBSERVER}: </b>{INFLUXDB_HOST}

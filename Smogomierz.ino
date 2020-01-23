@@ -64,8 +64,8 @@
   Szkic używa 541500 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 56072 bajtów (68%) pamięci dynamicznej, pozostawiając 25848 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 545644 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 56320 bajtów (68%) pamięci dynamicznej, pozostawiając 25600 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 546608 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 56756 bajtów (69%) pamięci dynamicznej, pozostawiając 25164 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 

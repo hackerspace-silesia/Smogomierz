@@ -80,6 +80,7 @@ bool loadConfig() {
   THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
   _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"]);
   THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
+  _safeCpy(THINGSPEAK_READ_API_KEY, json["THINGSPEAK_READ_API_KEY"]);
 
   INFLUXDB_ON = json["INFLUXDB_ON"];
   _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host");
@@ -161,6 +162,8 @@ bool loadConfig() {
     Serial.println(THINGSPEAK_API_KEY);
     Serial.print("Loaded THINGSPEAK_CHANNEL_ID: ");
     Serial.println(THINGSPEAK_CHANNEL_ID);
+    Serial.print("Loaded THINGSPEAK_READ_API_KEY: ");
+    Serial.println(THINGSPEAK_READ_API_KEY);
 
     Serial.print("Loaded INFLUXDB_ON: ");
     Serial.println(INFLUXDB_ON);
@@ -252,6 +255,7 @@ bool saveConfig() {
   json["THINGSPEAK_GRAPH_ON"] = THINGSPEAK_GRAPH_ON;
   json["THINGSPEAK_API_KEY"] = THINGSPEAK_API_KEY;
   json["THINGSPEAK_CHANNEL_ID"] = THINGSPEAK_CHANNEL_ID;
+  json["THINGSPEAK_READ_API_KEY"] = THINGSPEAK_READ_API_KEY;
 
   json["INFLUXDB_ON"] = INFLUXDB_ON;
   json["INFLUXDB_HOST"] = INFLUXDB_HOST;

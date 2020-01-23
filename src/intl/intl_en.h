@@ -66,8 +66,10 @@ char EN_INTL_AIRMONITORLONGITUDE[32] PROGMEM = "Longitude";
 
 char EN_INTL_THINGSPEAKSENDING[64] PROGMEM = "Sending data to the {THINGSPEAK_LINK} service:";
 char EN_INTL_THINGSPEAKCHARTS[64] PROGMEM = "Displaying charts from the ThingSpeak site";
-char EN_INTL_THINGSPEAKAPIKEY[32] PROGMEM = "ThingSpeak API_KEY";
+char EN_INTL_THINGSPEAK_WRITE_API_KEY[32] PROGMEM = "ThingSpeak Write API Key";
 char EN_INTL_THINGSPEAKCHANNELID[32] PROGMEM = "ThingSpeak Channel ID";
+char EN_INTL_THINGSPEAK_READ_API_KEY[32] PROGMEM = "ThingSpeak Read API Key";
+
 
 char EN_INTL_INFLUXDBSENDING[64] PROGMEM = "Sending data to the InfluxDB";
 char EN_INTL_INFLUXDBSERVER[64] PROGMEM = "InfluxDB database address";

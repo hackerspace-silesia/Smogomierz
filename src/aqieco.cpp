@@ -22,7 +22,7 @@ void sendDataToAqiEco(float currentTemperature, float currentPressure, float cur
   StaticJsonDocument<768> jsonBuffer;
   JsonObject json = jsonBuffer.to<JsonObject>();
   json["esp8266id"] = aqiEcoChipId;
-  json["software_version"] = "Smogomierz_" + String(SOFTWAREVERSION);
+  json["software_version"] = "Smogly_" + String(SOFTWAREVERSION);
   JsonArray sensordatavalues = json.createNestedArray("sensordatavalues");
 
   if (!strcmp(DUST_MODEL, "PMS7003")) {
@@ -110,7 +110,7 @@ void sendDataToAqiEco(float currentTemperature, float currentPressure, float cur
   client.println(AQI_ECO_HOST);
   client.println("Content-Type: application/json");
   client.println("X-PIN: 1");
-  client.print("X-Sensor: smogomierz-");
+  client.print("X-Sensor: smogly-");
   client.println(aqiEcoChipId);
   client.print("Content-Length: ");
   client.println(measureJson(json));
@@ -131,7 +131,7 @@ void sendDataToAqiEco(float currentTemperature, float currentPressure, float cur
     Serial.println(AQI_ECO_HOST);
     Serial.println("Content-Type: application/json");
     Serial.println("X-PIN: 1");
-    Serial.print("X-Sensor: smogomierz-");
+    Serial.print("X-Sensor: smogly-");
     Serial.println(aqiEcoChipId);
     Serial.print("Content-Length: ");
     Serial.println(measureJson(json));

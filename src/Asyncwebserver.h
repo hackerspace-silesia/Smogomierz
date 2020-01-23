@@ -187,6 +187,7 @@ void handle_root(AsyncWebServerRequest *request) {
   if (THINGSPEAK_GRAPH_ON) {
     message += FPSTR(WEB_ROOT_PAGE_THINGSPEAK_GRAPH);
     message.replace("{THINGSPEAK_CHANNEL_ID}", String(THINGSPEAK_CHANNEL_ID));
+	message.replace("{THINGSPEAK_READ_API_KEY}", String(THINGSPEAK_READ_API_KEY));
   }
 
   message += FPSTR(WEB_PAGE_FOOTER);
@@ -823,10 +824,12 @@ void handle_config_services(AsyncWebServerRequest *request) {
 	  message.replace("{THINGSPEAK_ON}", _addBoolSelect("THINGSPEAK_ON", THINGSPEAK_ON));
 	  message.replace("{TEXT_THINGSPEAKCHARTS}", (TEXT_THINGSPEAKCHARTS));
 	  message.replace("{THINGSPEAK_GRAPH_ON}", _addBoolSelect("THINGSPEAK_GRAPH_ON", THINGSPEAK_GRAPH_ON));
-	  message.replace("{TEXT_THINGSPEAKAPIKEY}", (TEXT_THINGSPEAKAPIKEY));
+	  message.replace("{TEXT_THINGSPEAK_WRITE_API_KEY}", (TEXT_THINGSPEAK_WRITE_API_KEY));
 	  message.replace("{THINGSPEAK_API_KEY}", _addTextInput("THINGSPEAK_API_KEY", THINGSPEAK_API_KEY));
 	  message.replace("{TEXT_THINGSPEAKCHANNELID}", (TEXT_THINGSPEAKCHANNELID));
 	  message.replace("{THINGSPEAK_CHANNEL_ID}", _addIntInput("THINGSPEAK_CHANNEL_ID", THINGSPEAK_CHANNEL_ID));
+	  message.replace("{TEXT_THINGSPEAK_READ_API_KEY}", (TEXT_THINGSPEAK_READ_API_KEY));
+	  message.replace("{THINGSPEAK_READ_API_KEY}", _addTextInput("THINGSPEAK_READ_API_KEY", THINGSPEAK_READ_API_KEY));
   
 	  message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
 	  message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
@@ -1167,6 +1170,10 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
 	
 	if (request->hasParam("THINGSPEAK_CHANNEL_ID")) {
 		THINGSPEAK_CHANNEL_ID = (request->getParam("THINGSPEAK_CHANNEL_ID")->value()).toInt();
+	}
+	
+	if (request->hasParam("THINGSPEAK_READ_API_KEY")) {
+		_parseAsCString(THINGSPEAK_READ_API_KEY, request->getParam("THINGSPEAK_READ_API_KEY")->value());
 	}
 	
 	if (request->hasParam("INFLUXDB_ON")) {

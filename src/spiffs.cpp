@@ -218,6 +218,9 @@ bool loadConfig() {
     Serial.print("Loaded MODEL: ");
     Serial.println(MODEL);
 	
+    Serial.print("Loaded PMSENSORVERSION: ");
+    Serial.println(PMSENSORVERSION);
+	
     Serial.print("Loaded SOFTWAREVERSION: ");
     Serial.println(SOFTWAREVERSION);
     

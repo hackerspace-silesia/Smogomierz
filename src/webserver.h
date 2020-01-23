@@ -383,10 +383,11 @@ void _handle_config_device(bool is_success) {
   message.replace("{TEXT_CONFIG_DEVICE_PAGE}", (TEXT_CONFIG_DEVICE_PAGE));
 
   if (!is_success) {
-    message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
-  } else {
-    message.replace("{TEXT_SAVED}", (TEXT_SAVED));
-    message.replace("{TEXT_POSTCONFIG_INFO}", (TEXT_POSTCONFIG_INFO));
+      message.replace("{WEB_CONFIG_TOP_PAGE_INFO}", "");
+    } else {
+  	  message.replace("{WEB_CONFIG_TOP_PAGE_INFO}", FPSTR(WEB_CONFIG_TOP_PAGE_INFO));
+      message.replace("{TEXT_SAVED}", (TEXT_SAVED));
+      message.replace("{TEXT_POSTCONFIG_INFO}", (TEXT_POSTCONFIG_INFO));
   }
 
   message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
@@ -514,8 +515,9 @@ void _handle_config_services(bool is_success) {
   message.replace("{TEXT_CONFIG_SERVICES_PAGE}", (TEXT_CONFIG_SERVICES_PAGE));  
 
   if (!is_success) {
-    message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
+    message.replace("{WEB_CONFIG_TOP_PAGE_INFO}", "");
   } else {
+	message.replace("{WEB_CONFIG_TOP_PAGE_INFO}", FPSTR(WEB_CONFIG_TOP_PAGE_INFO));
     message.replace("{TEXT_SAVED}", (TEXT_SAVED));
     message.replace("{TEXT_POSTCONFIG_INFO}", (TEXT_POSTCONFIG_INFO));
   }
@@ -863,7 +865,7 @@ void handle_config_device_post() {
   _handle_config_device(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
-  yield();
+  //yield();
   ESP.restart();
 }
 
@@ -927,7 +929,7 @@ void handle_config_services_post() {
   _handle_config_services(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
-  yield();
+  //yield();
   ESP.restart();
 }
 

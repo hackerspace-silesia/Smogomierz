@@ -1245,6 +1245,36 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
   delay(1000);
   ESP.restart();
 }
+  
+static void handle_update_progress_cb(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+  uint32_t free_space = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+  if (!index){
+    Serial.println("Update");
+    //Update.runAsync(true);
+    if (!Update.begin(free_space)) {
+      Update.printError(Serial);
+    }
+  }
+
+  if (Update.write(data, len) != len) {
+    Update.printError(Serial);
+  }
+
+  if (final) {
+    if (!Update.end(true)){
+      Update.printError(Serial);
+    } else {
+      Serial.println("Update complete");
+	  Serial.println("Restart");
+	  delay(1000);
+	  ESP.restart();
+    }
+  }
+}
+
+void handle_update_done(AsyncWebServerRequest *request) {
+	request->send(200);
+	}
 
 //void handle_update() {            //Handler for the handle_update
 void handle_update(AsyncWebServerRequest *request) {

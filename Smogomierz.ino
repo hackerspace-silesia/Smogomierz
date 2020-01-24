@@ -717,17 +717,14 @@ void setup() {
   server.on("/config_device", HTTP_GET, handle_config_device);
   server.on("/config_services_save", HTTP_GET, handle_config_services_save);
   server.on("/config_services", HTTP_GET, handle_config_services);
-  //server.on("/update", HTTP_GET, handle_update);
+  server.on("/update", HTTP_GET, handle_update);
+  server.on("/update_done", HTTP_POST, handle_update_done, handle_update_progress_cb);
   server.on("/api", HTTP_GET, handle_api);
   server.on("/erase_wifi", HTTP_GET, erase_wifi);
   server.on("/restore_config", HTTP_GET, restore_config);
   server.on("/fwupdate", HTTP_GET, fwupdate);
   server.on("/autoupdate_on", HTTP_GET, autoupdate_on);
   server.onNotFound(handle_root);
-#ifdef ARDUINO_ARCH_ESP32
-  // httpUpdater.setup(&server, "/update");
-#endif
-  server.begin();
 #else
   //  WebServer config - Start
   WebServer.on("/", HTTP_GET,  handle_root);

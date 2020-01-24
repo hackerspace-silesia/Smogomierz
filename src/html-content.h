@@ -20,7 +20,7 @@ const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><hea
 	        <a class='nav-link' href='/config'>{ConfigPageTitle}</a>
 	      </li>
 		  <li class='nav-item'>
-		  	<a class='nav-link' href='/update'>{UpdatePageTitle}</a>
+		  	<a class='nav-link' href='/'>{UpdatePageTitle}</a>
 		  </li>
 	    </ul>
 </div></nav>
@@ -306,7 +306,7 @@ const char WEB_UPDATE_INFO_WARNING[] PROGMEM = "<center><h2><b>{TEXT_FWUPDATEAVA
 
 // UPDATE BUTTONS - END
 // UPDATE PAGE - START
-
+#ifndef ASYNC_WEBSERVER_ON
 const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = R"rawliteral(<main role='main' class='container'><div class='jumbotron'>
 	<form id='data' action='/update' method='POST' enctype='multipart/form-data'>
 	<center><h1>Smogly - {TEXT_UPDATE_PAGE}</h1></center><br><br>
@@ -322,4 +322,23 @@ const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = R"rawliteral(<main role='main' cla
 	<br>{TEXT_WIFIRSSI}: <b>{WiFiRSSI}</b>
 	<br>{TEXT_WIFIQUALITY}: <b>{WiFiQuality}</b>
 )rawliteral";
+#else	
+	const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = R"rawliteral(<main role='main' class='container'><div class='jumbotron'>
+		<center><h1>Smogly - {TEXT_UPDATE_PAGE}</h1></center><br><br>
+		{WEB_UPDATE_INFO_WARNING}
+		<center>
+		<form id='data' action='/update_done' method='POST' enctype='multipart/form-data'>
+		<input type='file' name='file' id='file'>
+		<button class='btn btn-danger' type='submit'>{TEXT_SUBMITUPDATE}</button></form></center>
+		<br>
+		{TEXT_AUTOUPDATEON}: <b>{AUTOUPDATEONSTATUS}</b>
+		<br>{TEXT_CURRENTSOFTVERSION}: <b>{SOFTWAREVERSION}</b>
+		<br>{TEXT_SERVERSOFTWAREVERSION}: <b>{SERVERSOFTWAREVERSION}</b>
+		<br>{TEXT_LATESTAVAILABLESOFT}
+		<br>
+		<br>{TEXT_CONNECTEDWIFI}: <b>{WiFiSSID}</b>
+		<br>{TEXT_WIFIRSSI}: <b>{WiFiRSSI}</b>
+		<br>{TEXT_WIFIQUALITY}: <b>{WiFiQuality}</b>
+	)rawliteral";
+#endif
 // UPDATE PAGE - END

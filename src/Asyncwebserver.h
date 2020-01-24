@@ -13,7 +13,8 @@ String authFailResponse = "<meta http-equiv='refresh' content='0; url=/' /> Auth
 
 //void handle_root() {
 void handle_root(AsyncWebServerRequest *request) {
-  String message = FPSTR(WEB_PAGE_HEADER);
+    String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_INDEX_PAGE));
   message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
@@ -57,10 +58,10 @@ void handle_root(AsyncWebServerRequest *request) {
       message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
       message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
 
-      message.replace("{Temperature}", String(currentTemperature));
-      message.replace("{Pressure}", String(currentPressure));
-      message.replace("{Humidity}", String(currentHumidity));
-      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+      message.replace("{Temperature}", String(int(currentTemperature)));
+      message.replace("{Pressure}", String(int(currentPressure)));
+      message.replace("{Humidity}", String(int(currentHumidity)));
+      message.replace("{Dewpoint}", String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
       message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
       message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
@@ -73,10 +74,10 @@ void handle_root(AsyncWebServerRequest *request) {
       message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
       message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
 
-      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{Temperature}", String(int(currentTemperature)));
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{Humidity}", String(currentHumidity));
-      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+      message.replace("{Humidity}", String(int(currentHumidity)));
+      message.replace("{Dewpoint}", String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
       message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
       message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
@@ -89,10 +90,10 @@ void handle_root(AsyncWebServerRequest *request) {
       message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
       message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
 
-      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{Temperature}", String(int(currentTemperature)));
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
-      message.replace("{Humidity}", String(currentHumidity));
-      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+      message.replace("{Humidity}", String(int(currentHumidity)));
+      message.replace("{Dewpoint}", String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
       message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
       message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
@@ -104,8 +105,8 @@ void handle_root(AsyncWebServerRequest *request) {
       message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
       message.replace("{TEXT_PRESSURE}", (TEXT_PRESSURE));
 
-      message.replace("{Temperature}", String(currentTemperature));
-      message.replace("{Pressure}", String(currentPressure));
+      message.replace("{Temperature}", String(int(currentTemperature)));
+      message.replace("{Pressure}", String(int(currentPressure)));
       message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
       message.replace("{TEXT_DEWPOINT}: {Pressure} °C", "");
     } else {
@@ -120,10 +121,10 @@ void handle_root(AsyncWebServerRequest *request) {
       message.replace("{TEXT_HUMIDITY}", (TEXT_HUMIDITY));
       message.replace("{TEXT_DEWPOINT}", (TEXT_DEWPOINT));
 
-      message.replace("{Temperature}", String(currentTemperature));
+      message.replace("{Temperature}", String(int(currentTemperature)));
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
       message.replace("{Humidity}", String(float(currentHumidity)));
-      message.replace("{Dewpoint}", String(float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+      message.replace("{Dewpoint}", String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
     } else {
       message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
       message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
@@ -344,26 +345,32 @@ String _addRestoreConfig() {
 //void handle_config() {
 void handle_config(AsyncWebServerRequest *request) {
   String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
   message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
   message.replace("{ConfigPageTitle}", (TEXT_CONFIG_PAGE));
   message.replace("{UpdatePageTitle}", (TEXT_UPDATE_PAGE));
 
-message += FPSTR(WEB_CONFIG_PAGE_TOP);
-message.replace("{TEXT_CONFIG_PAGE}", (TEXT_CONFIG_PAGE));
+  message += FPSTR(WEB_CONFIG_PAGE_TOP);
+  message.replace("{TEXT_CONFIG_PAGE}", (TEXT_CONFIG_PAGE));
 
-message += FPSTR(WEB_CONFIG_PAGE_CONFIG);
+  message += FPSTR(WEB_CONFIG_PAGE_CONFIG);
+  message.replace("{TEXT_CONFIG_INFO_DEVICE_PAGE}", (TEXT_CONFIG_INFO_DEVICE_PAGE));
+  message.replace("{TEXT_CONFIG_DEVICE_PAGE}", (TEXT_CONFIG_DEVICE_PAGE));
 
-message.replace("{ConfigDeviceButton}", FPSTR(WEB_CONFIG_DEVICE_PAGE_BUTTON));
-message.replace("{TEXT_CONFIG_DEVICE_PAGE}", (TEXT_CONFIG_DEVICE_PAGE));
-message.replace("{ConfigServicesButton}", FPSTR(WEB_CONFIG_SERVICES_PAGE_BUTTON));
-message.replace("{TEXT_CONFIG_SERVICES_PAGE}", (TEXT_CONFIG_SERVICES_PAGE));
+  message.replace("{TEXT_CONFIG_INFO_SERVICES_PAGE}", (TEXT_CONFIG_INFO_SERVICES_PAGE));
+  message.replace("{TEXT_CONFIG_SERVICES_PAGE}", (TEXT_CONFIG_SERVICES_PAGE));
 
-message.replace("{WiFiEraseButton}", _addWiFiErase());
-message.replace("{RestoreConfigButton}", _addRestoreConfig());
+  message.replace("{ConfigDeviceButton}", FPSTR(WEB_CONFIG_DEVICE_PAGE_BUTTON));
+  message.replace("{TEXT_CONFIG_DEVICE_PAGE}", (TEXT_CONFIG_DEVICE_PAGE));
+  message.replace("{ConfigServicesButton}", FPSTR(WEB_CONFIG_SERVICES_PAGE_BUTTON));
+  message.replace("{TEXT_CONFIG_SERVICES_PAGE}", (TEXT_CONFIG_SERVICES_PAGE));
 
-message += FPSTR(WEB_PAGE_FOOTER);
+  message.replace("{WiFiEraseButton}", _addWiFiErase());
+  message.replace("{RestoreConfigButton}", _addRestoreConfig());
+
+  message += FPSTR(WEB_PAGE_FOOTER);
 request->send(200, "text/html", message);
   //WebServer.send(200, "text/html", message);
 }
@@ -383,7 +390,8 @@ void handle_config_device(AsyncWebServerRequest *request) {
   }
   
 #ifdef ARDUINO_ARCH_ESP8266
-  String message = FPSTR(WEB_PAGE_HEADER);
+    String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
   message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
@@ -504,7 +512,8 @@ void handle_config_device(AsyncWebServerRequest *request) {
   message += FPSTR(WEB_PAGE_FOOTER);
 
 #elif defined ARDUINO_ARCH_ESP32
-  String message = FPSTR(WEB_PAGE_HEADER);
+    String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
   message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
@@ -649,7 +658,8 @@ void handle_config_services(AsyncWebServerRequest *request) {
 		      }
 	  }
 #ifdef ARDUINO_ARCH_ESP8266
-	  String message = FPSTR(WEB_PAGE_HEADER);
+	    String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
 	  message.replace("{Language}", (TEXT_LANG));
 	  message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
 	  message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
@@ -668,7 +678,8 @@ void handle_config_services(AsyncWebServerRequest *request) {
 	  message.replace("{SubmitButton}", _addSubmitServices());
 	  message += FPSTR(WEB_PAGE_FOOTER);
 #elif defined ARDUINO_ARCH_ESP32
-	  String message = FPSTR(WEB_PAGE_HEADER);
+	    String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
 	  message.replace("{Language}", (TEXT_LANG));
 	  message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
 	  message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
@@ -1248,7 +1259,8 @@ void handle_update(AsyncWebServerRequest *request) {
   	        request->requestAuthentication(NULL,false); // force basic auth
   	      }
     }
-  String message = FPSTR(WEB_PAGE_HEADER);
+    String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
   message.replace("{Language}", (TEXT_LANG));
   message.replace("{CurrentPageTitle}", (TEXT_UPDATE_PAGE));
   message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));

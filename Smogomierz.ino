@@ -8,8 +8,9 @@
 
 // *******************************************
 
+#ifdef ARDUINO_ARCH_ESP32
 //#define ASYNC_WEBSERVER_ON // - EXPERIMENTAL - FOR ESP32 ONLY!
-
+#endif
 /*
 
    ESP8266

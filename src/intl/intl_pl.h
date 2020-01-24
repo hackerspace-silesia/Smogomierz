@@ -11,7 +11,9 @@ char PL_INTL_LANG[16] PROGMEM = "pl";
 char PL_INTL_INDEX_PAGE[16] PROGMEM = "Pomiary";
 char PL_INTL_CONFIG_PAGE[16] PROGMEM = "Ustawienia";
 char PL_INTL_CONFIG_DEVICE_PAGE[32] PROGMEM = "Ustawienia Urządzenia";
+char PL_INTL_CONFIG_INFO_DEVICE_PAGE[256] PROGMEM = "Wybór czujników podłączonych do Smogly, częstotliwość wykonywania pomiarów, czy język interfejsu można zmienić w sekcji";
 char PL_INTL_CONFIG_SERVICES_PAGE[32] PROGMEM = "Ustawienia Serwisów";
+char PL_INTL_CONFIG_INFO_SERVICES_PAGE[256] PROGMEM = "Ustawienia takich serwisów jak Luftdaten, aqi.eco, Smoglist, AirMonitor, ThingSpeak czy usług InfluxDB lub MQTT można zmienić w sekcji";
 char PL_INTL_UPDATE_PAGE[16] PROGMEM = "Aktualizacje";
 
 char PL_INTL_WEATHER[16] PROGMEM = "Pogoda";

@@ -11,7 +11,9 @@ extern char TEXT_LANG[16] = "en";
 extern char TEXT_INDEX_PAGE[16] = "Measurements";
 extern char TEXT_CONFIG_PAGE[16] = "Settings";
 extern char TEXT_CONFIG_DEVICE_PAGE[32] = "Device Settings";
+extern char TEXT_CONFIG_INFO_DEVICE_PAGE[256] = "The choice of sensors connected to Smogly, the frequency of measurements, or the language of the web interface can be changed in the section";
 extern char TEXT_CONFIG_SERVICES_PAGE[32] = "Services Settings";
+extern char TEXT_CONFIG_INFO_SERVICES_PAGE[265] = "Settings of such services as Luftdaten, aqi.eco, Smoglist, AirMonitor, ThingSpeak or InfluxDB or MQTT services can be changed in the section";
 extern char TEXT_UPDATE_PAGE[16] = "Update";
 
 extern char TEXT_WEATHER[16] = "Weather";

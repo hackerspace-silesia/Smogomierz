@@ -755,7 +755,7 @@ void AsyncWiFiManager::handleRoot(AsyncWebServerRequest *request) {
   page += "<h1>";
   page += _apName;
   page += "</h1>";
-  page += F("<h3>AsyncWiFiManager</h3>");
+  page += F("<h3></h3><br>");
   page += FPSTR(HTTP_PORTAL_OPTIONS);
   page += _customOptionsElement;
   page += FPSTR(HTTP_END);
@@ -777,6 +777,8 @@ void AsyncWiFiManager::handleWifi(AsyncWebServerRequest *request,boolean scan) {
   page += FPSTR(HTTP_STYLE);
   page += _customHeadElement;
   page += FPSTR(HTTP_HEAD_END);
+
+  page += "<center><h1>WiFi Config</h1></center><hr><br>";
 
   if (scan) {
     wifiSSIDscan=false;

@@ -950,8 +950,11 @@ void WiFiManager::handleRoot() {
   str.replace(FPSTR(T_v),configPortalActive ? _apName : WiFi.localIP().toString()); // use ip if ap is not active for heading
   page += str;
   page += FPSTR(HTTP_PORTAL_OPTIONS);
+  page += "<br><br>";
   page += getMenuOut();
-  reportStatus(page);
+  
+  //reportStatus(page);
+  
   page += FPSTR(HTTP_END);
 
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
@@ -970,6 +973,8 @@ void WiFiManager::handleWifi(boolean scan) {
   DEBUG_WM(DEBUG_VERBOSE,F("<- HTTP Wifi"));
   handleRequest();
   String page = getHTTPHead(FPSTR(S_titlewifi)); // @token titlewifi
+  page += "<center><h1>WiFi Config</h1></center><hr><br>";
+  
   if (scan) {
     // DEBUG_WM(DEBUG_DEV,"refresh flag:",server->hasArg(F("refresh")));
     WiFi_scanNetworks(server->hasArg(F("refresh")),false); //wifiscan, force if arg refresh
@@ -1000,7 +1005,7 @@ void WiFiManager::handleWifi(boolean scan) {
   }
   page += FPSTR(HTTP_FORM_END);
   page += FPSTR(HTTP_SCAN_LINK);
-  reportStatus(page);
+  //reportStatus(page);
   page += FPSTR(HTTP_END);
 
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
@@ -1027,6 +1032,7 @@ void WiFiManager::handleParam(){
   page += getParamOut();
   page += FPSTR(HTTP_FORM_END);
   reportStatus(page);
+  	  
   page += FPSTR(HTTP_END);
 
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
@@ -1369,6 +1375,12 @@ void WiFiManager::handleWifiSave() {
   }
 
   String page;
+
+  page += FPSTR(HTTP_HEAD_START);
+  //page.replace(FPSTR(T_v), title);
+  page += FPSTR(HTTP_SCRIPT);
+  page += FPSTR(HTTP_STYLE);
+  page += FPSTR(HTTP_SAVED);
 
   if(_ssid == ""){
     page = getHTTPHead(FPSTR(S_titlewifisettings)); // @token titleparamsaved

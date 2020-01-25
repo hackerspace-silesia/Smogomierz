@@ -20,7 +20,7 @@ const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><hea
 	        <a class='nav-link' href='/config'>{ConfigPageTitle}</a>
 	      </li>
 		  <li class='nav-item'>
-		  	<a class='nav-link' href='/'>{UpdatePageTitle}</a>
+		  	<a class='nav-link' href='/update'>{UpdatePageTitle}</a>
 		  </li>
 	    </ul>
 </div></nav>
@@ -165,7 +165,10 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 			    <h4 class='card-title'><strong>{TEXT_SAVED}!</strong></h4>
 			    <p class='card-text'>{TEXT_POSTCONFIG_INFO}</p>
 			  </div></div></center>)rawliteral";
-
+	
+	const char WEB_CONFIG_SERVICES_MQTT_VALNAME_TSKNAME_INFO[] PROGMEM = R"rawliteral(<pre>MQTT_ADRESS/MQTT_DEVICE_NAME/MQTT_SENSOR_PREFIX/MQTT_VALNAME/MQTT_TSKNAME/VALUE</pre>
+	Nieużywane pola pozostaw puste. Znaki / dodawane są automatycznie.<br>)rawliteral";
+	
 // CONFIG PAGE - END
 // CONFIG DEVICE PAGE - Start
 #ifdef ASYNC_WEBSERVER_ON
@@ -287,6 +290,27 @@ const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SEN
 	<b>{TEXT_MQTTPORT}: </b>{MQTT_PORT}
 	<b>{TEXT_MQTTUSER}: </b>{MQTT_USER}
 	<b>{TEXT_MQTTPASSWD}: </b>{MQTT_PASSWORD}
+	<br>{MQTT_VALNAME_TSKNAME_INFO}
+	<br>
+	<b>{TEXT_MQTT_DEVICE_NAME}: </b>{MQTT_DEVICE_NAME}
+	<br><br>
+	<b>{TEXT_MQTT_SENSOR_PREFIX}: </b>{MQTT_SENSOR_PREFIX}
+	<br>
+	<b>{TEXT_MQTT_VALNAME_TEMP}: </b>{MQTT_VALNAME_TEMP}
+	<b>{TEXT_MQTT_VALNAME_HUMI}: </b>{MQTT_VALNAME_HUMI}
+	<b>{TEXT_MQTT_VALNAME_PRESS}: </b>{MQTT_VALNAME_PRESS}
+	<b>{TEXT_MQTT_VALNAME_PM1}: </b>{MQTT_VALNAME_PM1}
+	<b>{TEXT_MQTT_VALNAME_PM25}: </b>{MQTT_VALNAME_PM25}
+	<b>{TEXT_MQTT_VALNAME_PM10}: </b>{MQTT_VALNAME_PM10}
+	<b>{TEXT_MQTT_VALNAME_AIRQUALITY}: </b>{MQTT_VALNAME_AIRQUALITY}
+	<br>
+	<b>{TEXT_MQTT_TSKNAME_TEMP}: </b>{MQTT_TSKNAME_TEMP}
+	<b>{TEXT_MQTT_TSKNAME_HUMI}: </b>{MQTT_TSKNAME_HUMI}
+	<b>{TEXT_MQTT_TSKNAME_PRESS}: </b>{MQTT_TSKNAME_PRESS}
+	<b>{TEXT_MQTT_TSKNAME_PM1}: </b>{MQTT_TSKNAME_PM1}
+	<b>{TEXT_MQTT_TSKNAME_PM25}: </b>{MQTT_TSKNAME_PM25}
+	<b>{TEXT_MQTT_TSKNAME_PM10}: </b>{MQTT_TSKNAME_PM10}
+	<b>{TEXT_MQTT_TSKNAME_AIRQUALITY}: </b>{MQTT_TSKNAME_AIRQUALITY}
 	<hr><center><br>
 	{WiFiEraseButton}  {RestoreConfigButton}
 	<br><br></center><hr><br><center>

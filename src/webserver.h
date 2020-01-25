@@ -697,6 +697,45 @@ void _handle_config_services(bool is_success) {
   message.replace("{MQTT_USER}", _addTextInput("MQTT_USER", MQTT_USER));
   message.replace("{TEXT_MQTTPASSWD}", (TEXT_MQTTPASSWD));
   message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
+  
+  message.replace("{MQTT_VALNAME_TSKNAME_INFO}", FPSTR(WEB_CONFIG_SERVICES_MQTT_VALNAME_TSKNAME_INFO));
+  
+  message.replace("{TEXT_MQTT_DEVICE_NAME}", "MQTT_DEVICE_NAME");
+  message.replace("{MQTT_DEVICE_NAME}", String(device_name));
+    
+  message.replace("{TEXT_MQTT_SENSOR_PREFIX}", (TEXT_MQTT_SENSOR_PREFIX));
+  message.replace("{MQTT_SENSOR_PREFIX}", _addTextInput("MQTT_SENSOR_PREFIX", MQTT_SENSOR_PREFIX));
+  
+  message.replace("{TEXT_MQTT_VALNAME_TEMP}", (TEXT_MQTT_VALNAME_TEMP));
+  message.replace("{MQTT_VALNAME_TEMP}", _addTextInput("MQTT_VALNAME_TEMP", MQTT_VALNAME_TEMP));
+  message.replace("{TEXT_MQTT_VALNAME_HUMI}", (TEXT_MQTT_VALNAME_HUMI));
+  message.replace("{MQTT_VALNAME_HUMI}", _addTextInput("MQTT_VALNAME_HUMI", MQTT_VALNAME_HUMI));
+  message.replace("{TEXT_MQTT_VALNAME_PRESS}", (TEXT_MQTT_VALNAME_PRESS));
+  message.replace("{MQTT_VALNAME_PRESS}", _addTextInput("MQTT_VALNAME_PRESS", MQTT_VALNAME_PRESS));
+  message.replace("{TEXT_MQTT_VALNAME_PM1}", (TEXT_MQTT_VALNAME_PM1));
+  message.replace("{MQTT_VALNAME_PM1}", _addTextInput("MQTT_VALNAME_PM1", MQTT_VALNAME_PM1));
+  message.replace("{TEXT_MQTT_VALNAME_PM25}", (TEXT_MQTT_VALNAME_PM25));
+  message.replace("{MQTT_VALNAME_PM25}", _addTextInput("MQTT_VALNAME_PM25", MQTT_VALNAME_PM25));
+  message.replace("{TEXT_MQTT_VALNAME_PM10}", (TEXT_MQTT_VALNAME_PM10));
+  message.replace("{MQTT_VALNAME_PM10}", _addTextInput("MQTT_VALNAME_PM10", MQTT_VALNAME_PM10));
+  message.replace("{TEXT_MQTT_VALNAME_AIRQUALITY}", (TEXT_MQTT_VALNAME_AIRQUALITY));
+  message.replace("{MQTT_VALNAME_AIRQUALITY}", _addTextInput("MQTT_VALNAME_AIRQUALITY", MQTT_VALNAME_AIRQUALITY));
+  
+  message.replace("{TEXT_MQTT_TSKNAME_TEMP}", (TEXT_MQTT_TSKNAME_TEMP));
+  message.replace("{MQTT_TSKNAME_TEMP}", _addTextInput("MQTT_TSKNAME_TEMP", MQTT_TSKNAME_TEMP));
+  message.replace("{TEXT_MQTT_TSKNAME_HUMI}", (TEXT_MQTT_TSKNAME_HUMI));
+  message.replace("{MQTT_TSKNAME_HUMI}", _addTextInput("MQTT_TSKNAME_HUMI", MQTT_TSKNAME_HUMI));
+  message.replace("{TEXT_MQTT_TSKNAME_PRESS}", (TEXT_MQTT_TSKNAME_PRESS));
+  message.replace("{MQTT_TSKNAME_PRESS}", _addTextInput("MQTT_TSKNAME_PRESS", MQTT_TSKNAME_PRESS)); 
+  message.replace("{TEXT_MQTT_TSKNAME_PM1}", (TEXT_MQTT_TSKNAME_PM1));
+  message.replace("{MQTT_TSKNAME_PM1}", _addTextInput("MQTT_TSKNAME_PM1", MQTT_TSKNAME_PM1));
+  message.replace("{TEXT_MQTT_TSKNAME_PM25}", (TEXT_MQTT_TSKNAME_PM25));
+  message.replace("{MQTT_TSKNAME_PM25}", _addTextInput("MQTT_TSKNAME_PM25", MQTT_TSKNAME_PM25));
+  message.replace("{TEXT_MQTT_TSKNAME_PM10}", (TEXT_MQTT_TSKNAME_PM10));
+  message.replace("{MQTT_TSKNAME_PM10}", _addTextInput("MQTT_TSKNAME_PM10", MQTT_TSKNAME_PM10));
+ 
+  message.replace("{TEXT_MQTT_TSKNAME_AIRQUALITY}", (TEXT_MQTT_TSKNAME_AIRQUALITY));
+  message.replace("{MQTT_TSKNAME_AIRQUALITY}", _addTextInput("MQTT_TSKNAME_AIRQUALITY", MQTT_TSKNAME_AIRQUALITY));
  
   message.replace("{WiFiEraseButton}", _addWiFiErase());
   message.replace("{RestoreConfigButton}", _addRestoreConfig());
@@ -720,8 +759,8 @@ void _set_language() {
   }
 }
 
-void _parseAsCString(char* dest, String value) {
-  strncpy(dest, value.c_str(), 255);
+void _parseAsCString(char* dest, String value, int CStringSize = 255) {
+  strncpy(dest, value.c_str(), CStringSize);
 }
 
 void handle_config_device() {
@@ -751,15 +790,15 @@ void handle_config_device_post() {
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
   DEVICENAME_AUTO = _parseAsBool(WebServer.arg("DEVICENAME_AUTO"));
   if (!DEVICENAME_AUTO) {
-    _parseAsCString(DEVICENAME, WebServer.arg("DEVICENAME"));
+    _parseAsCString(DEVICENAME, WebServer.arg("DEVICENAME"), 32);
   }
   DISPLAY_PM1 = _parseAsBool(WebServer.arg("DISPLAY_PM1"));
-  _parseAsCString(LANGUAGE, WebServer.arg("LANGUAGE"));
+  _parseAsCString(LANGUAGE, WebServer.arg("LANGUAGE"), 32);
   _set_language();
 
   char oldTHP_MODEL[32];
   strcpy(oldTHP_MODEL, THP_MODEL);
-  _parseAsCString(THP_MODEL, WebServer.arg("THP_MODEL"));
+  _parseAsCString(THP_MODEL, WebServer.arg("THP_MODEL"), 32);
 
   if (strcmp(THP_MODEL, oldTHP_MODEL) and !strcmp(THP_MODEL, "BME280-SparkFun")) {
     need_update = 1;
@@ -767,7 +806,7 @@ void handle_config_device_post() {
 
   char oldDUST_MODEL[32];
   strcpy(oldDUST_MODEL, DUST_MODEL);
-  _parseAsCString(DUST_MODEL, WebServer.arg("DUST_MODEL"));
+  _parseAsCString(DUST_MODEL, WebServer.arg("DUST_MODEL"), 32);
 
   // DUST Sensor config - START
   if (!strcmp(PMSENSORVERSION, "PMS")) {
@@ -834,10 +873,10 @@ void handle_config_device_post() {
   AUTOUPDATE_ON = _parseAsBool(WebServer.arg("AUTOUPDATE_ON"));
 
   CONFIG_AUTH = _parseAsBool(WebServer.arg("CONFIG_AUTH"));
-  _parseAsCString(CONFIG_USERNAME, WebServer.arg("CONFIG_USERNAME"));
-  _parseAsCString(CONFIG_PASSWORD, WebServer.arg("CONFIG_PASSWORD"));
+  _parseAsCString(CONFIG_USERNAME, WebServer.arg("CONFIG_USERNAME"), 256);
+  _parseAsCString(CONFIG_PASSWORD, WebServer.arg("CONFIG_PASSWORD"), 256);
 
-  _parseAsCString(MODEL, WebServer.arg("MODEL"));
+  _parseAsCString(MODEL, WebServer.arg("MODEL"), 32);
 
   if (DEBUG) {
     Serial.println("POST CONFIG END!!");
@@ -901,33 +940,51 @@ void handle_config_services_post() {
   LUFTDATEN_ON = _parseAsBool(WebServer.arg("LUFTDATEN_ON"));
   
   AQI_ECO_ON = _parseAsBool(WebServer.arg("AQI_ECO_ON"));
-  _parseAsCString(AQI_ECO_HOST, WebServer.arg("AQI_ECO_HOST"));
-  _parseAsCString(AQI_ECO_PATH, WebServer.arg("AQI_ECO_PATH"));
+  _parseAsCString(AQI_ECO_HOST, WebServer.arg("AQI_ECO_HOST"), 128);
+  _parseAsCString(AQI_ECO_PATH, WebServer.arg("AQI_ECO_PATH"), 64);
   
   AIRMONITOR_ON = _parseAsBool(WebServer.arg("AIRMONITOR_ON"));
   AIRMONITOR_GRAPH_ON = _parseAsBool(WebServer.arg("AIRMONITOR_GRAPH_ON"));
   
-  _parseAsCString(LATITUDE, WebServer.arg("LATITUDE"));
-  _parseAsCString(LONGITUDE, WebServer.arg("LONGITUDE"));
+  _parseAsCString(LATITUDE, WebServer.arg("LATITUDE"), 16);
+  _parseAsCString(LONGITUDE, WebServer.arg("LONGITUDE"), 16);
 
   THINGSPEAK_ON = _parseAsBool(WebServer.arg("THINGSPEAK_ON"));
   THINGSPEAK_GRAPH_ON = _parseAsBool(WebServer.arg("THINGSPEAK_GRAPH_ON"));
-  _parseAsCString(THINGSPEAK_API_KEY, WebServer.arg("THINGSPEAK_API_KEY"));
+  _parseAsCString(THINGSPEAK_API_KEY, WebServer.arg("THINGSPEAK_API_KEY"), 32);
   THINGSPEAK_CHANNEL_ID = WebServer.arg("THINGSPEAK_CHANNEL_ID").toInt(); 
-  _parseAsCString(THINGSPEAK_READ_API_KEY, WebServer.arg("THINGSPEAK_READ_API_KEY"));
+  _parseAsCString(THINGSPEAK_READ_API_KEY, WebServer.arg("THINGSPEAK_READ_API_KEY"), 32);
 
   INFLUXDB_ON = _parseAsBool(WebServer.arg("INFLUXDB_ON"));
-  _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"));
+  _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"), 128);
   INFLUXDB_PORT = WebServer.arg("INFLUXDB_PORT").toInt();
-  _parseAsCString(INFLUXDB_DATABASE, WebServer.arg("INFLUXDB_DATABASE"));
-  _parseAsCString(DB_USER, WebServer.arg("DB_USER"));
-  _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"));
+  _parseAsCString(INFLUXDB_DATABASE, WebServer.arg("INFLUXDB_DATABASE"), 64);
+  _parseAsCString(DB_USER, WebServer.arg("DB_USER"), 64);
+  _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"), 64);
  
    MQTT_ON = _parseAsBool(WebServer.arg("MQTT_ON"));
-  _parseAsCString(MQTT_HOST, WebServer.arg("MQTT_HOST"));
+  _parseAsCString(MQTT_HOST, WebServer.arg("MQTT_HOST"), 128);
   MQTT_PORT = WebServer.arg("MQTT_PORT").toInt();
-  _parseAsCString(MQTT_USER, WebServer.arg("MQTT_USER"));
-  _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"));
+  _parseAsCString(MQTT_USER, WebServer.arg("MQTT_USER"), 64);
+  _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"), 64);
+  
+  _parseAsCString(MQTT_SENSOR_PREFIX, WebServer.arg("MQTT_SENSOR_PREFIX"), 32);
+    
+  _parseAsCString(MQTT_VALNAME_TEMP, WebServer.arg("MQTT_VALNAME_TEMP"), 32);
+  _parseAsCString(MQTT_VALNAME_HUMI, WebServer.arg("MQTT_VALNAME_HUMI"), 23);
+  _parseAsCString(MQTT_VALNAME_PRESS, WebServer.arg("MQTT_VALNAME_PRESS"), 32);
+  _parseAsCString(MQTT_VALNAME_PM1, WebServer.arg("MQTT_VALNAME_PM1"), 32);
+  _parseAsCString(MQTT_VALNAME_PM25, WebServer.arg("MQTT_VALNAME_PM25"), 32);
+  _parseAsCString(MQTT_VALNAME_PM10, WebServer.arg("MQTT_VALNAME_PM10"), 32);
+  _parseAsCString(MQTT_VALNAME_AIRQUALITY, WebServer.arg("MQTT_VALNAME_AIRQUALITY"), 32);
+
+  _parseAsCString(MQTT_TSKNAME_TEMP, WebServer.arg("MQTT_TSKNAME_TEMP"), 32);
+  _parseAsCString(MQTT_TSKNAME_HUMI, WebServer.arg("MQTT_TSKNAME_HUMI"), 32);
+  _parseAsCString(MQTT_TSKNAME_PRESS, WebServer.arg("MQTT_TSKNAME_PRESS"), 32);
+  _parseAsCString(MQTT_TSKNAME_PM1, WebServer.arg("MQTT_TSKNAME_PM1"), 32);
+  _parseAsCString(MQTT_TSKNAME_PM25, WebServer.arg("MQTT_TSKNAME_PM25"), 32);
+  _parseAsCString(MQTT_TSKNAME_PM10, WebServer.arg("MQTT_TSKNAME_PM10"), 32);
+  _parseAsCString(MQTT_TSKNAME_AIRQUALITY, WebServer.arg("MQTT_TSKNAME_AIRQUALITY"), 32);
   
   if (DEBUG) {
     Serial.println("POST CONFIG END!!");

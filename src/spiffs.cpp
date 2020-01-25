@@ -7,15 +7,14 @@
 #include "config.h"
 #define FORMAT_SPIFFS_IF_FAILED true
 
-void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "") {
+void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {
   const char* val = obj.as<const char*>();
   if (val) {
-    strncpy(dest, val, 255);
+    strncpy(dest, val, CharSize);
   } else {
-    strncpy(dest, dflt, 255);
+    strncpy(dest, dflt, CharSize);
   }
 }
-
 
 bool loadConfig() {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -55,12 +54,12 @@ bool loadConfig() {
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND webserver.h!!
 
   DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
-  _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz");
-  _safeCpy(LANGUAGE, json["LANGUAGE"], "english");
+  _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz", 32);
+  _safeCpy(LANGUAGE, json["LANGUAGE"], "english", 32);
   SELECTED_LANGUAGE = json["SELECTED_LANGUAGE"];
 
-  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non");
-  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non");
+  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non", 32);
+  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non", 32);
   DISPLAY_PM1 = json["DISPLAY_PM1"];
   FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
   
@@ -72,32 +71,50 @@ bool loadConfig() {
 
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
-  _safeCpy(LATITUDE, json["LATITUDE"], "50.263911");
-  _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711");
+  _safeCpy(LATITUDE, json["LATITUDE"], "50.263911", 16);
+  _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711", 16);
   MYALTITUDE = json["MYALTITUDE"];
 
   THINGSPEAK_ON = json["THINGSPEAK_ON"];
   THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
-  _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"]);
+  _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"], "WRITE_API_KEY", 32);
   THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
-  _safeCpy(THINGSPEAK_READ_API_KEY, json["THINGSPEAK_READ_API_KEY"]);
+  _safeCpy(THINGSPEAK_READ_API_KEY, json["THINGSPEAK_READ_API_KEY"], "READ_API_KEY", 32);
 
   INFLUXDB_ON = json["INFLUXDB_ON"];
-  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host");
+  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host", 128);
   INFLUXDB_PORT = json["INFLUXDB_PORT"];  
-  _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb");
-  _safeCpy(DB_USER, json["DB_USER"], "user");
-  _safeCpy(DB_PASSWORD, json["DB_PASSWORD"], "password");
+  _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 64);
+  _safeCpy(DB_USER, json["DB_USER"], "user", 64);
+  _safeCpy(DB_PASSWORD, json["DB_PASSWORD"], "password", 64);
   
   MQTT_ON = json["MQTT_ON"];
-  _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host");
+  _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host", 128);
   MQTT_PORT = json["MQTT_PORT"];  
-  _safeCpy(MQTT_USER, json["MQTT_USER"], "user");
-  _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password");
+  _safeCpy(MQTT_USER, json["MQTT_USER"], "user", 64);
+  _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password", 64);
+  
+  _safeCpy(MQTT_SENSOR_PREFIX, json["MQTT_SENSOR_PREFIX"], "sensor", 32);
+  
+  _safeCpy(MQTT_VALNAME_TEMP, json["MQTT_VALNAME_TEMP"], "temperature", 32);
+  _safeCpy(MQTT_VALNAME_HUMI, json["MQTT_VALNAME_HUMI"], "humidity", 32);
+  _safeCpy(MQTT_VALNAME_PRESS, json["MQTT_VALNAME_PRESS"], "pressure", 32);
+  _safeCpy(MQTT_VALNAME_PM1, json["MQTT_VALNAME_PM1"], "PM1", 32);
+  _safeCpy(MQTT_VALNAME_PM25, json["MQTT_VALNAME_PM25"], "PM2.5", 32);
+  _safeCpy(MQTT_VALNAME_PM10, json["MQTT_VALNAME_PM10"], "PM10", 32);
+  _safeCpy(MQTT_VALNAME_AIRQUALITY, json["MQTT_VALNAME_AIRQUALITY"], "airquality", 32);
+  
+  _safeCpy(MQTT_TSKNAME_TEMP, json["MQTT_TSKNAME_TEMP"], "", 32);
+  _safeCpy(MQTT_TSKNAME_HUMI, json["MQTT_TSKNAME_HUMI"], "", 32);
+  _safeCpy(MQTT_TSKNAME_PRESS, json["MQTT_TSKNAME_PRESS"], "", 32);
+  _safeCpy(MQTT_TSKNAME_PM1, json["MQTT_TSKNAME_PM1"], "", 32);
+  _safeCpy(MQTT_TSKNAME_PM25, json["MQTT_TSKNAME_PM25"], "", 32);
+  _safeCpy(MQTT_TSKNAME_PM10, json["MQTT_TSKNAME_PM10"], "", 32);
+  _safeCpy(MQTT_TSKNAME_AIRQUALITY, json["MQTT_TSKNAME_AIRQUALITY"], "", 32);
   
   AQI_ECO_ON = json["AQI_ECO_ON"];
-  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host");
-  _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path");
+  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 128);
+  _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path", 64);
   
   SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
   SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
@@ -107,10 +124,10 @@ bool loadConfig() {
   AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
   
   CONFIG_AUTH = json["CONFIG_AUTH"];
-  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin");
-  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password");
+  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 256);
+  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 256);
   
-  _safeCpy(MODEL, json["MODEL"], "black");
+  _safeCpy(MODEL, json["MODEL"], "black", 32);
 
   // Real world application would store these values in some variables for
   // later use.
@@ -189,6 +206,39 @@ bool loadConfig() {
     Serial.print("Loaded MQTT_PASSWORD: ");
     Serial.println(MQTT_PASSWORD);
     
+    Serial.print("Loaded MQTT_SENSOR_PREFIX: ");
+    Serial.println(MQTT_SENSOR_PREFIX);
+	
+    Serial.print("Loaded MQTT_VALNAME_TEMP: ");
+    Serial.println(MQTT_VALNAME_TEMP);
+    Serial.print("Loaded MQTT_VALNAME_HUMI: ");
+    Serial.println(MQTT_VALNAME_HUMI);
+    Serial.print("Loaded MQTT_VALNAME_PRESS: ");
+    Serial.println(MQTT_VALNAME_PRESS);
+    Serial.print("Loaded MQTT_VALNAME_PM1: ");
+    Serial.println(MQTT_VALNAME_PM1);
+    Serial.print("Loaded MQTT_VALNAME_PM25: ");
+    Serial.println(MQTT_VALNAME_PM25);
+    Serial.print("Loaded MQTT_VALNAME_PM10: ");
+    Serial.println(MQTT_VALNAME_PM10);
+    Serial.print("Loaded MQTT_VALNAME_AIRQUALITY: ");
+    Serial.println(MQTT_VALNAME_AIRQUALITY);
+  
+    Serial.print("Loaded MQTT_TSKNAME_TEMP: ");
+    Serial.println(MQTT_TSKNAME_TEMP);
+    Serial.print("Loaded MQTT_TSKNAME_HUMI: ");
+    Serial.println(MQTT_TSKNAME_HUMI);
+    Serial.print("Loaded MQTT_TSKNAME_PRESS: ");
+    Serial.println(MQTT_TSKNAME_PRESS);
+    Serial.print("Loaded MQTT_TSKNAME_PM1: ");
+    Serial.println(MQTT_TSKNAME_PM1);
+    Serial.print("Loaded MQTT_TSKNAME_PM25: ");
+    Serial.println(MQTT_TSKNAME_PM25);
+    Serial.print("Loaded MQTT_TSKNAME_PM10: ");
+    Serial.println(MQTT_TSKNAME_PM10);
+    Serial.print("Loaded MQTT_TSKNAME_AIRQUALITY: ");
+    Serial.println(MQTT_TSKNAME_AIRQUALITY);
+	
     Serial.print("Loaded AQI_ECO_ON: ");
     Serial.println(AQI_ECO_ON);
     Serial.print("Loaded AQI_ECO_HOST: ");
@@ -274,6 +324,24 @@ bool saveConfig() {
   json["MQTT_USER"] = MQTT_USER;
   json["MQTT_PASSWORD"] = MQTT_PASSWORD;
   json["MQTT_PASSWORD"] = String(MQTT_PASSWORD);
+
+  json["MQTT_SENSOR_PREFIX"] = MQTT_SENSOR_PREFIX;
+  
+  json["MQTT_VALNAME_TEMP"] = MQTT_VALNAME_TEMP;
+  json["MQTT_VALNAME_HUMI"] = MQTT_VALNAME_HUMI;
+  json["MQTT_VALNAME_PRESS"] = MQTT_VALNAME_PRESS;
+  json["MQTT_VALNAME_PM1"] = MQTT_VALNAME_PM1;
+  json["MQTT_VALNAME_PM25"] = MQTT_VALNAME_PM25;
+  json["MQTT_VALNAME_PM10"] = MQTT_VALNAME_PM10;
+  json["MQTT_VALNAME_AIRQUALITY"] = MQTT_VALNAME_AIRQUALITY;
+  
+  json["MQTT_TSKNAME_TEMP"] = MQTT_TSKNAME_TEMP;
+  json["MQTT_TSKNAME_HUMI"] = MQTT_TSKNAME_HUMI;
+  json["MQTT_TSKNAME_PRESS"] = MQTT_TSKNAME_PRESS;
+  json["MQTT_TSKNAME_PM1"] = MQTT_TSKNAME_PM1;
+  json["MQTT_TSKNAME_PM25"] = MQTT_TSKNAME_PM25;
+  json["MQTT_TSKNAME_PM10"] = MQTT_TSKNAME_PM10;
+  json["MQTT_TSKNAME_AIRQUALITY"] = MQTT_TSKNAME_AIRQUALITY;
 
   json["AQI_ECO_ON"] = AQI_ECO_ON;
   json["AQI_ECO_HOST"] = AQI_ECO_HOST;

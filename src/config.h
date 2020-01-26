@@ -41,6 +41,8 @@ extern uint16_t MQTT_PORT;
 extern char MQTT_USER[64];
 extern char MQTT_PASSWORD[64];
 
+extern bool  MQTT_IP_IN_TOPIC;
+
 extern char MQTT_SENSOR_PREFIX[32];
 
 extern char MQTT_VALNAME_TEMP[32];

@@ -41,6 +41,8 @@ uint16_t MQTT_PORT = 1883;
 char MQTT_USER[64] = "username";
 char MQTT_PASSWORD[64] = "password";
 
+bool MQTT_IP_IN_TOPIC = false;
+
 char MQTT_SENSOR_PREFIX[32] = "sensor";
 
 char MQTT_VALNAME_TEMP[32] = "temperature";

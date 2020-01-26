@@ -42,7 +42,7 @@ bool loadConfig() {
   // use configFile.readString instead.
   configFile.readBytes(buf.get(), size);
 
-  StaticJsonDocument<2000> jsonBuffer;
+  StaticJsonDocument<4096> jsonBuffer;
   deserializeJson(jsonBuffer, buf.get());
   JsonObject json = jsonBuffer.as<JsonObject>();
 
@@ -93,6 +93,8 @@ bool loadConfig() {
   MQTT_PORT = json["MQTT_PORT"];  
   _safeCpy(MQTT_USER, json["MQTT_USER"], "user", 64);
   _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password", 64);
+  
+  MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
   
   _safeCpy(MQTT_SENSOR_PREFIX, json["MQTT_SENSOR_PREFIX"], "sensor", 32);
   
@@ -206,6 +208,9 @@ bool loadConfig() {
     Serial.print("Loaded MQTT_PASSWORD: ");
     Serial.println(MQTT_PASSWORD);
     
+    Serial.print("Loaded MQTT_IP_IN_TOPIC: ");
+    Serial.println(MQTT_IP_IN_TOPIC);
+	
     Serial.print("Loaded MQTT_SENSOR_PREFIX: ");
     Serial.println(MQTT_SENSOR_PREFIX);
 	
@@ -280,7 +285,7 @@ bool loadConfig() {
 }
 
 bool saveConfig() {
-  StaticJsonDocument<2000> jsonBuffer;
+  StaticJsonDocument<4096> jsonBuffer;
   JsonObject json = jsonBuffer.to<JsonObject>();
   json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
   json["DEVICENAME"] = DEVICENAME;
@@ -324,6 +329,8 @@ bool saveConfig() {
   json["MQTT_USER"] = MQTT_USER;
   json["MQTT_PASSWORD"] = MQTT_PASSWORD;
   json["MQTT_PASSWORD"] = String(MQTT_PASSWORD);
+
+  json["MQTT_IP_IN_TOPIC"] = MQTT_IP_IN_TOPIC;
 
   json["MQTT_SENSOR_PREFIX"] = MQTT_SENSOR_PREFIX;
   

@@ -702,7 +702,10 @@ void _handle_config_services(bool is_success) {
   
   message.replace("{TEXT_MQTT_DEVICE_NAME}", "MQTT_DEVICE_NAME");
   message.replace("{MQTT_DEVICE_NAME}", String(device_name));
-    
+  
+  message.replace("{TEXT_MQTT_IP_IN_TOPIC}", "MQTT_IP_IN_TOPIC");
+  message.replace("{MQTT_IP_IN_TOPIC}", _addBoolSelect("MQTT_IP_IN_TOPIC", MQTT_IP_IN_TOPIC));
+  
   message.replace("{TEXT_MQTT_SENSOR_PREFIX}", (TEXT_MQTT_SENSOR_PREFIX));
   message.replace("{MQTT_SENSOR_PREFIX}", _addTextInput("MQTT_SENSOR_PREFIX", MQTT_SENSOR_PREFIX));
   
@@ -967,6 +970,8 @@ void handle_config_services_post() {
   MQTT_PORT = WebServer.arg("MQTT_PORT").toInt();
   _parseAsCString(MQTT_USER, WebServer.arg("MQTT_USER"), 64);
   _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"), 64);
+  
+  MQTT_IP_IN_TOPIC = _parseAsBool(WebServer.arg("MQTT_IP_IN_TOPIC"));
   
   _parseAsCString(MQTT_SENSOR_PREFIX, WebServer.arg("MQTT_SENSOR_PREFIX"), 32);
     

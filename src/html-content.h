@@ -137,6 +137,8 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	const char WEB_CONFIG_PAGE_SUBMIT_DEVICE_BUTTON[] PROGMEM = "<input type='submit' name='submit1' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";	
 
 	const char WEB_CONFIG_PAGE_SUBMIT_SERVICES_BUTTON[] PROGMEM = "<input type='submit' name='submit2' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
+	
+	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_SUBMIT_SERVICES_BUTTON[] PROGMEM = "<input type='submit' name='submit3' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
 
 	const char WEB_CONFIG_PAGE_SELECT[] PROGMEM = "<select name='{key}'>";
 
@@ -285,7 +287,32 @@ const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SEN
 	<b>{TEXT_INFLUXDBUSER}: </b>{DB_USER}
 	<b>{TEXT_INFLUXDBPASSWD}: </b>{DB_PASSWORD}
 	<hr>
-	<b>{TEXT_MQTTSENDING}: </b>{MQTT_ON}
+	<br><center>{AdvancedMQTTConfigButton}</center><br>
+	<hr><center><br>
+	{WiFiEraseButton}  {RestoreConfigButton}
+	<br><br></center><hr><br><center>
+	{SubmitButton}
+	</center>
+	)rawliteral";
+// CONFIG SERVICES PAGE - END
+// CONFIG ADVANCED MQTT PAGE - Start
+#ifdef ASYNC_WEBSERVER_ON
+const char WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_adv_mqtt'> 
+	<main role='main' class='container'><div class='jumbotron'>
+	<center><h1>Smogly - {TEXT_ADVANCED_MQTT_PAGE}</h1></center><br>
+	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
+	{TEXT_INSTRUCIONSLINK}<br>
+	)rawliteral";
+#else
+const char WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_adv_mqtt'> 
+	<main role='main' class='container'><div class='jumbotron'>
+	<center><h1>Smogly - {TEXT_ADVANCED_MQTT_PAGE}</h1></center><br>
+	{WEB_CONFIG_TOP_PAGE_INFO}
+	<br><hr><br>
+	{TEXT_INSTRUCIONSLINK}<br>
+	)rawliteral";
+#endif
+const char WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_MQTTSENDING}: </b>{MQTT_ON}
 	<b>{TEXT_MQTTSERVER}: </b>{MQTT_HOST}
 	<b>{TEXT_MQTTPORT}: </b>{MQTT_PORT}
 	<b>{TEXT_MQTTUSER}: </b>{MQTT_USER}
@@ -314,13 +341,15 @@ const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SEN
 	<b>{TEXT_MQTT_TSKNAME_PM10}: </b>{MQTT_TSKNAME_PM10}
 	<b>{TEXT_MQTT_TSKNAME_AIRQUALITY}: </b>{MQTT_TSKNAME_AIRQUALITY}
 	<hr><center><br>
-	{WiFiEraseButton}  {RestoreConfigButton}
+	{RestoreConfigButton}
 	<br><br></center><hr><br><center>
 	{SubmitButton}
 	</center>
 	)rawliteral";
-// CONFIG SERVICES PAGE - END
+// CONFIG ADVANCED MQTT PAGE - END
 // UPDATE BUTTONS - START
+
+const char WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON[] PROGMEM = "<a href='/config_adv_mqtt' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_CONFIG_ADV_MQTT}</a>";
 
 const char WEB_UPDATE_BUTTON_MANUALUPDATE[] PROGMEM = "<a href='/update' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_MANUALUPDATEBUTTON}</a>";
 

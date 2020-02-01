@@ -79,29 +79,30 @@ extern char TEXT_INFLUXDBNAME[32] = "Name of the database";
 extern char TEXT_INFLUXDBUSER[32] = "Database user";
 extern char TEXT_INFLUXDBPASSWD[32] = "Database password";
 
+extern char TEXT_CONFIG_ADV_MQTT[32] = "Advanced MQTT Configuration";
 extern char TEXT_MQTTSENDING[64] = "Sending data to the MQTT server";
 extern char TEXT_MQTTSERVER[32] = "MQTT server address";
 extern char TEXT_MQTTPORT[32] = "MQTT port";
 extern char TEXT_MQTTUSER[32] = "MQTT user";
 extern char TEXT_MQTTPASSWD[32] = "MQTT password";
 
-extern char TEXT_MQTT_SENSOR_PREFIX[32] PROGMEM = "MQTT_SENSOR_PREFIX";
+extern char TEXT_MQTT_SENSOR_PREFIX[32] = "MQTT_SENSOR_PREFIX";
 
-extern char TEXT_MQTT_VALNAME_TEMP[32] PROGMEM = "MQTT_VALNAME_TEMP";
-extern char TEXT_MQTT_VALNAME_HUMI[32] PROGMEM = "MQTT_VALNAME_HUMI";
-extern char TEXT_MQTT_VALNAME_PRESS[32] PROGMEM = "MQTT_VALNAME_PRESS";
-extern char TEXT_MQTT_VALNAME_PM1[32] PROGMEM = "MQTT_VALNAME_PM1";
-extern char TEXT_MQTT_VALNAME_PM25[32] PROGMEM = "MQTT_VALNAME_PM25";
-extern char TEXT_MQTT_VALNAME_PM10[32] PROGMEM = "MQTT_VALNAME_PM10";
-extern char TEXT_MQTT_VALNAME_AIRQUALITY[32] PROGMEM = "MQTT_VALNAME_AIRQUALITY";
+extern char TEXT_MQTT_VALNAME_TEMP[32] = "MQTT_VALNAME_TEMP";
+extern char TEXT_MQTT_VALNAME_HUMI[32] = "MQTT_VALNAME_HUMI";
+extern char TEXT_MQTT_VALNAME_PRESS[32] = "MQTT_VALNAME_PRESS";
+extern char TEXT_MQTT_VALNAME_PM1[32] = "MQTT_VALNAME_PM1";
+extern char TEXT_MQTT_VALNAME_PM25[32] = "MQTT_VALNAME_PM25";
+extern char TEXT_MQTT_VALNAME_PM10[32] = "MQTT_VALNAME_PM10";
+extern char TEXT_MQTT_VALNAME_AIRQUALITY[32] = "MQTT_VALNAME_AIRQUALITY";
 
-extern char TEXT_MQTT_TSKNAME_TEMP[32] PROGMEM= "MQTT_TSKNAME_TEMP";
-extern char TEXT_MQTT_TSKNAME_HUMI[32] PROGMEM= "MQTT_TSKNAME_HUMI";
-extern char TEXT_MQTT_TSKNAME_PRESS[32] PROGMEM= "MQTT_TSKNAME_PRESS";
-extern char TEXT_MQTT_TSKNAME_PM1[32] PROGMEM= "MQTT_TSKNAME_PM1";
-extern char TEXT_MQTT_TSKNAME_PM25[32] PROGMEM= "MQTT_TSKNAME_PM25";
-extern char TEXT_MQTT_TSKNAME_PM10[32] PROGMEM= "MQTT_TSKNAME_PM10";
-extern char TEXT_MQTT_TSKNAME_AIRQUALITY[32] PROGMEM= "MQTT_TSKNAME_AIRQUALITY";
+extern char TEXT_MQTT_TSKNAME_TEMP[32] = "MQTT_TSKNAME_TEMP";
+extern char TEXT_MQTT_TSKNAME_HUMI[32] = "MQTT_TSKNAME_HUMI";
+extern char TEXT_MQTT_TSKNAME_PRESS[32] = "MQTT_TSKNAME_PRESS";
+extern char TEXT_MQTT_TSKNAME_PM1[32] = "MQTT_TSKNAME_PM1";
+extern char TEXT_MQTT_TSKNAME_PM25[32] = "MQTT_TSKNAME_PM25";
+extern char TEXT_MQTT_TSKNAME_PM10[32] = "MQTT_TSKNAME_PM10";
+extern char TEXT_MQTT_TSKNAME_AIRQUALITY[32] = "MQTT_TSKNAME_AIRQUALITY";
 
 extern char TEXT_AQIECOSENDING[128] = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
 extern char TEXT_AQIECOSERVER[32] = "aqi.eco server";
@@ -160,13 +161,13 @@ static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/se
 #elif defined ARDUINO_ARCH_ESP32
 static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
 static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
-static char LUFTDATEN_LINK[] PROGMEM = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
-static char LUFTDATENFORM_LINK[] PROGMEM = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
-static char SMOGLIST_LINK[] PROGMEM = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
-static char AIRMONITOR_LINK[] PROGMEM = "<a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>";
+static char LUFTDATEN_LINK[] = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
+static char LUFTDATENFORM_LINK[] = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
+static char SMOGLIST_LINK[] = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
+static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>";
 static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
 static char LATLONG_LINK[] = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
-static char THINGSPEAK_LINK[] PROGMEM = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
+static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
 static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
 #endif

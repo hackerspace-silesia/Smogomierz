@@ -328,6 +328,12 @@ String _addSubmitServices() {
   return submitServices;
 }
 
+String _addSubmitAdvMQTT() {
+  String submitAdvMQTT = FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_SUBMIT_SERVICES_BUTTON);
+  submitAdvMQTT.replace("{TEXT_SAVE}", (TEXT_SAVE));
+  return submitAdvMQTT;
+}
+
 String _addWiFiErase() {
   String WiFiErase = FPSTR(WEB_CONFIG_PAGE_WIFIERASE);
   WiFiErase.replace("{TEXT_ERASEWIFICONFIG}", (TEXT_ERASEWIFICONFIG));
@@ -687,6 +693,52 @@ void _handle_config_services(bool is_success) {
   message.replace("{TEXT_INFLUXDBPASSWD}", (TEXT_INFLUXDBPASSWD));
   message.replace("{DB_PASSWORD}", _addPasswdInput("DB_PASSWORD", DB_PASSWORD));
 
+  message.replace("{AdvancedMQTTConfigButton}", FPSTR(WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON));
+  message.replace("{TEXT_CONFIG_ADV_MQTT}", (TEXT_CONFIG_ADV_MQTT));
+ 
+  message.replace("{WiFiEraseButton}", _addWiFiErase());
+
+  message.replace("{WiFiEraseButton}", _addWiFiErase());
+  message.replace("{RestoreConfigButton}", _addRestoreConfig());
+  message.replace("{SubmitButton}", _addSubmitServices());
+  message += FPSTR(WEB_PAGE_FOOTER);
+
+  WebServer.send(200, "text/html", message);
+}
+
+void _handle_adv_mqtt_config(bool is_success) {
+  if (CONFIG_AUTH == true) {
+    if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+      //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+      return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+    }
+  }
+
+  String message = FPSTR(WEB_PAGE_HEADER);
+  message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
+  message.replace("{Language}", (TEXT_LANG));
+  message.replace("{CurrentPageTitle}", (TEXT_CONFIG_PAGE));
+  message.replace("{IndexPageTitle}", (TEXT_INDEX_PAGE));
+  message.replace("{ConfigPageTitle}", (TEXT_CONFIG_PAGE));
+  message.replace("{UpdatePageTitle}", (TEXT_UPDATE_PAGE));
+
+  message += FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP);
+  message.replace("{TEXT_ADVANCED_MQTT_PAGE}", (TEXT_CONFIG_ADV_MQTT));  
+
+  if (!is_success) {
+    message.replace("{WEB_CONFIG_TOP_PAGE_INFO}", "");
+  } else {
+	message.replace("{WEB_CONFIG_TOP_PAGE_INFO}", FPSTR(WEB_CONFIG_TOP_PAGE_INFO));
+    message.replace("{TEXT_SAVED}", (TEXT_SAVED));
+    message.replace("{TEXT_POSTCONFIG_INFO}", (TEXT_POSTCONFIG_INFO));
+  }
+  
+  message.replace("{TEXT_INSTRUCIONSLINK}", (TEXT_INSTRUCIONSLINK));
+  message.replace("{GITHUB_LINK}", String(GITHUB_LINK));
+  message.replace("{TEXT_HERE}", (TEXT_HERE));
+
+  message += FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG);
+  
   message.replace("{TEXT_MQTTSENDING}", (TEXT_MQTTSENDING));
   message.replace("{MQTT_ON}", _addBoolSelect("MQTT_ON", MQTT_ON));
   message.replace("{TEXT_MQTTSERVER}", (TEXT_MQTTSERVER));
@@ -739,10 +791,9 @@ void _handle_config_services(bool is_success) {
  
   message.replace("{TEXT_MQTT_TSKNAME_AIRQUALITY}", (TEXT_MQTT_TSKNAME_AIRQUALITY));
   message.replace("{MQTT_TSKNAME_AIRQUALITY}", _addTextInput("MQTT_TSKNAME_AIRQUALITY", MQTT_TSKNAME_AIRQUALITY));
- 
-  message.replace("{WiFiEraseButton}", _addWiFiErase());
+  
   message.replace("{RestoreConfigButton}", _addRestoreConfig());
-  message.replace("{SubmitButton}", _addSubmitServices());
+  message.replace("{SubmitButton}", _addSubmitAdvMQTT());
   message += FPSTR(WEB_PAGE_FOOTER);
 
   WebServer.send(200, "text/html", message);
@@ -772,6 +823,10 @@ void handle_config_device() {
 
 void handle_config_services() {
   _handle_config_services(false);
+}
+
+void handle_adv_mqtt_config() {
+  _handle_adv_mqtt_config(false);
 }
 
 void handle_config_device_post() {
@@ -965,6 +1020,35 @@ void handle_config_services_post() {
   _parseAsCString(DB_USER, WebServer.arg("DB_USER"), 64);
   _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"), 64);
  
+  if (DEBUG) {
+    Serial.println("POST CONFIG END!!");
+  }
+  
+  saveConfig();
+  //delay(250);
+  _handle_config_services(true);
+  // https://github.com/esp8266/Arduino/issues/1722
+  //ESP.reset();
+  //yield();
+  ESP.restart();
+}
+
+void handle_adv_mqtt_config_post() {
+  if (DEBUG) {
+    Serial.println("POST CONFIG START!!");
+    int argsLen = WebServer.args();
+    for (int i = 0; i < argsLen; i++) {
+      String argName = WebServer.argName(i);
+      String arg = WebServer.arg(i);
+      String ss = "** ";
+      ss += argName;
+      ss += " = ";
+      ss += arg;
+      Serial.println(ss);
+    }
+  }
+
+  // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
    MQTT_ON = _parseAsBool(WebServer.arg("MQTT_ON"));
   _parseAsCString(MQTT_HOST, WebServer.arg("MQTT_HOST"), 128);
   MQTT_PORT = WebServer.arg("MQTT_PORT").toInt();
@@ -997,7 +1081,7 @@ void handle_config_services_post() {
   
   saveConfig();
   //delay(250);
-  _handle_config_services(true);
+  _handle_adv_mqtt_config(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
   //yield();

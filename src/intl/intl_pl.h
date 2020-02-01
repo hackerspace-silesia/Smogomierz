@@ -79,6 +79,7 @@ char PL_INTL_INFLUXDBNAME[32] PROGMEM = "Nazwa bazy danych";
 char PL_INTL_INFLUXDBUSER[32] PROGMEM = "Użytkownik bazy danych";
 char PL_INTL_INFLUXDBPASSWD[32] PROGMEM = "Hasło do bazy danych";
 
+char PL_INTL_CONFIG_ADV_MQTT[32] PROGMEM = "Ustawienia MQTT";
 char PL_INTL_MQTTSENDING[64] PROGMEM = "Wysyłanie danych poprzez MQTT";
 char PL_INTL_MQTTSERVER[32] PROGMEM = "Adres serwera MQTT";
 char PL_INTL_MQTTPORT[32] PROGMEM = "Port MQTT";

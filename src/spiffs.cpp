@@ -7,6 +7,9 @@
 #include "config.h"
 #define FORMAT_SPIFFS_IF_FAILED true
 
+//const int capacity = JSON_OBJECT_SIZE(70);
+const int capacity = 6144;
+	
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {
   const char* val = obj.as<const char*>();
   if (val) {
@@ -29,7 +32,7 @@ bool loadConfig() {
   }
 
   size_t size = configFile.size();
-  if (size > 1536) {
+  if (size > 2048) {
     Serial.println("Config file size is too large");
     return false;
   }
@@ -42,7 +45,7 @@ bool loadConfig() {
   // use configFile.readString instead.
   configFile.readBytes(buf.get(), size);
 
-  StaticJsonDocument<4096> jsonBuffer;
+  StaticJsonDocument<capacity> jsonBuffer;
   deserializeJson(jsonBuffer, buf.get());
   JsonObject json = jsonBuffer.as<JsonObject>();
 
@@ -285,7 +288,7 @@ bool loadConfig() {
 }
 
 bool saveConfig() {
-  StaticJsonDocument<4096> jsonBuffer;
+  StaticJsonDocument<capacity> jsonBuffer;
   JsonObject json = jsonBuffer.to<JsonObject>();
   json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
   json["DEVICENAME"] = DEVICENAME;

@@ -68,8 +68,8 @@
   Szkic używa 550524 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 57168 bajtów (69%) pamięci dynamicznej, pozostawiając 24752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 555460 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54520 bajtów (66%) pamięci dynamicznej, pozostawiając 27400 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 557056 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55164 bajtów (67%) pamięci dynamicznej, pozostawiając 26756 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
@@ -95,7 +95,7 @@
 #ifdef ASYNC_WEBSERVER_ON
 #include "src/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 17.01.2020
 #else
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 17.01.2020  DEV
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 31.01.2020  DEV
 #endif
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
@@ -737,6 +737,8 @@ void setup() {
   WebServer.on("/config_device", HTTP_GET, handle_config_device);
   WebServer.on("/config_services", HTTP_POST, handle_config_services_post);
   WebServer.on("/config_services", HTTP_GET, handle_config_services);
+  WebServer.on("/config_adv_mqtt", HTTP_POST, handle_adv_mqtt_config_post);
+  WebServer.on("/config_adv_mqtt", HTTP_GET, handle_adv_mqtt_config);
   WebServer.on("/update", HTTP_GET, handle_update);
   WebServer.on("/api", HTTP_GET, handle_api);
   WebServer.on("/erase_wifi", HTTP_GET, erase_wifi);

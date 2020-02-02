@@ -68,7 +68,7 @@
   Szkic używa 550524 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 57168 bajtów (69%) pamięci dynamicznej, pozostawiając 24752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 557056 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 557296 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 55164 bajtów (67%) pamięci dynamicznej, pozostawiając 26756 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 
@@ -1107,47 +1107,47 @@ void sendDataToExternalDBs() {
         Serial.println("Measurements from PM Sensor!\n");
       }
       if (MQTT_IP_IN_TOPIC) {
-        mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM1) + String(MQTT_TSKNAME_PM1)).c_str(), String(averagePM1).c_str(), true);
-        mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM25) + String(MQTT_TSKNAME_PM25)).c_str(), String(averagePM25).c_str(), true);
-        mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM10) + String(MQTT_TSKNAME_PM10)).c_str(), String(averagePM10).c_str(), true);
+        mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM1) + String(MQTT_TSKNAME_PM1)).c_str(), String(averagePM1).c_str(), true);
+        mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM25) + String(MQTT_TSKNAME_PM25)).c_str(), String(averagePM25).c_str(), true);
+        mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM10) + String(MQTT_TSKNAME_PM10)).c_str(), String(averagePM10).c_str(), true);
         if (averagePM25 <= 10) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "EXCELLENT", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "EXCELLENT", true);
         } else if (averagePM25 > 10 && averagePM25 <= 20) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "GOOD", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "GOOD", true);
         } else if (averagePM25 > 20 && averagePM25 <= 25) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "FAIR", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "FAIR", true);
         } else if (averagePM25 > 25 && averagePM25 <= 50) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "INFERIOR", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "INFERIOR", true);
         } else if (averagePM25 > 50) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "POOR", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "POOR", true);
         } else {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "UNKNOWN", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "UNKNOWN", true);
         }
       } else {
-        mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM1) + String(MQTT_TSKNAME_PM1)).c_str(), String(averagePM1).c_str(), true);
-        mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM25) + String(MQTT_TSKNAME_PM25)).c_str(), String(averagePM25).c_str(), true);
-        mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM10) + String(MQTT_TSKNAME_PM10)).c_str(), String(averagePM10).c_str(), true);
+        mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM1) + String(MQTT_TSKNAME_PM1)).c_str(), String(averagePM1).c_str(), true);
+        mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM25) + String(MQTT_TSKNAME_PM25)).c_str(), String(averagePM25).c_str(), true);
+        mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PM10) + String(MQTT_TSKNAME_PM10)).c_str(), String(averagePM10).c_str(), true);
         if (averagePM25 <= 10) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "EXCELLENT", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "EXCELLENT", true);
         } else if (averagePM25 > 10 && averagePM25 <= 20) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "GOOD", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "GOOD", true);
         } else if (averagePM25 > 20 && averagePM25 <= 25) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "FAIR", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "FAIR", true);
         } else if (averagePM25 > 25 && averagePM25 <= 50) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "INFERIOR", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "INFERIOR", true);
         } else if (averagePM25 > 50) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "POOR", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "POOR", true);
         } else {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "UNKNOWN", true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_AIRQUALITY) + String(MQTT_TSKNAME_AIRQUALITY)).c_str(), "UNKNOWN", true);
         }
       }
     }
     if (MQTT_IP_IN_TOPIC) {
       if (!strcmp(THP_MODEL, "BME280")) {
         if (checkBmeStatus() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PRESS) + String(MQTT_TSKNAME_PRESS)).c_str(), String(currentPressure).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PRESS) + String(MQTT_TSKNAME_PRESS)).c_str(), String(currentPressure).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from BME280!\n");
@@ -1157,8 +1157,8 @@ void sendDataToExternalDBs() {
 
       if (!strcmp(THP_MODEL, "BMP280")) {
         if (checkBmpStatus() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PRESS) + String(MQTT_TSKNAME_PRESS)).c_str(), String(currentPressure).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PRESS) + String(MQTT_TSKNAME_PRESS)).c_str(), String(currentPressure).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from BMP280!\n");
@@ -1168,8 +1168,8 @@ void sendDataToExternalDBs() {
 
       if (!strcmp(THP_MODEL, "HTU21")) {
         if (checkHTU21DStatus() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from HTU21!\n");
@@ -1179,8 +1179,8 @@ void sendDataToExternalDBs() {
 
       if (!strcmp(THP_MODEL, "DHT22")) {
         if (checkDHT22Status() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from DHT22!\n");
@@ -1190,8 +1190,8 @@ void sendDataToExternalDBs() {
 
       if (!strcmp(THP_MODEL, "SHT1x")) {
         if (checkDHT22Status() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from SHT1x!\n");
@@ -1201,9 +1201,9 @@ void sendDataToExternalDBs() {
     } else {
       if (!strcmp(THP_MODEL, "BME280")) {
         if (checkBmeStatus() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PRESS) + String(MQTT_TSKNAME_PRESS)).c_str(), String(currentPressure).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PRESS) + String(MQTT_TSKNAME_PRESS)).c_str(), String(currentPressure).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from BME280!\n");
@@ -1213,8 +1213,8 @@ void sendDataToExternalDBs() {
 
       if (!strcmp(THP_MODEL, "BMP280")) {
         if (checkBmpStatus() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PRESS) + String(MQTT_TSKNAME_PRESS)).c_str(), String(currentPressure).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_PRESS) + String(MQTT_TSKNAME_PRESS)).c_str(), String(currentPressure).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from BMP280!\n");
@@ -1224,8 +1224,8 @@ void sendDataToExternalDBs() {
 
       if (!strcmp(THP_MODEL, "HTU21")) {
         if (checkHTU21DStatus() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from HTU21!\n");
@@ -1235,8 +1235,8 @@ void sendDataToExternalDBs() {
 
       if (!strcmp(THP_MODEL, "DHT22")) {
         if (checkDHT22Status() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from DHT22!\n");
@@ -1246,8 +1246,8 @@ void sendDataToExternalDBs() {
 
       if (!strcmp(THP_MODEL, "SHT1x")) {
         if (checkDHT22Status() == true) {
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
-          mqttclient.publish(String(String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_TEMP) + String(MQTT_TSKNAME_TEMP)).c_str(), String(currentTemperature).c_str(), true);
+          mqttclient.publish(String("/" + String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_DEVICE_NAME) + String(MQTT_SENSOR_PREFIX) + String(MQTT_VALNAME_HUMI) + String(MQTT_TSKNAME_HUMI)).c_str(), String(currentHumidity).c_str(), true);
         } else {
           if (DEBUG) {
             Serial.println("No measurements from SHT1x!\n");

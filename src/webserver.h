@@ -292,6 +292,14 @@ String _addTextInput(const String &key, const String &value, const String &postf
   return input;
 }
 
+String _addMQTTTextInput(const String &key, const String &value, const String &postfix = "") {
+  String input = FPSTR(WEB_CONFIG_PAGE_MQTT_TEXTIMPUT);
+  input.replace("{key}", key);
+  input.replace("{value}", _escapeString(value));
+  input.replace("{postfix}", postfix);
+  return input;
+}
+
 String _addPasswdInput(const String &key, const String &value, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_PASSWDINPUT);
   input.replace("{key}", key);
@@ -749,48 +757,150 @@ void _handle_adv_mqtt_config(bool is_success) {
   message.replace("{MQTT_USER}", _addTextInput("MQTT_USER", MQTT_USER));
   message.replace("{TEXT_MQTTPASSWD}", (TEXT_MQTTPASSWD));
   message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
+
+  message.replace("{TEXT_MQTT_TOPIC_INFO}", (TEXT_MQTT_TOPIC_INFO));
   
-  message.replace("{MQTT_VALNAME_TSKNAME_INFO}", FPSTR(WEB_CONFIG_SERVICES_MQTT_VALNAME_TSKNAME_INFO));
-  
-  message.replace("{TEXT_MQTT_DEVICE_NAME}", "MQTT_DEVICE_NAME");
-  message.replace("{MQTT_DEVICE_NAME}", String(device_name));
-  
-  message.replace("{TEXT_MQTT_IP_IN_TOPIC}", "MQTT_IP_IN_TOPIC");
+  message.replace("{TEXT_MQTT_IP_IN_TOPIC}", (TEXT_MQTT_IP_IN_TOPIC));
   message.replace("{MQTT_IP_IN_TOPIC}", _addBoolSelect("MQTT_IP_IN_TOPIC", MQTT_IP_IN_TOPIC));
   
-  message.replace("{TEXT_MQTT_SENSOR_PREFIX}", (TEXT_MQTT_SENSOR_PREFIX));
-  message.replace("{MQTT_SENSOR_PREFIX}", _addTextInput("MQTT_SENSOR_PREFIX", MQTT_SENSOR_PREFIX));
-  
-  message.replace("{TEXT_MQTT_VALNAME_TEMP}", (TEXT_MQTT_VALNAME_TEMP));
-  message.replace("{MQTT_VALNAME_TEMP}", _addTextInput("MQTT_VALNAME_TEMP", MQTT_VALNAME_TEMP));
-  message.replace("{TEXT_MQTT_VALNAME_HUMI}", (TEXT_MQTT_VALNAME_HUMI));
-  message.replace("{MQTT_VALNAME_HUMI}", _addTextInput("MQTT_VALNAME_HUMI", MQTT_VALNAME_HUMI));
-  message.replace("{TEXT_MQTT_VALNAME_PRESS}", (TEXT_MQTT_VALNAME_PRESS));
-  message.replace("{MQTT_VALNAME_PRESS}", _addTextInput("MQTT_VALNAME_PRESS", MQTT_VALNAME_PRESS));
-  message.replace("{TEXT_MQTT_VALNAME_PM1}", (TEXT_MQTT_VALNAME_PM1));
-  message.replace("{MQTT_VALNAME_PM1}", _addTextInput("MQTT_VALNAME_PM1", MQTT_VALNAME_PM1));
-  message.replace("{TEXT_MQTT_VALNAME_PM25}", (TEXT_MQTT_VALNAME_PM25));
-  message.replace("{MQTT_VALNAME_PM25}", _addTextInput("MQTT_VALNAME_PM25", MQTT_VALNAME_PM25));
-  message.replace("{TEXT_MQTT_VALNAME_PM10}", (TEXT_MQTT_VALNAME_PM10));
-  message.replace("{MQTT_VALNAME_PM10}", _addTextInput("MQTT_VALNAME_PM10", MQTT_VALNAME_PM10));
-  message.replace("{TEXT_MQTT_VALNAME_AIRQUALITY}", (TEXT_MQTT_VALNAME_AIRQUALITY));
-  message.replace("{MQTT_VALNAME_AIRQUALITY}", _addTextInput("MQTT_VALNAME_AIRQUALITY", MQTT_VALNAME_AIRQUALITY));
-  
-  message.replace("{TEXT_MQTT_TSKNAME_TEMP}", (TEXT_MQTT_TSKNAME_TEMP));
-  message.replace("{MQTT_TSKNAME_TEMP}", _addTextInput("MQTT_TSKNAME_TEMP", MQTT_TSKNAME_TEMP));
-  message.replace("{TEXT_MQTT_TSKNAME_HUMI}", (TEXT_MQTT_TSKNAME_HUMI));
-  message.replace("{MQTT_TSKNAME_HUMI}", _addTextInput("MQTT_TSKNAME_HUMI", MQTT_TSKNAME_HUMI));
-  message.replace("{TEXT_MQTT_TSKNAME_PRESS}", (TEXT_MQTT_TSKNAME_PRESS));
-  message.replace("{MQTT_TSKNAME_PRESS}", _addTextInput("MQTT_TSKNAME_PRESS", MQTT_TSKNAME_PRESS)); 
-  message.replace("{TEXT_MQTT_TSKNAME_PM1}", (TEXT_MQTT_TSKNAME_PM1));
-  message.replace("{MQTT_TSKNAME_PM1}", _addTextInput("MQTT_TSKNAME_PM1", MQTT_TSKNAME_PM1));
-  message.replace("{TEXT_MQTT_TSKNAME_PM25}", (TEXT_MQTT_TSKNAME_PM25));
-  message.replace("{MQTT_TSKNAME_PM25}", _addTextInput("MQTT_TSKNAME_PM25", MQTT_TSKNAME_PM25));
-  message.replace("{TEXT_MQTT_TSKNAME_PM10}", (TEXT_MQTT_TSKNAME_PM10));
-  message.replace("{MQTT_TSKNAME_PM10}", _addTextInput("MQTT_TSKNAME_PM10", MQTT_TSKNAME_PM10));
+  message.replace("{TEXT_MQTT_DEVICENAME_IN_TOPIC}", (TEXT_MQTT_DEVICENAME_IN_TOPIC));
+  message.replace("{MQTT_DEVICENAME_IN_TOPIC}", _addBoolSelect("MQTT_DEVICENAME_IN_TOPIC", MQTT_DEVICENAME_IN_TOPIC));
+    
+  if (strcmp(THP_MODEL, "Non")) {
+    takeTHPMeasurements();
+    if (!strcmp(THP_MODEL, "BME280")) {
+      if (checkBmeStatus() == true) {
+	      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+	  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+	      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
+	      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+	
+	      message.replace("{MQTT_PRESS}", String(int(currentPressure)));
+	      message.replace("{MQTT_TOPIC_PRESS}", _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from BME280!\n");
+        }
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "BMP280")) {
+      if (checkBmpStatus() == true) {
+	      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+	  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+	      message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+	
+	      message.replace("{MQTT_PRESS}", String(int(currentPressure)));
+	      message.replace("{MQTT_TOPIC_PRESS}", _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from BMP280!\n");
+        }
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "HTU21")) {
+      if (checkHTU21DStatus() == true) {
+	      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+	  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+	      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
+	      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+	
+	      message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from HTU21!\n");
+        }
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "DHT22")) {
+      if (checkDHT22Status() == true) {
+	      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+	  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+	      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
+	      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+	
+	      message.replace("<b>PRESS: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from DHT22!\n");
+        }
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "SHT1x")) {
+      if (checkDHT22Status() == true) {
+	      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+	  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+	      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
+	      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+	
+	      message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from SHT1x!\n");
+        }
+      }
+    }	
+  } else {
+	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+  }
+
+ if (strcmp(DUST_MODEL, "Non")) {
+     message.replace("{MQTT_PM1}", String(int(averagePM1)));
+	 message.replace("{MQTT_TOPIC_PM1}", _addMQTTTextInput("MQTT_TOPIC_PM1", MQTT_TOPIC_PM1));
+     message.replace("{MQTT_PM25}", String(int(averagePM25)));
+	 message.replace("{MQTT_TOPIC_PM25}", _addMQTTTextInput("MQTT_TOPIC_PM25", MQTT_TOPIC_PM25));
+     message.replace("{MQTT_PM10}", String(int(averagePM10)));
+	 message.replace("{MQTT_TOPIC_PM10}", _addMQTTTextInput("MQTT_TOPIC_PM10", MQTT_TOPIC_PM10));
+	  
+     if (averagePM25 <= 10) {
+   	  message.replace("{MQTT_AIRQUALITY}", "EXCELLENT");
+     } else if (averagePM25 > 10 && averagePM25 <= 20) {
+   	  message.replace("{MQTT_AIRQUALITY}", "GOOD");
+     } else if (averagePM25 > 20 && averagePM25 <= 25) {
+   	  message.replace("{MQTT_AIRQUALITY}", "FAIR");
+     } else if (averagePM25 > 25 && averagePM25 <= 50) {
+   	  message.replace("{MQTT_AIRQUALITY}", "INFERIOR");
+     } else if (averagePM25 > 50) {
+   	  message.replace("{MQTT_AIRQUALITY}", "POOR");
+     } else {
+   	  message.replace("{MQTT_AIRQUALITY}", "UNKNOWN");
+     }
+     message.replace("{MQTT_TOPIC_AIRQUALITY}", _addMQTTTextInput("MQTT_TOPIC_AIRQUALITY", MQTT_TOPIC_AIRQUALITY));
+ } else {
+  message.replace("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />", "");
+  message.replace("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />", "");
+  message.replace("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />", "");
+  message.replace("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />", "");
+ }
  
-  message.replace("{TEXT_MQTT_TSKNAME_AIRQUALITY}", (TEXT_MQTT_TSKNAME_AIRQUALITY));
-  message.replace("{MQTT_TSKNAME_AIRQUALITY}", _addTextInput("MQTT_TSKNAME_AIRQUALITY", MQTT_TSKNAME_AIRQUALITY));
+    message.replace("{TEXT_TEMP_TOPIC}", (TEXT_TEMPERATURE));
+    message.replace("{TEXT_HUMI_TOPIC}", (TEXT_HUMIDITY));
+    message.replace("{TEXT_PRESS_TOPIC}", (TEXT_PRESSURE));
+    message.replace("{TEXT_PM1_TOPIC}", "PM1");
+	message.replace("{TEXT_PM25_TOPIC}", "PM2.5");
+	message.replace("{TEXT_PM10_TOPIC}", "PM10");
+	message.replace("{TEXT_AIRQUALITY_TOPIC}", (TEXT_AIRQUALITY_TOPIC));
+
+  if (MQTT_DEVICENAME_IN_TOPIC) {
+	  message.replace("{MQTT_DEVICENAME}", (String(device_name) + "/"));
+  } else {
+	  message.replace("{MQTT_DEVICENAME}", "");
+  }
+  if (MQTT_IP_IN_TOPIC) {
+		  message.replace("/{MQTT_IP}", ("/" + String(WiFi.localIP().toString()) + "/"));	  	
+  } else {
+	  message.replace("/{MQTT_IP}", "/");
+  }
   
   message.replace("{RestoreConfigButton}", _addRestoreConfig());
   message.replace("{SubmitButton}", _addSubmitAdvMQTT());
@@ -1056,24 +1166,15 @@ void handle_adv_mqtt_config_post() {
   _parseAsCString(MQTT_PASSWORD, WebServer.arg("MQTT_PASSWORD"), 64);
   
   MQTT_IP_IN_TOPIC = _parseAsBool(WebServer.arg("MQTT_IP_IN_TOPIC"));
+  MQTT_DEVICENAME_IN_TOPIC = _parseAsBool(WebServer.arg("MQTT_DEVICENAME_IN_TOPIC"));
   
-  _parseAsCString(MQTT_SENSOR_PREFIX, WebServer.arg("MQTT_SENSOR_PREFIX"), 32);
-    
-  _parseAsCString(MQTT_VALNAME_TEMP, WebServer.arg("MQTT_VALNAME_TEMP"), 32);
-  _parseAsCString(MQTT_VALNAME_HUMI, WebServer.arg("MQTT_VALNAME_HUMI"), 23);
-  _parseAsCString(MQTT_VALNAME_PRESS, WebServer.arg("MQTT_VALNAME_PRESS"), 32);
-  _parseAsCString(MQTT_VALNAME_PM1, WebServer.arg("MQTT_VALNAME_PM1"), 32);
-  _parseAsCString(MQTT_VALNAME_PM25, WebServer.arg("MQTT_VALNAME_PM25"), 32);
-  _parseAsCString(MQTT_VALNAME_PM10, WebServer.arg("MQTT_VALNAME_PM10"), 32);
-  _parseAsCString(MQTT_VALNAME_AIRQUALITY, WebServer.arg("MQTT_VALNAME_AIRQUALITY"), 32);
-
-  _parseAsCString(MQTT_TSKNAME_TEMP, WebServer.arg("MQTT_TSKNAME_TEMP"), 32);
-  _parseAsCString(MQTT_TSKNAME_HUMI, WebServer.arg("MQTT_TSKNAME_HUMI"), 32);
-  _parseAsCString(MQTT_TSKNAME_PRESS, WebServer.arg("MQTT_TSKNAME_PRESS"), 32);
-  _parseAsCString(MQTT_TSKNAME_PM1, WebServer.arg("MQTT_TSKNAME_PM1"), 32);
-  _parseAsCString(MQTT_TSKNAME_PM25, WebServer.arg("MQTT_TSKNAME_PM25"), 32);
-  _parseAsCString(MQTT_TSKNAME_PM10, WebServer.arg("MQTT_TSKNAME_PM10"), 32);
-  _parseAsCString(MQTT_TSKNAME_AIRQUALITY, WebServer.arg("MQTT_TSKNAME_AIRQUALITY"), 32);
+  _parseAsCString(MQTT_TOPIC_TEMP, WebServer.arg("MQTT_TOPIC_TEMP"), 128);
+  _parseAsCString(MQTT_TOPIC_HUMI, WebServer.arg("MQTT_TOPIC_HUMI"), 128);
+  _parseAsCString(MQTT_TOPIC_PRESS, WebServer.arg("MQTT_TOPIC_PRESS"), 128);
+  _parseAsCString(MQTT_TOPIC_PM1, WebServer.arg("MQTT_TOPIC_PM1"), 128);
+  _parseAsCString(MQTT_TOPIC_PM25, WebServer.arg("MQTT_TOPIC_PM25"), 128);
+  _parseAsCString(MQTT_TOPIC_PM10, WebServer.arg("MQTT_TOPIC_PM10"), 128);
+  _parseAsCString(MQTT_TOPIC_AIRQUALITY, WebServer.arg("MQTT_TOPIC_AIRQUALITY"), 128);
   
   if (DEBUG) {
     Serial.println("POST CONFIG END!!");

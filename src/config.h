@@ -42,24 +42,15 @@ extern char MQTT_USER[64];
 extern char MQTT_PASSWORD[64];
 
 extern bool  MQTT_IP_IN_TOPIC;
+extern bool  MQTT_DEVICENAME_IN_TOPIC;
 
-extern char MQTT_SENSOR_PREFIX[32];
-
-extern char MQTT_VALNAME_TEMP[32];
-extern char MQTT_VALNAME_HUMI[32];
-extern char MQTT_VALNAME_PRESS[32];
-extern char MQTT_VALNAME_PM1[32];
-extern char MQTT_VALNAME_PM25[32];
-extern char MQTT_VALNAME_PM10[32];
-extern char MQTT_VALNAME_AIRQUALITY[32];
-
-extern char MQTT_TSKNAME_TEMP[32];
-extern char MQTT_TSKNAME_HUMI[32];
-extern char MQTT_TSKNAME_PRESS[32];
-extern char MQTT_TSKNAME_PM1[32];
-extern char MQTT_TSKNAME_PM25[32];
-extern char MQTT_TSKNAME_PM10[32];
-extern char MQTT_TSKNAME_AIRQUALITY[32];
+extern char MQTT_TOPIC_TEMP[128];
+extern char MQTT_TOPIC_HUMI[128];
+extern char MQTT_TOPIC_PRESS[128];
+extern char MQTT_TOPIC_PM1[128];
+extern char MQTT_TOPIC_PM25[128];
+extern char MQTT_TOPIC_PM10[128];
+extern char MQTT_TOPIC_AIRQUALITY[128];
 
 extern bool AQI_ECO_ON;
 extern char AQI_ECO_HOST[128];

@@ -86,6 +86,11 @@ char EN_INTL_MQTTPORT[32] PROGMEM = "MQTT port";
 char EN_INTL_MQTTUSER[32] PROGMEM = "MQTT user";
 char EN_INTL_MQTTPASSWD[32] PROGMEM = "MQTT password";
 
+char EN_INTL_MQTT_IP_IN_TOPIC[32] PROGMEM = "IP address in topic";
+char EN_INTL_MQTT_DEVICENAME_IN_TOPIC[32] PROGMEM = "Device name in topic";
+
+char EN_INTL_MQTT_TOPIC_INFO[256] PROGMEM = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
+
 char EN_INTL_AQIECOSENDING[128] PROGMEM = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
 char EN_INTL_AQIECOSERVER[32] PROGMEM = "aqi.eco server";
 char EN_INTL_AQIECOPATH[32] PROGMEM = "aqi.eco path";

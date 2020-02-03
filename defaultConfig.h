@@ -42,24 +42,15 @@ char MQTT_USER[64] = "username";
 char MQTT_PASSWORD[64] = "password";
 
 bool MQTT_IP_IN_TOPIC = false;
+bool  MQTT_DEVICENAME_IN_TOPIC = true;
 
-char MQTT_SENSOR_PREFIX[32] = "sensor";
-
-char MQTT_VALNAME_TEMP[32] = "temperature";
-char MQTT_VALNAME_HUMI[32] = "humidity";
-char MQTT_VALNAME_PRESS[32] = "pressure";
-char MQTT_VALNAME_PM1[32] = "PM1";
-char MQTT_VALNAME_PM25[32] = "PM2.5";
-char MQTT_VALNAME_PM10[32] = "PM10";
-char MQTT_VALNAME_AIRQUALITY[32] = "airquality";
-
-char MQTT_TSKNAME_TEMP[32] = "";
-char MQTT_TSKNAME_HUMI[32] = "";
-char MQTT_TSKNAME_PRESS[32] = "";
-char MQTT_TSKNAME_PM1[32] = "";
-char MQTT_TSKNAME_PM25[32] = "";
-char MQTT_TSKNAME_PM10[32] = "";
-char MQTT_TSKNAME_AIRQUALITY[32] = "";
+char MQTT_TOPIC_TEMP[128] = "sensor/temperature";
+char MQTT_TOPIC_HUMI[128] = "sensor/pressure";
+char MQTT_TOPIC_PRESS[128] = "sensor/humidity";
+char MQTT_TOPIC_PM1[128] = "sensor/PM1";
+char MQTT_TOPIC_PM25[128] = "sensor/PM2.5";
+char MQTT_TOPIC_PM10[128] = "sensor/PM10";
+char MQTT_TOPIC_AIRQUALITY[128] = "airquality";
 
 bool AQI_ECO_ON = false;
 char AQI_ECO_HOST[128] = "???.aqi.eco";

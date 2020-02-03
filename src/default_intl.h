@@ -86,23 +86,12 @@ extern char TEXT_MQTTPORT[32] = "MQTT port";
 extern char TEXT_MQTTUSER[32] = "MQTT user";
 extern char TEXT_MQTTPASSWD[32] = "MQTT password";
 
-extern char TEXT_MQTT_SENSOR_PREFIX[32] = "MQTT_SENSOR_PREFIX";
+extern char TEXT_MQTT_IP_IN_TOPIC[32] = "IP address in topic";
+extern char TEXT_MQTT_DEVICENAME_IN_TOPIC[32] = "Device name in topic";
 
-extern char TEXT_MQTT_VALNAME_TEMP[32] = "MQTT_VALNAME_TEMP";
-extern char TEXT_MQTT_VALNAME_HUMI[32] = "MQTT_VALNAME_HUMI";
-extern char TEXT_MQTT_VALNAME_PRESS[32] = "MQTT_VALNAME_PRESS";
-extern char TEXT_MQTT_VALNAME_PM1[32] = "MQTT_VALNAME_PM1";
-extern char TEXT_MQTT_VALNAME_PM25[32] = "MQTT_VALNAME_PM25";
-extern char TEXT_MQTT_VALNAME_PM10[32] = "MQTT_VALNAME_PM10";
-extern char TEXT_MQTT_VALNAME_AIRQUALITY[32] = "MQTT_VALNAME_AIRQUALITY";
-
-extern char TEXT_MQTT_TSKNAME_TEMP[32] = "MQTT_TSKNAME_TEMP";
-extern char TEXT_MQTT_TSKNAME_HUMI[32] = "MQTT_TSKNAME_HUMI";
-extern char TEXT_MQTT_TSKNAME_PRESS[32] = "MQTT_TSKNAME_PRESS";
-extern char TEXT_MQTT_TSKNAME_PM1[32] = "MQTT_TSKNAME_PM1";
-extern char TEXT_MQTT_TSKNAME_PM25[32] = "MQTT_TSKNAME_PM25";
-extern char TEXT_MQTT_TSKNAME_PM10[32] = "MQTT_TSKNAME_PM10";
-extern char TEXT_MQTT_TSKNAME_AIRQUALITY[32] = "MQTT_TSKNAME_AIRQUALITY";
+extern char TEXT_MQTT_TOPIC_INFO[256] = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
+	
+extern char TEXT_AIRQUALITY_TOPIC[16] = "Airquality";
 
 extern char TEXT_AQIECOSENDING[128] = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
 extern char TEXT_AQIECOSERVER[32] = "aqi.eco server";

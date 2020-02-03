@@ -147,6 +147,8 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	const char WEB_CONFIG_PAGE_ADDOPTION[] PROGMEM = "<option value='{value}' {srslyValue}{label}</option>";
 
 	const char WEB_CONFIG_PAGE_TEXTIMPUT[] PROGMEM = "<input type='text' maxlength='255' size='20' name='{key}' value='{value}'> {postfix}<br />";
+	
+	const char WEB_CONFIG_PAGE_MQTT_TEXTIMPUT[] PROGMEM = "<input type='text' maxlength='120' size='32' name='{key}' value='{value}'>{postfix}";
 
 	const char WEB_CONFIG_PAGE_PASSWDINPUT[] = "<input type='password' maxlength='255' size='20' name='{key}' value='{value}'> {postfix}<br />";
 
@@ -168,9 +170,6 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 			    <p class='card-text'>{TEXT_POSTCONFIG_INFO}</p>
 			  </div></div></center>)rawliteral";
 	
-	const char WEB_CONFIG_SERVICES_MQTT_VALNAME_TSKNAME_INFO[] PROGMEM = R"rawliteral(<pre>MQTT_ADRESS/MQTT_DEVICE_NAME/MQTT_SENSOR_PREFIX/MQTT_VALNAME/MQTT_TSKNAME/VALUE</pre>
-	Nieużywane pola pozostaw puste. Znaki / dodawane są automatycznie.<br>)rawliteral";
-	
 // CONFIG PAGE - END
 // CONFIG DEVICE PAGE - Start
 #ifdef ASYNC_WEBSERVER_ON
@@ -188,19 +187,6 @@ const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POS
 	<br><hr><br>
 	{TEXT_INSTRUCIONSLINK}<br>
 	)rawliteral";
-/*
-<div class="card text-white bg-success mb-3" style="max-width: 20rem;">
-  //<div class="card-header">Header</div>
-  <div class="card-body">
-    <h4 class="card-title"><strong>{TEXT_SAVED}!</strong></h4>
-    <p class="card-text">{TEXT_POSTCONFIG_INFO}</p>
-  </div>
-</div>
-
-	//<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div>
-
-
-*/
 #endif
 const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVICENAME}: </b>{device_name} <br>
 	<b>{TEXT_DEVICENAMEAUTO}: </b>{DEVICENAME_AUTO}
@@ -312,40 +298,30 @@ const char WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP[] PROGMEM = R"rawliteral(<form meth
 	{TEXT_INSTRUCIONSLINK}<br>
 	)rawliteral";
 #endif
-const char WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_MQTTSENDING}: </b>{MQTT_ON}
-	<b>{TEXT_MQTTSERVER}: </b>{MQTT_HOST}
-	<b>{TEXT_MQTTPORT}: </b>{MQTT_PORT}
-	<b>{TEXT_MQTTUSER}: </b>{MQTT_USER}
-	<b>{TEXT_MQTTPASSWD}: </b>{MQTT_PASSWORD}
-	<br>
-	<b>{TEXT_MQTT_IP_IN_TOPIC}: </b>{MQTT_IP_IN_TOPIC}
-	<br><br>{MQTT_VALNAME_TSKNAME_INFO}
-	<br>
-	<b>{TEXT_MQTT_DEVICE_NAME}: </b>{MQTT_DEVICE_NAME}
-	<br><br>
-	<b>{TEXT_MQTT_SENSOR_PREFIX}: </b>{MQTT_SENSOR_PREFIX}
-	<br>
-	<b>{TEXT_MQTT_VALNAME_TEMP}: </b>{MQTT_VALNAME_TEMP}
-	<b>{TEXT_MQTT_VALNAME_HUMI}: </b>{MQTT_VALNAME_HUMI}
-	<b>{TEXT_MQTT_VALNAME_PRESS}: </b>{MQTT_VALNAME_PRESS}
-	<b>{TEXT_MQTT_VALNAME_PM1}: </b>{MQTT_VALNAME_PM1}
-	<b>{TEXT_MQTT_VALNAME_PM25}: </b>{MQTT_VALNAME_PM25}
-	<b>{TEXT_MQTT_VALNAME_PM10}: </b>{MQTT_VALNAME_PM10}
-	<b>{TEXT_MQTT_VALNAME_AIRQUALITY}: </b>{MQTT_VALNAME_AIRQUALITY}
-	<br>
-	<b>{TEXT_MQTT_TSKNAME_TEMP}: </b>{MQTT_TSKNAME_TEMP}
-	<b>{TEXT_MQTT_TSKNAME_HUMI}: </b>{MQTT_TSKNAME_HUMI}
-	<b>{TEXT_MQTT_TSKNAME_PRESS}: </b>{MQTT_TSKNAME_PRESS}
-	<b>{TEXT_MQTT_TSKNAME_PM1}: </b>{MQTT_TSKNAME_PM1}
-	<b>{TEXT_MQTT_TSKNAME_PM25}: </b>{MQTT_TSKNAME_PM25}
-	<b>{TEXT_MQTT_TSKNAME_PM10}: </b>{MQTT_TSKNAME_PM10}
-	<b>{TEXT_MQTT_TSKNAME_AIRQUALITY}: </b>{MQTT_TSKNAME_AIRQUALITY}
-	<hr><center><br>
-	{RestoreConfigButton}
-	<br><br></center><hr><br><center>
-	{SubmitButton}
-	</center>
-	)rawliteral";
+	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG[] PROGMEM = R"rawliteral(<br><b>{TEXT_MQTTSENDING}: </b>{MQTT_ON}
+		<b>{TEXT_MQTTSERVER}: </b>{MQTT_HOST}
+		<b>{TEXT_MQTTPORT}: </b>{MQTT_PORT}
+		<b>{TEXT_MQTTUSER}: </b>{MQTT_USER}
+		<b>{TEXT_MQTTPASSWD}: </b>{MQTT_PASSWORD}
+		<br>{TEXT_MQTT_TOPIC_INFO}
+		<br><br>
+		<b>{TEXT_MQTT_IP_IN_TOPIC}: </b>{MQTT_IP_IN_TOPIC}
+		<b>{TEXT_MQTT_DEVICENAME_IN_TOPIC}: </b>{MQTT_DEVICENAME_IN_TOPIC}
+		<br>
+		<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />
+		<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />
+		<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />
+		<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />
+		<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />
+		<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />
+		<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />
+		<br>
+		<hr><center><br>
+		{RestoreConfigButton}
+		<br><br></center><hr><br><center>
+		{SubmitButton}
+		</center>
+		)rawliteral";
 // CONFIG ADVANCED MQTT PAGE - END
 // UPDATE BUTTONS - START
 

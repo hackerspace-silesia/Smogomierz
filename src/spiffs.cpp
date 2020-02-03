@@ -98,24 +98,15 @@ bool loadConfig() {
   _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password", 64);
   
   MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
+  MQTT_DEVICENAME_IN_TOPIC = json["MQTT_DEVICENAME_IN_TOPIC"];
   
-  _safeCpy(MQTT_SENSOR_PREFIX, json["MQTT_SENSOR_PREFIX"], "sensor", 32);
-  
-  _safeCpy(MQTT_VALNAME_TEMP, json["MQTT_VALNAME_TEMP"], "temperature", 32);
-  _safeCpy(MQTT_VALNAME_HUMI, json["MQTT_VALNAME_HUMI"], "humidity", 32);
-  _safeCpy(MQTT_VALNAME_PRESS, json["MQTT_VALNAME_PRESS"], "pressure", 32);
-  _safeCpy(MQTT_VALNAME_PM1, json["MQTT_VALNAME_PM1"], "PM1", 32);
-  _safeCpy(MQTT_VALNAME_PM25, json["MQTT_VALNAME_PM25"], "PM2.5", 32);
-  _safeCpy(MQTT_VALNAME_PM10, json["MQTT_VALNAME_PM10"], "PM10", 32);
-  _safeCpy(MQTT_VALNAME_AIRQUALITY, json["MQTT_VALNAME_AIRQUALITY"], "airquality", 32);
-  
-  _safeCpy(MQTT_TSKNAME_TEMP, json["MQTT_TSKNAME_TEMP"], "", 32);
-  _safeCpy(MQTT_TSKNAME_HUMI, json["MQTT_TSKNAME_HUMI"], "", 32);
-  _safeCpy(MQTT_TSKNAME_PRESS, json["MQTT_TSKNAME_PRESS"], "", 32);
-  _safeCpy(MQTT_TSKNAME_PM1, json["MQTT_TSKNAME_PM1"], "", 32);
-  _safeCpy(MQTT_TSKNAME_PM25, json["MQTT_TSKNAME_PM25"], "", 32);
-  _safeCpy(MQTT_TSKNAME_PM10, json["MQTT_TSKNAME_PM10"], "", 32);
-  _safeCpy(MQTT_TSKNAME_AIRQUALITY, json["MQTT_TSKNAME_AIRQUALITY"], "", 32);
+  _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 128);
+  _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 128);
+  _safeCpy(MQTT_TOPIC_PRESS, json["MQTT_TOPIC_PRESS"], "MQTT_TOPIC_PRESS", 128);
+  _safeCpy(MQTT_TOPIC_PM1, json["MQTT_TOPIC_PM1"], "MQTT_TOPIC_PM1", 128);
+  _safeCpy(MQTT_TOPIC_PM25, json["MQTT_TOPIC_PM25"], "MQTT_TOPIC_PM25", 128);
+  _safeCpy(MQTT_TOPIC_PM10, json["MQTT_TOPIC_PM10"], "MQTT_TOPIC_PM10", 128);
+  _safeCpy(MQTT_TOPIC_AIRQUALITY, json["MQTT_TOPIC_AIRQUALITY"], "MQTT_TOPIC_AIRQUALITY", 128);
   
   AQI_ECO_ON = json["AQI_ECO_ON"];
   _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 128);
@@ -214,38 +205,23 @@ bool loadConfig() {
     Serial.print("Loaded MQTT_IP_IN_TOPIC: ");
     Serial.println(MQTT_IP_IN_TOPIC);
 	
-    Serial.print("Loaded MQTT_SENSOR_PREFIX: ");
-    Serial.println(MQTT_SENSOR_PREFIX);
+    Serial.print("Loaded MQTT_DEVICENAME_IN_TOPIC: ");
+    Serial.println(MQTT_DEVICENAME_IN_TOPIC);
 	
-    Serial.print("Loaded MQTT_VALNAME_TEMP: ");
-    Serial.println(MQTT_VALNAME_TEMP);
-    Serial.print("Loaded MQTT_VALNAME_HUMI: ");
-    Serial.println(MQTT_VALNAME_HUMI);
-    Serial.print("Loaded MQTT_VALNAME_PRESS: ");
-    Serial.println(MQTT_VALNAME_PRESS);
-    Serial.print("Loaded MQTT_VALNAME_PM1: ");
-    Serial.println(MQTT_VALNAME_PM1);
-    Serial.print("Loaded MQTT_VALNAME_PM25: ");
-    Serial.println(MQTT_VALNAME_PM25);
-    Serial.print("Loaded MQTT_VALNAME_PM10: ");
-    Serial.println(MQTT_VALNAME_PM10);
-    Serial.print("Loaded MQTT_VALNAME_AIRQUALITY: ");
-    Serial.println(MQTT_VALNAME_AIRQUALITY);
-  
-    Serial.print("Loaded MQTT_TSKNAME_TEMP: ");
-    Serial.println(MQTT_TSKNAME_TEMP);
-    Serial.print("Loaded MQTT_TSKNAME_HUMI: ");
-    Serial.println(MQTT_TSKNAME_HUMI);
-    Serial.print("Loaded MQTT_TSKNAME_PRESS: ");
-    Serial.println(MQTT_TSKNAME_PRESS);
-    Serial.print("Loaded MQTT_TSKNAME_PM1: ");
-    Serial.println(MQTT_TSKNAME_PM1);
-    Serial.print("Loaded MQTT_TSKNAME_PM25: ");
-    Serial.println(MQTT_TSKNAME_PM25);
-    Serial.print("Loaded MQTT_TSKNAME_PM10: ");
-    Serial.println(MQTT_TSKNAME_PM10);
-    Serial.print("Loaded MQTT_TSKNAME_AIRQUALITY: ");
-    Serial.println(MQTT_TSKNAME_AIRQUALITY);
+    Serial.print("Loaded MQTT_TOPIC_TEMP: ");
+    Serial.println(MQTT_TOPIC_TEMP);
+    Serial.print("Loaded MQTT_TOPIC_HUMI: ");
+    Serial.println(MQTT_TOPIC_HUMI);
+    Serial.print("Loaded MQTT_TOPIC_PRESS: ");
+    Serial.println(MQTT_TOPIC_PRESS);
+    Serial.print("Loaded MQTT_TOPIC_PM1: ");
+    Serial.println(MQTT_TOPIC_PM1);
+    Serial.print("Loaded MQTT_TOPIC_PM25: ");
+    Serial.println(MQTT_TOPIC_PM25);
+    Serial.print("Loaded MQTT_TOPIC_PM10: ");
+    Serial.println(MQTT_TOPIC_PM10);
+    Serial.print("Loaded MQTT_TOPIC_AIRQUALITY: ");
+    Serial.println(MQTT_TOPIC_AIRQUALITY);
 	
     Serial.print("Loaded AQI_ECO_ON: ");
     Serial.println(AQI_ECO_ON);
@@ -334,24 +310,15 @@ bool saveConfig() {
   json["MQTT_PASSWORD"] = String(MQTT_PASSWORD);
 
   json["MQTT_IP_IN_TOPIC"] = MQTT_IP_IN_TOPIC;
-
-  json["MQTT_SENSOR_PREFIX"] = MQTT_SENSOR_PREFIX;
+  json["MQTT_DEVICENAME_IN_TOPIC"] = MQTT_DEVICENAME_IN_TOPIC;
   
-  json["MQTT_VALNAME_TEMP"] = MQTT_VALNAME_TEMP;
-  json["MQTT_VALNAME_HUMI"] = MQTT_VALNAME_HUMI;
-  json["MQTT_VALNAME_PRESS"] = MQTT_VALNAME_PRESS;
-  json["MQTT_VALNAME_PM1"] = MQTT_VALNAME_PM1;
-  json["MQTT_VALNAME_PM25"] = MQTT_VALNAME_PM25;
-  json["MQTT_VALNAME_PM10"] = MQTT_VALNAME_PM10;
-  json["MQTT_VALNAME_AIRQUALITY"] = MQTT_VALNAME_AIRQUALITY;
-  
-  json["MQTT_TSKNAME_TEMP"] = MQTT_TSKNAME_TEMP;
-  json["MQTT_TSKNAME_HUMI"] = MQTT_TSKNAME_HUMI;
-  json["MQTT_TSKNAME_PRESS"] = MQTT_TSKNAME_PRESS;
-  json["MQTT_TSKNAME_PM1"] = MQTT_TSKNAME_PM1;
-  json["MQTT_TSKNAME_PM25"] = MQTT_TSKNAME_PM25;
-  json["MQTT_TSKNAME_PM10"] = MQTT_TSKNAME_PM10;
-  json["MQTT_TSKNAME_AIRQUALITY"] = MQTT_TSKNAME_AIRQUALITY;
+  json["MQTT_TOPIC_TEMP"] = MQTT_TOPIC_TEMP;
+  json["MQTT_TOPIC_HUMI"] = MQTT_TOPIC_HUMI;
+  json["MQTT_TOPIC_PRESS"] = MQTT_TOPIC_PRESS;
+  json["MQTT_TOPIC_PM1"] = MQTT_TOPIC_PM1;
+  json["MQTT_TOPIC_PM25"] = MQTT_TOPIC_PM25;
+  json["MQTT_TOPIC_PM10"] = MQTT_TOPIC_PM10;
+  json["MQTT_TOPIC_AIRQUALITY"] = MQTT_TOPIC_AIRQUALITY;
 
   json["AQI_ECO_ON"] = AQI_ECO_ON;
   json["AQI_ECO_HOST"] = AQI_ECO_HOST;

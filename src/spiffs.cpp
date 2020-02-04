@@ -8,8 +8,12 @@
 #define FORMAT_SPIFFS_IF_FAILED true
 
 //const int capacity = JSON_OBJECT_SIZE(70);
-const int capacity = 6144;
-	
+#ifdef ARDUINO_ARCH_ESP8266
+	const int capacity = 6144;
+#elif defined ARDUINO_ARCH_ESP32
+	const int capacity = 4096;
+#endif
+		
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {
   const char* val = obj.as<const char*>();
   if (val) {
@@ -33,8 +37,8 @@ bool loadConfig() {
 
   size_t size = configFile.size();
   if (size > 2048) {
-    Serial.println("Config file size is too large");
-    return false;
+      Serial.println("Config file size is too large");
+      return false;
   }
 
   // Allocate a buffer to store contents of the file.
@@ -362,6 +366,7 @@ bool saveConfig() {
 #elif defined ARDUINO_ARCH_ESP32
   File configFile = SPIFFS.open("/config.json", FILE_WRITE);
 #endif
+  
   if (!configFile) {
     Serial.println("Failed to open config file for writing");
     return false;
@@ -375,7 +380,9 @@ bool saveConfig() {
 }
 
 void fs_setup() {
-  //yield();
+#ifdef ARDUINO_ARCH_ESP32
+	delay(10);
+#endif	
   Serial.println("Mounting FS...");
 
 #ifdef ARDUINO_ARCH_ESP8266

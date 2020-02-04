@@ -177,7 +177,7 @@ const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_DEVICE_PAGE}</h1></center><br>
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
-	{TEXT_INSTRUCIONSLINK}<br>
+	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 #else
 const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_device'> 
@@ -185,7 +185,7 @@ const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POS
 	<center><h1>Smogly - {TEXT_CONFIG_DEVICE_PAGE}</h1></center><br>
 	{WEB_CONFIG_TOP_PAGE_INFO}
 	<br><hr><br>
-	{TEXT_INSTRUCIONSLINK}<br>
+	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 #endif
 const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVICENAME}: </b>{device_name} <br>
@@ -228,7 +228,7 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='G
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br>
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
-	{TEXT_INSTRUCIONSLINK}<br>
+	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 
 const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SENDINGINTERVAL}: </b>{SENDING_FREQUENCY}
@@ -300,7 +300,7 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='P
 	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br>
 	{WEB_CONFIG_TOP_PAGE_INFO}
 	<br><hr><br>
-	{TEXT_INSTRUCIONSLINK}<br>
+	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 
 	const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SENDINGINTERVAL}: </b>{SENDING_FREQUENCY}
@@ -357,7 +357,7 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='P
 	<center><h1>Smogly - {TEXT_ADVANCED_MQTT_PAGE}</h1></center><br>
 	{WEB_CONFIG_TOP_PAGE_INFO}
 	<br><hr><br>
-	{TEXT_INSTRUCIONSLINK}<br>
+	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 
 	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG[] PROGMEM = R"rawliteral(<br><b>{TEXT_MQTTSENDING}: </b>{MQTT_ON}

@@ -699,10 +699,8 @@ void _handle_config_services(bool is_success) {
   
   message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
   message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
-  
   message.replace("{TEXT_INFLUXDBVERSION}", (TEXT_INFLUXDBVERSION));
   message.replace("{INFLUXDB_VERSION}", _addINFLUXDB_VERSIONSelect("INFLUXDB_VERSION", INFLUXDB_VERSION));
-  
   message.replace("{TEXT_INFLUXDBSERVER}", (TEXT_INFLUXDBSERVER));
   message.replace("{INFLUXDB_HOST}", _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST));
   message.replace("{TEXT_INFLUXDBPORT}", (TEXT_INFLUXDBPORT));
@@ -1102,9 +1100,9 @@ void handle_config_device_post() {
     }
   }
 
-  saveConfig();
-  //delay(250);
+  saveConfig();  
   _handle_config_device(true);
+
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
   //yield();

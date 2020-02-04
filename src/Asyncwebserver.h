@@ -303,6 +303,14 @@ String _addTextInput(const String &key, const String &value, const String &postf
   return input;
 }
 
+String _addMQTTTextInput(const String &key, const String &value, const String &postfix = "") {
+  String input = FPSTR(WEB_CONFIG_PAGE_MQTT_TEXTIMPUT);
+  input.replace("{key}", key);
+  input.replace("{value}", _escapeString(value));
+  input.replace("{postfix}", postfix);
+  return input;
+}
+
 String _addPasswdInput(const String &key, const String &value, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_PASSWDINPUT);
   input.replace("{key}", key);
@@ -851,6 +859,10 @@ void handle_config_services(AsyncWebServerRequest *request) {
 	  message.replace("{TEXT_THINGSPEAK_READ_API_KEY}", (TEXT_THINGSPEAK_READ_API_KEY));
 	  message.replace("{THINGSPEAK_READ_API_KEY}", _addTextInput("THINGSPEAK_READ_API_KEY", THINGSPEAK_READ_API_KEY));
   
+	  message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
+	  message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
+	  message.replace("{TEXT_INFLUXDBVERSION}", (TEXT_INFLUXDBVERSION));
+	  message.replace("{INFLUXDB_VERSION}", _addINFLUXDB_VERSIONSelect("INFLUXDB_VERSION", INFLUXDB_VERSION));
 	  message.replace("{TEXT_INFLUXDBSERVER}", (TEXT_INFLUXDBSERVER));
 	  message.replace("{INFLUXDB_HOST}", _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST));
 	  message.replace("{TEXT_INFLUXDBPORT}", (TEXT_INFLUXDBPORT));
@@ -874,7 +886,7 @@ void handle_config_services(AsyncWebServerRequest *request) {
 		  message.replace("<b>{TEXT_INFLUXDBBUCKET}: </b>{INFLUXDB_BUCKET}", "");
 		  message.replace("<b>{TEXT_INFLUXDBTOKEN}: </b>{INFLUXDB_TOKEN}", "");
 	  }
-
+	  
 	  message.replace("{TEXT_MQTTSENDING}", (TEXT_MQTTSENDING));
 	  message.replace("{MQTT_ON}", _addBoolSelect("MQTT_ON", MQTT_ON));
 	  message.replace("{TEXT_MQTTSERVER}", (TEXT_MQTTSERVER));
@@ -1029,7 +1041,9 @@ void handle_config_services(AsyncWebServerRequest *request) {
 	  } else {
 		  message.replace("/{MQTT_IP}", "/");
 	  }
- 
+	  
+	  message.replace("<br><center>{AdvancedMQTTConfigButton}</center><br>", "");
+	  
 	  message.replace("{WiFiEraseButton}", _addWiFiErase());
 	  message.replace("{RestoreConfigButton}", _addRestoreConfig());
 	  message.replace("{SubmitButton}", _addSubmitServices());

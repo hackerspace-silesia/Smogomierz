@@ -12,9 +12,6 @@
 //#define ASYNC_WEBSERVER_ON // - EXPERIMENTAL - FOR ESP32 ONLY!
 #endif
 
-#ifdef ARDUINO_ARCH_ESP8266
-#define ESP8266_INFLUX_DB_ON // - EXPERIMENTAL - FOR ESP8266 ONLY!
-#endif
 /*
 
    ESP8266
@@ -72,17 +69,18 @@
   Szkic używa 550524 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 57168 bajtów (69%) pamięci dynamicznej, pozostawiając 24752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 558740 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 558756 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 56176 bajtów (68%) pamięci dynamicznej, pozostawiając 25744 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1272630 bajtów (64%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 61336 bajtów (18%) pamięci dynamicznej, pozostawiając 266344 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1315258 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 60296 bajtów (18%) pamięci dynamicznej, pozostawiając 267384 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
 
   ASYNC_WEBSERVER_ON
   ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
@@ -91,6 +89,9 @@
   Zmienne globalne używają 55464 bajtów (67%) pamięci dynamicznej, pozostawiając 26456 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
+
+  Szkic używa 1281350 bajtów (65%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60072 bajtów (18%) pamięci dynamicznej, pozostawiając 267608 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -141,11 +142,7 @@
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
 #include "src/aqieco.h"
-#ifdef ESP8266_INFLUX_DB_ON
-#include "src/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // 3.02.2020
-#else
-#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 17.01.2020
-#endif
+#include "src/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 3.02.2020
 
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
 #ifdef ASYNC_WEBSERVER_ON
@@ -711,16 +708,7 @@ void setup() {
   }
 
   if (INFLUXDB_ON) {
-#ifdef ESP8266_INFLUX_DB_ON
 
-#else
-    Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-    if (influxdb.opendb(INFLUXDB_DATABASE, INFLUXDB_USER, INFLUXDB_PASSWORD) != DB_SUCCESS) {
-      Serial.println("Opening InfluxDB failed");
-    } else {
-      Serial.println("Opening InfluxDB succeed");
-    }
-#endif
   }
 
   //  ASYNC_WebServer config - Start
@@ -1001,7 +989,6 @@ void sendDataToExternalDBs() {
   }
 
   if (INFLUXDB_ON) {
-#ifdef ESP8266_INFLUX_DB_ON
     InfluxdbV2 influx(INFLUXDB_HOST, INFLUXDB_PORT);
     if (!strcmp(INFLUXDB_VERSION, "2")) {
       influx.setOrg(INFLUXDB_ORG);
@@ -1105,107 +1092,6 @@ void sendDataToExternalDBs() {
         Serial.println("Error sending data to InfluxDB\n");
       }
     }
-#else
-    //Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-    if (influxdb.opendb(INFLUXDB_DATABASE, INFLUXDB_USER, INFLUXDB_PASSWORD) != DB_SUCCESS) {
-      Serial.println("Opening database failed");
-    } else {
-      dbMeasurement row(device_name);
-
-      if (!strcmp(DUST_MODEL, "PMS7003")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from PMSx003!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
-      } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from SDS0x1!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
-      } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from SDS!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
-      } else if (!strcmp(DUST_MODEL, "SPS30")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from SPS30!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm4", averagePM4);
-        row.addField("pm10", averagePM10);
-      } else {
-        if (DEBUG) {
-          Serial.println("\nNo measurements from Dust Sensor!\n");
-        }
-      }
-      if (!strcmp(THP_MODEL, "BME280")) {
-        if (checkBmeStatus() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("pressure", (currentPressure));
-          row.addField("humidity", (currentHumidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from BME280!\n");
-          }
-        }
-      } else if (!strcmp(THP_MODEL, "HTU21")) {
-        if (checkHTU21DStatus() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("humidity", (currentHumidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from HTU21D!\n");
-          }
-        }
-      } else if (!strcmp(THP_MODEL, "BMP280")) {
-        if (checkBmpStatus() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("pressure", (currentPressure));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from BMP280!\n");
-          }
-        }
-      } else if (!strcmp(THP_MODEL, "DHT22")) {
-        if (checkDHT22Status() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("humidity", (currentHumidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from DHT22!\n");
-          }
-        }
-      } else if (!strcmp(THP_MODEL, "SHT1x")) {
-        if (checkSHT1xStatus() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("humidity", (currentHumidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from SHT1x!\n");
-          }
-        }
-      }
-
-      if (influxdb.DBwrite(row) == DB_SUCCESS) {
-        if (DEBUG) {
-          Serial.println("Data sent to InfluxDB\n");
-        }
-      } else {
-        if (DEBUG) {
-          Serial.println("Error sending data to InfluxDB\n");
-        }
-      }
-      row.empty();
-    }
-#endif
   }
 
   if (MQTT_ON) {

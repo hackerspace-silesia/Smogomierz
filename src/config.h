@@ -91,6 +91,6 @@ extern char CURRENTSOFTWAREVERSION[32];
 const char SOFTWAREVERSION[] = "2.7.4 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)
-const char SOFTWAREVERSION[] PROGMEM = "2.7.4 build " __TIME__ " " __DATE__;
-const char HARDWAREVERSION[] PROGMEM = "2.0 - ESP32";
+const char SOFTWAREVERSION[] = "2.7.4 build " __TIME__ " " __DATE__;
+const char HARDWAREVERSION[] = "2.0 - ESP32";
 #endif

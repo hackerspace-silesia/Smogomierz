@@ -9,6 +9,8 @@
 #include "InfluxDbV2.h"
 #include "Arduino.h"
 
+#include "config.h"
+
 /**
  * Construct an InfluxDbV2 instance.
  * @param host the InfluxDb host
@@ -44,7 +46,7 @@ void InfluxdbV2::setDbAuth(String db, String user, String pass) {
  */
 void InfluxdbV2::setBucket(String bucket) {
   _bucket = String(bucket);
-  begin();
+  //begin();
 }
 
 /**
@@ -53,7 +55,7 @@ void InfluxdbV2::setBucket(String bucket) {
  */
 void InfluxdbV2::setOrg(String org){
   _org = String(org);
-  begin();
+  //begin();
 }
 
 /**
@@ -62,18 +64,23 @@ void InfluxdbV2::setOrg(String org){
  */
 void InfluxdbV2::setToken(String token){
   _token = String(token);
-  begin();
+  //begin();
 }
 
 void InfluxdbV2::begin() {
   // TODO: recreate HttpClient on db change?
-  //http.begin(_host, _port, "/api/v2/write?org=" + _org + "&bucket=" + _bucket);
-	
-  //Serial.println("http://" + String(_host) + ":" + String(_port) + "/write?" + "u=" + String(_user) + "&p=" + String(_pass) + "&db=" + String(_db) + "\n");
-	http.begin(_host, _port, "/write?u=" + _user + "&p=" + _pass + "&db=" + _db);
-  
-  //http.addHeader("Authorization", "Token " + _token);
-  http.addHeader("Content-Type", "text/plain");
+	if (!strcmp(INFLUXDB_VERSION, "2")) {	
+		http.begin(_host, _port, "/api/v2/write?org=" + _org + "&bucket=" + _bucket);
+		http.addHeader("Authorization", "Token " + _token);
+	  	http.addHeader("Content-Type", "text/plain");
+	} else {
+		if (_user and _pass) {
+			http.begin(_host, _port, "/write?u=" + _user + "&p=" + _pass + "&db=" + _db);
+		} else {
+			http.begin(_host, _port, "/write?&db=" + _db);
+		}
+		http.addHeader("Content-Type", "text/plain");
+	}
 }
 
 /**
@@ -106,12 +113,12 @@ boolean InfluxdbV2::write(InfluxDataV2 data) { return write(data.toString()); }
  * for a list of error codes.
  */
 boolean InfluxdbV2::write(String data) {
-	/*
-  if(_token == 0 || _token.length() < 10){
-    Serial.println("#####\nInvalid Access Token\n#####");
-    return false;
-  }
-	*/
+	if (!strcmp(INFLUXDB_VERSION, "2")) {	
+		if(_token == 0 || _token.length() < 10){
+    		//Serial.println("#####\nInvalid Access Token\n#####");
+    	return false;
+  		}
+ 	}
   //Serial.print(" --> writing to host: http://" + String(_host) + " Port: " + String(_port) + " URL: /write?" + "u=" + String(_user) + "&p=" + String(_pass) + "&db=" + String(_db) + ":\n");
   //Serial.println(data);
 

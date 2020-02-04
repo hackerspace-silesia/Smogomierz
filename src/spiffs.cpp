@@ -85,11 +85,16 @@ bool loadConfig() {
   _safeCpy(THINGSPEAK_READ_API_KEY, json["THINGSPEAK_READ_API_KEY"], "READ_API_KEY", 32);
 
   INFLUXDB_ON = json["INFLUXDB_ON"];
+  _safeCpy(INFLUXDB_VERSION, json["INFLUXDB_VERSION"], "1", 16);
   _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host", 128);
   INFLUXDB_PORT = json["INFLUXDB_PORT"];  
   _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 64);
-  _safeCpy(DB_USER, json["DB_USER"], "user", 64);
-  _safeCpy(DB_PASSWORD, json["DB_PASSWORD"], "password", 64);
+  _safeCpy(INFLUXDB_USER, json["INFLUXDB_USER"], "user", 64);
+  _safeCpy(INFLUXDB_PASSWORD, json["INFLUXDB_PASSWORD"], "password", 64);
+  
+  _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 64);
+  _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 64);
+  _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 64);
   
   MQTT_ON = json["MQTT_ON"];
   _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host", 128);
@@ -180,16 +185,24 @@ bool loadConfig() {
 
     Serial.print("Loaded INFLUXDB_ON: ");
     Serial.println(INFLUXDB_ON);
+    Serial.print("Loaded INFLUXDB_VERSION: ");
+    Serial.println(INFLUXDB_VERSION);
     Serial.print("Loaded INFLUXDB_HOST: ");
     Serial.println(INFLUXDB_HOST);
     Serial.print("Loaded INFLUXDB_PORT: ");
     Serial.println(INFLUXDB_PORT);
     Serial.print("Loaded INFLUXDB_DATABASE: ");
     Serial.println(INFLUXDB_DATABASE);
-    Serial.print("Loaded DB_USER: ");
-    Serial.println(DB_USER);
-    Serial.print("Loaded DB_PASSWORD: ");
-    Serial.println(DB_PASSWORD);
+    Serial.print("Loaded INFLUXDB_USER: ");
+    Serial.println(INFLUXDB_USER);
+    Serial.print("Loaded INFLUXDB_PASSWORD: ");
+    Serial.println(INFLUXDB_PASSWORD);
+    Serial.print("Loaded INFLUXDB_ORG: ");
+    Serial.println(INFLUXDB_ORG);
+    Serial.print("Loaded INFLUXDB_BUCKET: ");
+    Serial.println(INFLUXDB_BUCKET);
+    Serial.print("Loaded INFLUXDB_TOKEN: ");
+    Serial.println(INFLUXDB_TOKEN);
 	
     Serial.print("Loaded MQTT_ON: ");
     Serial.println(MQTT_ON);
@@ -295,13 +308,17 @@ bool saveConfig() {
   json["THINGSPEAK_READ_API_KEY"] = THINGSPEAK_READ_API_KEY;
 
   json["INFLUXDB_ON"] = INFLUXDB_ON;
+  json["INFLUXDB_VERSION"] = INFLUXDB_VERSION;
   json["INFLUXDB_HOST"] = INFLUXDB_HOST;
   json["INFLUXDB_PORT"] = INFLUXDB_PORT;
   json["INFLUXDB_DATABASE"] = INFLUXDB_DATABASE;
-  json["DB_USER"] = DB_USER;
-  json["DB_PASSWORD"] = DB_PASSWORD;
-  json["DB_PASSWORD"] = String(DB_PASSWORD);
-  
+  json["INFLUXDB_USER"] = INFLUXDB_USER;
+  json["INFLUXDB_PASSWORD"] = INFLUXDB_PASSWORD;
+  json["INFLUXDB_PASSWORD"] = String(INFLUXDB_PASSWORD);
+  json["INFLUXDB_ORG"] = INFLUXDB_ORG;
+  json["INFLUXDB_BUCKET"] = INFLUXDB_BUCKET;
+  json["INFLUXDB_TOKEN"] = INFLUXDB_TOKEN;
+
   json["MQTT_ON"] = MQTT_ON;
   json["MQTT_HOST"] = MQTT_HOST;
   json["MQTT_PORT"] = MQTT_PORT;

@@ -29,11 +29,15 @@ extern int THINGSPEAK_CHANNEL_ID;
 extern char THINGSPEAK_READ_API_KEY[32];
 
 extern bool INFLUXDB_ON;
+extern char INFLUXDB_VERSION[16];
 extern char INFLUXDB_HOST[128];
 extern uint16_t INFLUXDB_PORT;
 extern char INFLUXDB_DATABASE[64];
-extern char DB_USER[64];
-extern char DB_PASSWORD[64];
+extern char INFLUXDB_USER[64];
+extern char INFLUXDB_PASSWORD[64];
+extern char INFLUXDB_ORG[64];
+extern char INFLUXDB_BUCKET[64];
+extern char INFLUXDB_TOKEN[64];
 
 extern bool MQTT_ON;
 extern char MQTT_HOST[128];

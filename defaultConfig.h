@@ -29,11 +29,15 @@ int THINGSPEAK_CHANNEL_ID = 0;
 char THINGSPEAK_READ_API_KEY[32] = "READ_API_KEY";
 
 bool INFLUXDB_ON = false;
+char INFLUXDB_VERSION[16] = "1"; // 1 (for 1.x version) or 2 for 2.0 or later 
 char INFLUXDB_HOST[128] = "INFLUXDB_ADRESS";
 uint16_t INFLUXDB_PORT = 8086;
 char INFLUXDB_DATABASE[64] = "mydb";
-char DB_USER[64] = "username";
-char DB_PASSWORD[64] = "password";
+char INFLUXDB_USER[64] = "username";
+char INFLUXDB_PASSWORD[64] = "password";
+char INFLUXDB_ORG[64] = "myOrg";
+char INFLUXDB_BUCKET[64] = "myBucket";
+char INFLUXDB_TOKEN[64] = "myToken";
 
 bool MQTT_ON = false;
 char MQTT_HOST[128] = "MQTT_ADRESS";

@@ -270,6 +270,15 @@ String _addDUST_MODELSelect(const String &key, const String &value) {
   return input;
 }
 
+String _addINFLUXDB_VERSIONSelect(const String &key, const String &value) {
+  String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
+  input.replace("{key}", key);
+  input += _addOption("1", "1.x", value);
+  input += _addOption("2", "2.x", value);
+  input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
+  return input;
+}
+
 String _addLanguageSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
@@ -842,8 +851,6 @@ void handle_config_services(AsyncWebServerRequest *request) {
 	  message.replace("{TEXT_THINGSPEAK_READ_API_KEY}", (TEXT_THINGSPEAK_READ_API_KEY));
 	  message.replace("{THINGSPEAK_READ_API_KEY}", _addTextInput("THINGSPEAK_READ_API_KEY", THINGSPEAK_READ_API_KEY));
   
-	  message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
-	  message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
 	  message.replace("{TEXT_INFLUXDBSERVER}", (TEXT_INFLUXDBSERVER));
 	  message.replace("{INFLUXDB_HOST}", _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST));
 	  message.replace("{TEXT_INFLUXDBPORT}", (TEXT_INFLUXDBPORT));
@@ -851,9 +858,22 @@ void handle_config_services(AsyncWebServerRequest *request) {
 	  message.replace("{TEXT_INFLUXDBNAME}", (TEXT_INFLUXDBNAME));
 	  message.replace("{INFLUXDB_DATABASE}", _addTextInput("INFLUXDB_DATABASE", INFLUXDB_DATABASE));
 	  message.replace("{TEXT_INFLUXDBUSER}", (TEXT_INFLUXDBUSER));
-	  message.replace("{DB_USER}", _addTextInput("DB_USER", DB_USER));
+	  message.replace("{INFLUXDB_USER}", _addTextInput("INFLUXDB_USER", INFLUXDB_USER));
 	  message.replace("{TEXT_INFLUXDBPASSWD}", (TEXT_INFLUXDBPASSWD));
-	  message.replace("{DB_PASSWORD}", _addPasswdInput("DB_PASSWORD", DB_PASSWORD));
+	  message.replace("{INFLUXDB_PASSWORD}", _addPasswdInput("INFLUXDB_PASSWORD", INFLUXDB_PASSWORD));
+  
+	  if (!strcmp(INFLUXDB_VERSION, "2")) {
+	  message.replace("{TEXT_INFLUXDBORG}", (TEXT_INFLUXDBORG));
+	  message.replace("{INFLUXDB_ORG}", _addTextInput("INFLUXDB_ORG", INFLUXDB_ORG));
+	  message.replace("{TEXT_INFLUXDBBUCKET}", (TEXT_INFLUXDBBUCKET));
+	  message.replace("{INFLUXDB_BUCKET}", _addTextInput("INFLUXDB_BUCKET", INFLUXDB_BUCKET));
+	  message.replace("{TEXT_INFLUXDBTOKEN}", (TEXT_INFLUXDBTOKEN));
+	  message.replace("{INFLUXDB_TOKEN}", _addTextInput("INFLUXDB_TOKEN", INFLUXDB_TOKEN));
+	  } else {
+		  message.replace("<b>{TEXT_INFLUXDBORG}: </b>{INFLUXDB_ORG}", "");
+		  message.replace("<b>{TEXT_INFLUXDBBUCKET}: </b>{INFLUXDB_BUCKET}", "");
+		  message.replace("<b>{TEXT_INFLUXDBTOKEN}: </b>{INFLUXDB_TOKEN}", "");
+	  }
 
 	  message.replace("{TEXT_MQTTSENDING}", (TEXT_MQTTSENDING));
 	  message.replace("{MQTT_ON}", _addBoolSelect("MQTT_ON", MQTT_ON));
@@ -865,6 +885,150 @@ void handle_config_services(AsyncWebServerRequest *request) {
 	  message.replace("{MQTT_USER}", _addTextInput("MQTT_USER", MQTT_USER));
 	  message.replace("{TEXT_MQTTPASSWD}", (TEXT_MQTTPASSWD));
 	  message.replace("{MQTT_PASSWORD}", _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
+
+	  message.replace("{TEXT_MQTT_TOPIC_INFO}", (TEXT_MQTT_TOPIC_INFO));
+  
+	  message.replace("{TEXT_MQTT_IP_IN_TOPIC}", (TEXT_MQTT_IP_IN_TOPIC));
+	  message.replace("{MQTT_IP_IN_TOPIC}", _addBoolSelect("MQTT_IP_IN_TOPIC", MQTT_IP_IN_TOPIC));
+  
+	  message.replace("{TEXT_MQTT_DEVICENAME_IN_TOPIC}", (TEXT_MQTT_DEVICENAME_IN_TOPIC));
+	  message.replace("{MQTT_DEVICENAME_IN_TOPIC}", _addBoolSelect("MQTT_DEVICENAME_IN_TOPIC", MQTT_DEVICENAME_IN_TOPIC));
+    
+	  if (strcmp(THP_MODEL, "Non")) {
+	    takeTHPMeasurements();
+	    if (!strcmp(THP_MODEL, "BME280")) {
+	      if (checkBmeStatus() == true) {
+		      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+		  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+		      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
+		      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+	
+		      message.replace("{MQTT_PRESS}", String(int(currentPressure)));
+		      message.replace("{MQTT_TOPIC_PRESS}", _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
+	      } else {
+	        if (DEBUG) {
+	          Serial.println("No measurements from BME280!\n");
+	        }
+	      }
+	    }
+
+	    if (!strcmp(THP_MODEL, "BMP280")) {
+	      if (checkBmpStatus() == true) {
+		      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+		  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+		      message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+	
+		      message.replace("{MQTT_PRESS}", String(int(currentPressure)));
+		      message.replace("{MQTT_TOPIC_PRESS}", _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
+	      } else {
+	        if (DEBUG) {
+	          Serial.println("No measurements from BMP280!\n");
+	        }
+	      }
+	    }
+
+	    if (!strcmp(THP_MODEL, "HTU21")) {
+	      if (checkHTU21DStatus() == true) {
+		      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+		  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+		      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
+		      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+	
+		      message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+	      } else {
+	        if (DEBUG) {
+	          Serial.println("No measurements from HTU21!\n");
+	        }
+	      }
+	    }
+
+	    if (!strcmp(THP_MODEL, "DHT22")) {
+	      if (checkDHT22Status() == true) {
+		      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+		  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+		      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
+		      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+	
+		      message.replace("<b>PRESS: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+	      } else {
+	        if (DEBUG) {
+	          Serial.println("No measurements from DHT22!\n");
+	        }
+	      }
+	    }
+
+	    if (!strcmp(THP_MODEL, "SHT1x")) {
+	      if (checkDHT22Status() == true) {
+		      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+		  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	
+		      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
+		      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+	
+		      message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+	      } else {
+	        if (DEBUG) {
+	          Serial.println("No measurements from SHT1x!\n");
+	        }
+	      }
+	    }	
+	  } else {
+		  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+		  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+		  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+	  }
+
+	 if (strcmp(DUST_MODEL, "Non")) {
+	     message.replace("{MQTT_PM1}", String(int(averagePM1)));
+		 message.replace("{MQTT_TOPIC_PM1}", _addMQTTTextInput("MQTT_TOPIC_PM1", MQTT_TOPIC_PM1));
+	     message.replace("{MQTT_PM25}", String(int(averagePM25)));
+		 message.replace("{MQTT_TOPIC_PM25}", _addMQTTTextInput("MQTT_TOPIC_PM25", MQTT_TOPIC_PM25));
+	     message.replace("{MQTT_PM10}", String(int(averagePM10)));
+		 message.replace("{MQTT_TOPIC_PM10}", _addMQTTTextInput("MQTT_TOPIC_PM10", MQTT_TOPIC_PM10));
+	  
+	     if (averagePM25 <= 10) {
+	   	  message.replace("{MQTT_AIRQUALITY}", "EXCELLENT");
+	     } else if (averagePM25 > 10 && averagePM25 <= 20) {
+	   	  message.replace("{MQTT_AIRQUALITY}", "GOOD");
+	     } else if (averagePM25 > 20 && averagePM25 <= 25) {
+	   	  message.replace("{MQTT_AIRQUALITY}", "FAIR");
+	     } else if (averagePM25 > 25 && averagePM25 <= 50) {
+	   	  message.replace("{MQTT_AIRQUALITY}", "INFERIOR");
+	     } else if (averagePM25 > 50) {
+	   	  message.replace("{MQTT_AIRQUALITY}", "POOR");
+	     } else {
+	   	  message.replace("{MQTT_AIRQUALITY}", "UNKNOWN");
+	     }
+	     message.replace("{MQTT_TOPIC_AIRQUALITY}", _addMQTTTextInput("MQTT_TOPIC_AIRQUALITY", MQTT_TOPIC_AIRQUALITY));
+	 } else {
+	  message.replace("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />", "");
+	  message.replace("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />", "");
+	  message.replace("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />", "");
+	  message.replace("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />", "");
+	 }
+ 
+	    message.replace("{TEXT_TEMP_TOPIC}", (TEXT_TEMPERATURE));
+	    message.replace("{TEXT_HUMI_TOPIC}", (TEXT_HUMIDITY));
+	    message.replace("{TEXT_PRESS_TOPIC}", (TEXT_PRESSURE));
+	    message.replace("{TEXT_PM1_TOPIC}", "PM1");
+		message.replace("{TEXT_PM25_TOPIC}", "PM2.5");
+		message.replace("{TEXT_PM10_TOPIC}", "PM10");
+		message.replace("{TEXT_AIRQUALITY_TOPIC}", (TEXT_AIRQUALITY_TOPIC));
+
+	  if (MQTT_DEVICENAME_IN_TOPIC) {
+		  message.replace("{MQTT_DEVICENAME}", (String(device_name) + "/"));
+	  } else {
+		  message.replace("{MQTT_DEVICENAME}", "");
+	  }
+	  if (MQTT_IP_IN_TOPIC) {
+			  message.replace("/{MQTT_IP}", ("/" + String(WiFi.localIP().toString()) + "/"));	  	
+	  } else {
+		  message.replace("/{MQTT_IP}", "/");
+	  }
  
 	  message.replace("{WiFiEraseButton}", _addWiFiErase());
 	  message.replace("{RestoreConfigButton}", _addRestoreConfig());
@@ -1191,6 +1355,10 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
 		INFLUXDB_ON = _parseAsBool(request->getParam("INFLUXDB_ON")->value());
 	}
 	
+	if (request->hasParam("INFLUXDB_VERSION")) {
+		_parseAsCString(INFLUXDB_VERSION, request->getParam("INFLUXDB_VERSION")->value());
+	}	
+	
 	if (request->hasParam("INFLUXDB_HOST")) {
 		_parseAsCString(INFLUXDB_HOST, request->getParam("INFLUXDB_HOST")->value());
 	}
@@ -1203,14 +1371,24 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
 		_parseAsCString(INFLUXDB_DATABASE, request->getParam("INFLUXDB_DATABASE")->value());
 	}
 	
-	if (request->hasParam("DB_USER")) {
-		_parseAsCString(DB_USER, request->getParam("DB_USER")->value());
+	if (request->hasParam("INFLUXDB_USER")) {
+		_parseAsCString(INFLUXDB_USER, request->getParam("INFLUXDB_USER")->value());
 	}
 	
-	if (request->hasParam("DB_PASSWORD")) {
-		_parseAsCString(DB_PASSWORD, request->getParam("DB_PASSWORD")->value());
+	if (request->hasParam("INFLUXDB_PASSWORD")) {
+		_parseAsCString(INFLUXDB_PASSWORD, request->getParam("INFLUXDB_PASSWORD")->value());
 	}
-	
+
+	if (request->hasParam("INFLUXDB_ORG")) {
+		_parseAsCString(INFLUXDB_ORG, request->getParam("INFLUXDB_ORG")->value());
+	}
+	if (request->hasParam("INFLUXDB_BUCKET")) {
+		_parseAsCString(INFLUXDB_BUCKET, request->getParam("INFLUXDB_BUCKET")->value());
+	}
+	if (request->hasParam("INFLUXDB_TOKEN")) {
+		_parseAsCString(INFLUXDB_TOKEN, request->getParam("INFLUXDB_TOKEN")->value());
+	}
+
 	if (request->hasParam("MQTT_ON")) {
 		MQTT_ON = _parseAsBool(request->getParam("MQTT_ON")->value());
 	}
@@ -1229,6 +1407,42 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
 	
 	if (request->hasParam("MQTT_PASSWORD")) {
 		_parseAsCString(MQTT_PASSWORD, request->getParam("MQTT_PASSWORD")->value());
+	}
+	
+	if (request->hasParam("MQTT_IP_IN_TOPIC")) {
+		MQTT_IP_IN_TOPIC = _parseAsBool(request->getParam("MQTT_IP_IN_TOPIC")->value());
+	}
+	
+	if (request->hasParam("MQTT_DEVICENAME_IN_TOPIC")) {
+		MQTT_DEVICENAME_IN_TOPIC = _parseAsBool(request->getParam("MQTT_DEVICENAME_IN_TOPIC")->value());
+	}
+
+	if (request->hasParam("MQTT_TOPIC_TEMP")) {
+		_parseAsCString(MQTT_TOPIC_TEMP, request->getParam("MQTT_TOPIC_TEMP")->value());
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_HUMI")) {
+		_parseAsCString(MQTT_TOPIC_HUMI, request->getParam("MQTT_TOPIC_HUMI")->value());
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_PRESS")) {
+		_parseAsCString(MQTT_TOPIC_PRESS, request->getParam("MQTT_TOPIC_PRESS")->value());
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_PM1")) {
+		_parseAsCString(MQTT_TOPIC_PM1, request->getParam("MQTT_TOPIC_PM1")->value());
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_PM25")) {
+		_parseAsCString(MQTT_TOPIC_PM25, request->getParam("MQTT_TOPIC_PM25")->value());
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_PM10")) {
+		_parseAsCString(MQTT_TOPIC_PM10, request->getParam("MQTT_TOPIC_PM10")->value());
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_AIRQUALITY")) {
+		_parseAsCString(MQTT_TOPIC_AIRQUALITY, request->getParam("MQTT_TOPIC_AIRQUALITY")->value());
 	}
 
   if (DEBUG) {

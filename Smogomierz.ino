@@ -72,8 +72,8 @@
   Szkic używa 550524 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 57168 bajtów (69%) pamięci dynamicznej, pozostawiając 24752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 555832 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 55332 bajtów (67%) pamięci dynamicznej, pozostawiając 26588 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 558740 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 56176 bajtów (68%) pamięci dynamicznej, pozostawiając 25744 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
@@ -715,7 +715,7 @@ void setup() {
 
 #else
     Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-    if (influxdb.opendb(INFLUXDB_DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
+    if (influxdb.opendb(INFLUXDB_DATABASE, INFLUXDB_USER, INFLUXDB_PASSWORD) != DB_SUCCESS) {
       Serial.println("Opening InfluxDB failed");
     } else {
       Serial.println("Opening InfluxDB succeed");
@@ -1003,7 +1003,16 @@ void sendDataToExternalDBs() {
   if (INFLUXDB_ON) {
 #ifdef ESP8266_INFLUX_DB_ON
     InfluxdbV2 influx(INFLUXDB_HOST, INFLUXDB_PORT);
-    influx.setDbAuth(INFLUXDB_DATABASE, DB_USER, DB_PASSWORD);
+    if (!strcmp(INFLUXDB_VERSION, "2")) {
+      influx.setOrg(INFLUXDB_ORG);
+      influx.setBucket(INFLUXDB_BUCKET);
+      influx.setToken(INFLUXDB_TOKEN);
+    }
+    if (INFLUXDB_USER != "username" || INFLUXDB_USER != "" && INFLUXDB_PASSWORD != "password" || INFLUXDB_PASSWORD != "") {
+      influx.setDbAuth(INFLUXDB_DATABASE, INFLUXDB_USER, INFLUXDB_PASSWORD);
+    } else {
+      influx.setDb(INFLUXDB_DATABASE);
+    }
 
     InfluxDataV2 row(device_name);
     if (!strcmp(DUST_MODEL, "PMS7003")) {
@@ -1098,7 +1107,7 @@ void sendDataToExternalDBs() {
     }
 #else
     //Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-    if (influxdb.opendb(INFLUXDB_DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
+    if (influxdb.opendb(INFLUXDB_DATABASE, INFLUXDB_USER, INFLUXDB_PASSWORD) != DB_SUCCESS) {
       Serial.println("Opening database failed");
     } else {
       dbMeasurement row(device_name);

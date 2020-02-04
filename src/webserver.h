@@ -268,6 +268,15 @@ String _addDUST_MODELSelect(const String &key, const String &value) {
   return input;
 }
 
+String _addINFLUXDB_VERSIONSelect(const String &key, const String &value) {
+  String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
+  input.replace("{key}", key);
+  input += _addOption("1", "1.x", value);
+  input += _addOption("2", "2.x", value);
+  input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
+  return input;
+}
+
 String _addLanguageSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
@@ -690,6 +699,10 @@ void _handle_config_services(bool is_success) {
   
   message.replace("{TEXT_INFLUXDBSENDING}", (TEXT_INFLUXDBSENDING));
   message.replace("{INFLUXDB_ON}", _addBoolSelect("INFLUXDB_ON", INFLUXDB_ON));
+  
+  message.replace("{TEXT_INFLUXDBVERSION}", (TEXT_INFLUXDBVERSION));
+  message.replace("{INFLUXDB_VERSION}", _addINFLUXDB_VERSIONSelect("INFLUXDB_VERSION", INFLUXDB_VERSION));
+  
   message.replace("{TEXT_INFLUXDBSERVER}", (TEXT_INFLUXDBSERVER));
   message.replace("{INFLUXDB_HOST}", _addTextInput("INFLUXDB_HOST", INFLUXDB_HOST));
   message.replace("{TEXT_INFLUXDBPORT}", (TEXT_INFLUXDBPORT));
@@ -697,10 +710,23 @@ void _handle_config_services(bool is_success) {
   message.replace("{TEXT_INFLUXDBNAME}", (TEXT_INFLUXDBNAME));
   message.replace("{INFLUXDB_DATABASE}", _addTextInput("INFLUXDB_DATABASE", INFLUXDB_DATABASE));
   message.replace("{TEXT_INFLUXDBUSER}", (TEXT_INFLUXDBUSER));
-  message.replace("{DB_USER}", _addTextInput("DB_USER", DB_USER));
+  message.replace("{INFLUXDB_USER}", _addTextInput("INFLUXDB_USER", INFLUXDB_USER));
   message.replace("{TEXT_INFLUXDBPASSWD}", (TEXT_INFLUXDBPASSWD));
-  message.replace("{DB_PASSWORD}", _addPasswdInput("DB_PASSWORD", DB_PASSWORD));
-
+  message.replace("{INFLUXDB_PASSWORD}", _addPasswdInput("INFLUXDB_PASSWORD", INFLUXDB_PASSWORD));
+  
+  if (!strcmp(INFLUXDB_VERSION, "2")) {
+  message.replace("{TEXT_INFLUXDBORG}", (TEXT_INFLUXDBORG));
+  message.replace("{INFLUXDB_ORG}", _addTextInput("INFLUXDB_ORG", INFLUXDB_ORG));
+  message.replace("{TEXT_INFLUXDBBUCKET}", (TEXT_INFLUXDBBUCKET));
+  message.replace("{INFLUXDB_BUCKET}", _addTextInput("INFLUXDB_BUCKET", INFLUXDB_BUCKET));
+  message.replace("{TEXT_INFLUXDBTOKEN}", (TEXT_INFLUXDBTOKEN));
+  message.replace("{INFLUXDB_TOKEN}", _addTextInput("INFLUXDB_TOKEN", INFLUXDB_TOKEN));
+  } else {
+	  message.replace("<b>{TEXT_INFLUXDBORG}: </b>{INFLUXDB_ORG}", "");
+	  message.replace("<b>{TEXT_INFLUXDBBUCKET}: </b>{INFLUXDB_BUCKET}", "");
+	  message.replace("<b>{TEXT_INFLUXDBTOKEN}: </b>{INFLUXDB_TOKEN}", "");
+  }
+  
   message.replace("{AdvancedMQTTConfigButton}", FPSTR(WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON));
   message.replace("{TEXT_CONFIG_ADV_MQTT}", (TEXT_CONFIG_ADV_MQTT));
  
@@ -1124,11 +1150,16 @@ void handle_config_services_post() {
   _parseAsCString(THINGSPEAK_READ_API_KEY, WebServer.arg("THINGSPEAK_READ_API_KEY"), 32);
 
   INFLUXDB_ON = _parseAsBool(WebServer.arg("INFLUXDB_ON"));
+  _parseAsCString(INFLUXDB_VERSION, WebServer.arg("INFLUXDB_VERSION"), 16);
   _parseAsCString(INFLUXDB_HOST, WebServer.arg("INFLUXDB_HOST"), 128);
   INFLUXDB_PORT = WebServer.arg("INFLUXDB_PORT").toInt();
   _parseAsCString(INFLUXDB_DATABASE, WebServer.arg("INFLUXDB_DATABASE"), 64);
-  _parseAsCString(DB_USER, WebServer.arg("DB_USER"), 64);
-  _parseAsCString(DB_PASSWORD, WebServer.arg("DB_PASSWORD"), 64);
+  _parseAsCString(INFLUXDB_USER, WebServer.arg("INFLUXDB_USER"), 64);
+  _parseAsCString(INFLUXDB_PASSWORD, WebServer.arg("INFLUXDB_PASSWORD"), 64);
+  
+  _parseAsCString(INFLUXDB_ORG, WebServer.arg("INFLUXDB_ORG"), 64);
+  _parseAsCString(INFLUXDB_BUCKET, WebServer.arg("INFLUXDB_BUCKET"), 64);
+  _parseAsCString(INFLUXDB_TOKEN, WebServer.arg("INFLUXDB_TOKEN"), 64);
  
   if (DEBUG) {
     Serial.println("POST CONFIG END!!");

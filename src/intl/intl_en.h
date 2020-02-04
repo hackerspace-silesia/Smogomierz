@@ -73,11 +73,15 @@ char EN_INTL_THINGSPEAKCHANNELID[32] PROGMEM = "ThingSpeak Channel ID";
 char EN_INTL_THINGSPEAK_READ_API_KEY[32] PROGMEM = "ThingSpeak Read API Key";
 
 char EN_INTL_INFLUXDBSENDING[64] PROGMEM = "Sending data to the InfluxDB";
+char EN_INTL_INFLUXDBVERSION[32] PROGMEM = "InfluxDB version";
 char EN_INTL_INFLUXDBSERVER[64] PROGMEM = "InfluxDB database address";
 char EN_INTL_INFLUXDBPORT[32] PROGMEM = "InfluxDB port";
 char EN_INTL_INFLUXDBNAME[32] PROGMEM = "Name of the database";
 char EN_INTL_INFLUXDBUSER[32] PROGMEM = "Database user";
 char EN_INTL_INFLUXDBPASSWD[32] PROGMEM = "Database password";
+char EN_INTL_INFLUXDBORG[32] PROGMEM = "Organization";
+char EN_INTL_INFLUXDBBUCKET[32] PROGMEM = "Bucket";
+char EN_INTL_INFLUXDBTOKEN[32] PROGMEM = "Token";
 
 char EN_INTL_CONFIG_ADV_MQTT[32] PROGMEM = "Advanced MQTT Configuration";
 char EN_INTL_MQTTSENDING[64] PROGMEM = "Sending data to the MQTT server";

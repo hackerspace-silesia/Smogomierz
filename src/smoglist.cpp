@@ -12,7 +12,7 @@ const char *SmoglistServerName = "api.smoglist.pl"; // api.smoglist.pl:8090/post
 const uint16_t SmoglistPort = 8090;
 
 void sendSmoglistJson(JsonObject& json) {
-	
+    if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
     WiFiClient client;
 	client.setTimeout(12000);
     Serial.print("\nconnecting to ");
@@ -20,8 +20,8 @@ void sendSmoglistJson(JsonObject& json) {
 
     if (!client.connect(SmoglistServerName, SmoglistPort)) {
         Serial.println("connection failed");
-        Serial.println("wait 3 sec...\n");
-        delay(3000);
+        //Serial.println("wait 3 sec...\n");
+        //delay(3000);
         return;
     }
     delay(100); 
@@ -32,25 +32,36 @@ void sendSmoglistJson(JsonObject& json) {
 	client.println(measureJson(json));
     client.println();
 	serializeJson(json, client);
-    String line = client.readStringUntil('\r');
-    // TODO: Support wrong error (!= 200)
-
     if (DEBUG) {
 		serializeJsonPretty(json, Serial);
-        Serial.println(line);
-    }
-    client.stop();
-	
+	}
+		unsigned long timeout = millis();
+		while (client.available() == 0) {
+			if (millis() - timeout > 5000) {
+	            Serial.println("\n\t>>> Client Timeout!\n");
+	            client.stop();
+	            return;
+	        }
+	    }
+		if(client.available()) {
+			String line = client.readStringUntil('\r');
+			line.trim();
+			if (DEBUG) {
+				Serial.println("\n"+ line);
+			}
+		}
+	client.stop();
+	}
 }
 
 void sendSmoglistData(float currentTemperature, float currentPressure, float currentHumidity, int averagePM1, int averagePM25, int averagePM4, int averagePM10) {
-	StaticJsonDocument<1000> jsonBuffer;
+	StaticJsonDocument<1024> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
 	
 #ifdef ARDUINO_ARCH_ESP8266
-	json["CHIPID"] = "Smogomierz-" + String(ESP.getChipId());
+	json["CHIPID"] = "Smogly-" + String(ESP.getChipId());
 #elif defined ARDUINO_ARCH_ESP32
-	json["CHIPID"] = "Smogomierz-" + String((uint32_t)(ESP.getEfuseMac()));
+	json["CHIPID"] = "Smogly-" + String((uint32_t)(ESP.getEfuseMac()));
 #endif
 	json["SOFTWAREVERSION"] = SOFTWAREVERSION;
 	json["HARDWAREVERSION"] = HARDWAREVERSION; // "1.0 - ESP8266" or "2.0 - ESP32"

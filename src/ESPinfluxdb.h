@@ -43,14 +43,14 @@ public:
 Influxdb(const char* host, uint16_t port);
 DB_RESPONSE opendb(String db);
 DB_RESPONSE opendb(String db, String user, String password);
-DB_RESPONSE write(dbMeasurement data);
-DB_RESPONSE write(String data);
+DB_RESPONSE DBwrite(dbMeasurement data);
+DB_RESPONSE DBwrite(String data);
 DB_RESPONSE query(String sql);
 //uint8_t createDatabase(char *dbname);
 DB_RESPONSE response();
 
 private:
-String _port;
+uint16_t _port;
 String _host;
 String _db;
 

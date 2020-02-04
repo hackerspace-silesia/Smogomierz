@@ -16,7 +16,7 @@
 #endif
 
 Influxdb::Influxdb(const char *host, uint16_t port) {
-        _port = String(port);
+        _port = port;
         _host = String(host);
 }
 
@@ -62,11 +62,11 @@ DB_RESPONSE Influxdb::opendb(String db) {
         return _response;
 }
 
-DB_RESPONSE Influxdb::write(dbMeasurement data) {
-        return write(data.postString());
+DB_RESPONSE Influxdb::DBwrite(dbMeasurement data) {
+        return DBwrite(data.postString());
 }
 
-DB_RESPONSE Influxdb::write(String data) {
+DB_RESPONSE Influxdb::DBwrite(String data) {
 
 
         HTTPClient http;

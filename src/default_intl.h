@@ -10,10 +10,12 @@ extern char TEXT_LANG[16] = "en";
 
 extern char TEXT_INDEX_PAGE[16] = "Measurements";
 extern char TEXT_CONFIG_PAGE[16] = "Settings";
+
 extern char TEXT_CONFIG_DEVICE_PAGE[32] = "Device Settings";
 extern char TEXT_CONFIG_INFO_DEVICE_PAGE[256] = "The choice of sensors connected to Smogly, the frequency of measurements, or the language of the web interface can be changed in the section";
 extern char TEXT_CONFIG_SERVICES_PAGE[32] = "Services Settings";
 extern char TEXT_CONFIG_INFO_SERVICES_PAGE[265] = "Settings of such services as Luftdaten, aqi.eco, Smoglist, AirMonitor, ThingSpeak or InfluxDB or MQTT services can be changed in the section";
+
 extern char TEXT_UPDATE_PAGE[16] = "Update";
 
 extern char TEXT_WEATHER[16] = "Weather";
@@ -92,12 +94,10 @@ extern char TEXT_MQTTPASSWD[32] = "MQTT password";
 
 extern char TEXT_MQTT_IP_IN_TOPIC[32] = "IP address in topic";
 extern char TEXT_MQTT_DEVICENAME_IN_TOPIC[32] = "Device name in topic";
-
 extern char TEXT_MQTT_TOPIC_INFO[256] = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
-	
 extern char TEXT_AIRQUALITY_TOPIC[16] = "Airquality";
-
 extern char TEXT_AQIECOSENDING[128] = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
+
 extern char TEXT_AQIECOSERVER[32] = "aqi.eco server";
 extern char TEXT_AQIECOPATH[32] = "aqi.eco path";
 

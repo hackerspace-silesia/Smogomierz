@@ -10,10 +10,12 @@ char EN_INTL_LANG[16] PROGMEM = "en";
 
 char EN_INTL_INDEX_PAGE[16] PROGMEM = "Measurements";
 char EN_INTL_CONFIG_PAGE[16] PROGMEM = "Settings";
+
 char EN_INTL_CONFIG_DEVICE_PAGE[32] PROGMEM = "Device Settings";
 char EN_INTL_CONFIG_INFO_DEVICE_PAGE[256] PROGMEM = "The choice of sensors connected to Smogly, the frequency of measurements, or the language of the web interface can be changed in the section";
 char EN_INTL_CONFIG_SERVICES_PAGE[32] PROGMEM = "Services Settings";
 char EN_INTL_CONFIG_INFO_SERVICES_PAGE[256] PROGMEM = "Settings of such services as Luftdaten, aqi.eco, Smoglist, AirMonitor, ThingSpeak or InfluxDB or MQTT services can be changed in the section";
+
 char EN_INTL_UPDATE_PAGE[16] PROGMEM = "Update";
 
 char EN_INTL_WEATHER[16] PROGMEM = "Weather";
@@ -92,7 +94,6 @@ char EN_INTL_MQTTPASSWD[32] PROGMEM = "MQTT password";
 
 char EN_INTL_MQTT_IP_IN_TOPIC[32] PROGMEM = "IP address in topic";
 char EN_INTL_MQTT_DEVICENAME_IN_TOPIC[32] PROGMEM = "Device name in topic";
-
 char EN_INTL_MQTT_TOPIC_INFO[256] PROGMEM = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
 
 char EN_INTL_AQIECOSENDING[128] PROGMEM = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";

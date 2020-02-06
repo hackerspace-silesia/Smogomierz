@@ -1058,6 +1058,7 @@ void handle_config_device_post() {
 
   DUST_TIME = WebServer.arg("DUST_TIME").toInt();
   NUMBEROFMEASUREMENTS = WebServer.arg("NUMBEROFMEASUREMENTS").toInt();
+
   DEEPSLEEP_ON = _parseAsBool(WebServer.arg("DEEPSLEEP_ON"));
   MYALTITUDE = WebServer.arg("MYALTITUDE").toInt();
   
@@ -1079,6 +1080,7 @@ void handle_config_device_post() {
     strcpy(DUST_MODEL, "Non");
     saveConfig();
     _handle_config_device(true);
+
     yield();
     if (need_update == 1) {
       doUpdate(1); // BME280-SparkFun
@@ -1215,6 +1217,7 @@ void handle_adv_mqtt_config_post() {
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
   //yield();
+
   ESP.restart();
 }
 

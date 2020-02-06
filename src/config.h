@@ -60,6 +60,10 @@ extern bool AQI_ECO_ON;
 extern char AQI_ECO_HOST[128];
 extern char AQI_ECO_PATH[64];
 
+extern bool AQI_ECO_ON;
+extern char AQI_ECO_HOST[255];
+extern char AQI_ECO_PATH[255];
+
 extern int SENDING_FREQUENCY;
 extern int SENDING_DB_FREQUENCY;
 extern bool DEEPSLEEP_ON;
@@ -93,4 +97,5 @@ const char HARDWAREVERSION[] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)
 const char SOFTWAREVERSION[] = "2.7.5 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "2.0 - ESP32";
+
 #endif

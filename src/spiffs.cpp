@@ -121,6 +121,10 @@ bool loadConfig() {
   _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 128);
   _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path", 64);
   
+  AQI_ECO_ON = json["AQI_ECO_ON"];
+  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host");
+  _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path");
+  
   SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
   SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
   DEEPSLEEP_ON = json["DEEPSLEEP_ON"];
@@ -239,7 +243,7 @@ bool loadConfig() {
     Serial.println(MQTT_TOPIC_PM10);
     Serial.print("Loaded MQTT_TOPIC_AIRQUALITY: ");
     Serial.println(MQTT_TOPIC_AIRQUALITY);
-	
+
     Serial.print("Loaded AQI_ECO_ON: ");
     Serial.println(AQI_ECO_ON);
     Serial.print("Loaded AQI_ECO_HOST: ");
@@ -383,6 +387,7 @@ void fs_setup() {
 #ifdef ARDUINO_ARCH_ESP32
 	delay(10);
 #endif	
+
   Serial.println("Mounting FS...");
 
 #ifdef ARDUINO_ARCH_ESP8266
@@ -396,7 +401,7 @@ void fs_setup() {
     return;
   }
 #endif
-  
+
   if (!loadConfig()) {
     Serial.println("Failed to load config");
     Serial.println("Saving the current config...");

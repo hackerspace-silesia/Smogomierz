@@ -12,6 +12,7 @@
 //#define ASYNC_WEBSERVER_ON // - EXPERIMENTAL - FOR ESP32 ONLY!
 #endif
 
+
 /*
 
    ESP8266
@@ -35,7 +36,6 @@
   HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
   SDS011/21: VIN - 5V; GND - G; TX - D1; RX - D2
   Sensirion SPS30: VIN - 5V; GND - G; TX - D1; RX - D2
-
 
    ESP32
 
@@ -144,6 +144,7 @@
 #endif
 #include <ESP8266mDNS.h>
 #ifndef ASYNC_WEBSERVER_ON
+
 #include <ESP8266HTTPUpdateServer.h>
 #endif
 #include <SoftwareSerial.h>
@@ -151,12 +152,14 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <ESPmDNS.h>
+
 #ifdef ASYNC_WEBSERVER_ON
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #else
 #include <WebServer.h>
 #endif
+
 #include <Update.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
@@ -304,7 +307,9 @@ AsyncWebServer server(80);
 #else
 #ifdef ARDUINO_ARCH_ESP8266
 ESP8266WebServer WebServer(80);
+#ifndef DUSTSENSOR_SPS30
 ESP8266HTTPUpdateServer httpUpdater;
+#endif
 #elif defined ARDUINO_ARCH_ESP32
 WebServer WebServer(80);
 #endif
@@ -517,6 +522,7 @@ void setup() {
 #elif defined DUSTSENSOR_SPS30
   if (!strcmp(DUST_MODEL, "SPS30")) {
     Serial.println(F("Trying to connect to SPS30..."));
+
     // set driver debug level
     sps30.EnableDebugging(SPS30_DEBUG);
 
@@ -737,7 +743,9 @@ void setup() {
   WebServer.onNotFound(handle_root);
 
 #ifdef ARDUINO_ARCH_ESP8266
+#ifndef DUSTSENSOR_SPS30
   httpUpdater.setup(&WebServer, "/update");
+#endif
 #elif defined ARDUINO_ARCH_ESP32
   /*handling uploading firmware file */
   WebServer.on("/update", HTTP_POST, []() {
@@ -813,6 +821,7 @@ void loop() {
   }
 #endif
   // DUST SENSOR refresh data - END
+
   //yield();
 
 #ifndef ASYNC_WEBSERVER_ON
@@ -872,6 +881,7 @@ void loop() {
 #ifndef ASYNC_WEBSERVER_ON
         WebServer.handleClient();
 #endif
+
         previous_2sec_Millis = millis();
       }
       if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
@@ -1354,6 +1364,56 @@ void takeNormalnPMMeasurements() {
   pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
   pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
   pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+=======
+  pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+  pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+  pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+#elif defined DUSTSENSOR_SDS011_21
+#ifdef ARDUINO_ARCH_ESP8266
+  PmResult SDSdata = sds.queryPm();
+  delay(1000);
+  if (SDSdata.isOk()) {
+    pmMeasurements[iPM][0] = int(calib * 0);
+    pmMeasurements[iPM][1] = int(calib * SDSdata.pm25);
+    pmMeasurements[iPM][2] = int(calib * SDSdata.pm10);
+  } else {
+    Serial.println("\nCould not read values from SDS sensor :( ");
+  }
+#elif defined ARDUINO_ARCH_ESP32
+  err = my_sds.read(&SDSpm25, &SDSpm10);
+  if (!err) {
+    pmMeasurements[iPM][0] = int(calib * 0);
+    pmMeasurements[iPM][1] = int(calib * SDSpm25);
+    pmMeasurements[iPM][2] = int(calib * SDSpm10);
+  } else {
+    Serial.println("\nCould not read values from SDS sensor :( ");
+  }
+#endif
+#elif defined DUSTSENSOR_HPMA115S0
+  if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
+    if (hpma115S0_pm25 == 0 and hpma115S0_pm10 == 0) {
+      delay(100);
+      hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10);
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
+      pmMeasurements[iPM][2] = int(calib * hpma115S0_pm10);
+    } else {
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
+      pmMeasurements[iPM][2] = int(calib * hpma115S0_pm10);
+    }
+  }
+#elif defined DUSTSENSOR_SPS30
+  read_sps30_data();
+
+  pmMeasurements[iPM][0] = int(calib * SPS30_PM1);
+  pmMeasurements[iPM][1] = int(calib * SPS30_PM25);
+  pmMeasurements[iPM][2] = int(calib * SPS30_PM10);
+  pmMeasurements[iPM][3] = int(calib * SPS30_PM4);
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+  pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+  pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+  pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
 #endif
 
   if (DEBUG) {
@@ -1390,6 +1450,7 @@ void takeSleepPMMeasurements() {
 #ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
 #endif
+
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1405,7 +1466,6 @@ void takeSleepPMMeasurements() {
         takeNormalnPMMeasurements();
         counterNM1++;
       }
-
       previous_2sec_Millis = millis();
     }
 #ifndef ASYNC_WEBSERVER_ON
@@ -1484,6 +1544,7 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
+
 #ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
 #endif
@@ -1503,6 +1564,7 @@ void takeSleepPMMeasurements() {
       }
       previous_2sec_Millis = millis();
     }
+
 #ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
 #endif
@@ -1526,6 +1588,7 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
+
 #ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
 #endif

@@ -29,7 +29,7 @@ int THINGSPEAK_CHANNEL_ID = 0;
 char THINGSPEAK_READ_API_KEY[32] = "READ_API_KEY";
 
 bool INFLUXDB_ON = false;
-char INFLUXDB_VERSION[16] = "1"; // 1 (for 1.x version) or 2 for 2.0 or later 
+char INFLUXDB_VERSION[16] = "1"; // 1 (for 1.x version) or 2 for 2.0 or later
 char INFLUXDB_HOST[128] = "INFLUXDB_ADRESS";
 uint16_t INFLUXDB_PORT = 8086;
 char INFLUXDB_DATABASE[64] = "mydb";
@@ -59,10 +59,6 @@ char MQTT_TOPIC_AIRQUALITY[128] = "airquality";
 bool AQI_ECO_ON = false;
 char AQI_ECO_HOST[128] = "???.aqi.eco";
 char AQI_ECO_PATH[64] = "/u/???";
-
-bool AQI_ECO_ON = false;
-char AQI_ECO_HOST[255] = "???.aqi.eco";
-char AQI_ECO_PATH[255] = "/u/???";
 
 int SENDING_FREQUENCY = 3;
 int SENDING_DB_FREQUENCY = 3;

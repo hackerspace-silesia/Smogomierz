@@ -81,17 +81,8 @@
   Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-
-  ASYNC_WEBSERVER_ON
-  ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
-
-  Szkic używa 514236 bajtów (49%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 55464 bajtów (67%) pamięci dynamicznej, pozostawiając 26456 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
-
-  Szkic używa 1281350 bajtów (65%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 60072 bajtów (18%) pamięci dynamicznej, pozostawiając 267608 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 

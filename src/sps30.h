@@ -85,7 +85,7 @@
 //#define SOFTI2C_ESP32 1
 
 #include "Arduino.h"                // Needed for Stream
-#include "printf.h"
+//#include "printf.h" // return errors with ESP8266HTTPUpdateServer.h
 
 /**
  *  Auto detect that some boards have low memory. (like Uno)

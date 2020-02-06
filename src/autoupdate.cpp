@@ -151,13 +151,13 @@ bool checkUpdate(int checkUpdateSW) {
     }
   }
   http.end();
-  strncpy(SERVERSOFTWAREVERSION, ServerSW, 255);
+  strncpy(SERVERSOFTWAREVERSION, ServerSW, 32);
   Data[0] = SERVERSOFTWAREVERSION;
 
   if (checkUpdateSW == 0) {
     int SFbuildIndex = String(SOFTWAREVERSION).indexOf("build");
     Data[2] = String(SOFTWAREVERSION).substring(0, SFbuildIndex - 1);
-    strncpy(CURRENTSOFTWAREVERSION, (Data[2]).c_str(), 255);
+    strncpy(CURRENTSOFTWAREVERSION, (Data[2]).c_str(), 32);
   }
 
   if (DEBUG) {

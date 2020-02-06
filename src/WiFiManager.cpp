@@ -24,6 +24,8 @@ uint8_t WiFiManager::_lastconxresulttmp = WL_IDLE_STATUS;
  * --------------------------------------------------------------------------------
 **/
 
+int NoWiFiCounter = 0;
+
 WiFiManagerParameter::WiFiManagerParameter() {
   WiFiManagerParameter("");
 }
@@ -440,6 +442,13 @@ boolean WiFiManager::configPortalHasTimeout(){
       if(millis() - timer > 30000){
         timer = millis();
         DEBUG_WM(DEBUG_VERBOSE,"NUM CLIENTS: " + (String)WiFi_softap_num_stations());
+		NoWiFiCounter++;
+				        DEBUG_WM("NoWiFiCounter: " + String(NoWiFiCounter));
+				        if (NoWiFiCounter >= 10) { // reset every 5 minutes without WiFi access!
+						        DEBUG_WM(F("RESETTING ESP"));
+						        delay(1000);
+						        reboot();
+						    }
       }
       _configPortalStart = millis(); // kludge, bump configportal start time to skew timeouts
       return false;
@@ -941,8 +950,9 @@ void WiFiManager::handleRoot() {
   str.replace(FPSTR(T_v),configPortalActive ? _apName : WiFi.localIP().toString()); // use ip if ap is not active for heading
   page += str;
   page += FPSTR(HTTP_PORTAL_OPTIONS);
+  page += "<br><br>";
   page += getMenuOut();
-  reportStatus(page);
+  //reportStatus(page);
   page += FPSTR(HTTP_END);
 
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
@@ -961,6 +971,7 @@ void WiFiManager::handleWifi(boolean scan) {
   DEBUG_WM(DEBUG_VERBOSE,F("<- HTTP Wifi"));
   handleRequest();
   String page = getHTTPHead(FPSTR(S_titlewifi)); // @token titlewifi
+  page += "<center><h1>WiFi Config</h1></center><hr><br>";
   if (scan) {
     // DEBUG_WM(DEBUG_DEV,"refresh flag:",server->hasArg(F("refresh")));
     WiFi_scanNetworks(server->hasArg(F("refresh")),false); //wifiscan, force if arg refresh
@@ -991,7 +1002,7 @@ void WiFiManager::handleWifi(boolean scan) {
   }
   page += FPSTR(HTTP_FORM_END);
   page += FPSTR(HTTP_SCAN_LINK);
-  reportStatus(page);
+  //reportStatus(page);
   page += FPSTR(HTTP_END);
 
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
@@ -1361,6 +1372,12 @@ void WiFiManager::handleWifiSave() {
 
   String page;
 
+  page += FPSTR(HTTP_HEAD_START);
+  //page.replace(FPSTR(T_v), title);
+  page += FPSTR(HTTP_SCRIPT);
+  page += FPSTR(HTTP_STYLE);
+  page += FPSTR(HTTP_SAVED);
+  
   if(_ssid == ""){
     page = getHTTPHead(FPSTR(S_titlewifisettings)); // @token titleparamsaved
     page += FPSTR(HTTP_PARAMSAVED);
@@ -2350,7 +2367,7 @@ void WiFiManager::setMenu(const char * menu[], uint8_t size){
       }
     }
   }
-  // DEBUG_WM(getMenuOut());
+  //DEBUG_WM(getMenuOut());
 }
 
 /**
@@ -2373,7 +2390,7 @@ void WiFiManager::setMenu(std::vector<const char *>& menu){
       }
     }
   }
-  // DEBUG_WM(getMenuOut());
+  //DEBUG_WM(getMenuOut());
 }
 
 
@@ -2384,9 +2401,8 @@ void WiFiManager::setMenu(std::vector<const char *>& menu){
  * @since $dev
  */
 void WiFiManager::setParamsPage(bool enable){
-  _paramsInWifi= false;
-  _menuIdsDefault = {"wifi","param","info","exit"};
-  setMenu(_menuIdsDefault);  
+  _paramsInWifi  = !enable;
+  setMenu(enable ? _menuIdsParams : _menuIdsDefault);
 }
 
 // GETTERS

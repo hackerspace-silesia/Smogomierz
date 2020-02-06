@@ -10,6 +10,12 @@ char EN_INTL_LANG[16] PROGMEM = "en";
 
 char EN_INTL_INDEX_PAGE[16] PROGMEM = "Measurements";
 char EN_INTL_CONFIG_PAGE[16] PROGMEM = "Settings";
+
+char EN_INTL_CONFIG_DEVICE_PAGE[32] PROGMEM = "Device Settings";
+char EN_INTL_CONFIG_INFO_DEVICE_PAGE[256] PROGMEM = "The choice of sensors connected to Smogly, the frequency of measurements, or the language of the web interface can be changed in the section";
+char EN_INTL_CONFIG_SERVICES_PAGE[32] PROGMEM = "Services Settings";
+char EN_INTL_CONFIG_INFO_SERVICES_PAGE[256] PROGMEM = "Settings of such services as Luftdaten, aqi.eco, Smoglist, AirMonitor, ThingSpeak or InfluxDB or MQTT services can be changed in the section";
+
 char EN_INTL_UPDATE_PAGE[16] PROGMEM = "Update";
 
 char EN_INTL_WEATHER[16] PROGMEM = "Weather";
@@ -21,7 +27,7 @@ char EN_INTL_DEWPOINT[16] PROGMEM = "Dewpoint";
 char EN_INTL_AIRPOLLUTION[32] PROGMEM = "Air pollution";
 char EN_INTL_SAVED[16] PROGMEM = "SAVED!";
 
-char EN_INTL_POSTCONFIG_INFO[64] PROGMEM = "everything looks OK, in a moment the Smogomierz will restart";
+char EN_INTL_POSTCONFIG_INFO[64] PROGMEM = "everything looks OK, in a moment the Smogly will restart";
 char EN_INTL_INSTRUCIONSLINK[80] PROGMEM = "All instructions and descriptions[in polish] are available {GITHUB_LINK}.";
 char EN_INTL_DEVICENAME[32] PROGMEM = "Device Name";
 char EN_INTL_DEVICENAMEAUTO[32] PROGMEM = "Automatic name generation";
@@ -35,7 +41,7 @@ char EN_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Make PM measurements every";
 char EN_INTL_AVERAGELASTRESULT[32] PROGMEM = "Average result from last";
 char EN_INTL_PMMEASUREMENTS[32] PROGMEM = "PM measurements";
 char EN_INTL_SENDINGINTERVAL[64] PROGMEM = "Sending data to external services every";
-char EN_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Sending data to AirMonitor/Luftdaten/Smoglist every";
+char EN_INTL_SERVICESSENDINGINTERVAL[128] PROGMEM = "Sending data to AirMonitor/Luftdaten/Smoglist/aqi.eco every";
 char EN_INTL_DBSENDINGINTERVAL[64] PROGMEM = "Sending data to ThingSpeak/InfluxDB/MQTT every";
 char EN_INTL_SECONDS[16] PROGMEM = "seconds";
 char EN_INTL_MINUTES[16] PROGMEM = "minutes";
@@ -54,7 +60,7 @@ char EN_INTL_SECURELOGOUTINFO[64] PROGMEM = "Restart your web browser to log out
 char EN_INTL_LUFTDATENSENDING[96] PROGMEM = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
 
 char EN_INTL_SMOGLISTSENDING[64] PROGMEM = "Sending data to the {SMOGLIST_LINK} service";
-char EN_INTL_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
+char EN_INTL_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogly usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
 
 char EN_INTL_AIRMONITORSENDING[128] PROGMEM = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. {PMSENSORMODEL})";
 char EN_INTL_AIRMONITORCHARTS[64] PROGMEM = "Displaying charts from the AirMonitor site";
@@ -64,25 +70,35 @@ char EN_INTL_AIRMONITORLONGITUDE[32] PROGMEM = "Longitude";
 
 char EN_INTL_THINGSPEAKSENDING[64] PROGMEM = "Sending data to the {THINGSPEAK_LINK} service:";
 char EN_INTL_THINGSPEAKCHARTS[64] PROGMEM = "Displaying charts from the ThingSpeak site";
-char EN_INTL_THINGSPEAKAPIKEY[32] PROGMEM = "ThingSpeak API_KEY";
+char EN_INTL_THINGSPEAK_WRITE_API_KEY[32] PROGMEM = "ThingSpeak Write API Key";
 char EN_INTL_THINGSPEAKCHANNELID[32] PROGMEM = "ThingSpeak Channel ID";
+char EN_INTL_THINGSPEAK_READ_API_KEY[32] PROGMEM = "ThingSpeak Read API Key";
 
 char EN_INTL_INFLUXDBSENDING[64] PROGMEM = "Sending data to the InfluxDB";
+char EN_INTL_INFLUXDBVERSION[32] PROGMEM = "InfluxDB version";
 char EN_INTL_INFLUXDBSERVER[64] PROGMEM = "InfluxDB database address";
 char EN_INTL_INFLUXDBPORT[32] PROGMEM = "InfluxDB port";
 char EN_INTL_INFLUXDBNAME[32] PROGMEM = "Name of the database";
 char EN_INTL_INFLUXDBUSER[32] PROGMEM = "Database user";
 char EN_INTL_INFLUXDBPASSWD[32] PROGMEM = "Database password";
+char EN_INTL_INFLUXDBORG[32] PROGMEM = "Organization";
+char EN_INTL_INFLUXDBBUCKET[32] PROGMEM = "Bucket";
+char EN_INTL_INFLUXDBTOKEN[32] PROGMEM = "Token";
 
+char EN_INTL_CONFIG_ADV_MQTT[32] PROGMEM = "Advanced MQTT Configuration";
 char EN_INTL_MQTTSENDING[64] PROGMEM = "Sending data to the MQTT server";
 char EN_INTL_MQTTSERVER[32] PROGMEM = "MQTT server address";
 char EN_INTL_MQTTPORT[32] PROGMEM = "MQTT port";
 char EN_INTL_MQTTUSER[32] PROGMEM = "MQTT user";
 char EN_INTL_MQTTPASSWD[32] PROGMEM = "MQTT password";
 
-char EN_INTL_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
-char EN_INTL_AQIECOSERVER[32] = "aqi.eco server";
-char EN_INTL_AQIECOPATH[32] = "aqi.eco path";
+char EN_INTL_MQTT_IP_IN_TOPIC[32] PROGMEM = "IP address in topic";
+char EN_INTL_MQTT_DEVICENAME_IN_TOPIC[32] PROGMEM = "Device name in topic";
+char EN_INTL_MQTT_TOPIC_INFO[256] PROGMEM = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
+
+char EN_INTL_AQIECOSENDING[128] PROGMEM = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
+char EN_INTL_AQIECOSERVER[32] PROGMEM = "aqi.eco server";
+char EN_INTL_AQIECOPATH[32] PROGMEM = "aqi.eco path";
 
 char EN_INTL_CALIBMETHOD[32] PROGMEM = "Calibration method";
 char EN_INTL_CALIB1[32] PROGMEM = "calib1";

@@ -10,6 +10,12 @@ extern char TEXT_LANG[16] = "en";
 
 extern char TEXT_INDEX_PAGE[16] = "Measurements";
 extern char TEXT_CONFIG_PAGE[16] = "Settings";
+
+extern char TEXT_CONFIG_DEVICE_PAGE[32] = "Device Settings";
+extern char TEXT_CONFIG_INFO_DEVICE_PAGE[256] = "The choice of sensors connected to Smogly, the frequency of measurements, or the language of the web interface can be changed in the section";
+extern char TEXT_CONFIG_SERVICES_PAGE[32] = "Services Settings";
+extern char TEXT_CONFIG_INFO_SERVICES_PAGE[265] = "Settings of such services as Luftdaten, aqi.eco, Smoglist, AirMonitor, ThingSpeak or InfluxDB or MQTT services can be changed in the section";
+
 extern char TEXT_UPDATE_PAGE[16] = "Update";
 
 extern char TEXT_WEATHER[16] = "Weather";
@@ -21,7 +27,7 @@ extern char TEXT_DEWPOINT[16] = "Dewpoint";
 extern char TEXT_AIRPOLLUTION[32] = "Air pollution";
 extern char TEXT_SAVED[16] = "SAVED!";
 
-extern char TEXT_POSTCONFIG_INFO[64] = "everything looks OK, in a moment the Smogomierz will restart";
+extern char TEXT_POSTCONFIG_INFO[64] = "everything looks OK, in a moment the Smogly will restart";
 extern char TEXT_INSTRUCIONSLINK[80] = "All instructions and descriptions[in polish] are available {GITHUB_LINK}.";
 extern char TEXT_DEVICENAME[32] = "Device Name";
 extern char TEXT_DEVICENAMEAUTO[32] = "Automatic name generation";
@@ -35,7 +41,7 @@ extern char TEXT_MEASUREMENTFREQUENCY[32] = "Make PM measurements every";
 extern char TEXT_AVERAGELASTRESULT[32] = "Average result from last";
 extern char TEXT_PMMEASUREMENTS[32] = "PM measurements";
 extern char TEXT_SENDINGINTERVAL[64] = "Sending data to external services every";
-extern char TEXT_SERVICESSENDINGINTERVAL[64] = "Sending data to AirMonitor/Luftdaten/Smoglist every";
+extern char TEXT_SERVICESSENDINGINTERVAL[128] = "Sending data to AirMonitor/Luftdaten/Smoglist/aqi.eco every";
 extern char TEXT_DBSENDINGINTERVAL[64] = "Sending data to ThingSpeak/InfluxDB/MQTT every";
 extern char TEXT_SECONDS[16] = "seconds";
 extern char TEXT_MINUTES[16] = "minutes";
@@ -54,7 +60,7 @@ extern char TEXT_SECURELOGOUTINFO[64] = "Restart your web browser to log out!";
 extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
 
 extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the {SMOGLIST_LINK} service";
-extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogomierz usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
+extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogly usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
 
 extern char TEXT_AIRMONITORSENDING[128] = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. {PMSENSORMODEL})";
 extern char TEXT_AIRMONITORCHARTS[64] = "Displaying charts from the AirMonitor site";
@@ -64,23 +70,34 @@ extern char TEXT_AIRMONITORLONGITUDE[32] = "Longitude";
 
 extern char TEXT_THINGSPEAKSENDING[64] = "Sending data to the {THINGSPEAK_LINK} service:";
 extern char TEXT_THINGSPEAKCHARTS[64] = "Displaying charts from the ThingSpeak site";
-extern char TEXT_THINGSPEAKAPIKEY[32] = "ThingSpeak API_KEY";
+extern char TEXT_THINGSPEAK_WRITE_API_KEY[32] = "ThingSpeak Write API Key";
 extern char TEXT_THINGSPEAKCHANNELID[32] = "ThingSpeak Channel ID";
+extern char TEXT_THINGSPEAK_READ_API_KEY[32] = "ThingSpeak Read API Key";
 
 extern char TEXT_INFLUXDBSENDING[64] = "Sending data to the InfluxDB";
+extern char TEXT_INFLUXDBVERSION[32] = "InfluxDB version";
 extern char TEXT_INFLUXDBSERVER[64] = "InfluxDB database address";
 extern char TEXT_INFLUXDBPORT[32] = "InfluxDB port";
 extern char TEXT_INFLUXDBNAME[32] = "Name of the database";
 extern char TEXT_INFLUXDBUSER[32] = "Database user";
 extern char TEXT_INFLUXDBPASSWD[32] = "Database password";
+extern char TEXT_INFLUXDBORG[32] = "Organization";
+extern char TEXT_INFLUXDBBUCKET[32] = "Bucket";
+extern char TEXT_INFLUXDBTOKEN[32] = "Token";
 
+extern char TEXT_CONFIG_ADV_MQTT[32] = "Advanced MQTT Configuration";
 extern char TEXT_MQTTSENDING[64] = "Sending data to the MQTT server";
 extern char TEXT_MQTTSERVER[32] = "MQTT server address";
 extern char TEXT_MQTTPORT[32] = "MQTT port";
 extern char TEXT_MQTTUSER[32] = "MQTT user";
 extern char TEXT_MQTTPASSWD[32] = "MQTT password";
 
-extern char TEXT_AQIECOSENDING[64] = "Sending data to the aqi.eco server";
+extern char TEXT_MQTT_IP_IN_TOPIC[32] = "IP address in topic";
+extern char TEXT_MQTT_DEVICENAME_IN_TOPIC[32] = "Device name in topic";
+extern char TEXT_MQTT_TOPIC_INFO[256] = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
+extern char TEXT_AIRQUALITY_TOPIC[16] = "Airquality";
+extern char TEXT_AQIECOSENDING[128] = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
+
 extern char TEXT_AQIECOSERVER[32] = "aqi.eco server";
 extern char TEXT_AQIECOPATH[32] = "aqi.eco path";
 
@@ -130,20 +147,20 @@ static char LUFTDATENFORM_LINK[] = "<a title='meine.luftdaten.info' href='https:
 static char SMOGLIST_LINK[] = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
 static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>";
 static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
-static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
+static char LATLONG_LINK[] = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
 static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
 static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
 #elif defined ARDUINO_ARCH_ESP32
-static char GITHUB_LINK[] PROGMEM = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
-static char WSPOLRZEDNE_GPS_LINK[] PROGMEM = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
-static char LUFTDATEN_LINK[] PROGMEM = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
-static char LUFTDATENFORM_LINK[] PROGMEM = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
-static char SMOGLIST_LINK[] PROGMEM = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
-static char AIRMONITOR_LINK[] PROGMEM = "<a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>";
-static char AIRMONITORFORM_LINK[] PROGMEM = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
-static char LATLONG_LINK[] PROGMEM = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
-static char THINGSPEAK_LINK[] PROGMEM = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
-static char SMOGOMIERZRELEASES_LINK[] PROGMEM = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
-static char MADAVI_LINK[] PROGMEM = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
+static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
+static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
+static char LUFTDATEN_LINK[] = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
+static char LUFTDATENFORM_LINK[] = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
+static char SMOGLIST_LINK[] = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
+static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='http://mapa.airmonitor.pl' target='_blank'>AirMonitor</a>";
+static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://docs.google.com/forms/d/e/1FAIpQLSdw72_DggyrK7xnSQ1nR11Y-YK4FYWk_MF9QbecpOERql-T2w/viewform' target='_blank'>{TEXT_THEFORM}</a>";
+static char LATLONG_LINK[] = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
+static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
+static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
 #endif

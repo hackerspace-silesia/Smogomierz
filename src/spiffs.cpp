@@ -7,15 +7,21 @@
 #include "config.h"
 #define FORMAT_SPIFFS_IF_FAILED true
 
-void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "") {
+//const int capacity = JSON_OBJECT_SIZE(70);
+#ifdef ARDUINO_ARCH_ESP8266
+	const int capacity = 6144;
+#elif defined ARDUINO_ARCH_ESP32
+	const int capacity = 4096;
+#endif
+		
+void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {
   const char* val = obj.as<const char*>();
   if (val) {
-    strncpy(dest, val, 255);
+    strncpy(dest, val, CharSize);
   } else {
-    strncpy(dest, dflt, 255);
+    strncpy(dest, dflt, CharSize);
   }
 }
-
 
 bool loadConfig() {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -30,9 +36,9 @@ bool loadConfig() {
   }
 
   size_t size = configFile.size();
-  if (size > 1536) {
-    Serial.println("Config file size is too large");
-    return false;
+  if (size > 2048) {
+      Serial.println("Config file size is too large");
+      return false;
   }
 
   // Allocate a buffer to store contents of the file.
@@ -43,7 +49,7 @@ bool loadConfig() {
   // use configFile.readString instead.
   configFile.readBytes(buf.get(), size);
 
-  StaticJsonDocument<2000> jsonBuffer;
+  StaticJsonDocument<capacity> jsonBuffer;
   deserializeJson(jsonBuffer, buf.get());
   JsonObject json = jsonBuffer.as<JsonObject>();
 
@@ -55,12 +61,12 @@ bool loadConfig() {
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND webserver.h!!
 
   DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
-  _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz");
-  _safeCpy(LANGUAGE, json["LANGUAGE"], "english");
+  _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz", 32);
+  _safeCpy(LANGUAGE, json["LANGUAGE"], "english", 32);
   SELECTED_LANGUAGE = json["SELECTED_LANGUAGE"];
 
-  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non");
-  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non");
+  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non", 32);
+  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non", 32);
   DISPLAY_PM1 = json["DISPLAY_PM1"];
   FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
   
@@ -72,27 +78,48 @@ bool loadConfig() {
 
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
-  _safeCpy(LATITUDE, json["LATITUDE"], "50.263911");
-  _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711");
+  _safeCpy(LATITUDE, json["LATITUDE"], "50.263911", 16);
+  _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711", 16);
   MYALTITUDE = json["MYALTITUDE"];
 
   THINGSPEAK_ON = json["THINGSPEAK_ON"];
   THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
-  _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"]);
+  _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"], "WRITE_API_KEY", 32);
   THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
+  _safeCpy(THINGSPEAK_READ_API_KEY, json["THINGSPEAK_READ_API_KEY"], "READ_API_KEY", 32);
 
   INFLUXDB_ON = json["INFLUXDB_ON"];
-  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host");
+  _safeCpy(INFLUXDB_VERSION, json["INFLUXDB_VERSION"], "1", 16);
+  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host", 128);
   INFLUXDB_PORT = json["INFLUXDB_PORT"];  
-  _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb");
-  _safeCpy(DB_USER, json["DB_USER"], "user");
-  _safeCpy(DB_PASSWORD, json["DB_PASSWORD"], "password");
+  _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 64);
+  _safeCpy(INFLUXDB_USER, json["INFLUXDB_USER"], "user", 64);
+  _safeCpy(INFLUXDB_PASSWORD, json["INFLUXDB_PASSWORD"], "password", 64);
+  
+  _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 64);
+  _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 64);
+  _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 64);
   
   MQTT_ON = json["MQTT_ON"];
-  _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host");
+  _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host", 128);
   MQTT_PORT = json["MQTT_PORT"];  
-  _safeCpy(MQTT_USER, json["MQTT_USER"], "user");
-  _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password");
+  _safeCpy(MQTT_USER, json["MQTT_USER"], "user", 64);
+  _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password", 64);
+  
+  MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
+  MQTT_DEVICENAME_IN_TOPIC = json["MQTT_DEVICENAME_IN_TOPIC"];
+  
+  _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 128);
+  _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 128);
+  _safeCpy(MQTT_TOPIC_PRESS, json["MQTT_TOPIC_PRESS"], "MQTT_TOPIC_PRESS", 128);
+  _safeCpy(MQTT_TOPIC_PM1, json["MQTT_TOPIC_PM1"], "MQTT_TOPIC_PM1", 128);
+  _safeCpy(MQTT_TOPIC_PM25, json["MQTT_TOPIC_PM25"], "MQTT_TOPIC_PM25", 128);
+  _safeCpy(MQTT_TOPIC_PM10, json["MQTT_TOPIC_PM10"], "MQTT_TOPIC_PM10", 128);
+  _safeCpy(MQTT_TOPIC_AIRQUALITY, json["MQTT_TOPIC_AIRQUALITY"], "MQTT_TOPIC_AIRQUALITY", 128);
+  
+  AQI_ECO_ON = json["AQI_ECO_ON"];
+  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 128);
+  _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path", 64);
   
   AQI_ECO_ON = json["AQI_ECO_ON"];
   _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host");
@@ -106,10 +133,10 @@ bool loadConfig() {
   AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
   
   CONFIG_AUTH = json["CONFIG_AUTH"];
-  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin");
-  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password");
+  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 256);
+  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 256);
   
-  _safeCpy(MODEL, json["MODEL"], "black");
+  _safeCpy(MODEL, json["MODEL"], "black", 32);
 
   // Real world application would store these values in some variables for
   // later use.
@@ -161,19 +188,29 @@ bool loadConfig() {
     Serial.println(THINGSPEAK_API_KEY);
     Serial.print("Loaded THINGSPEAK_CHANNEL_ID: ");
     Serial.println(THINGSPEAK_CHANNEL_ID);
+    Serial.print("Loaded THINGSPEAK_READ_API_KEY: ");
+    Serial.println(THINGSPEAK_READ_API_KEY);
 
     Serial.print("Loaded INFLUXDB_ON: ");
     Serial.println(INFLUXDB_ON);
+    Serial.print("Loaded INFLUXDB_VERSION: ");
+    Serial.println(INFLUXDB_VERSION);
     Serial.print("Loaded INFLUXDB_HOST: ");
     Serial.println(INFLUXDB_HOST);
     Serial.print("Loaded INFLUXDB_PORT: ");
     Serial.println(INFLUXDB_PORT);
     Serial.print("Loaded INFLUXDB_DATABASE: ");
     Serial.println(INFLUXDB_DATABASE);
-    Serial.print("Loaded DB_USER: ");
-    Serial.println(DB_USER);
-    Serial.print("Loaded DB_PASSWORD: ");
-    Serial.println(DB_PASSWORD);
+    Serial.print("Loaded INFLUXDB_USER: ");
+    Serial.println(INFLUXDB_USER);
+    Serial.print("Loaded INFLUXDB_PASSWORD: ");
+    Serial.println(INFLUXDB_PASSWORD);
+    Serial.print("Loaded INFLUXDB_ORG: ");
+    Serial.println(INFLUXDB_ORG);
+    Serial.print("Loaded INFLUXDB_BUCKET: ");
+    Serial.println(INFLUXDB_BUCKET);
+    Serial.print("Loaded INFLUXDB_TOKEN: ");
+    Serial.println(INFLUXDB_TOKEN);
 	
     Serial.print("Loaded MQTT_ON: ");
     Serial.println(MQTT_ON);
@@ -186,6 +223,27 @@ bool loadConfig() {
     Serial.print("Loaded MQTT_PASSWORD: ");
     Serial.println(MQTT_PASSWORD);
     
+    Serial.print("Loaded MQTT_IP_IN_TOPIC: ");
+    Serial.println(MQTT_IP_IN_TOPIC);
+	
+    Serial.print("Loaded MQTT_DEVICENAME_IN_TOPIC: ");
+    Serial.println(MQTT_DEVICENAME_IN_TOPIC);
+	
+    Serial.print("Loaded MQTT_TOPIC_TEMP: ");
+    Serial.println(MQTT_TOPIC_TEMP);
+    Serial.print("Loaded MQTT_TOPIC_HUMI: ");
+    Serial.println(MQTT_TOPIC_HUMI);
+    Serial.print("Loaded MQTT_TOPIC_PRESS: ");
+    Serial.println(MQTT_TOPIC_PRESS);
+    Serial.print("Loaded MQTT_TOPIC_PM1: ");
+    Serial.println(MQTT_TOPIC_PM1);
+    Serial.print("Loaded MQTT_TOPIC_PM25: ");
+    Serial.println(MQTT_TOPIC_PM25);
+    Serial.print("Loaded MQTT_TOPIC_PM10: ");
+    Serial.println(MQTT_TOPIC_PM10);
+    Serial.print("Loaded MQTT_TOPIC_AIRQUALITY: ");
+    Serial.println(MQTT_TOPIC_AIRQUALITY);
+
     Serial.print("Loaded AQI_ECO_ON: ");
     Serial.println(AQI_ECO_ON);
     Serial.print("Loaded AQI_ECO_HOST: ");
@@ -215,6 +273,9 @@ bool loadConfig() {
     Serial.print("Loaded MODEL: ");
     Serial.println(MODEL);
 	
+    Serial.print("Loaded PMSENSORVERSION: ");
+    Serial.println(PMSENSORVERSION);
+	
     Serial.print("Loaded SOFTWAREVERSION: ");
     Serial.println(SOFTWAREVERSION);
     
@@ -224,7 +285,7 @@ bool loadConfig() {
 }
 
 bool saveConfig() {
-  StaticJsonDocument<2000> jsonBuffer;
+  StaticJsonDocument<capacity> jsonBuffer;
   JsonObject json = jsonBuffer.to<JsonObject>();
   json["DEVICENAME_AUTO"] = DEVICENAME_AUTO;
   json["DEVICENAME"] = DEVICENAME;
@@ -252,21 +313,37 @@ bool saveConfig() {
   json["THINGSPEAK_GRAPH_ON"] = THINGSPEAK_GRAPH_ON;
   json["THINGSPEAK_API_KEY"] = THINGSPEAK_API_KEY;
   json["THINGSPEAK_CHANNEL_ID"] = THINGSPEAK_CHANNEL_ID;
+  json["THINGSPEAK_READ_API_KEY"] = THINGSPEAK_READ_API_KEY;
 
   json["INFLUXDB_ON"] = INFLUXDB_ON;
+  json["INFLUXDB_VERSION"] = INFLUXDB_VERSION;
   json["INFLUXDB_HOST"] = INFLUXDB_HOST;
   json["INFLUXDB_PORT"] = INFLUXDB_PORT;
   json["INFLUXDB_DATABASE"] = INFLUXDB_DATABASE;
-  json["DB_USER"] = DB_USER;
-  json["DB_PASSWORD"] = DB_PASSWORD;
-  json["DB_PASSWORD"] = String(DB_PASSWORD);
-  
+  json["INFLUXDB_USER"] = INFLUXDB_USER;
+  json["INFLUXDB_PASSWORD"] = INFLUXDB_PASSWORD;
+  json["INFLUXDB_PASSWORD"] = String(INFLUXDB_PASSWORD);
+  json["INFLUXDB_ORG"] = INFLUXDB_ORG;
+  json["INFLUXDB_BUCKET"] = INFLUXDB_BUCKET;
+  json["INFLUXDB_TOKEN"] = INFLUXDB_TOKEN;
+
   json["MQTT_ON"] = MQTT_ON;
   json["MQTT_HOST"] = MQTT_HOST;
   json["MQTT_PORT"] = MQTT_PORT;
   json["MQTT_USER"] = MQTT_USER;
   json["MQTT_PASSWORD"] = MQTT_PASSWORD;
   json["MQTT_PASSWORD"] = String(MQTT_PASSWORD);
+
+  json["MQTT_IP_IN_TOPIC"] = MQTT_IP_IN_TOPIC;
+  json["MQTT_DEVICENAME_IN_TOPIC"] = MQTT_DEVICENAME_IN_TOPIC;
+  
+  json["MQTT_TOPIC_TEMP"] = MQTT_TOPIC_TEMP;
+  json["MQTT_TOPIC_HUMI"] = MQTT_TOPIC_HUMI;
+  json["MQTT_TOPIC_PRESS"] = MQTT_TOPIC_PRESS;
+  json["MQTT_TOPIC_PM1"] = MQTT_TOPIC_PM1;
+  json["MQTT_TOPIC_PM25"] = MQTT_TOPIC_PM25;
+  json["MQTT_TOPIC_PM10"] = MQTT_TOPIC_PM10;
+  json["MQTT_TOPIC_AIRQUALITY"] = MQTT_TOPIC_AIRQUALITY;
 
   json["AQI_ECO_ON"] = AQI_ECO_ON;
   json["AQI_ECO_HOST"] = AQI_ECO_HOST;
@@ -288,7 +365,12 @@ bool saveConfig() {
   
   json["MODEL"] = MODEL;
   
+#ifdef ARDUINO_ARCH_ESP8266
   File configFile = SPIFFS.open("/config.json", "w");
+#elif defined ARDUINO_ARCH_ESP32
+  File configFile = SPIFFS.open("/config.json", FILE_WRITE);
+#endif
+  
   if (!configFile) {
     Serial.println("Failed to open config file for writing");
     return false;
@@ -302,7 +384,10 @@ bool saveConfig() {
 }
 
 void fs_setup() {
-  yield();
+#ifdef ARDUINO_ARCH_ESP32
+	delay(10);
+#endif	
+
   Serial.println("Mounting FS...");
 
 #ifdef ARDUINO_ARCH_ESP8266
@@ -324,6 +409,7 @@ void fs_setup() {
   } else {
     Serial.println("Config loaded");
   }
+  
 }
 
 void deleteConfig() {

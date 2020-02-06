@@ -8,6 +8,11 @@
 
 // *******************************************
 
+#ifdef ARDUINO_ARCH_ESP32
+//#define ASYNC_WEBSERVER_ON // - EXPERIMENTAL - FOR ESP32 ONLY!
+#endif
+
+
 /*
 
    ESP8266
@@ -31,7 +36,6 @@
   HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
   SDS011/21: VIN - 5V; GND - G; TX - D1; RX - D2
   Sensirion SPS30: VIN - 5V; GND - G; TX - D1; RX - D2
-
 
    ESP32
 
@@ -59,25 +63,36 @@
 /*
   ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
 
-  Szkic używa 531556 bajtów (50%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 54380 bajtów (66%) pamięci dynamicznej, pozostawiając 27540 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 541500 bajtów (51%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 56072 bajtów (68%) pamięci dynamicznej, pozostawiając 25848 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  Szkic używa 550524 bajtów (52%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 57168 bajtów (69%) pamięci dynamicznej, pozostawiając 24752 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 558756 bajtów (53%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 56176 bajtów (68%) pamięci dynamicznej, pozostawiając 25744 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1251682 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 62776 bajtów (19%) pamięci dynamicznej, pozostawiając 264904 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  Szkic używa 1315258 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60296 bajtów (18%) pamięci dynamicznej, pozostawiając 267384 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1255726 bajtów (63%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 61336 bajtów (18%) pamięci dynamicznej, pozostawiając 266344 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 17.01.2020  DEV
+#ifdef ASYNC_WEBSERVER_ON
+#include "src/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 17.01.2020
+#else
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 31.01.2020  DEV
+#endif
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
 #include "src/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 17.01.2020
@@ -118,12 +133,18 @@
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
 #include "src/aqieco.h"
-#include "src/ESPinfluxdb.h" // https://github.com/hwwong/ESP_influxdb // 17.01.2020
+#include "src/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 3.02.2020
 
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
+#ifdef ASYNC_WEBSERVER_ON
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#else
 #include <ESP8266WebServer.h>
+#endif
 #include <ESP8266mDNS.h>
-#ifndef DUSTSENSOR_SPS30
+#ifndef ASYNC_WEBSERVER_ON
+
 #include <ESP8266HTTPUpdateServer.h>
 #endif
 #include <SoftwareSerial.h>
@@ -131,7 +152,14 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <ESPmDNS.h>
+
+#ifdef ASYNC_WEBSERVER_ON
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#else
 #include <WebServer.h>
+#endif
+
 #include <Update.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
@@ -242,24 +270,23 @@ PMS::DATA data;
 //***PMSx003 - END***
 #endif
 
-
 // DUST Sensor config - END
 
 char device_name[20];
 
-unsigned long DUST_interval = 60 * 1000; // 1 minute
+unsigned int DUST_interval = 60 * 1000; // 1 minute
 unsigned long previous_DUST_Millis = 0;
 
-unsigned long SENDING_FREQUENCY_interval = 60 * 1000; // 1 minute
+unsigned int SENDING_FREQUENCY_interval = 60 * 1000; // 1 minute
 unsigned long previous_SENDING_FREQUENCY_Millis = 0;
 
 unsigned long SENDING_DB_FREQUENCY_interval = 60 * 1000; // 1 minute
 unsigned long previous_SENDING_DB_FREQUENCY_Millis = 0;
 
 unsigned long previous_2sec_Millis = 0;
-unsigned long TwoSec_interval = 2 * 1000; // 2 second
+unsigned int TwoSec_interval = 2 * 1000; // 2 second
 
-unsigned long REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
+unsigned int REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned long previous_REBOOT_Millis = 0;
 
 #ifdef DUSTSENSOR_SPS30
@@ -272,9 +299,12 @@ float currentTemperature, currentHumidity, currentPressure = 0;
 float calib = 1;
 
 bool need_update = false;
-char SERVERSOFTWAREVERSION[255] = "";
-char CURRENTSOFTWAREVERSION[255] = "";
+char SERVERSOFTWAREVERSION[32] = "";
+char CURRENTSOFTWAREVERSION[32] = "";
 
+#ifdef ASYNC_WEBSERVER_ON
+AsyncWebServer server(80);
+#else
 #ifdef ARDUINO_ARCH_ESP8266
 ESP8266WebServer WebServer(80);
 #ifndef DUSTSENSOR_SPS30
@@ -283,11 +313,14 @@ ESP8266HTTPUpdateServer httpUpdater;
 #elif defined ARDUINO_ARCH_ESP32
 WebServer WebServer(80);
 #endif
+#endif
 
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 
+#ifndef ASYNC_WEBSERVER_ON
 WiFiManager wifiManager;
+#endif
 
 // check TEMP/HUMI/PRESS Sensor - START
 bool checkHTU21DStatus() {
@@ -393,7 +426,11 @@ void MQTTreconnect() {
 #include "src/html-content.h"
 
 // library doesnt support arguments :/
+#ifdef ASYNC_WEBSERVER_ON
+#include "src/Asyncwebserver.h"
+#else
 #include "src/webserver.h"
+#endif
 
 void setup() {
   Serial.begin(115200);
@@ -615,9 +652,9 @@ void setup() {
   // get ESP id
   if (DEVICENAME_AUTO) {
 #ifdef ARDUINO_ARCH_ESP8266
-    sprintf(device_name, "Smogomierz-%06X", ESP.getChipId());
+    sprintf(device_name, "Smogly-%06X", ESP.getChipId());
 #elif defined ARDUINO_ARCH_ESP32
-    sprintf(device_name, "Smogomierz-%06X", ESP.getEfuseMac());
+    sprintf(device_name, "Smogly-%06X", ESP.getEfuseMac());
 #endif
   } else {
     strncpy(device_name, DEVICENAME, 20);
@@ -626,7 +663,14 @@ void setup() {
   Serial.print("Device name: ");
   Serial.println(device_name);
 
+#ifdef ASYNC_WEBSERVER_ON
+  DNSServer dns;
+  AsyncWiFiManager wifiManager(&server, &dns);
+#endif
+
+#ifndef ASYNC_WEBSERVER_ON
   wifiManager.setCountry("US");
+#endif
 
   if (wifiManager.autoConnect(device_name)) {
     Serial.println("connected...yeey :)");
@@ -637,9 +681,17 @@ void setup() {
 #endif
   } else {
     Serial.println("Configportal running");
+#ifdef ASYNC_WEBSERVER_ON
+    wifiManager.startConfigPortal(device_name);
+#else
     wifiManager.setConfigPortalBlocking(false);
+#endif
   }
   delay(250);
+
+#ifdef ASYNC_WEBSERVER_ON
+  Serial.println("\nIP Address: " + String(WiFi.localIP().toString()) + "\n");
+#endif
 
   // check update
   if (checkUpdate(0) == true) {
@@ -653,24 +705,41 @@ void setup() {
   }
 
   if (INFLUXDB_ON) {
-    Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-    if (influxdb.opendb(INFLUXDB_DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
-      Serial.println("Opening InfluxDB failed");
-    } else {
-      Serial.println("Opening InfluxDB succeed");
-    }
+
   }
 
+  //  ASYNC_WebServer config - Start
+#ifdef ASYNC_WEBSERVER_ON
+  server.on("/", HTTP_GET, handle_root);
+  server.on("/config", HTTP_GET, handle_config);
+  server.on("/config_device_save", HTTP_GET, handle_config_device_save);
+  server.on("/config_device", HTTP_GET, handle_config_device);
+  server.on("/config_services_save", HTTP_GET, handle_config_services_save);
+  server.on("/config_services", HTTP_GET, handle_config_services);
+  server.on("/update", HTTP_GET, handle_update);
+  server.on("/update_done", HTTP_POST, handle_update_done, handle_update_progress_cb);
+  server.on("/api", HTTP_GET, handle_api);
+  server.on("/erase_wifi", HTTP_GET, erase_wifi);
+  server.on("/restore_config", HTTP_GET, restore_config);
+  server.on("/fwupdate", HTTP_GET, fwupdate);
+  server.on("/autoupdate_on", HTTP_GET, autoupdate_on);
+  server.onNotFound(handle_root);
+#else
   //  WebServer config - Start
   WebServer.on("/", HTTP_GET,  handle_root);
-  WebServer.on("/config", HTTP_POST, handle_config_post);
   WebServer.on("/config", HTTP_GET, handle_config);
+  WebServer.on("/config_device", HTTP_POST, handle_config_device_post);
+  WebServer.on("/config_device", HTTP_GET, handle_config_device);
+  WebServer.on("/config_services", HTTP_POST, handle_config_services_post);
+  WebServer.on("/config_services", HTTP_GET, handle_config_services);
+  WebServer.on("/config_adv_mqtt", HTTP_POST, handle_adv_mqtt_config_post);
+  WebServer.on("/config_adv_mqtt", HTTP_GET, handle_adv_mqtt_config);
   WebServer.on("/update", HTTP_GET, handle_update);
   WebServer.on("/api", HTTP_GET, handle_api);
   WebServer.on("/erase_wifi", HTTP_GET, erase_wifi);
   WebServer.on("/restore_config", HTTP_GET, restore_config);
   WebServer.on("/fwupdate", HTTP_GET, fwupdate);
-  WebServer.on("/autoupdateon", HTTP_GET, autoupdateon);
+  WebServer.on("/autoupdate_on", HTTP_GET, autoupdate_on);
   WebServer.onNotFound(handle_root);
 
 #ifdef ARDUINO_ARCH_ESP8266
@@ -707,9 +776,14 @@ void setup() {
   });
 #endif
   //  WebServer Config - End
+#endif
 
   // Check if config.h exist in ESP data folder
+#ifdef ASYNC_WEBSERVER_ON
+  server.begin();
+#else
   WebServer.begin();
+#endif
 
   MDNS.begin(device_name);
 
@@ -747,16 +821,16 @@ void loop() {
   }
 #endif
   // DUST SENSOR refresh data - END
-  yield();
 
-  //webserverShowSite(WebServer, BMESensor, data);
+  //yield();
+
+#ifndef ASYNC_WEBSERVER_ON
   WebServer.handleClient();
+#endif
 
-  /*
-    #ifdef ARDUINO_ARCH_ESP8266
-    MDNS.update();
-    #endif
-  */
+#ifdef ARDUINO_ARCH_ESP8266
+  MDNS.update();
+#endif
 
   if (strcmp(DUST_MODEL, "Non")) {
     unsigned long current_DUST_Millis = millis();
@@ -804,7 +878,10 @@ void loop() {
       unsigned long current_2sec_Millis = millis();
       previous_2sec_Millis = millis();
       while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
+#ifndef ASYNC_WEBSERVER_ON
         WebServer.handleClient();
+#endif
+
         previous_2sec_Millis = millis();
       }
       if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
@@ -897,13 +974,12 @@ void sendDataToExternalServices() {
 }
 
 void sendDataToExternalDBs() {
-
   if (MQTT_ON) {
     if (!mqttclient.connected()) {
       MQTTreconnect();
     }
     mqttclient.loop();
-    yield();
+    //yield();
   }
 
   if (THINGSPEAK_ON) {
@@ -914,142 +990,178 @@ void sendDataToExternalDBs() {
   }
 
   if (INFLUXDB_ON) {
-    Influxdb influxdb(INFLUXDB_HOST, INFLUXDB_PORT);
-    if (influxdb.opendb(INFLUXDB_DATABASE, DB_USER, DB_PASSWORD) != DB_SUCCESS) {
-      Serial.println("Opening database failed");
+    InfluxdbV2 influx(INFLUXDB_HOST, INFLUXDB_PORT);
+    if (!strcmp(INFLUXDB_VERSION, "2")) {
+      influx.setOrg(INFLUXDB_ORG);
+      influx.setBucket(INFLUXDB_BUCKET);
+      influx.setToken(INFLUXDB_TOKEN);
+    }
+    if (INFLUXDB_USER != "username" || INFLUXDB_USER != "" && INFLUXDB_PASSWORD != "password" || INFLUXDB_PASSWORD != "") {
+      influx.setDbAuth(INFLUXDB_DATABASE, INFLUXDB_USER, INFLUXDB_PASSWORD);
     } else {
-      dbMeasurement row(device_name);
+      influx.setDb(INFLUXDB_DATABASE);
+    }
 
-      if (!strcmp(DUST_MODEL, "PMS7003")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from PMSx003!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
-      } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from SDS0x1!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
-      } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from SDS!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
-      } else if (!strcmp(DUST_MODEL, "SPS30")) {
-        if (DEBUG) {
-          Serial.println("\nMeasurements from SPS30!\n");
-        }
-        row.addField("pm1", averagePM1);
-        row.addField("pm25", averagePM25);
-        row.addField("pm10", averagePM10);
+    InfluxDataV2 row(device_name);
+    if (!strcmp(DUST_MODEL, "PMS7003")) {
+      if (DEBUG) {
+        Serial.println("\nMeasurements from PMSx003!\n");
+      }
+      row.addValue("pm1", averagePM1);
+      row.addValue("pm25", averagePM25);
+      row.addValue("pm10", averagePM10);
+    } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+      if (DEBUG) {
+        Serial.println("\nMeasurements from SDS0x1!\n");
+      }
+      row.addValue("pm1", averagePM1);
+      row.addValue("pm25", averagePM25);
+      row.addValue("pm10", averagePM10);
+    } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+      if (DEBUG) {
+        Serial.println("\nMeasurements from SDS!\n");
+      }
+      row.addValue("pm1", averagePM1);
+      row.addValue("pm25", averagePM25);
+      row.addValue("pm10", averagePM10);
+    } else if (!strcmp(DUST_MODEL, "SPS30")) {
+      if (DEBUG) {
+        Serial.println("\nMeasurements from SPS30!\n");
+      }
+      row.addValue("pm1", averagePM1);
+      row.addValue("pm25", averagePM25);
+      row.addValue("pm4", averagePM4);
+      row.addValue("pm10", averagePM10);
+    } else {
+      if (DEBUG) {
+        Serial.println("\nNo measurements from Dust Sensor!\n");
+      }
+    }
+    if (!strcmp(THP_MODEL, "BME280")) {
+      if (checkBmeStatus() == true) {
+        row.addValue("temperature", (currentTemperature));
+        row.addValue("pressure", (currentPressure));
+        row.addValue("humidity", (currentHumidity));
       } else {
         if (DEBUG) {
-          Serial.println("\nNo measurements from Dust Sensor!\n");
+          Serial.println("No measurements from BME280!\n");
         }
       }
-      if (!strcmp(THP_MODEL, "BME280")) {
-        if (checkBmeStatus() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("pressure", (currentPressure));
-          row.addField("humidity", (currentHumidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from BME280!\n");
-          }
-        }
-      } else if (!strcmp(THP_MODEL, "HTU21")) {
-        if (checkHTU21DStatus() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("humidity", (currentHumidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from HTU21D!\n");
-          }
-        }
-      } else if (!strcmp(THP_MODEL, "BMP280")) {
-        if (checkBmpStatus() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("pressure", (currentPressure));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from BMP280!\n");
-          }
-        }
-      } else if (!strcmp(THP_MODEL, "DHT22")) {
-        if (checkDHT22Status() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("humidity", (currentHumidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from DHT22!\n");
-          }
-        }
-      } else if (!strcmp(THP_MODEL, "SHT1x")) {
-        if (checkSHT1xStatus() == true) {
-          row.addField("temperature", (currentTemperature));
-          row.addField("humidity", (currentHumidity));
-        } else {
-          if (DEBUG) {
-            Serial.println("No measurements from SHT1x!\n");
-          }
-        }
-      }
-
-      if (influxdb.write(row) == DB_SUCCESS) {
-        if (DEBUG) {
-          Serial.println("Data sent to InfluxDB\n");
-        }
+    } else if (!strcmp(THP_MODEL, "HTU21")) {
+      if (checkHTU21DStatus() == true) {
+        row.addValue("temperature", (currentTemperature));
+        row.addValue("humidity", (currentHumidity));
       } else {
         if (DEBUG) {
-          Serial.println("Error sending data to InfluxDB\n");
+          Serial.println("No measurements from HTU21D!\n");
         }
       }
-      row.empty();
+    } else if (!strcmp(THP_MODEL, "BMP280")) {
+      if (checkBmpStatus() == true) {
+        row.addValue("temperature", (currentTemperature));
+        row.addValue("pressure", (currentPressure));
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from BMP280!\n");
+        }
+      }
+    } else if (!strcmp(THP_MODEL, "DHT22")) {
+      if (checkDHT22Status() == true) {
+        row.addValue("temperature", (currentTemperature));
+        row.addValue("humidity", (currentHumidity));
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from DHT22!\n");
+        }
+      }
+    } else if (!strcmp(THP_MODEL, "SHT1x")) {
+      if (checkSHT1xStatus() == true) {
+        row.addValue("temperature", (currentTemperature));
+        row.addValue("humidity", (currentHumidity));
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from SHT1x!\n");
+        }
+      }
+    }
+    if (influx.write(row)) {
+      if (DEBUG) {
+        Serial.println("Data sent to InfluxDB\n");
+      }
+    } else {
+      if (DEBUG) {
+        Serial.println("Error sending data to InfluxDB\n");
+      }
     }
   }
 
   if (MQTT_ON) {
-#ifdef ARDUINO_ARCH_ESP8266
-    String mqttChipId = String(ESP.getChipId());
-#elif defined ARDUINO_ARCH_ESP32
-    String mqttChipId = String((uint32_t)(ESP.getEfuseMac()));
-#endif
+    char MQTT_DEVICE_NAME[20];
+    strcpy(MQTT_DEVICE_NAME, device_name);
+    char MQTT_DEVICE_IPADRESS[32];
+    (WiFi.localIP().toString()).toCharArray(MQTT_DEVICE_IPADRESS, 32);
+
+    String MQTT_FINAL_TEMP, MQTT_FINAL_HUMI, MQTT_FINAL_PRESS, MQTT_FINAL_PM1, MQTT_FINAL_PM25, MQTT_FINAL_PM10, MQTT_FINAL_AIRQUALITY;
+    if (MQTT_DEVICENAME_IN_TOPIC) {
+      MQTT_FINAL_TEMP = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_TEMP);
+      MQTT_FINAL_HUMI = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_HUMI);
+      MQTT_FINAL_PRESS = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_PRESS);
+      MQTT_FINAL_PM1 = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_PM1);
+      MQTT_FINAL_PM25 = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_PM25);
+      MQTT_FINAL_PM10 = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_PM10);
+      MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_AIRQUALITY);
+    } else {
+      MQTT_FINAL_TEMP = String(MQTT_TOPIC_TEMP);
+      MQTT_FINAL_HUMI = String(MQTT_TOPIC_HUMI);
+      MQTT_FINAL_PRESS = String(MQTT_TOPIC_PRESS);
+      MQTT_FINAL_PM1 = String(MQTT_TOPIC_PM1);
+      MQTT_FINAL_PM25 = String(MQTT_TOPIC_PM25);
+      MQTT_FINAL_PM10 = String(MQTT_TOPIC_PM10);
+      MQTT_FINAL_AIRQUALITY = String(MQTT_TOPIC_AIRQUALITY);
+    }
+    if (MQTT_IP_IN_TOPIC) {
+      MQTT_FINAL_TEMP = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_TEMP);
+      MQTT_FINAL_HUMI = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_HUMI);
+      MQTT_FINAL_PRESS = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PRESS);
+      MQTT_FINAL_PM1 = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PM1);
+      MQTT_FINAL_PM25 = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PM25);
+      MQTT_FINAL_PM10 = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PM10);
+      MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_AIRQUALITY);
+    }
+    MQTT_FINAL_TEMP = "/" + MQTT_FINAL_TEMP + "/";
+    MQTT_FINAL_HUMI = "/" + MQTT_FINAL_HUMI + "/";
+    MQTT_FINAL_PRESS = "/" + MQTT_FINAL_PRESS + "/";
+    MQTT_FINAL_PM1 = "/" + MQTT_FINAL_PM1 + "/";
+    MQTT_FINAL_PM25 = "/" + MQTT_FINAL_PM25 + "/";
+    MQTT_FINAL_PM10 = "/" + MQTT_FINAL_PM10 + "/";
+    MQTT_FINAL_AIRQUALITY = "/" + MQTT_FINAL_AIRQUALITY + "/";
+
     if (strcmp(DUST_MODEL, "Non")) {
-      if (DEBUG) {
-        Serial.println("Measurements from PM Sensor!\n");
-      }
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM1").c_str(), String(averagePM1).c_str(), true);
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM2.5").c_str(), String(averagePM25).c_str(), true);
-      mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/PM10").c_str(), String(averagePM10).c_str(), true);
+
+      mqttclient.publish((MQTT_FINAL_PM1).c_str(), String(averagePM1).c_str(), true);
+      mqttclient.publish((MQTT_FINAL_PM25).c_str(), String(averagePM25).c_str(), true);
+      mqttclient.publish((MQTT_FINAL_PM10).c_str(), String(averagePM10).c_str(), true);
+
       if (averagePM25 <= 10) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "EXCELLENT", true);
+        mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "EXCELLENT", true);
       } else if (averagePM25 > 10 && averagePM25 <= 20) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "GOOD", true);
+        mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "GOOD", true);
       } else if (averagePM25 > 20 && averagePM25 <= 25) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "FAIR", true);
+        mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "FAIR", true);
       } else if (averagePM25 > 25 && averagePM25 <= 50) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "INFERIOR", true);
+        mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "INFERIOR", true);
       } else if (averagePM25 > 50) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "POOR", true);
+        mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "POOR", true);
       } else {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/airquality").c_str(), "UNKNOWN", true);
+        mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "UNKNOWN", true);
       }
     }
 
-
     if (!strcmp(THP_MODEL, "BME280")) {
       if (checkBmeStatus() == true) {
-
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
-
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_PRESS).c_str(), String(currentPressure).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from BME280!\n");
@@ -1059,11 +1171,10 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "BMP280")) {
       if (checkBmpStatus() == true) {
-
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/pressure").c_str(), String(currentPressure).c_str(), true);
-
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_PRESS).c_str(), String(currentPressure).c_str(), true);
       } else {
+
         if (DEBUG) {
           Serial.println("No measurements from BMP280!\n");
         }
@@ -1072,8 +1183,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "HTU21")) {
       if (checkHTU21DStatus() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from HTU21!\n");
@@ -1083,8 +1194,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "DHT22")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from DHT22!\n");
@@ -1094,8 +1205,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(THP_MODEL, "SHT1x")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/temperature").c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish(String("Smogomierz-" + mqttChipId + "/sensor/humidity").c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(currentHumidity).c_str(), true);
       } else {
         if (DEBUG) {
           Serial.println("No measurements from SHT1x!\n");
@@ -1106,15 +1217,30 @@ void sendDataToExternalDBs() {
     if (DEEPSLEEP_ON == true) {
       mqttclient.disconnect();
     }
+
   }
 
+}
+
+String addSlash(String receivedString, bool frontSlash, bool backSlash) {
+  if (frontSlash) {
+    if (String(receivedString.charAt(0)) != "/") {
+      receivedString = "/" + receivedString;
+    }
+  }
+  if (backSlash) {
+    if (String(receivedString.charAt(receivedString.length() - 1)) != "/") {
+      receivedString = receivedString + "/";
+    }
+  }
+  return receivedString;
 }
 
 void takeTHPMeasurements() {
   if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
     BMESensor.refresh();
-    yield();
+    //yield();
 #endif
     if (checkBmeStatus() == true) {
       if (DEBUG) {
@@ -1238,6 +1364,56 @@ void takeNormalnPMMeasurements() {
   pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
   pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
   pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+=======
+  pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+  pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+  pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+#elif defined DUSTSENSOR_SDS011_21
+#ifdef ARDUINO_ARCH_ESP8266
+  PmResult SDSdata = sds.queryPm();
+  delay(1000);
+  if (SDSdata.isOk()) {
+    pmMeasurements[iPM][0] = int(calib * 0);
+    pmMeasurements[iPM][1] = int(calib * SDSdata.pm25);
+    pmMeasurements[iPM][2] = int(calib * SDSdata.pm10);
+  } else {
+    Serial.println("\nCould not read values from SDS sensor :( ");
+  }
+#elif defined ARDUINO_ARCH_ESP32
+  err = my_sds.read(&SDSpm25, &SDSpm10);
+  if (!err) {
+    pmMeasurements[iPM][0] = int(calib * 0);
+    pmMeasurements[iPM][1] = int(calib * SDSpm25);
+    pmMeasurements[iPM][2] = int(calib * SDSpm10);
+  } else {
+    Serial.println("\nCould not read values from SDS sensor :( ");
+  }
+#endif
+#elif defined DUSTSENSOR_HPMA115S0
+  if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
+    if (hpma115S0_pm25 == 0 and hpma115S0_pm10 == 0) {
+      delay(100);
+      hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10);
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
+      pmMeasurements[iPM][2] = int(calib * hpma115S0_pm10);
+    } else {
+      pmMeasurements[iPM][0] = int(calib * 0);
+      pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
+      pmMeasurements[iPM][2] = int(calib * hpma115S0_pm10);
+    }
+  }
+#elif defined DUSTSENSOR_SPS30
+  read_sps30_data();
+
+  pmMeasurements[iPM][0] = int(calib * SPS30_PM1);
+  pmMeasurements[iPM][1] = int(calib * SPS30_PM25);
+  pmMeasurements[iPM][2] = int(calib * SPS30_PM10);
+  pmMeasurements[iPM][3] = int(calib * SPS30_PM4);
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+  pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
+  pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
+  pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
 #endif
 
   if (DEBUG) {
@@ -1271,7 +1447,10 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
+
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1287,10 +1466,11 @@ void takeSleepPMMeasurements() {
         takeNormalnPMMeasurements();
         counterNM1++;
       }
-
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
+#endif
   }
   if (DEBUG) {
     Serial.print("\nTurning OFF PM sensor...\n");
@@ -1312,8 +1492,10 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
-      yield();
+#endif
+      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1333,8 +1515,10 @@ void takeSleepPMMeasurements() {
       counterNM1++;
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
-    yield();
+#endif
+    //yield();
     delay(10);
   }
   if (DEBUG) {
@@ -1360,9 +1544,12 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
+
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
       delay(10);
-      yield();
+      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1377,8 +1564,11 @@ void takeSleepPMMeasurements() {
       }
       previous_2sec_Millis = millis();
     }
+
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
-    yield();
+#endif
+    //yield();
     delay(10);
   }
   if (DEBUG) {
@@ -1398,9 +1588,12 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
+
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
       delay(10);
-      yield();
+      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1416,8 +1609,10 @@ void takeSleepPMMeasurements() {
 
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
-    yield();
+#endif
+    //yield();
     delay(10);
   }
   if (DEBUG) {
@@ -1433,7 +1628,9 @@ void takeSleepPMMeasurements() {
     unsigned long current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
+#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
+#endif
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
@@ -1452,7 +1649,9 @@ void takeSleepPMMeasurements() {
 
       previous_2sec_Millis = millis();
     }
+#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
+#endif
   }
   if (DEBUG) {
     Serial.print("\nTurning OFF PM sensor...\n");
@@ -1470,7 +1669,7 @@ void pm_calibration() {
     if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
       BMESensor.refresh();
-      yield();
+      //yield();
       if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
         calib1 = float((200 - (BMESensor.humidity)) / 150);
         calib2 = calib1 / 2;

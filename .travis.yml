@@ -17,7 +17,7 @@ script:
   - "echo $HOME"
   - "ls $PWD"
   - "cat ~/.arduino15/preferences.txt"
-  - arduino --verify --board esp8266:esp8266:generic:FlashMode=qio,FlashFreq=80,xtal=80,eesz=4M1M,ip=lm2f,exception=disabled Smogomierz.ino
+  - arduino --verify --board esp8266:esp8266:nodemcuv2:FlashMode=esp32_qio,FlashFreq=esp32_80,xtal=nodemcuv2_80,eesz=nodemcuv2_4M1M,ip=nodemcuv2_lm2f,exception=nodemcuv2_legacy Smogomierz.ino
 notifications:
   email:
     on_success: change

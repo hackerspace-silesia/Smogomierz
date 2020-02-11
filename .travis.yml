@@ -4,11 +4,19 @@ before_install:
   - sleep 3
   - export DISPLAY=:1.0
   - wget http://downloads.arduino.cc/arduino-1.8.10-linux64.tar.xz
+  - wget https://github.com/me-no-dev/ESPAsyncWebServer/archive/master.zip
+  - unzip master.zip
+  - sudo rm master.zip
+  - wget https://github.com/me-no-dev/ESPAsyncTCP/archive/master.zip
+  - unzip master.zip
+  - rm master.zip
   - tar xf arduino-1.8.10-linux64.tar.xz
   - sudo mv arduino-1.8.10 /usr/local/share/arduino
   - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
 install:
   - ln -s $PWD /usr/local/share/arduino/libraries/
+  - mv /usr/local/share/arduino/libraries/ESPAsyncWebServer-master/ /usr/local/share/arduino/libraries/
+  - mv /usr/local/share/arduino/libraries/ESPAsyncTCP-master/ /usr/local/share/arduino/libraries/
   - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
   - arduino --install-library "ArduinoJson","Adafruit BMP280 Library","DHT sensor library","ThingSpeak","Adafruit Unified Sensor","PubSubClient"
   - arduino --install-boards esp8266:esp8266
@@ -17,7 +25,7 @@ script:
   - "echo $HOME"
   - "ls $PWD"
   - "cat ~/.arduino15/preferences.txt"
-  - arduino --verify --board esp8266:esp8266:nodemcuv2:FlashMode=esp32_qio,FlashFreq=esp32_80,xtal=nodemcuv2_80,eesz=nodemcuv2_4M1M,ip=nodemcuv2_lm2f,exception=nodemcuv2_legacy Smogomierz.ino
+  - arduino --verify --board esp8266:esp8266:generic:xtal=80,eesz=4M1M,ip=lm2f,exception=disabled,FlashMode=qio,FlashFreq=80 Smogomierz.ino
 notifications:
   email:
     on_success: change

@@ -60,10 +60,6 @@ bool AQI_ECO_ON = false;
 char AQI_ECO_HOST[128] = "???.aqi.eco";
 char AQI_ECO_PATH[64] = "/u/???";
 
-bool AQI_ECO_ON = false;
-char AQI_ECO_HOST[255] = "???.aqi.eco";
-char AQI_ECO_PATH[255] = "/u/???";
-
 int SENDING_FREQUENCY = 3;
 int SENDING_DB_FREQUENCY = 3;
 bool DEEPSLEEP_ON = false;

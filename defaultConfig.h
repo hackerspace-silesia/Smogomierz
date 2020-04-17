@@ -49,8 +49,8 @@ bool MQTT_IP_IN_TOPIC = false;
 bool  MQTT_DEVICENAME_IN_TOPIC = true;
 
 char MQTT_TOPIC_TEMP[128] = "sensor/temperature";
-char MQTT_TOPIC_HUMI[128] = "sensor/pressure";
-char MQTT_TOPIC_PRESS[128] = "sensor/humidity";
+char MQTT_TOPIC_HUMI[128] = "sensor/humidity";
+char MQTT_TOPIC_PRESS[128] = "sensor/pressure";
 char MQTT_TOPIC_PM1[128] = "sensor/PM1";
 char MQTT_TOPIC_PM25[128] = "sensor/PM2.5";
 char MQTT_TOPIC_PM10[128] = "sensor/PM10";

@@ -95,6 +95,7 @@ char PL_INTL_MQTTPASSWD[32] PROGMEM = "Hasło MQTT";
 char PL_INTL_MQTT_IP_IN_TOPIC[32] PROGMEM = "Dodać Adres IP";
 char PL_INTL_MQTT_DEVICENAME_IN_TOPIC[32] PROGMEM = "Dodać Nazwę urządzenia";
 char PL_INTL_MQTT_TOPIC_INFO[256] PROGMEM = "Poniżej możesz sformatować sposób w jaki będą wysyłane dane MQTT. Masz możliwość dodania 'Adresu IP' oraz 'Nazwy urządzenia' na początku. Środkową część możesz zdefiniować samemu dla każdej z wartości mierzonych przez urządzenie.";
+char PL_INTL_MQTT_SLASH_AT_THE_BEGINNING[64] PROGMEM = "Dodać '/' na początku";
 
 char PL_INTL_AQIECOSENDING[128] PROGMEM = "Wysyłanie danych do <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a>";
 

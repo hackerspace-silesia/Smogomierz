@@ -95,7 +95,6 @@ bool loadConfig() {
   _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 64);
   _safeCpy(INFLUXDB_USER, json["INFLUXDB_USER"], "user", 64);
   _safeCpy(INFLUXDB_PASSWORD, json["INFLUXDB_PASSWORD"], "password", 64);
-  
   _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 64);
   _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 64);
   _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 64);
@@ -108,6 +107,7 @@ bool loadConfig() {
   
   MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
   MQTT_DEVICENAME_IN_TOPIC = json["MQTT_DEVICENAME_IN_TOPIC"];
+  MQTT_SLASH_AT_THE_BEGINNING = json["MQTT_SLASH_AT_THE_BEGINNING"];
   
   _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 128);
   _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 128);
@@ -221,9 +221,10 @@ bool loadConfig() {
     
     Serial.print("Loaded MQTT_IP_IN_TOPIC: ");
     Serial.println(MQTT_IP_IN_TOPIC);
-	
     Serial.print("Loaded MQTT_DEVICENAME_IN_TOPIC: ");
     Serial.println(MQTT_DEVICENAME_IN_TOPIC);
+    Serial.print("Loaded MQTT_SLASH_AT_THE_BEGINNING: ");
+    Serial.println(MQTT_SLASH_AT_THE_BEGINNING);	
 	
     Serial.print("Loaded MQTT_TOPIC_TEMP: ");
     Serial.println(MQTT_TOPIC_TEMP);
@@ -330,6 +331,7 @@ bool saveConfig() {
 
   json["MQTT_IP_IN_TOPIC"] = bool(MQTT_IP_IN_TOPIC);
   json["MQTT_DEVICENAME_IN_TOPIC"] = bool(MQTT_DEVICENAME_IN_TOPIC);
+  json["MQTT_SLASH_AT_THE_BEGINNING"] = bool(MQTT_SLASH_AT_THE_BEGINNING);  
   
   json["MQTT_TOPIC_TEMP"] = String(MQTT_TOPIC_TEMP);
   json["MQTT_TOPIC_HUMI"] = String(MQTT_TOPIC_HUMI);
@@ -345,7 +347,6 @@ bool saveConfig() {
 
   json["SENDING_FREQUENCY"] = int(SENDING_FREQUENCY);
   json["SENDING_DB_FREQUENCY"] = int(SENDING_DB_FREQUENCY);
-  
   json["DEEPSLEEP_ON"] = bool(DEEPSLEEP_ON);
 
   json["DEBUG"] = bool(DEBUG);
@@ -353,7 +354,6 @@ bool saveConfig() {
   
   json["CONFIG_AUTH"] = bool(CONFIG_AUTH);
   json["CONFIG_USERNAME"] = String(CONFIG_USERNAME);
-  json["CONFIG_PASSWORD"] = String(CONFIG_PASSWORD);
   json["CONFIG_PASSWORD"] = String(CONFIG_PASSWORD);
   
   json["MODEL"] = String(MODEL);

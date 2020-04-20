@@ -790,6 +790,19 @@ void _handle_adv_mqtt_config(bool is_success) {
   message.replace("{TEXT_MQTT_DEVICENAME_IN_TOPIC}", (TEXT_MQTT_DEVICENAME_IN_TOPIC));
   message.replace("{MQTT_DEVICENAME_IN_TOPIC}", _addBoolSelect("MQTT_DEVICENAME_IN_TOPIC", MQTT_DEVICENAME_IN_TOPIC));
     
+  message.replace("{TEXT_MQTT_SLASH_AT_THE_BEGINNING}", (TEXT_MQTT_SLASH_AT_THE_BEGINNING));
+  message.replace("{MQTT_SLASH_AT_THE_BEGINNING}", _addBoolSelect("MQTT_SLASH_AT_THE_BEGINNING", MQTT_SLASH_AT_THE_BEGINNING));	
+
+  if (!MQTT_SLASH_AT_THE_BEGINNING) {
+	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />");
+	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />");
+	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />");
+	  message.replace("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />", "<b>{TEXT_PM1_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />");
+	  message.replace("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />", "<b>{TEXT_PM25_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />");
+	  message.replace("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />", "<b>{TEXT_PM10_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />");
+	  message.replace("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />", "<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />");
+  }
+  
   if (strcmp(THP_MODEL, "Non")) {
     takeTHPMeasurements();
     if (!strcmp(THP_MODEL, "BME280")) {
@@ -806,6 +819,12 @@ void _handle_adv_mqtt_config(bool is_success) {
         if (DEBUG) {
           Serial.println("No measurements from BME280!\n");
         }
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
       }
     }
 
@@ -822,6 +841,12 @@ void _handle_adv_mqtt_config(bool is_success) {
         if (DEBUG) {
           Serial.println("No measurements from BMP280!\n");
         }
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
       }
     }
 
@@ -838,6 +863,12 @@ void _handle_adv_mqtt_config(bool is_success) {
         if (DEBUG) {
           Serial.println("No measurements from HTU21!\n");
         }
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
       }
     }
 
@@ -854,6 +885,12 @@ void _handle_adv_mqtt_config(bool is_success) {
         if (DEBUG) {
           Serial.println("No measurements from DHT22!\n");
         }
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
       }
     }
 
@@ -870,12 +907,21 @@ void _handle_adv_mqtt_config(bool is_success) {
         if (DEBUG) {
           Serial.println("No measurements from SHT1x!\n");
         }
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
       }
     }	
   } else {
 	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
 	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
 	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
   }
 
  if (strcmp(DUST_MODEL, "Non")) {
@@ -905,6 +951,10 @@ void _handle_adv_mqtt_config(bool is_success) {
   message.replace("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />", "");
   message.replace("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />", "");
   message.replace("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />", "");
+  message.replace("<b>{TEXT_PM1_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />", "");
+  message.replace("<b>{TEXT_PM25_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />", "");
+  message.replace("<b>{TEXT_PM10_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />", "");
+  message.replace("<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />", "");
  }
  
     message.replace("{TEXT_TEMP_TOPIC}", (TEXT_TEMPERATURE));
@@ -921,9 +971,9 @@ void _handle_adv_mqtt_config(bool is_success) {
 	  message.replace("{MQTT_DEVICENAME}", "");
   }
   if (MQTT_IP_IN_TOPIC) {
-		  message.replace("/{MQTT_IP}", ("/" + String(WiFi.localIP().toString()) + "/"));	  	
+		  message.replace("{MQTT_IP}", (String(WiFi.localIP().toString()) + "/"));	  	
   } else {
-	  message.replace("/{MQTT_IP}", "/");
+	  message.replace("{MQTT_IP}", "");
   }
   
   message.replace("{RestoreConfigButton}", _addRestoreConfig());
@@ -1198,7 +1248,8 @@ void handle_adv_mqtt_config_post() {
   
   MQTT_IP_IN_TOPIC = _parseAsBool(WebServer.arg("MQTT_IP_IN_TOPIC"));
   MQTT_DEVICENAME_IN_TOPIC = _parseAsBool(WebServer.arg("MQTT_DEVICENAME_IN_TOPIC"));
-  
+  MQTT_SLASH_AT_THE_BEGINNING = _parseAsBool(WebServer.arg("MQTT_SLASH_AT_THE_BEGINNING"));
+	  
   _parseAsCString(MQTT_TOPIC_TEMP, WebServer.arg("MQTT_TOPIC_TEMP"), 128);
   _parseAsCString(MQTT_TOPIC_HUMI, WebServer.arg("MQTT_TOPIC_HUMI"), 128);
   _parseAsCString(MQTT_TOPIC_PRESS, WebServer.arg("MQTT_TOPIC_PRESS"), 128);

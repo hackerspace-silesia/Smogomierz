@@ -29,7 +29,7 @@ int THINGSPEAK_CHANNEL_ID = 0;
 char THINGSPEAK_READ_API_KEY[32] = "READ_API_KEY";
 
 bool INFLUXDB_ON = false;
-char INFLUXDB_VERSION[16] = "1"; // 1 (for 1.x version) or 2 for 2.0 or later 
+char INFLUXDB_VERSION[16] = "1"; // 1 (for 1.x version) or 2 for 2.0 or later
 char INFLUXDB_HOST[128] = "INFLUXDB_ADRESS";
 uint16_t INFLUXDB_PORT = 8086;
 char INFLUXDB_DATABASE[64] = "mydb";
@@ -46,7 +46,8 @@ char MQTT_USER[64] = "username";
 char MQTT_PASSWORD[64] = "password";
 
 bool MQTT_IP_IN_TOPIC = false;
-bool  MQTT_DEVICENAME_IN_TOPIC = true;
+bool MQTT_DEVICENAME_IN_TOPIC = true;
+bool MQTT_SLASH_AT_THE_BEGINNING = true;
 
 char MQTT_TOPIC_TEMP[128] = "sensor/temperature";
 char MQTT_TOPIC_HUMI[128] = "sensor/humidity";

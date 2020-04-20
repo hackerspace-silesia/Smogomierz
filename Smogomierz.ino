@@ -1123,14 +1123,23 @@ void sendDataToExternalDBs() {
       MQTT_FINAL_PM10 = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PM10);
       MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_AIRQUALITY);
     }
-    MQTT_FINAL_TEMP = "/" + MQTT_FINAL_TEMP + "/";
-    MQTT_FINAL_HUMI = "/" + MQTT_FINAL_HUMI + "/";
-    MQTT_FINAL_PRESS = "/" + MQTT_FINAL_PRESS + "/";
-    MQTT_FINAL_PM1 = "/" + MQTT_FINAL_PM1 + "/";
-    MQTT_FINAL_PM25 = "/" + MQTT_FINAL_PM25 + "/";
-    MQTT_FINAL_PM10 = "/" + MQTT_FINAL_PM10 + "/";
-    MQTT_FINAL_AIRQUALITY = "/" + MQTT_FINAL_AIRQUALITY + "/";
-
+    if (MQTT_SLASH_AT_THE_BEGINNING) {
+      MQTT_FINAL_TEMP = "/" + MQTT_FINAL_TEMP + "/";
+      MQTT_FINAL_HUMI = "/" + MQTT_FINAL_HUMI + "/";
+      MQTT_FINAL_PRESS = "/" + MQTT_FINAL_PRESS + "/";
+      MQTT_FINAL_PM1 = "/" + MQTT_FINAL_PM1 + "/";
+      MQTT_FINAL_PM25 = "/" + MQTT_FINAL_PM25 + "/";
+      MQTT_FINAL_PM10 = "/" + MQTT_FINAL_PM10 + "/";
+      MQTT_FINAL_AIRQUALITY = "/" + MQTT_FINAL_AIRQUALITY + "/";
+    } else {
+      MQTT_FINAL_TEMP = MQTT_FINAL_TEMP + "/";
+      MQTT_FINAL_HUMI = MQTT_FINAL_HUMI + "/";
+      MQTT_FINAL_PRESS = MQTT_FINAL_PRESS + "/";
+      MQTT_FINAL_PM1 = MQTT_FINAL_PM1 + "/";
+      MQTT_FINAL_PM25 = MQTT_FINAL_PM25 + "/";
+      MQTT_FINAL_PM10 = MQTT_FINAL_PM10 + "/";
+      MQTT_FINAL_AIRQUALITY = MQTT_FINAL_AIRQUALITY + "/";
+    }
     if (strcmp(DUST_MODEL, "Non")) {
 
       mqttclient.publish((MQTT_FINAL_PM1).c_str(), String(averagePM1).c_str(), true);

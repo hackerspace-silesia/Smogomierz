@@ -4,10 +4,19 @@ before_install:
   - sleep 3
   - export DISPLAY=:1.0
   - wget http://downloads.arduino.cc/arduino-1.8.10-linux64.tar.xz
+  - wget https://github.com/me-no-dev/ESPAsyncWebServer/archive/master.zip
+  - unzip master.zip
+  - sudo rm master.zip
+  - wget https://github.com/me-no-dev/ESPAsyncTCP/archive/master.zip
+  - unzip master.zip
+  - rm master.zip
   - tar xf arduino-1.8.10-linux64.tar.xz
   - sudo mv arduino-1.8.10 /usr/local/share/arduino
   - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
 install:
+  - ls -l
+  - mv ESPAsyncWebServer-master/ /usr/local/share/arduino/libraries/
+  - mv ESPAsyncTCP-master/ /usr/local/share/arduino/libraries/
   - ln -s $PWD /usr/local/share/arduino/libraries/
   - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
   - arduino --install-library "ArduinoJson","Adafruit BMP280 Library","DHT sensor library","ThingSpeak","Adafruit Unified Sensor","PubSubClient"

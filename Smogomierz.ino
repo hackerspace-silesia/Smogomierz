@@ -1,3 +1,8 @@
+/*
+  ESP8266 core for Arduino - 2.6.3
+  Arduino core for the ESP32 - 1.0.4
+*/
+
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
 
 #define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76

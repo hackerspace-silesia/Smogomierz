@@ -96,6 +96,9 @@ void sendTHPData(float currentTemperature, float currentPressure, float currentH
 	    json["temperature"] = currentTemperature;
 	    json["humidity"] = currentHumidity;
 		json["sensor"] = "SHT1x";
+	} else if (!strcmp(THP_MODEL, "DS18B20")) {
+	    json["temperature"] = currentTemperature;
+		json["sensor"] = "DS18B20";
 	}
     sendJson(json);
 	}

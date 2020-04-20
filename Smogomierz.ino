@@ -26,6 +26,7 @@
   SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   DHT22: VIN - 3V; GND - G; D7
+  DS18B20: VIN - 3V; GND - G; D5 - 4.7k Ohm resistor!
   PMS5003/7003: VIN - VIN/5V; GND - G; Zielony/TX - D1; Niebieski/RX - D2
   HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
   SDS011/21: VIN - 5V; GND - G; TX - D1; RX - D2
@@ -36,6 +37,7 @@
   SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   DHT22: VIN - 3V; GND - G; D7
+  DS18B20: VIN - 3V; GND - G; D5 - 4.7k Ohm resistor!
   PMS5003/7003: VIN - VIN/5V; GND - G; Green/TX - D1; Blue/RX - D2
   HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
   SDS011/21: VIN - 5V; GND - G; TX - D1; RX - D2
@@ -49,6 +51,7 @@
   SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   DHT22: VIN - 3V; GND - G; D7
+  DS18B20: VIN - 3V; GND - G; D5 - 4.7k Ohm resistor!
   PMS5003/7003: VIN - VIN/5V; GND - G; TX - D5; RX - D4
   HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
   SDS011/21: VIN - 5V; GND - G; TX - D5; RX - D4
@@ -59,6 +62,7 @@
   SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 required pull-up resistor 10k to VCC
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
   DHT22: VIN - 3V; GND - G; D7
+  DS18B20: VIN - 3V; GND - G; D5 - 4.7k Ohm resistor!
   PMS5003/7003: VIN - VIN/5V; GND - G; TX - D5; RX - D4
   HPMA115S0: VIN - VIN/5V; GND - G; TX - D1; RX - D2
   SDS011/21: VIN - 5V; GND - G; TX - D5; RX - D4
@@ -171,6 +175,8 @@
 
 #include <PubSubClient.h>
 #include <Wire.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 // TEMP/HUMI/PRESS Sensor config - START
 // BME280 config
@@ -199,6 +205,11 @@ DHT dht(DHTPIN, DHTTYPE);
 #define dataPin 14 //D5
 #define clockPin 12 //D6
 SHT1x sht1x(dataPin, clockPin);
+
+// DS18B20 – Config
+const int DS18B20_WireBus = 14;   //D5
+OneWire oneWire(DS18B20_WireBus);
+DallasTemperature DS18B20(&oneWire);
 // TEMP/HUMI/PRESS Sensor config - END
 
 // DUST Sensor config - START
@@ -394,6 +405,22 @@ bool checkSHT1xStatus() {
     return true;
   }
 }
+
+bool checkDS18B20Status() {
+  /*
+    DS18B20.requestTemperatures();
+    int temperature_DS18B20_Int = DS18B20.getTempCByIndex(0);
+    if (temperature_DS18B20_Int == 0) {
+    if (DEBUG) {
+      Serial.println("No data from DS18B20 sensor!\n");
+    }
+    return false;
+    } else {
+    return true;
+    }
+  */
+  return true;
+}
 // check TEMP/HUMI/PRESS Sensor - END
 
 void minutesToSeconds() {
@@ -441,7 +468,7 @@ void setup() {
 
 #ifdef ARDUINO_ARCH_ESP32
   disableCore0WDT();
-  //disableCore1WDT(); // ESP32-solo-1 so only CORE0!
+  // disableCore1WDT(); // ESP32-solo-1 so only CORE0!
 #endif
 
   loadtranslation(SELECTED_LANGUAGE);
@@ -644,6 +671,8 @@ void setup() {
   } else if (!strcmp(THP_MODEL, "DHT22")) {
     dht.begin();
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    DS18B20.begin();
   }
   yield();
   // TEMP/HUMI/PRESS Sensor setup - END
@@ -1078,6 +1107,14 @@ void sendDataToExternalDBs() {
           Serial.println("No measurements from SHT1x!\n");
         }
       }
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      if (checkDS18B20Status() == true) {
+        row.addValue("temperature", (currentTemperature));
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from DS18B20!\n");
+        }
+      }
     }
     if (influx.write(row)) {
       if (DEBUG) {
@@ -1218,6 +1255,16 @@ void sendDataToExternalDBs() {
       }
     }
 
+    if (!strcmp(THP_MODEL, "DS18B20")) {
+      if (checkDS18B20Status() == true) {
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
+      } else {
+        if (DEBUG) {
+          Serial.println("No measurements from DS18B20!\n");
+        }
+      }
+    }
+
     if (DEEPSLEEP_ON == true) {
       mqttclient.disconnect();
     }
@@ -1311,6 +1358,18 @@ void takeTHPMeasurements() {
     } else {
       if (DEBUG) {
         Serial.println("No measurements from SHT1x!\n");
+      }
+    }
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    if (checkDS18B20Status() == true) {
+      if (DEBUG) {
+        Serial.println("Measurements from DS18B20!\n");
+      }
+      DS18B20.requestTemperatures();
+      currentTemperature = DS18B20.getTempCByIndex(0);
+    } else {
+      if (DEBUG) {
+        Serial.println("No measurements from DS18B20!\n");
       }
     }
   }
@@ -1663,6 +1722,7 @@ void pm_calibration() {
         calib = calib1;
       }
     }
+
   }
   // Automatic calibration - END
 
@@ -1675,6 +1735,8 @@ void pm_calibration() {
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     calib = calib1;
   } else if (!strcmp(THP_MODEL, "BMP280")) {
+    calib = calib1;
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
     calib = calib1;
   }
 

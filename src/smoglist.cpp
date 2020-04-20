@@ -129,6 +129,8 @@ void sendSmoglistData(float currentTemperature, float currentPressure, float cur
 			json["THP_MODEL"] = "DHT22";
   		} else if (!strcmp(THP_MODEL, "SHT1x")) {
   			json["THP_MODEL"] = "SHT1x";
+  		} else if (!strcmp(THP_MODEL, "DS18B20")) {
+  			json["THP_MODEL"] = "DS18B20";
   		}
 		json["Temperature"] = float(currentTemperature);
 		json["Humidity"] = float(currentHumidity);

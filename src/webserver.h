@@ -130,6 +130,19 @@ void handle_root() {
       message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
       message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
     }
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    if (checkDS18B20Status()) {
+      message.replace("{TEXT_TEMPERATURE}", (TEXT_TEMPERATURE));
+      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+    } else {
+      message.replace("{TEXT_TEMPERATURE}: {Temperature} °C", "");
+      message.replace("{TEXT_HUMIDITY}: {Humidity} %", "");
+      message.replace("{TEXT_PRESSURE}: {Pressure} hPa", "");
+      message.replace("{TEXT_DEWPOINT}: {Dewpoint} °C", "");
+    }
   }
 
   if (strcmp(DUST_MODEL, "Non")) {
@@ -249,6 +262,7 @@ String _addTHP_MODELSelect(const String &key, const String &value) {
   input += _addOption("HTU21", "SHT21/HTU21D", value);
   input += _addOption("DHT22", "DHT22", value);
   input += _addOption("BMP280", "BMP280", value);
+  input += _addOption("DS18B20", "DS18B20", value);
 
   input += _addOption("Non", (TEXT_WITHOUTSENSOR), value);
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
@@ -618,6 +632,9 @@ void _handle_config_services(bool is_success) {
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     message.replace("{THPSENSOR}", "SHT1x");
     message.replace("{THPXPIN}", "12");
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    message.replace("{THPSENSOR}", "DS18B20");
+    message.replace("{THPXPIN}", "13");
   } else {
     message.replace("<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>", "");
   }
@@ -834,6 +851,7 @@ void _handle_adv_mqtt_config(bool is_success) {
 	  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
 	
 	      message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+		  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
 	
 	      message.replace("{MQTT_PRESS}", String(int(currentPressure)));
 	      message.replace("{MQTT_TOPIC_PRESS}", _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
@@ -859,6 +877,7 @@ void _handle_adv_mqtt_config(bool is_success) {
 	      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
 	
 	      message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+		  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
       } else {
         if (DEBUG) {
           Serial.println("No measurements from HTU21!\n");
@@ -880,7 +899,8 @@ void _handle_adv_mqtt_config(bool is_success) {
 	      message.replace("{MQTT_HUMI}", String(int(currentHumidity)));
 	      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
 	
-	      message.replace("<b>PRESS: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+	      message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+		  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
       } else {
         if (DEBUG) {
           Serial.println("No measurements from DHT22!\n");
@@ -903,6 +923,7 @@ void _handle_adv_mqtt_config(bool is_success) {
 	      message.replace("{MQTT_TOPIC_HUMI}", _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
 	
 	      message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+	      message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");	  
       } else {
         if (DEBUG) {
           Serial.println("No measurements from SHT1x!\n");
@@ -914,7 +935,29 @@ void _handle_adv_mqtt_config(bool is_success) {
   	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
   	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
       }
-    }	
+    }
+	 if (!strcmp(THP_MODEL, "DS18B20")) {
+    if (checkDS18B20Status()) {
+		
+      message.replace("{MQTT_TEMP}", String(int(currentTemperature)));
+  	  message.replace("{MQTT_TOPIC_TEMP}", _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+	  
+    	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+    	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+    	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+    	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+    } else {
+        if (DEBUG) {
+          Serial.println("No measurements from DS18B20!\n");
+        }
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+  	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
+  	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
+  	  message.replace("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />", "");
+    	}
+	}
   } else {
 	  message.replace("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />", "");
 	  message.replace("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />", "");
@@ -1469,6 +1512,11 @@ void handle_api() {
       json["temperature"] = float(currentTemperature);
       json["humidity"] = int(currentHumidity);
       json["dewpoint"] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
+    }
+  }
+  if (!strcmp(THP_MODEL, "DS18B20")) {
+    if (checkDS18B20Status()) {
+      json["temperature"] = float(currentTemperature);
     }
   }
 

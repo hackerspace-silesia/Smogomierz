@@ -89,6 +89,10 @@ void sendDataToAqiEco(float currentTemperature, float currentPressure, float cur
     JsonObject humidity = sensordatavalues.createNestedObject();
     humidity["value_type"] = "SHT1x_humidity";
     humidity["value"] = String(currentHumidity);
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    JsonObject temperature = sensordatavalues.createNestedObject();
+    temperature["value_type"] = "DS18B20_temperature";
+    temperature["value"] = String(currentTemperature);
   }
 
   WiFiClient client;

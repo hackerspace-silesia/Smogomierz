@@ -90,7 +90,10 @@ void sendTHPLuftdatenJson(JsonObject& json) {
     client.println("X-PIN: 7");
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     client.println("X-PIN: 12");
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    client.println("X-PIN: 13");
   }
+  
   client.println("X-Sensor: smogomierz-" + luftdatenChipId);
   client.print("Content-Length: ");
   client.println(measureJson(json));
@@ -117,6 +120,8 @@ void sendTHPLuftdatenJson(JsonObject& json) {
       Serial.println("X-PIN: 7");
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
       Serial.println("X-PIN: 12");
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      Serial.println("X-PIN: 13");
     }
     Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
     Serial.print("Content-Length: ");
@@ -202,6 +207,10 @@ void sendTHPDatatoLuftdaten(float currentTemperature, float currentPressure, flo
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      JsonObject temperature = sensordatavalues.createNestedObject();
+      temperature["value_type"] = "temperature";
+      temperature["value"] = String(currentTemperature);
     }
     sendTHPLuftdatenJson(json);
   }
@@ -276,6 +285,8 @@ void sendTHPMadavideJson(JsonObject& json) {
     client.println("X-PIN: 7");
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     client.println("X-PIN: 12");
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    client.println("X-PIN: 13");
   }
   client.println("X-Sensor: smogomierz-" + luftdatenChipId);
   client.print("Content-Length: ");
@@ -303,6 +314,8 @@ void sendTHPMadavideJson(JsonObject& json) {
       Serial.println("X-PIN: 7");
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
       Serial.println("X-PIN: 12");
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      Serial.println("X-PIN: 13");
     }
     Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
     Serial.print("Content-Length: ");
@@ -395,6 +408,10 @@ void sendTHPDatatoMadavide(float currentTemperature, float currentPressure, floa
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      JsonObject temperature = sensordatavalues.createNestedObject();
+      temperature["value_type"] = "temperature";
+      temperature["value"] = String(currentTemperature);
     }
     sendTHPMadavideJson(json);
   }

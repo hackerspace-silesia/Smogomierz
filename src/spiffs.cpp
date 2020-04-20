@@ -121,10 +121,6 @@ bool loadConfig() {
   _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 128);
   _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path", 64);
   
-  AQI_ECO_ON = json["AQI_ECO_ON"];
-  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host");
-  _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path");
-  
   SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
   SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
   DEEPSLEEP_ON = json["DEEPSLEEP_ON"];

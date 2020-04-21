@@ -10,6 +10,8 @@ extern char THP_MODEL[32];
 extern char DUST_MODEL[32];
 extern bool FREQUENTMEASUREMENT;
 
+extern bool SECOND_THP;
+
 extern char CONFIG_FIRST_THP_SDA[8];
 extern char CONFIG_FIRST_THP_SCL[8];
 extern int  FIRST_THP_SDA;

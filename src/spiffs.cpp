@@ -69,15 +69,26 @@ bool loadConfig() {
   _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non", 32);
   DISPLAY_PM1 = json["DISPLAY_PM1"];
   FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
+  
+  SECOND_THP = json["SECOND_THP"];
+  
+  FIRST_THP_SDA = json["FIRST_THP_SDA"];
+  FIRST_THP_SCL = json["FIRST_THP_SCL"];
 
-	FIRST_THP_SDA = json["FIRST_THP_SDA"];
-	FIRST_THP_SCL = json["FIRST_THP_SCL"];
+  SECOND_THP_SDA = json["SECOND_THP_SDA"];
+  SECOND_THP_SCL = json["SECOND_THP_SCL"];
 
-	SECOND_THP_SDA = json["SECOND_THP_SDA"];
-	SECOND_THP_SCL = json["SECOND_THP_SCL"];
+  DUST_TX = json["DUST_TX"];
+  DUST_RX = json["DUST_RX"];
 
-	DUST_TX = json["DUST_TX"];
-	DUST_RX = json["DUST_RX"];
+  _safeCpy(CONFIG_FIRST_THP_SDA, json["CONFIG_FIRST_THP_SDA"], "D3", 8);
+  _safeCpy(CONFIG_FIRST_THP_SCL, json["CONFIG_FIRST_THP_SCL"], "D4", 8);
+
+  _safeCpy(CONFIG_SECOND_THP_SDA, json["CONFIG_SECOND_THP_SDA"], "D5", 8);
+  _safeCpy(CONFIG_SECOND_THP_SCL, json["CONFIG_SECOND_THP_SCL"], "D6", 8);
+
+  _safeCpy(CONFIG_DUST_TX, json["CONFIG_DUST_TX"], "D1", 8);
+  _safeCpy(CONFIG_DUST_RX, json["CONFIG_DUST_RX"], "D2", 8);
 
   DUST_TIME = json["DUST_TIME"];
   NUMBEROFMEASUREMENTS = json["NUMBEROFMEASUREMENTS"];
@@ -164,20 +175,38 @@ bool loadConfig() {
     Serial.print("Loaded FREQUENTMEASUREMENT: ");
     Serial.println(FREQUENTMEASUREMENT);
 
-		Serial.print("Loaded FIRST_THP_SDA: ");
-		Serial.println(FIRST_THP_SDA);
-		Serial.print("Loaded FIRST_THP_SCL: ");
+	Serial.print("Loaded SECOND_THP: ");
+	Serial.println(SECOND_THP);
+	
+	Serial.print("Loaded FIRST_THP_SDA: ");
+	Serial.println(FIRST_THP_SDA);
+	Serial.print("Loaded FIRST_THP_SCL: ");
     Serial.println(FIRST_THP_SCL);
 
-		Serial.print("Loaded SECOND_THP_SDA: ");
-		Serial.println(SECOND_THP_SDA);
-		Serial.print("Loaded SECOND_THP_SCL: ");
+	Serial.print("Loaded SECOND_THP_SDA: ");
+	Serial.println(SECOND_THP_SDA);
+	Serial.print("Loaded SECOND_THP_SCL: ");
     Serial.println(SECOND_THP_SCL);
 
-		Serial.print("Loaded DUST_TX: ");
-		Serial.println(DUST_TX);
-		Serial.print("Loaded DUST_RX: ");
+	Serial.print("Loaded DUST_TX: ");
+	Serial.println(DUST_TX);
+	Serial.print("Loaded DUST_RX: ");
     Serial.println(DUST_RX);
+
+	Serial.print("Loaded CONFIG_FIRST_THP_SDA: ");
+	Serial.println(CONFIG_FIRST_THP_SDA);
+	Serial.print("Loaded CONFIG_FIRST_THP_SCL: ");
+    Serial.println(CONFIG_FIRST_THP_SCL);
+
+	Serial.print("Loaded CONFIG_SECOND_THP_SDA: ");
+	Serial.println(CONFIG_SECOND_THP_SDA);
+	Serial.print("Loaded CONFIG_SECOND_THP_SCL: ");
+    Serial.println(CONFIG_SECOND_THP_SCL);
+
+	Serial.print("Loaded CONFIG_DUST_TX: ");
+	Serial.println(CONFIG_DUST_TX);
+	Serial.print("Loaded CONFIG_DUST_RX: ");
+    Serial.println(CONFIG_DUST_RX);
 
     Serial.print("Loaded DUST_TIME: ");
     Serial.println(DUST_TIME);
@@ -318,14 +347,25 @@ bool saveConfig() {
   json["DISPLAY_PM1"] = bool(DISPLAY_PM1);
   json["FREQUENTMEASUREMENT"] = bool(FREQUENTMEASUREMENT);
 
-	json["FIRST_THP_SDA"] = int(FIRST_THP_SDA);
-	json["FIRST_THP_SCL"] = int(FIRST_THP_SCL);
+  json["SECOND_THP"] = bool(SECOND_THP);
 
-	json["SECOND_THP_SDA"] = int(SECOND_THP_SDA);
-	json["SECOND_THP_SCL"] = int(SECOND_THP_SCL);
+  json["FIRST_THP_SDA"] = int(FIRST_THP_SDA);
+  json["FIRST_THP_SCL"] = int(FIRST_THP_SCL);
 
-	json["DUST_TX"] = int(DUST_TX);
+  json["SECOND_THP_SDA"] = int(SECOND_THP_SDA);
+  json["SECOND_THP_SCL"] = int(SECOND_THP_SCL);
+
+  json["DUST_TX"] = int(DUST_TX);
   json["DUST_RX"] = int(DUST_RX);
+  
+  json["CONFIG_FIRST_THP_SDA"] = String(CONFIG_FIRST_THP_SDA);
+  json["CONFIG_FIRST_THP_SCL"] = String(CONFIG_FIRST_THP_SCL);
+
+  json["CONFIG_SECOND_THP_SDA"] = String(CONFIG_SECOND_THP_SDA);
+  json["CONFIG_SECOND_THP_SCL"] = String(CONFIG_SECOND_THP_SCL);
+
+  json["CONFIG_DUST_TX"] = String(CONFIG_DUST_TX);
+  json["CONFIG_DUST_RX"] = String(CONFIG_DUST_RX);
 
   json["DUST_TIME"] = int(DUST_TIME);
   json["NUMBEROFMEASUREMENTS"] = int(NUMBEROFMEASUREMENTS);

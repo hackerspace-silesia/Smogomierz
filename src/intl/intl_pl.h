@@ -35,6 +35,20 @@ char PL_INTL_SELECTEDLANGUAGE[16] PROGMEM = "Język";
 char PL_INTL_TEMPHUMIPRESSSENSOR[64] PROGMEM = "Miernik Temp/Wilgotności/Ciśnienia";
 char PL_INTL_PMSENSOR[32] PROGMEM = "Miernik PM2.5/PM10";
 
+char PL_INTL_FIRST_THP_SDA_SCL[64] PROGMEM = "Konfiguracja pinów miernika Temp/Wilgotności/Ciśnienia";
+char PL_INTL_FIRST_THP_SDA[32] PROGMEM = "Pin SDA";
+char PL_INTL_FIRST_THP_SCL[32] PROGMEM = "Pin SCL";
+
+char PL_INTL_SECOND_THP[64] PROGMEM = "Włacz obsługę drugiego miernika Temp/Wilgotności/Ciśnienia";
+
+char PL_INTL_SECOND_THP_SDA_SCL[64] PROGMEM = "Piny drugiego miernika Temp/Wilgotności/Ciśnienia";
+char PL_INTL_SECOND_THP_SDA[32] PROGMEM = "Pin SDA";
+char PL_INTL_SECOND_THP_SCL[32] PROGMEM = "Pin SCL";
+
+char PL_INTL_DUST_TX_RX[64] PROGMEM = "Konfiguracja pinów miernika PM2.5/PM10";
+char PL_INTL_DUST_TX[32] PROGMEM = "Pin TX";
+char PL_INTL_DUST_RX[32] PROGMEM = "Pin RX";
+
 char PL_INTL_FREQUENTMEASUREMENTONOFF[32] PROGMEM = "Ciągłe pomiary PM";
 char PL_INTL_FREQUENTMEASUREMENTINFO[96] PROGMEM = "Ciągłe pomiary znacznie skracają żywotność miernika PM.";
 char PL_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Wykonywanie pomiarów PM co";

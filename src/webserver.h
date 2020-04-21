@@ -520,11 +520,19 @@ message.replace("{FIRST_THP_SDA}", _add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_T
 message.replace("{TEXT_FIRST_THP_SCL}", (TEXT_FIRST_THP_SCL));
 message.replace("{FIRST_THP_SCL}", _add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_THP_SCL", CONFIG_FIRST_THP_SCL));
 
-message.replace("{TEXT_SECOND_THP_SDA_SCL}", (TEXT_SECOND_THP_SDA_SCL));
-message.replace("{TEXT_SECOND_THP_SDA}", (TEXT_SECOND_THP_SDA));
-message.replace("{SECOND_THP_SDA}", _add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SDA", CONFIG_SECOND_THP_SDA));
-message.replace("{TEXT_SECOND_THP_SCL}", (TEXT_SECOND_THP_SCL));
-message.replace("{SECOND_THP_SCL}", _add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SCL", CONFIG_SECOND_THP_SCL));
+message.replace("{TEXT_SECOND_THP}", (TEXT_SECOND_THP));
+message.replace("{SECOND_THP}", _addBoolSelect("SECOND_THP", SECOND_THP));
+
+if(SECOND_THP) {
+    message.replace("{WEB_CONFIG_DEVICE_PAGE_SECOND_THP}", FPSTR(WEB_CONFIG_DEVICE_PAGE_SECOND_THP));
+	message.replace("{TEXT_SECOND_THP_SDA_SCL}", (TEXT_SECOND_THP_SDA_SCL));
+	message.replace("{TEXT_SECOND_THP_SDA}", (TEXT_SECOND_THP_SDA));
+	message.replace("{SECOND_THP_SDA}", _add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SDA", CONFIG_SECOND_THP_SDA));
+	message.replace("{TEXT_SECOND_THP_SCL}", (TEXT_SECOND_THP_SCL));
+	message.replace("{SECOND_THP_SCL}", _add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SCL", CONFIG_SECOND_THP_SCL));
+} else {
+	message.replace("{WEB_CONFIG_DEVICE_PAGE_SECOND_THP}", "");
+}
 
 message.replace("{TEXT_DUST_TX_RX}", (TEXT_DUST_TX_RX));
 message.replace("{TEXT_DUST_TX}", (TEXT_DUST_TX));
@@ -1223,49 +1231,14 @@ void handle_config_device_post() {
   // DUST Sensor config - END
   _parseAsCString(CONFIG_FIRST_THP_SDA, WebServer.arg("CONFIG_FIRST_THP_SDA"), 8);
   _parseAsCString(CONFIG_FIRST_THP_SCL, WebServer.arg("CONFIG_FIRST_THP_SCL"), 8);
-/*
-  switch ()
-    {
-      case 1 : Serial.println("POWERON_RESET"); break;
-      default : Serial.println("NO_MEAN");
-    }
-*/
-if(!strcmp(CONFIG_FIRST_THP_SDA, "D1") {
-FIRST_THP_SDA = 5;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D2") {
-FIRST_THP_SDA = 4;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D3") {
-FIRST_THP_SDA = 0;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D4") {
-FIRST_THP_SDA = 2;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D5") {
-FIRST_THP_SDA = 14;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D6") {
-FIRST_THP_SDA = 12;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D7") {
-FIRST_THP_SDA = 13;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D8") {
-FIRST_THP_SDA = 15;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D16") {
-FIRST_THP_SDA = 16;
-} else if(!strcmp(CONFIG_FIRST_THP_SDA, "D17") {
-FIRST_THP_SDA = 17;
-}
-
-  //FIRST_THP_SDA = WebServer.arg("FIRST_THP_SDA").toInt();
-  //FIRST_THP_SCL = WebServer.arg("FIRST_THP_SCL").toInt();
 
   _parseAsCString(CONFIG_SECOND_THP_SDA, WebServer.arg("CONFIG_SECOND_THP_SDA"), 8);
   _parseAsCString(CONFIG_SECOND_THP_SCL, WebServer.arg("CONFIG_SECOND_THP_SCL"), 8);
 
-  //SECOND_THP_SDA = WebServer.arg("SECOND_THP_SDA").toInt();
-  //SECOND_THP_SCL = WebServer.arg("SECOND_THP_SCL").toInt();
-
   _parseAsCString(CONFIG_DUST_TX, WebServer.arg("CONFIG_DUST_TX"), 8);
   _parseAsCString(CONFIG_DUST_RX, WebServer.arg("CONFIG_DUST_RX"), 8);
 
-  //DUST_TX = WebServer.arg("DUST_TX").toInt();
-  //DUST_RX = WebServer.arg("DUST_RX").toInt();
+  SECOND_THP = _parseAsBool(WebServer.arg("SECOND_THP"));
 
   yield();
   FREQUENTMEASUREMENT = _parseAsBool(WebServer.arg("FREQUENTMEASUREMENT"));

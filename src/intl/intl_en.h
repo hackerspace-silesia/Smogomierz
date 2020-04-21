@@ -35,6 +35,20 @@ char EN_INTL_SELECTEDLANGUAGE[16] PROGMEM = "Language";
 char EN_INTL_TEMPHUMIPRESSSENSOR[64] PROGMEM = "Temp/Humi/Press Sensor";
 char EN_INTL_PMSENSOR[32] PROGMEM = "PM2.5/PM10 Sensor";
 
+char EN_INTL_FIRST_THP_SDA_SCL[64] PROGMEM = "First Temp/Humi/Press Sensor SDA/SCL config";
+char EN_INTL_FIRST_THP_SDA[32] PROGMEM = "Temp/Humi/Press Sensor SDA";
+char EN_INTL_FIRST_THP_SCL[32] PROGMEM = "Temp/Humi/Press Sensor SCL";
+
+char EN_INTL_SECOND_THP[64] PROGMEM = "Enable Second Temp/Humi/Press Sensor";
+
+char EN_INTL_SECOND_THP_SDA_SCL[64] PROGMEM = "Second Temp/Humi/Press Sensor SDA/SCL config";
+char EN_INTL_SECOND_THP_SDA[32] PROGMEM = "Temp/Humi/Press Sensor SDA";
+char EN_INTL_SECOND_THP_SCL[32] PROGMEM = "Temp/Humi/Press Sensor SCL";
+
+char EN_INTL_DUST_TX_RX[64] PROGMEM = "PM2.5/PM10 Sensor TX/RX config";
+char EN_INTL_DUST_TX[32] PROGMEM = "PM2.5/PM10 Sensor TX";
+char EN_INTL_DUST_RX[32] PROGMEM = "PM2.5/PM10 Sensor RX";
+
 char EN_INTL_FREQUENTMEASUREMENTONOFF[32] PROGMEM = "Continuous measurements";
 char EN_INTL_FREQUENTMEASUREMENTINFO[96] PROGMEM = "Continuous measurements significantly shorten the life span of the PM sensor.";
 char EN_INTL_MEASUREMENTFREQUENCY[32] PROGMEM = "Make PM measurements every";

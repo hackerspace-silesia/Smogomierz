@@ -1,4 +1,5 @@
-const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githack.com/hackerspace-silesia/Smogomierz/dev/src/css/smogly.css'";
+const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githack.com/hackerspace-silesia/Smogomierz/master/src/css/smogly.css'";
+// https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/dev/src/css/smogly.css
 // based on bootstrap.min.css - 4.4.1 and Bootswatch v4.4.1
 // https://raw.githack.com
 
@@ -188,24 +189,30 @@ const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POS
 	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 #endif
+const char WEB_CONFIG_DEVICE_PAGE_SECOND_THP[] PROGMEM = R"rawliteral(
+	<br>
+	{TEXT_SECOND_THP_SDA_SCL} <br>
+	<b>{TEXT_SECOND_THP_SDA}: </b>{SECOND_THP_SDA}
+	<b>{TEXT_SECOND_THP_SCL}: </b>{SECOND_THP_SCL}
+)rawliteral";
+
 const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVICENAME}: </b>{device_name} <br>
 	<b>{TEXT_DEVICENAMEAUTO}: </b>{DEVICENAME_AUTO}
 	<b>{TEXT_SELECTEDLANGUAGE}: </b>{LanguageSelect}
 	<hr>
 	<b>{TEXT_TEMPHUMIPRESSSENSOR}: </b>{THP_MODELSelect}
 	<b>{TEXT_PMSENSOR}: </b>{DUST_MODELSelect}
-	<hr>
+	<!-- <hr>
 	{TEXT_FIRST_THP_SDA_SCL} <br>
 	<b>{TEXT_FIRST_THP_SDA}: </b>{FIRST_THP_SDA}
 	<b>{TEXT_FIRST_THP_SCL}: </b>{FIRST_THP_SCL}
 	<br>
-	{TEXT_SECOND_THP_SDA_SCL} <br>
-	<b>{TEXT_SECOND_THP_SDA}: </b>{SECOND_THP_SDA}
-	<b>{TEXT_SECOND_THP_SCL}: </b>{SECOND_THP_SCL}
+	<b>{TEXT_SECOND_THP}: </b>{SECOND_THP}
+	{WEB_CONFIG_DEVICE_PAGE_SECOND_THP}
 	<br>
-  {TEXT_DUST_TX_RX} <br>
+  	{TEXT_DUST_TX_RX} <br>
 	<b>{TEXT_DUST_TX}: </b>{DUST_TX}
-	<b>{TEXT_DUST_RX}: </b>{DUST_RX}
+	<b>{TEXT_DUST_RX}: </b>{DUST_RX} -->
 	<hr>
 	<b>{TEXT_FREQUENTMEASUREMENTONOFF}: </b>{FREQUENTMEASUREMENT_Select} {TEXT_FREQUENTMEASUREMENTINFO}<br>
 	<b>{TEXT_MEASUREMENTFREQUENCY}: </b>{FREQUENTMEASUREMENT_time}

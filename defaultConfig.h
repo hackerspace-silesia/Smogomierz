@@ -10,6 +10,8 @@ char THP_MODEL[32] = "Non";
 char DUST_MODEL[32] = "Non";
 bool FREQUENTMEASUREMENT = false;
 
+bool SECOND_THP = false;
+
 #ifdef ARDUINO_ARCH_ESP8266
 char CONFIG_FIRST_THP_SDA[8] = "D3";
 char CONFIG_FIRST_THP_SCL[8] = "D4";

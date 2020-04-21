@@ -450,6 +450,147 @@ void MQTTreconnect() {
   }
 }
 
+void set_I2C_PINS(String THP_PIN, int i) {
+  if (i == 1) {
+    if (THP_PIN == "D1") {
+      FIRST_THP_SDA = 5;
+    } else if (THP_PIN == "D2") {
+      FIRST_THP_SDA = 4;
+    } else if (THP_PIN == "D3") {
+      FIRST_THP_SDA = 0;
+    } else if (THP_PIN == "D4") {
+      FIRST_THP_SDA = 2;
+    } else if (THP_PIN == "D5") {
+      FIRST_THP_SDA = 14;
+    } else if (THP_PIN == "D6") {
+      FIRST_THP_SDA = 12;
+    } else if (THP_PIN == "D7") {
+      FIRST_THP_SDA = 13;
+    } else if (THP_PIN == "D8") {
+      FIRST_THP_SDA = 15;
+    } else if (THP_PIN == "D16") {
+      FIRST_THP_SDA = 16;
+    } else if (THP_PIN == "D17") {
+      FIRST_THP_SDA = 17;
+    }
+  } else if (i == 2) {
+    if (THP_PIN == "D1") {
+      FIRST_THP_SCL = 5;
+    } else if (THP_PIN == "D2") {
+      FIRST_THP_SCL = 4;
+    } else if (THP_PIN == "D3") {
+      FIRST_THP_SCL = 0;
+    } else if (THP_PIN == "D4") {
+      FIRST_THP_SCL = 2;
+    } else if (THP_PIN == "D5") {
+      FIRST_THP_SCL = 14;
+    } else if (THP_PIN == "D6") {
+      FIRST_THP_SCL = 12;
+    } else if (THP_PIN == "D7") {
+      FIRST_THP_SCL = 13;
+    } else if (THP_PIN == "D8") {
+      FIRST_THP_SCL = 15;
+    } else if (THP_PIN == "D16") {
+      FIRST_THP_SCL = 16;
+    } else if (THP_PIN == "D17") {
+      FIRST_THP_SCL = 17;
+    }
+  } else if (i == 3) {
+    if (THP_PIN == "D1") {
+      SECOND_THP_SDA = 5;
+    } else if (THP_PIN == "D2") {
+      SECOND_THP_SDA = 4;
+    } else if (THP_PIN == "D3") {
+      SECOND_THP_SDA = 0;
+    } else if (THP_PIN == "D4") {
+      SECOND_THP_SDA = 2;
+    } else if (THP_PIN == "D5") {
+      SECOND_THP_SDA = 14;
+    } else if (THP_PIN == "D6") {
+      SECOND_THP_SDA = 12;
+    } else if (THP_PIN == "D7") {
+      SECOND_THP_SDA = 13;
+    } else if (THP_PIN == "D8") {
+      SECOND_THP_SDA = 15;
+    } else if (THP_PIN == "D16") {
+      SECOND_THP_SDA = 16;
+    } else if (THP_PIN == "D17") {
+      SECOND_THP_SDA = 17;
+    }
+  } else if (i == 4) {
+    if (THP_PIN == "D1") {
+      SECOND_THP_SCL = 5;
+    } else if (THP_PIN == "D2") {
+      SECOND_THP_SCL = 4;
+    } else if (THP_PIN == "D3") {
+      SECOND_THP_SCL = 0;
+    } else if (THP_PIN == "D4") {
+      SECOND_THP_SCL = 2;
+    } else if (THP_PIN == "D5") {
+      SECOND_THP_SCL = 14;
+    } else if (THP_PIN == "D6") {
+      SECOND_THP_SCL = 12;
+    } else if (THP_PIN == "D7") {
+      SECOND_THP_SCL = 13;
+    } else if (THP_PIN == "D8") {
+      SECOND_THP_SCL = 15;
+    } else if (THP_PIN == "D16") {
+      SECOND_THP_SCL = 16;
+    } else if (THP_PIN == "D17") {
+      SECOND_THP_SCL = 17;
+    }
+  }
+
+}
+
+void set_SERIAL_PINS(String DUST_PIN, int i) {
+  if (i == 1) {
+    if (DUST_PIN == "D1") {
+      DUST_TX = 5;
+    } else if (DUST_PIN == "D2") {
+      DUST_TX = 4;
+    } else if (DUST_PIN == "D3") {
+      DUST_TX = 0;
+    } else if (DUST_PIN == "D4") {
+      DUST_TX = 2;
+    } else if (DUST_PIN == "D5") {
+      DUST_TX = 14;
+    } else if (DUST_PIN == "D6") {
+      DUST_TX = 12;
+    } else if (DUST_PIN == "D7") {
+      DUST_TX = 13;
+    } else if (DUST_PIN == "D8") {
+      DUST_TX = 15;
+    } else if (DUST_PIN == "D16") {
+      DUST_TX = 16;
+    } else if (DUST_PIN == "D17") {
+      DUST_TX = 17;
+    }
+  } else if (i == 2) {
+    if (DUST_PIN == "D1") {
+      DUST_RX = 5;
+    } else if (DUST_PIN == "D2") {
+      DUST_RX = 4;
+    } else if (DUST_PIN == "D3") {
+      DUST_RX = 0;
+    } else if (DUST_PIN == "D4") {
+      DUST_RX = 2;
+    } else if (DUST_PIN == "D5") {
+      DUST_RX = 14;
+    } else if (DUST_PIN == "D6") {
+      DUST_RX = 12;
+    } else if (DUST_PIN == "D7") {
+      DUST_RX = 13;
+    } else if (DUST_PIN == "D8") {
+      DUST_RX = 15;
+    } else if (DUST_PIN == "D16") {
+      DUST_RX = 16;
+    } else if (DUST_PIN == "D17") {
+      DUST_RX = 17;
+    }
+  }
+}
+
 // default translation - english
 #include "src/default_intl.h"
 
@@ -479,6 +620,15 @@ void setup() {
 
   loadtranslation(SELECTED_LANGUAGE);
   yield();
+
+  set_I2C_PINS(CONFIG_FIRST_THP_SDA, 1);
+  set_I2C_PINS(CONFIG_FIRST_THP_SCL, 2);
+
+  set_I2C_PINS(CONFIG_SECOND_THP_SDA, 3);
+  set_I2C_PINS(CONFIG_SECOND_THP_SCL, 4);
+
+  set_SERIAL_PINS(CONFIG_DUST_TX, 1);
+  set_SERIAL_PINS(CONFIG_DUST_RX, 2);
 
   // DUST SENSOR setup - START
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77

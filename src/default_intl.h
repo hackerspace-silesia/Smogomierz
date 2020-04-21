@@ -39,6 +39,8 @@ extern char TEXT_FIRST_THP_SDA_SCL[64] = "First Temp/Humi/Press Sensor SDA/SCL c
 extern char TEXT_FIRST_THP_SDA[32] = "Temp/Humi/Press Sensor SDA";
 extern char TEXT_FIRST_THP_SCL[32] = "Temp/Humi/Press Sensor SCL";
 
+extern char TEXT_SECOND_THP[64] = "Enable Second Temp/Humi/Press Sensor";
+
 extern char TEXT_SECOND_THP_SDA_SCL[64] = "Second Temp/Humi/Press Sensor SDA/SCL config";
 extern char TEXT_SECOND_THP_SDA[32] = "Temp/Humi/Press Sensor SDA";
 extern char TEXT_SECOND_THP_SCL[32] = "Temp/Humi/Press Sensor SCL";

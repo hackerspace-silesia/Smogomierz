@@ -10,6 +10,34 @@ char THP_MODEL[32] = "Non";
 char DUST_MODEL[32] = "Non";
 bool FREQUENTMEASUREMENT = false;
 
+#ifdef ARDUINO_ARCH_ESP8266
+char CONFIG_FIRST_THP_SDA[8] = "D3";
+char CONFIG_FIRST_THP_SCL[8] = "D4";
+int FIRST_THP_SDA = 0; // D3
+int FIRST_THP_SCL = 2; // D4
+#elif defined ARDUINO_ARCH_ESP32
+char CONFIG_FIRST_THP_SDA[8] = "D16";
+char CONFIG_FIRST_THP_SCL[8] = "D17";
+int FIRST_THP_SDA = 16; // D16
+int FIRST_THP_SCL = 17; // D17
+#endif
+
+char CONFIG_SECOND_THP_SDA[8] = "D5";
+char CONFIG_SECOND_THP_SCL[8] = "D6";
+int SECOND_THP_SDA = 14; // D5
+int SECOND_THP_SCL = 12; // D6
+
+char CONFIG_DUST_TX[8] = "D1";
+char CONFIG_DUST_RX[8] = "D2";
+int DUST_TX = 5; // D1
+int DUST_RX = 4; // D2
+
+/*
+   ESP8266
+   13 - D7
+   15 - D8
+*/
+
 int DUST_TIME = 1;
 int NUMBEROFMEASUREMENTS = 10;
 

@@ -1,7 +1,7 @@
 /*
- *  
+ *
  *  default translation file - english translation
- *  
+ *
  */
 
 #pragma once
@@ -35,6 +35,18 @@ extern char TEXT_SELECTEDLANGUAGE[16] = "Language";
 extern char TEXT_TEMPHUMIPRESSSENSOR[64] = "Temp/Humi/Press Sensor";
 extern char TEXT_PMSENSOR[32] = "PM2.5/PM10 Sensor";
 
+extern char TEXT_FIRST_THP_SDA_SCL[64] = "First Temp/Humi/Press Sensor SDA/SCL config";
+extern char TEXT_FIRST_THP_SDA[32] = "Temp/Humi/Press Sensor SDA";
+extern char TEXT_FIRST_THP_SCL[32] = "Temp/Humi/Press Sensor SCL";
+
+extern char TEXT_SECOND_THP_SDA_SCL[64] = "Second Temp/Humi/Press Sensor SDA/SCL config";
+extern char TEXT_SECOND_THP_SDA[32] = "Temp/Humi/Press Sensor SDA";
+extern char TEXT_SECOND_THP_SCL[32] = "Temp/Humi/Press Sensor SCL";
+
+extern char TEXT_DUST_TX_RX[64] = "PM2.5/PM10 Sensor TX/RX config";
+extern char TEXT_DUST_TX[32] = "PM2.5/PM10 Sensor TX";
+extern char TEXT_DUST_RX[32] = "PM2.5/PM10 Sensor RX";
+
 extern char TEXT_FREQUENTMEASUREMENTONOFF[32] = "Continuous measurements";
 extern char TEXT_FREQUENTMEASUREMENTINFO[96] = "Continuous measurements significantly shorten the life span of the PM sensor.";
 extern char TEXT_MEASUREMENTFREQUENCY[32] = "Make PM measurements every";
@@ -57,7 +69,7 @@ extern char TEXT_SECURELOGIN[16] = "Login";
 extern char TEXT_SECUREPASSWD[16] = "Password";
 extern char TEXT_SECURELOGOUTINFO[64] = "Restart your web browser to log out!";
 
-extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
+extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})";
 
 extern char TEXT_SMOGLISTSENDING[64] = "Sending data to the {SMOGLIST_LINK} service";
 extern char TEXT_SMOGLISTINFO[256] = "Smoglist is a service that collects Smogly usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
@@ -96,7 +108,7 @@ extern char TEXT_MQTT_IP_IN_TOPIC[32] = "IP address in topic";
 extern char TEXT_MQTT_DEVICENAME_IN_TOPIC[32] = "Device name in topic";
 extern char TEXT_MQTT_TOPIC_INFO[256] = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
 extern char TEXT_MQTT_SLASH_AT_THE_BEGINNING[64] = "Add '/' at the beginning of the topic";
-	
+
 extern char TEXT_AIRQUALITY_TOPIC[16] = "Airquality";
 extern char TEXT_AQIECOSENDING[128] = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
 

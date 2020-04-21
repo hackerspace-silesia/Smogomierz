@@ -13,7 +13,7 @@
 #elif defined ARDUINO_ARCH_ESP32
 	const int capacity = 4096;
 #endif
-		
+
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {
   const char* val = obj.as<const char*>();
   if (val) {
@@ -29,7 +29,7 @@ bool loadConfig() {
 #elif defined ARDUINO_ARCH_ESP32
   File configFile = SPIFFS.open("/config.json");
 #endif
-  
+
   if (!configFile) {
     Serial.println("Failed to open config file");
     return false;
@@ -69,7 +69,16 @@ bool loadConfig() {
   _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non", 32);
   DISPLAY_PM1 = json["DISPLAY_PM1"];
   FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
-  
+
+	FIRST_THP_SDA = json["FIRST_THP_SDA"];
+	FIRST_THP_SCL = json["FIRST_THP_SCL"];
+
+	SECOND_THP_SDA = json["SECOND_THP_SDA"];
+	SECOND_THP_SCL = json["SECOND_THP_SCL"];
+
+	DUST_TX = json["DUST_TX"];
+	DUST_RX = json["DUST_RX"];
+
   DUST_TIME = json["DUST_TIME"];
   NUMBEROFMEASUREMENTS = json["NUMBEROFMEASUREMENTS"];
 
@@ -91,24 +100,24 @@ bool loadConfig() {
   INFLUXDB_ON = json["INFLUXDB_ON"];
   _safeCpy(INFLUXDB_VERSION, json["INFLUXDB_VERSION"], "1", 16);
   _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host", 128);
-  INFLUXDB_PORT = json["INFLUXDB_PORT"];  
+  INFLUXDB_PORT = json["INFLUXDB_PORT"];
   _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 64);
   _safeCpy(INFLUXDB_USER, json["INFLUXDB_USER"], "user", 64);
   _safeCpy(INFLUXDB_PASSWORD, json["INFLUXDB_PASSWORD"], "password", 64);
   _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 64);
   _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 64);
   _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 64);
-  
+
   MQTT_ON = json["MQTT_ON"];
   _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host", 128);
-  MQTT_PORT = json["MQTT_PORT"];  
+  MQTT_PORT = json["MQTT_PORT"];
   _safeCpy(MQTT_USER, json["MQTT_USER"], "user", 64);
   _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password", 64);
-  
+
   MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
   MQTT_DEVICENAME_IN_TOPIC = json["MQTT_DEVICENAME_IN_TOPIC"];
   MQTT_SLASH_AT_THE_BEGINNING = json["MQTT_SLASH_AT_THE_BEGINNING"];
-  
+
   _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 128);
   _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 128);
   _safeCpy(MQTT_TOPIC_PRESS, json["MQTT_TOPIC_PRESS"], "MQTT_TOPIC_PRESS", 128);
@@ -116,22 +125,22 @@ bool loadConfig() {
   _safeCpy(MQTT_TOPIC_PM25, json["MQTT_TOPIC_PM25"], "MQTT_TOPIC_PM25", 128);
   _safeCpy(MQTT_TOPIC_PM10, json["MQTT_TOPIC_PM10"], "MQTT_TOPIC_PM10", 128);
   _safeCpy(MQTT_TOPIC_AIRQUALITY, json["MQTT_TOPIC_AIRQUALITY"], "MQTT_TOPIC_AIRQUALITY", 128);
-  
+
   AQI_ECO_ON = json["AQI_ECO_ON"];
   _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 128);
   _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path", 64);
-  
+
   SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
   SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
   DEEPSLEEP_ON = json["DEEPSLEEP_ON"];
 
   DEBUG = json["DEBUG"];
   AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
-  
+
   CONFIG_AUTH = json["CONFIG_AUTH"];
   _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 256);
   _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 256);
-  
+
   _safeCpy(MODEL, json["MODEL"], "black", 32);
 
   // Real world application would store these values in some variables for
@@ -154,17 +163,32 @@ bool loadConfig() {
     Serial.println(DISPLAY_PM1);
     Serial.print("Loaded FREQUENTMEASUREMENT: ");
     Serial.println(FREQUENTMEASUREMENT);
-	
+
+		Serial.print("Loaded FIRST_THP_SDA: ");
+		Serial.println(FIRST_THP_SDA);
+		Serial.print("Loaded FIRST_THP_SCL: ");
+    Serial.println(FIRST_THP_SCL);
+
+		Serial.print("Loaded SECOND_THP_SDA: ");
+		Serial.println(SECOND_THP_SDA);
+		Serial.print("Loaded SECOND_THP_SCL: ");
+    Serial.println(SECOND_THP_SCL);
+
+		Serial.print("Loaded DUST_TX: ");
+		Serial.println(DUST_TX);
+		Serial.print("Loaded DUST_RX: ");
+    Serial.println(DUST_RX);
+
     Serial.print("Loaded DUST_TIME: ");
     Serial.println(DUST_TIME);
     Serial.print("Loaded NUMBEROFMEASUREMENTS: ");
     Serial.println(NUMBEROFMEASUREMENTS);
-	
+
 	Serial.print("Loaded LUFTDATEN_ON: ");
 	Serial.println(LUFTDATEN_ON);
 	Serial.print("Loaded SMOGLIST_ON: ");
 	Serial.println(SMOGLIST_ON);
-	
+
     Serial.print("Loaded AIRMONITOR_ON: ");
     Serial.println(AIRMONITOR_ON);
     Serial.print("Loaded AIRMONITOR_GRAPH_ON: ");
@@ -207,7 +231,7 @@ bool loadConfig() {
     Serial.println(INFLUXDB_BUCKET);
     Serial.print("Loaded INFLUXDB_TOKEN: ");
     Serial.println(INFLUXDB_TOKEN);
-	
+
     Serial.print("Loaded MQTT_ON: ");
     Serial.println(MQTT_ON);
     Serial.print("Loaded MQTT_HOST: ");
@@ -218,14 +242,14 @@ bool loadConfig() {
     Serial.println(MQTT_USER);
     Serial.print("Loaded MQTT_PASSWORD: ");
     Serial.println(MQTT_PASSWORD);
-    
+
     Serial.print("Loaded MQTT_IP_IN_TOPIC: ");
     Serial.println(MQTT_IP_IN_TOPIC);
     Serial.print("Loaded MQTT_DEVICENAME_IN_TOPIC: ");
     Serial.println(MQTT_DEVICENAME_IN_TOPIC);
     Serial.print("Loaded MQTT_SLASH_AT_THE_BEGINNING: ");
-    Serial.println(MQTT_SLASH_AT_THE_BEGINNING);	
-	
+    Serial.println(MQTT_SLASH_AT_THE_BEGINNING);
+
     Serial.print("Loaded MQTT_TOPIC_TEMP: ");
     Serial.println(MQTT_TOPIC_TEMP);
     Serial.print("Loaded MQTT_TOPIC_HUMI: ");
@@ -247,35 +271,35 @@ bool loadConfig() {
     Serial.println(AQI_ECO_HOST);
     Serial.print("Loaded AQI_ECO_PATH: ");
     Serial.println(AQI_ECO_PATH);
-    
+
 	Serial.print("Loaded SENDING_FREQUENCY: ");
     Serial.println(SENDING_FREQUENCY);
 	Serial.print("Loaded SENDING_DB_FREQUENCY: ");
     Serial.println(SENDING_DB_FREQUENCY);
 	Serial.print("Loaded DEEPSLEEP_ON: ");
     Serial.println(DEEPSLEEP_ON);
-	
+
     Serial.print("Loaded DEBUG: ");
     Serial.println(DEBUG);
     Serial.print("Loaded AUTOUPDATE_ON: ");
     Serial.println(AUTOUPDATE_ON);
-	
+
     Serial.print("Loaded CONFIG_AUTH: ");
     Serial.println(CONFIG_AUTH);
     Serial.print("Loaded CONFIG_USERNAME: ");
     Serial.println(CONFIG_USERNAME);
     Serial.print("Loaded CONFIG_PASSWORD: ");
     Serial.println(CONFIG_PASSWORD);
-	
+
     Serial.print("Loaded MODEL: ");
     Serial.println(MODEL);
-	
+
     Serial.print("Loaded PMSENSORVERSION: ");
     Serial.println(PMSENSORVERSION);
-	
+
     Serial.print("Loaded SOFTWAREVERSION: ");
     Serial.println(SOFTWAREVERSION);
-    
+
 	Serial.println("\n");
   }
   return true;
@@ -293,7 +317,16 @@ bool saveConfig() {
   json["DUST_MODEL"] = String(DUST_MODEL);
   json["DISPLAY_PM1"] = bool(DISPLAY_PM1);
   json["FREQUENTMEASUREMENT"] = bool(FREQUENTMEASUREMENT);
-  
+
+	json["FIRST_THP_SDA"] = int(FIRST_THP_SDA);
+	json["FIRST_THP_SCL"] = int(FIRST_THP_SCL);
+
+	json["SECOND_THP_SDA"] = int(SECOND_THP_SDA);
+	json["SECOND_THP_SCL"] = int(SECOND_THP_SCL);
+
+	json["DUST_TX"] = int(DUST_TX);
+  json["DUST_RX"] = int(DUST_RX);
+
   json["DUST_TIME"] = int(DUST_TIME);
   json["NUMBEROFMEASUREMENTS"] = int(NUMBEROFMEASUREMENTS);
 
@@ -331,8 +364,8 @@ bool saveConfig() {
 
   json["MQTT_IP_IN_TOPIC"] = bool(MQTT_IP_IN_TOPIC);
   json["MQTT_DEVICENAME_IN_TOPIC"] = bool(MQTT_DEVICENAME_IN_TOPIC);
-  json["MQTT_SLASH_AT_THE_BEGINNING"] = bool(MQTT_SLASH_AT_THE_BEGINNING);  
-  
+  json["MQTT_SLASH_AT_THE_BEGINNING"] = bool(MQTT_SLASH_AT_THE_BEGINNING);
+
   json["MQTT_TOPIC_TEMP"] = String(MQTT_TOPIC_TEMP);
   json["MQTT_TOPIC_HUMI"] = String(MQTT_TOPIC_HUMI);
   json["MQTT_TOPIC_PRESS"] = String(MQTT_TOPIC_PRESS);
@@ -351,19 +384,19 @@ bool saveConfig() {
 
   json["DEBUG"] = bool(DEBUG);
   json["AUTOUPDATE_ON"] = bool(AUTOUPDATE_ON);
-  
+
   json["CONFIG_AUTH"] = bool(CONFIG_AUTH);
   json["CONFIG_USERNAME"] = String(CONFIG_USERNAME);
   json["CONFIG_PASSWORD"] = String(CONFIG_PASSWORD);
-  
+
   json["MODEL"] = String(MODEL);
-  
+
 #ifdef ARDUINO_ARCH_ESP8266
   File configFile = SPIFFS.open("/config.json", "w");
 #elif defined ARDUINO_ARCH_ESP32
   File configFile = SPIFFS.open("/config.json", FILE_WRITE);
 #endif
-  
+
   if (!configFile) {
     Serial.println("Failed to open config file for writing");
     return false;
@@ -379,7 +412,7 @@ bool saveConfig() {
 void fs_setup() {
 #ifdef ARDUINO_ARCH_ESP32
 	delay(10);
-#endif	
+#endif
 
   Serial.println("Mounting FS...");
 
@@ -402,7 +435,7 @@ void fs_setup() {
   } else {
     Serial.println("Config loaded");
   }
-  
+
 }
 
 void deleteConfig() {

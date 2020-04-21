@@ -185,9 +185,9 @@
 char bufout[10];
 BME280<> BMESensor;
 #elif defined ARDUINO_ARCH_ESP32 // VIN - 3V; GND - G; SCL - D17; SDA - D16
-#define I2C_SDA 16
-#define I2C_SCL 17
-Adafruit_BME280 bme(I2C_SDA, I2C_SCL); // I2C
+//#define I2C_SDA = FIRST_THP_SDA
+//#define I2C_SCL = FIRST_THP_SCL
+Adafruit_BME280 bme(FIRST_THP_SDA, FIRST_THP_SCL); // I2C
 #endif
 
 // BMP280 config
@@ -197,18 +197,18 @@ Adafruit_BMP280 bmp; //I2C
 HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
 
 // DHT22 config
-#define DHTPIN 13 // D7 on NodeMCU/WeMos board
+//#define DHTPIN 13 // D7 on NodeMCU/WeMos board
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
-DHT dht(DHTPIN, DHTTYPE);
+DHT dht(FIRST_THP_SDA, DHTTYPE);
 
 // SHT1x – Config
-#define dataPin 14 //D5
-#define clockPin 12 //D6
-SHT1x sht1x(dataPin, clockPin);
+//#define dataPin 14 //D5
+//#define clockPin 12 //D6
+SHT1x sht1x(FIRST_THP_SDA, FIRST_THP_SCL);
 
 // DS18B20 – Config
-const int DS18B20_WireBus = 14;   //D5
-OneWire oneWire(DS18B20_WireBus);
+//const int DS18B20_WireBus = 14;   //D5
+OneWire oneWire(FIRST_THP_SDA);
 DallasTemperature DS18B20(&oneWire);
 // TEMP/HUMI/PRESS Sensor config - END
 
@@ -217,8 +217,11 @@ DallasTemperature DS18B20(&oneWire);
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
 //***PMSx003 - START***
 #ifdef ARDUINO_ARCH_ESP8266
-// SoftwareSerial PMS_Serial; -- only for esp8266 core 2.6.0
-SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
+#ifdef ARDUINO_ESP8266_RELEASE_2_6_0
+SoftwareSerial PMS_Serial; // only for esp8266 core 2.6.0
+#else
+SoftwareSerial PMS_Serial(DUST_TX, DUST_RX); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
+#endif
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
@@ -231,7 +234,7 @@ PMS::DATA data;
 //***SDS0x1 - START***
 #ifdef ARDUINO_ARCH_ESP8266
 // SDS011/21 config
-SdsDustSensor sds(5, 4); // Change TX - D1 and RX - D2 pins
+SdsDustSensor sds(DUST_TX, DUST_RX); // Change TX - D1 and RX - D2 pins
 #elif defined ARDUINO_ARCH_ESP32
 // SDS011/21 config
 HardwareSerial sds_port(2); // Change TX - D5 and RX - D4 pins
@@ -243,7 +246,7 @@ float SDSpm25, SDSpm10;
 #elif defined DUSTSENSOR_HPMA115S0
 //***HPMA115S0 - START***
 #ifdef ARDUINO_ARCH_ESP8266
-SoftwareSerial hpmaSerial(5, 4); // TX/RX – D1/D2
+SoftwareSerial hpmaSerial(DUST_TX, DUST_RX); // TX/RX – D1/D2
 HPMA115S0 hpma115S0(hpmaSerial);
 #elif defined ARDUINO_ARCH_ESP32
 HardwareSerial hpmaSerial(1); // Change TX - D5 and RX - D4 pins
@@ -254,11 +257,11 @@ unsigned int hpma115S0_pm25, hpma115S0_pm10;
 #elif defined DUSTSENSOR_SPS30
 //***SPS30 - START***
 #ifdef ARDUINO_ARCH_ESP32
-#define SPS30_RX_PIN 4           // D4
-#define SPS30_TX_PIN 5           // D5
+#define SPS30_RX_PIN = DUST_RX          // D4
+#define SPS30_TX_PIN = DUST_TX          // D5
 #else
-#define SPS30_RX_PIN 4            // D2
-#define SPS30_TX_PIN 5            // D1
+#define SPS30_RX_PIN = DUST_RX           // D2
+#define SPS30_TX_PIN = DUST_TX           // D1
 #endif
 #define SP30_COMMS SERIALPORT1
 #define SPS30_AUTOCLEANINTERVAL -1
@@ -271,8 +274,11 @@ float SPS30_PM1, SPS30_PM25, SPS30_PM4, SPS30_PM10;
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
 //***PMSx003 - START***
 #ifdef ARDUINO_ARCH_ESP8266
-// SoftwareSerial PMS_Serial; -- only for esp8266 core 2.6.0
-SoftwareSerial PMS_Serial(5, 4); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
+#ifdef ARDUINO_ESP8266_RELEASE_2_6_0
+SoftwareSerial PMS_Serial; // only for esp8266 core 2.6.0
+#else
+SoftwareSerial PMS_Serial(DUST_TX, DUST_RX); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
+#endif
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
@@ -478,10 +484,13 @@ void setup() {
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
   if (!strcmp(DUST_MODEL, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
+#ifdef ARDUINO_ESP8266_RELEASE_2_6_0
+    PMS_Serial.begin(9600, DUST_TX, DUST_RX); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
+#else
     PMS_Serial.begin(9600); //PMSx003 serial -- esp8266 core 2.6.1 or later
-    //PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
+#endif
 #elif defined ARDUINO_ARCH_ESP32
-    PMS_Serial.begin(9600, SERIAL_8N1, 5, 4); //PMSx003 serial
+    PMS_Serial.begin(9600, SERIAL_8N1, DUST_TX, DUST_RX); //PMSx003 serial
 #endif
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
@@ -498,7 +507,7 @@ void setup() {
 #ifdef ARDUINO_ARCH_ESP8266
     sds.begin();  //SDS011/21 sensor begin
 #elif defined ARDUINO_ARCH_ESP32
-    sds_port.begin(9600, SERIAL_8N1, 5, 4);  //SDS011/21 sensor begin
+    sds_port.begin(9600, SERIAL_8N1, DUST_TX, DUST_RX);  //SDS011/21 sensor begin
     my_sds.begin(&sds_port);
 #endif
     if (FREQUENTMEASUREMENT == true) {
@@ -530,7 +539,7 @@ void setup() {
 #ifdef ARDUINO_ARCH_ESP8266
     hpmaSerial.begin(9600); //HPMA115S0 serial
 #elif defined ARDUINO_ARCH_ESP32
-    hpmaSerial.begin(9600, SERIAL_8N1, 5, 4); //HPMA115S0 serial
+    hpmaSerial.begin(9600, SERIAL_8N1, DUST_TX, DUST_RX); //HPMA115S0 serial
 #endif
     delay(100);
     if (FREQUENTMEASUREMENT == true) {
@@ -601,10 +610,13 @@ void setup() {
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   if (!strcmp(DUST_MODEL, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
+#ifdef ARDUINO_ESP8266_RELEASE_2_6_0
+    PMS_Serial.begin(9600, DUST_TX, DUST_RX); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
+#else
     PMS_Serial.begin(9600); //PMSx003 serial -- esp8266 core 2.6.1 or later
-    //PMS_Serial.begin(9600, 5, 4); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
+#endif
 #elif defined ARDUINO_ARCH_ESP32
-    PMS_Serial.begin(9600, SERIAL_8N1, 5, 4); //PMSx003 serial
+    PMS_Serial.begin(9600, SERIAL_8N1, DUST_TX, DUST_RX); //PMSx003 serial
 #endif
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
@@ -658,13 +670,15 @@ void setup() {
   // TEMP/HUMI/PRESS Sensor seturp - START
   if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
-    Wire.begin(0, 2);
+    //Wire.begin(0, 2);
+    Wire.begin(FIRST_THP_SDA, FIRST_THP_SCL);
     BMESensor.begin();
 #elif defined ARDUINO_ARCH_ESP32
     bme.begin();
 #endif
   } else if (!strcmp(THP_MODEL, "BMP280")) {
-    Wire.begin(0, 2);
+    //Wire.begin(0, 2);
+    Wire.begin(FIRST_THP_SDA, FIRST_THP_SCL);
     bmp.begin();
   } else if (!strcmp(THP_MODEL, "HTU21")) {
     myHTU21D.begin();

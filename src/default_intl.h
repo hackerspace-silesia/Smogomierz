@@ -110,6 +110,7 @@ extern char TEXT_MQTT_IP_IN_TOPIC[22] = "IP address in topic";
 extern char TEXT_MQTT_DEVICENAME_IN_TOPIC[30] = "Device name in topic";
 extern char TEXT_MQTT_TOPIC_INFO[256] = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
 extern char TEXT_MQTT_SLASH_AT_THE_BEGINNING[40] = "Add '/' at the beginning of the topic";
+extern char TEXT_MQTT_SLASH_AT_THE_END[36] = "Add '/' at the end of the topic";
 
 extern char TEXT_AQIECOSENDING[100] = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
 extern char TEXT_AQIECOSERVER[26] = "aqi.eco server";

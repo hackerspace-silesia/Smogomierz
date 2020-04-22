@@ -78,6 +78,7 @@ char MQTT_PASSWORD[64] = "password";
 bool MQTT_IP_IN_TOPIC = false;
 bool MQTT_DEVICENAME_IN_TOPIC = true;
 bool MQTT_SLASH_AT_THE_BEGINNING = true;
+bool MQTT_SLASH_AT_THE_END = true;
 
 char MQTT_TOPIC_TEMP[128] = "sensor/temperature";
 char MQTT_TOPIC_HUMI[128] = "sensor/humidity";

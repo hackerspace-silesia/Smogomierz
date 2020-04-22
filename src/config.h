@@ -65,6 +65,7 @@ extern char MQTT_PASSWORD[64];
 extern bool MQTT_IP_IN_TOPIC;
 extern bool MQTT_DEVICENAME_IN_TOPIC;
 extern bool MQTT_SLASH_AT_THE_BEGINNING;
+extern bool MQTT_SLASH_AT_THE_END;
 
 extern char MQTT_TOPIC_TEMP[128];
 extern char MQTT_TOPIC_HUMI[128];

@@ -78,8 +78,8 @@
   Szkic używa 572208 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 58404 bajtów (71%) pamięci dynamicznej, pozostawiając 23516 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 572316 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 46492 bajtów (56%) pamięci dynamicznej, pozostawiając 35428 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 575244 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 46548 bajtów (56%) pamięci dynamicznej, pozostawiając 35372 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
@@ -89,8 +89,8 @@
   Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1354014 bajtów (68%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 58592 bajtów (17%) pamięci dynamicznej, pozostawiając 269088 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  Szkic używa 1366794 bajtów (69%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 58664 bajtów (17%) pamięci dynamicznej, pozostawiając 269016 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -1324,14 +1324,24 @@ void sendDataToExternalDBs() {
       MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_AIRQUALITY);
     }
     if (MQTT_SLASH_AT_THE_BEGINNING) {
-      MQTT_FINAL_TEMP = "/" + MQTT_FINAL_TEMP + "/";
-      MQTT_FINAL_HUMI = "/" + MQTT_FINAL_HUMI + "/";
-      MQTT_FINAL_PRESS = "/" + MQTT_FINAL_PRESS + "/";
-      MQTT_FINAL_PM1 = "/" + MQTT_FINAL_PM1 + "/";
-      MQTT_FINAL_PM25 = "/" + MQTT_FINAL_PM25 + "/";
-      MQTT_FINAL_PM10 = "/" + MQTT_FINAL_PM10 + "/";
-      MQTT_FINAL_AIRQUALITY = "/" + MQTT_FINAL_AIRQUALITY + "/";
+      MQTT_FINAL_TEMP = "/" + MQTT_FINAL_TEMP;
+      MQTT_FINAL_HUMI = "/" + MQTT_FINAL_HUMI;
+      MQTT_FINAL_PRESS = "/" + MQTT_FINAL_PRESS;
+      MQTT_FINAL_PM1 = "/" + MQTT_FINAL_PM1;
+      MQTT_FINAL_PM25 = "/" + MQTT_FINAL_PM25;
+      MQTT_FINAL_PM10 = "/" + MQTT_FINAL_PM10;
+      MQTT_FINAL_AIRQUALITY = "/" + MQTT_FINAL_AIRQUALITY;
     } else {
+      MQTT_FINAL_TEMP = MQTT_FINAL_TEMP;
+      MQTT_FINAL_HUMI = MQTT_FINAL_HUMI;
+      MQTT_FINAL_PRESS = MQTT_FINAL_PRESS;
+      MQTT_FINAL_PM1 = MQTT_FINAL_PM1;
+      MQTT_FINAL_PM25 = MQTT_FINAL_PM25;
+      MQTT_FINAL_PM10 = MQTT_FINAL_PM10;
+      MQTT_FINAL_AIRQUALITY = MQTT_FINAL_AIRQUALITY;
+    }
+
+    if (MQTT_SLASH_AT_THE_END) {
       MQTT_FINAL_TEMP = MQTT_FINAL_TEMP + "/";
       MQTT_FINAL_HUMI = MQTT_FINAL_HUMI + "/";
       MQTT_FINAL_PRESS = MQTT_FINAL_PRESS + "/";
@@ -1340,6 +1350,7 @@ void sendDataToExternalDBs() {
       MQTT_FINAL_PM10 = MQTT_FINAL_PM10 + "/";
       MQTT_FINAL_AIRQUALITY = MQTT_FINAL_AIRQUALITY + "/";
     }
+
     if (strcmp(DUST_MODEL, "Non")) {
 
       mqttclient.publish((MQTT_FINAL_PM1).c_str(), String(averagePM1).c_str(), true);
@@ -2003,13 +2014,13 @@ void GetDeviceInfo()
   // try to get article code
   ret = sps30.GetArticleCode(buf, 32);
   if (ret == SPS30_ERR_OK)  {
-    Serial.print(F(F("Article code  : "));
+    Serial.print(F("Article code  : "));
 
-                 if (strlen(buf) > 0)  Serial.println(buf);
-                 else Serial.println(F("not available"));
-    }
-else
-  ErrtoMess("could not get Article code .", ret);
+    if (strlen(buf) > 0)  Serial.println(buf);
+    else Serial.println(F("not available"));
+  }
+  else
+    ErrtoMess("could not get Article code .", ret);
 }
 
 void SetAutoClean()
@@ -2056,7 +2067,7 @@ void Errorloop(char *mess, uint8_t r)
   if (r) ErrtoMess(mess, r);
   else Serial.println(mess);
   /*
-    Serial.println(F(F("Program on hold"));
+    Serial.println(F("Program on hold"));
     for (;;) delay(100000);
   */
 }

@@ -113,6 +113,7 @@ char EN_INTL_MQTT_IP_IN_TOPIC[22] PROGMEM = "IP address in topic";
 char EN_INTL_MQTT_DEVICENAME_IN_TOPIC[30] PROGMEM = "Device name in topic";
 char EN_INTL_MQTT_TOPIC_INFO[256] PROGMEM = "Below you can format the way you want to send MQTT data. You can add the 'IP address' and 'Device name' at the beginning. You can specify the middle part yourself for each of the values measured by the device.";
 char EN_INTL_MQTT_SLASH_AT_THE_BEGINNING[40] PROGMEM = "Add '/' at the beginning of the topic";
+char EN_INTL_MQTT_SLASH_AT_THE_END[36] PROGMEM = "Add '/' at the end of the topic";
 
 char EN_INTL_AQIECOSENDING[100] PROGMEM = "Sending data to the <a title='aqi.eco' href='https://aqi.eco' target='_blank'>aqi.eco</a> service";
 char EN_INTL_AQIECOSERVER[26] PROGMEM = "aqi.eco server";

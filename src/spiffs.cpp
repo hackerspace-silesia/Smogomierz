@@ -134,6 +134,7 @@ bool loadConfig() {
   MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
   MQTT_DEVICENAME_IN_TOPIC = json["MQTT_DEVICENAME_IN_TOPIC"];
   MQTT_SLASH_AT_THE_BEGINNING = json["MQTT_SLASH_AT_THE_BEGINNING"];
+  MQTT_SLASH_AT_THE_END = json["MQTT_SLASH_AT_THE_END"];
 
   _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 128);
   _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 128);
@@ -284,6 +285,8 @@ bool loadConfig() {
     Serial.println(MQTT_DEVICENAME_IN_TOPIC);
     Serial.print(F("Loaded MQTT_SLASH_AT_THE_BEGINNING: "));
     Serial.println(MQTT_SLASH_AT_THE_BEGINNING);
+    Serial.print(F("Loaded MQTT_SLASH_AT_THE_END: "));
+    Serial.println(MQTT_SLASH_AT_THE_END);	
 
     Serial.print(F("Loaded MQTT_TOPIC_TEMP: "));
     Serial.println(MQTT_TOPIC_TEMP);
@@ -417,6 +420,7 @@ bool saveConfig() {
   json["MQTT_IP_IN_TOPIC"] = bool(MQTT_IP_IN_TOPIC);
   json["MQTT_DEVICENAME_IN_TOPIC"] = bool(MQTT_DEVICENAME_IN_TOPIC);
   json["MQTT_SLASH_AT_THE_BEGINNING"] = bool(MQTT_SLASH_AT_THE_BEGINNING);
+  json["MQTT_SLASH_AT_THE_END"] = bool(MQTT_SLASH_AT_THE_END);
 
   json["MQTT_TOPIC_TEMP"] = String(MQTT_TOPIC_TEMP);
   json["MQTT_TOPIC_HUMI"] = String(MQTT_TOPIC_HUMI);

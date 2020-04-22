@@ -44,6 +44,6 @@ Gotowe zestawy części potrzebnych do zbudowania własnego Smogly, dostępne s�
 Główne zmiany planowane w kolejnych aktualizacjach. Poza wymienionymi poniżej zmianami, przy każdej aktualizacji staram się aktualizować wsyzstkie biblioteki i eliminować znalezione błędy.
 
 + [x] 2.7.6 - Aktualizacja bibliotek, drobne poprawki w działaniu, ekstremalna optymalizacja wykorzystywanej pamięci oraz dodanie wsparcia dla miernika temperatury - DS18b20
-+ [] 2.7.8 - Dodanie możliwości zmiany pinów dla mierników temperatury oraz poziomu pyłu
-+ [] 2.8.0 - Jednoczesna obsługa dla dwóch mierników temperatury/wilgotności/ciśneinia oraz możliwość wyboru które dane mają być wykorzystywane
-+ [] 2.8.5 - Możliwość wysyłania wszystkich danych z obu mierników temperatury/wilgotności/ciśneinia do zewnętrznych baz danych
++ [ ] 2.7.8 - Dodanie możliwości zmiany pinów dla mierników temperatury oraz poziomu pyłu
++ [ ] 2.8.0 - Jednoczesna obsługa dla dwóch mierników temperatury/wilgotności/ciśneinia oraz możliwość wyboru które dane mają być wykorzystywane
++ [ ] 2.8.5 - Możliwość wysyłania wszystkich danych z obu mierników temperatury/wilgotności/ciśneinia do zewnętrznych baz danych

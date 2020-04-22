@@ -5,7 +5,7 @@
 
 void loadtranslation(int SELECTED_LANGUAGE) {
 	if (SELECTED_LANGUAGE == 1) { //english translataion
-		Serial.println("English Translation!\n");
+		Serial.println(F("English Translation!\n"));
 		// there is no need to translate the default translation(default_intl.h) into English - it is in English
 		/*
 		strcpy(TEXT_LANG, EN_INTL_LANG);
@@ -159,7 +159,7 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 		
 		*/
 	} else if (SELECTED_LANGUAGE == 2) { //polish translation
-		Serial.println("Polish Translation!\n");
+		Serial.println(F("Polish Translation!\n"));
 		strcpy(TEXT_LANG, PL_INTL_LANG);
 
 		strcpy(TEXT_INDEX_PAGE, PL_INTL_INDEX_PAGE);
@@ -311,7 +311,7 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 		strcpy(TEXT_WIFIQUALITY, PL_INTL_WIFIQUALITY);
 
 	} else { //others future translations
-		Serial.println("Other Translation!\n");
+		Serial.println(F("Other Translation!\n"));
 		
 	}
 }

@@ -97,11 +97,11 @@ void sendDataToAqiEco(float currentTemperature, float currentPressure, float cur
 
   WiFiClient client;
 
-  Serial.print("\nconnecting to ");
+  Serial.print(F("\nconnecting to "));
   Serial.println(AQI_ECO_HOST);
 
   if (!client.connect(AQI_ECO_HOST, 80)) {
-    Serial.println("connection failed");
+    Serial.println(F("connection failed"));
     delay(1000);
     return;
   }
@@ -128,18 +128,18 @@ void sendDataToAqiEco(float currentTemperature, float currentPressure, float cur
 
   if (DEBUG) {
     Serial.println();
-    Serial.print("POST /u/");
+    Serial.print(F("POST /u/"));
     Serial.print(AQI_ECO_PATH);
-    Serial.println(" HTTP/1.1");
-    Serial.print("Host: ");
+    Serial.println(F(" HTTP/1.1"));
+    Serial.print(F("Host: "));
     Serial.println(AQI_ECO_HOST);
-    Serial.println("Content-Type: application/json");
-    Serial.println("X-PIN: 1");
-    Serial.print("X-Sensor: smogly-");
+    Serial.println(F("Content-Type: application/json"));
+    Serial.println(F("X-PIN: 1"));
+    Serial.print(F("X-Sensor: smogly-"));
     Serial.println(aqiEcoChipId);
-    Serial.print("Content-Length: ");
+    Serial.print(F("Content-Length: "));
     Serial.println(measureJson(json));
-    Serial.println("Connection: close");
+    Serial.println(F("Connection: close"));
     Serial.println();
     serializeJsonPretty(json, Serial);
     Serial.println("\n");

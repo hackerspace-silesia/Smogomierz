@@ -8,17 +8,17 @@
 #include <ArduinoJson.h>
 #include "config.h"
 
-const char *airMonitorServerName = "api.airmonitor.pl";
+const char *airMonitorServerName PROGMEM = "api.airmonitor.pl";
 const uint16_t airMonitorPort = 5000;
 
 void sendJson(JsonObject& json) {
     WiFiClient client;
-    Serial.print("\nconnecting to ");
+    Serial.print(F("\nconnecting to "));
     Serial.println(airMonitorServerName);
 
     if (!client.connect(airMonitorServerName, airMonitorPort)) {
-        Serial.println("connection failed");
-        Serial.println("wait 1 sec...\n");
+        Serial.println(F("connection failed"));
+        Serial.println(F("wait 1 sec...\n"));
         delay(1000);
         return;
     }
@@ -36,7 +36,7 @@ void sendJson(JsonObject& json) {
     // TODO: Support wrong error (!= 200)
 
     if (DEBUG) {
-        Serial.print("Length:");
+        Serial.print(F("Length:"));
 		Serial.println(measureJson(json));
 		serializeJsonPretty(json, Serial);
         Serial.println(line);

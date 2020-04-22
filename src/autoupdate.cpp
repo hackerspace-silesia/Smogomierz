@@ -29,7 +29,7 @@ const char HSfingerprint[] PROGMEM = "28 8B CC 29 1B 76 4B 93 45 F6 B2 36 A4 10 
 /**
  * This is lets-encrypt-x3-cross-signed.pem
  */
-const char* rootCACertificate = \
+const char* rootCACertificate PROGMEM = \
 "-----BEGIN CERTIFICATE-----\n" \
 "MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/\n" \
 "MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT\n" \
@@ -147,7 +147,7 @@ bool checkUpdate(int checkUpdateSW) {
     }
   } else {
     if (DEBUG) {
-      Serial.printf("Unable to connect\n");
+      Serial.print(F("Unable to connect\n"));
     }
   }
   http.end();
@@ -178,19 +178,19 @@ bool checkUpdate(int checkUpdateSW) {
 
     if (RepoSoftVer.toInt() > CurrentSoftVer.toInt()) {
       if (DEBUG) {
-        Serial.println("\nFirmware upgrade required!\n");
+        Serial.println(F("\nFirmware upgrade required!\n"));
       }
       return true;
     }
     if (RepoSoftVer.toInt() == CurrentSoftVer.toInt()) {
       if (DEBUG) {
-        Serial.println("\nYou have the current version of the firmware!\n");
+        Serial.println(F("\nYou have the current version of the firmware!\n"));
       }
       return false;
     }
     if (RepoSoftVer.toInt() < CurrentSoftVer.toInt()) {
       if (DEBUG) {
-        Serial.println("\nYou have newer firmware installed than it is available in the official repository!\n");
+        Serial.println(F("\nYou have newer firmware installed than it is available in the official repository!\n"));
       }
       return false;
     }
@@ -210,7 +210,7 @@ void doUpdate(int doUpdateSW) {
   
   if (checkUpdate(doUpdateSW)) {
     if (DEBUG) {
-      Serial.println("Starting firmware upgrade...\n");
+      Serial.println(F("Starting firmware upgrade...\n"));
 #if defined(ARDUINO_ARCH_ESP8266)
       Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
       delay(10);
@@ -279,10 +279,10 @@ void doUpdate(int doUpdateSW) {
 #endif	
           break;
         case HTTP_UPDATE_NO_UPDATES:
-          Serial.println("No update needed!");
+          Serial.println(F("No update needed!"));
           break;
         case HTTP_UPDATE_OK:
-          Serial.println("Update OK!");
+          Serial.println(F("Update OK!"));
           break;
         default:
           Serial.printf("Unexpected response code %d from ESPhttpUpdate.update\n", (int)ret);

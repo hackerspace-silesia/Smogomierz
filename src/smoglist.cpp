@@ -15,11 +15,11 @@ void sendSmoglistJson(JsonObject& json) {
     if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
     WiFiClient client;
 	client.setTimeout(12000);
-    Serial.print("\nconnecting to ");
+    Serial.print(F("\nconnecting to "));
     Serial.println(SmoglistServerName);
 
     if (!client.connect(SmoglistServerName, SmoglistPort)) {
-        Serial.println("connection failed");
+        Serial.println(F("connection failed"));
         //Serial.println("wait 3 sec...\n");
         //delay(3000);
         return;
@@ -38,7 +38,7 @@ void sendSmoglistJson(JsonObject& json) {
 		unsigned long timeout = millis();
 		while (client.available() == 0) {
 			if (millis() - timeout > 5000) {
-	            Serial.println("\n\t>>> Client Timeout!\n");
+	            Serial.println(F("\n\t>>> Client Timeout!\n"));
 	            client.stop();
 	            return;
 	        }

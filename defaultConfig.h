@@ -103,7 +103,7 @@ bool AUTOUPDATE_ON = true;
 #endif
 
 bool CONFIG_AUTH = false;
-char CONFIG_USERNAME[256] = "admin";
+char CONFIG_USERNAME[64] = "admin";
 char CONFIG_PASSWORD[256] = "password";
 
 char MODEL[32] = "white";

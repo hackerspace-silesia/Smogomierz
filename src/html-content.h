@@ -1,3 +1,7 @@
+#ifdef ARDUINO_ARCH_ESP8266
+#include <avr/pgmspace.h>
+#endif
+
 const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githack.com/hackerspace-silesia/Smogomierz/master/src/css/smogly.css'";
 // https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/dev/src/css/smogly.css
 // based on bootstrap.min.css - 4.4.1 and Bootswatch v4.4.1

@@ -86,7 +86,7 @@ extern bool DEBUG;
 extern bool AUTOUPDATE_ON;
 
 extern bool CONFIG_AUTH;
-extern char CONFIG_USERNAME[256];
+extern char CONFIG_USERNAME[64];
 extern char CONFIG_PASSWORD[256];
 
 extern char MODEL[32];

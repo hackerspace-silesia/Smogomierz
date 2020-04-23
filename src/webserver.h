@@ -292,7 +292,7 @@ String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
   input += _addOption("D5", "D5/GPIO14", value);
   input += _addOption("D6", "D6/GPIO12", value);
   input += _addOption("D7", "D7/GPIO13", value);
-  input += _addOption("D8", "D8/GPIO15", value);
+  //input += _addOption("D8", "D8/GPIO15", value);
   #ifdef ARDUINO_ARCH_ESP32
   input += _addOption("D16", "D16/GPIO16", value);
   input += _addOption("D17", "D17/GPIO17", value);
@@ -311,7 +311,7 @@ String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
   input += _addOption("D5", "D5/GPIO14", value);
   input += _addOption("D6", "D6/GPIO12", value);
   input += _addOption("D7", "D7/GPIO13", value);
-  input += _addOption("D8", "D8/GPIO15", value);
+  //input += _addOption("D8", "D8/GPIO15", value);
   #ifdef ARDUINO_ARCH_ESP32
   input += _addOption("D16", "D16/GPIO16", value);
   input += _addOption("D17", "D17/GPIO17", value);
@@ -330,7 +330,7 @@ String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   input += _addOption("D5", "D5/GPIO14", value);
   input += _addOption("D6", "D6/GPIO12", value);
   input += _addOption("D7", "D7/GPIO13", value);
-  input += _addOption("D8", "D8/GPIO15", value);
+  //input += _addOption("D8", "D8/GPIO15", value);
   #ifdef ARDUINO_ARCH_ESP32
   input += _addOption("D16", "D16/GPIO16", value);
   input += _addOption("D17", "D17/GPIO17", value);
@@ -513,6 +513,27 @@ void _handle_config_device(bool is_success) {
   message.replace(F("{THP_MODELSelect}"), _addTHP_MODELSelect("THP_MODEL", THP_MODEL));
   message.replace(F("{TEXT_PMSENSOR}"), (TEXT_PMSENSOR));
   message.replace(F("{DUST_MODELSelect}"), _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL));
+
+
+ if (!strcmp(THP_MODEL, "Non")) {
+	message.replace(F("<hr>{TEXT_FIRST_THP_SDA_SCL} - {THP_MODEL}<br>"), "");
+	message.replace(F("<b>{TEXT_FIRST_THP_SDA}: </b>{FIRST_THP_SDA}"), "");
+	message.replace(F("<b>{TEXT_FIRST_THP_SCL}: </b>{FIRST_THP_SCL}"), "");
+ } else {
+ 	message.replace(F("{THP_MODEL}"), (THP_MODEL));
+ }
+
+ if (!strcmp(DUST_MODEL, "Non")) {
+ 	message.replace(F("<br>{TEXT_DUST_TX_RX} - {DUST_MODEL}<br>"), "");
+	message.replace(F("<b>{TEXT_DUST_TX}: </b>{DUST_TX}"), "");
+	message.replace(F("<b>{TEXT_DUST_RX}: </b>{DUST_RX}"), "");
+ } else {
+	  if (!strcmp(THP_MODEL, "Non")) {
+		 message.replace(F("<br>{TEXT_DUST_TX_RX} - {DUST_MODEL}<br>"), "<hr>{TEXT_DUST_TX_RX} - {DUST_MODEL}<br>"); 
+	  }
+ 	message.replace(F("{DUST_MODEL}"), (DUST_MODEL));
+ }
+
 
 message.replace(F("{TEXT_FIRST_THP_SDA_SCL}"), (TEXT_FIRST_THP_SDA_SCL));
 message.replace(F("{TEXT_FIRST_THP_SDA}"), (TEXT_FIRST_THP_SDA));

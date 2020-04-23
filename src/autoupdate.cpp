@@ -3,6 +3,8 @@
 #include <ESP8266httpUpdate.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
+#include <WiFiClientSecure.h>
+#include <time.h>
 #elif defined(ARDUINO_ARCH_ESP32)
 #include <WiFi.h>
 #include <HTTPClient.h>
@@ -21,7 +23,7 @@ const int httpsPort = 443;
 
 // Last update: 21.03.2019
 const char GitHubfingerprint[] PROGMEM = "5F F1 60 31 09 04 3E F2 90 D2 B0 8A 50 38 04 E8 37 9F BC 76"; // api.github.com
-const char HSfingerprint[] PROGMEM = "28 8B CC 29 1B 76 4B 93 45 F6 B2 36 A4 10 EF CE DF 0B D1 72";  // https://smogomierz.hs-silesia.pl
+const char HSfingerprint[] PROGMEM = "10 ED 27 F6 39 5E 46 F0 90 8B 10 D2 6B 96 8A EF 43 7C FB 4F";  // https://smogomierz.hs-silesia.pl
 
 // ******************** Config End ********************
 
@@ -59,7 +61,6 @@ const char* rootCACertificate PROGMEM = \
 "-----END CERTIFICATE-----\n";
 #endif
 
-#if defined(ARDUINO_ARCH_ESP32)
 // Set time via NTP, as required for x.509 validation
 void setUpdateClock() {
   configTime(0, 0, "pool.ntp.org", "time.nist.gov");  // UTC
@@ -79,7 +80,6 @@ void setUpdateClock() {
   Serial.print(F("Current time: "));
   Serial.print(asctime(&timeinfo));
 }
-#endif
 
 bool checkUpdate(int checkUpdateSW) {
   const char* ServerSW;
@@ -87,6 +87,15 @@ bool checkUpdate(int checkUpdateSW) {
 
 #if defined(ARDUINO_ARCH_ESP8266)
   WiFiClient client;
+  // setUpdateClock();
+  // WiFiClientSecure client;
+  // BearSSL::WiFiClientSecure client;
+  // client.setCACert_P(rootCACertificate, strlen(rootCACertificate));
+  // Reading data over SSL may be slow, use an adequate timeout
+  // client.setInsecure();
+  // client.setFingerprint(HSfingerprint);
+  // client.setTimeout(12000); // 12 Seconds
+	
 #elif defined(ARDUINO_ARCH_ESP32)
   setUpdateClock();
   WiFiClientSecure client;
@@ -95,23 +104,24 @@ bool checkUpdate(int checkUpdateSW) {
   client.setTimeout(12000);
 #endif
   
-  HTTPClient http;
+  HTTPClient https;
   
 #if defined(ARDUINO_ARCH_ESP8266)
   String latestJSONlink = "http://smogomierz.hs-silesia.pl/firmware/latest_esp8266.json";
 #elif defined(ARDUINO_ARCH_ESP32)
   String latestJSONlink = "https://smogomierz.hs-silesia.pl/firmware/latest_esp32.json";
 #endif
-
-  	if (http.begin(client, latestJSONlink)) {
+	
+  	if (https.begin(client, latestJSONlink)) {
 		delay(50);
-    int httpCode = http.GET();
+    int httpCode = https.GET();
+	//Serial.printf("GET... code: %d\n", httpCode);
     if (httpCode > 0) {
       // header has been send and Server response header has been handled
       //Serial.printf("GET... code: %d\n", httpCode);
       // file found at server
       if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-        String payload = http.getString();
+        String payload = https.getString();
         delay(10);
 		
         /* 
@@ -142,7 +152,7 @@ bool checkUpdate(int checkUpdateSW) {
       }
     } else {
       if (DEBUG) {
-        Serial.printf("GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        Serial.printf("GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
       }
     }
   } else {
@@ -150,7 +160,7 @@ bool checkUpdate(int checkUpdateSW) {
       Serial.print(F("Unable to connect\n"));
     }
   }
-  http.end();
+  https.end();
   strncpy(SERVERSOFTWAREVERSION, ServerSW, 32);
   Data[0] = SERVERSOFTWAREVERSION;
 

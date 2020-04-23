@@ -107,10 +107,10 @@ const char PMSENSORVERSION[] = "PMS";
 extern char SERVERSOFTWAREVERSION[32];
 extern char CURRENTSOFTWAREVERSION[32];
 #if defined(ARDUINO_ARCH_ESP8266)
-const char SOFTWAREVERSION[] = "2.7.6 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[] = "2.7.8 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)
-const char SOFTWAREVERSION[] = "2.7.6 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[] = "2.7.8 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "2.0 - ESP32";
 
 #endif

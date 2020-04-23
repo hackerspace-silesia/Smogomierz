@@ -209,7 +209,97 @@ void handle_root() {
 
 String _addOption(const String &value, const String &label, const String &srslyValue) {
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
+  option.replace("{value}", value);  
+  if (value == srslyValue) {
+    option.replace("{srslyValue}", " selected>");
+  } else {
+    option.replace("{srslyValue}", ">");
+  }
+  option.replace("{label}", label);
+  return option;
+}
+
+String _add_FIRST_THP_Option(const String &value, const String &label, const String &srslyValue) {
+  String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace("{value}", value);
+  
+  if (strcmp(DUST_MODEL, "Non")) {
+	  if (String(CONFIG_DUST_TX) == value) {
+		  option.replace("{srslyValue}", "disabled>");
+	  }
+  	  if (String(CONFIG_DUST_RX) == value) {
+		  option.replace("{srslyValue}", "disabled>");
+	  }
+	  if (SECOND_THP) {
+		  if (String(CONFIG_SECOND_THP_SDA) == value) {
+			  option.replace("{srslyValue}", "disabled>");
+		  }
+	  	  if (String(CONFIG_SECOND_THP_SCL) == value) {
+			  option.replace("{srslyValue}", "disabled>");
+		  }
+	  }
+  }
+  
+  if (value == srslyValue) {
+    option.replace("{srslyValue}", " selected>");
+  } else {
+    option.replace("{srslyValue}", ">");
+  }
+  option.replace("{label}", label);
+  return option;
+}
+
+String _add_SECOND_THP_Option(const String &value, const String &label, const String &srslyValue) {
+  String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
+  option.replace("{value}", value);
+  
+  if (strcmp(DUST_MODEL, "Non")) {
+	  if (String(CONFIG_DUST_TX) == value) {
+		  option.replace("{srslyValue}", "disabled>");
+	  }
+  	  if (String(CONFIG_DUST_RX) == value) {
+		  option.replace("{srslyValue}", "disabled>");
+	  }
+	  if (strcmp(DUST_MODEL, "Non")) {
+		  if (String(CONFIG_FIRST_THP_SDA) == value) {
+			  option.replace("{srslyValue}", "disabled>");
+		  }
+	  	  if (String(CONFIG_FIRST_THP_SCL) == value) {
+			  option.replace("{srslyValue}", "disabled>");
+		  }
+	  }
+  }
+  
+  if (value == srslyValue) {
+    option.replace("{srslyValue}", " selected>");
+  } else {
+    option.replace("{srslyValue}", ">");
+  }
+  option.replace("{label}", label);
+  return option;
+}
+
+String _add_DUST_Option(const String &value, const String &label, const String &srslyValue) {
+  String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
+  option.replace("{value}", value);
+  
+  if (strcmp(THP_MODEL, "Non")) {
+	  if (String(CONFIG_FIRST_THP_SDA) == value) {
+		  option.replace("{srslyValue}", "disabled>");
+	  }
+  	  if (String(CONFIG_FIRST_THP_SCL) == value) {
+		  option.replace("{srslyValue}", "disabled>");
+	  }
+	  if (SECOND_THP) {
+		  if (String(CONFIG_SECOND_THP_SDA) == value) {
+			  option.replace("{srslyValue}", "disabled>");
+		  }
+	  	  if (String(CONFIG_SECOND_THP_SCL) == value) {
+			  option.replace("{srslyValue}", "disabled>");
+		  }
+	  }
+  }
+  
   if (value == srslyValue) {
     option.replace("{srslyValue}", " selected>");
   } else {
@@ -285,17 +375,17 @@ String _addDUST_MODELSelect(const String &key, const String &value) {
 String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
-  input += _addOption("D1", "D1/GPIO05", value);
-  input += _addOption("D2", "D2/GPIO04", value);
-  input += _addOption("D3", "D3/GPIO00", value);
-  input += _addOption("D4", "D4/GPIO02", value);
-  input += _addOption("D5", "D5/GPIO14", value);
-  input += _addOption("D6", "D6/GPIO12", value);
-  input += _addOption("D7", "D7/GPIO13", value);
+  input += _add_FIRST_THP_Option("D1", "D1/GPIO05", value);
+  input += _add_FIRST_THP_Option("D2", "D2/GPIO04", value);
+  input += _add_FIRST_THP_Option("D3", "D3/GPIO00", value);
+  input += _add_FIRST_THP_Option("D4", "D4/GPIO02", value);
+  input += _add_FIRST_THP_Option("D5", "D5/GPIO14", value);
+  input += _add_FIRST_THP_Option("D6", "D6/GPIO12", value);
+  input += _add_FIRST_THP_Option("D7", "D7/GPIO13", value);
   //input += _addOption("D8", "D8/GPIO15", value);
   #ifdef ARDUINO_ARCH_ESP32
-  input += _addOption("D16", "D16/GPIO16", value);
-  input += _addOption("D17", "D17/GPIO17", value);
+  input += _add_FIRST_THP_Option("D16", "D16/GPIO16", value);
+  input += _add_FIRST_THP_Option("D17", "D17/GPIO17", value);
   #endif
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
   return input;
@@ -304,17 +394,17 @@ String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
 String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
-  input += _addOption("D1", "D1/GPIO05", value);
-  input += _addOption("D2", "D2/GPIO04", value);
-  input += _addOption("D3", "D3/GPIO00", value);
-  input += _addOption("D4", "D4/GPIO02", value);
-  input += _addOption("D5", "D5/GPIO14", value);
-  input += _addOption("D6", "D6/GPIO12", value);
-  input += _addOption("D7", "D7/GPIO13", value);
+  input += _add_SECOND_THP_Option("D1", "D1/GPIO05", value);
+  input += _add_SECOND_THP_Option("D2", "D2/GPIO04", value);
+  input += _add_SECOND_THP_Option("D3", "D3/GPIO00", value);
+  input += _add_SECOND_THP_Option("D4", "D4/GPIO02", value);
+  input += _add_SECOND_THP_Option("D5", "D5/GPIO14", value);
+  input += _add_SECOND_THP_Option("D6", "D6/GPIO12", value);
+  input += _add_SECOND_THP_Option("D7", "D7/GPIO13", value);
   //input += _addOption("D8", "D8/GPIO15", value);
   #ifdef ARDUINO_ARCH_ESP32
-  input += _addOption("D16", "D16/GPIO16", value);
-  input += _addOption("D17", "D17/GPIO17", value);
+  input += _add_SECOND_THP_Option("D16", "D16/GPIO16", value);
+  input += _add_SECOND_THP_Option("D17", "D17/GPIO17", value);
   #endif
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
   return input;
@@ -323,17 +413,17 @@ String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
 String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
-  input += _addOption("D1", "D1/GPIO05", value);
-  input += _addOption("D2", "D2/GPIO04", value);
-  input += _addOption("D3", "D3/GPIO00", value);
-  input += _addOption("D4", "D4/GPIO02", value);
-  input += _addOption("D5", "D5/GPIO14", value);
-  input += _addOption("D6", "D6/GPIO12", value);
-  input += _addOption("D7", "D7/GPIO13", value);
+  input += _add_DUST_Option("D1", "D1/GPIO05", value);
+  input += _add_DUST_Option("D2", "D2/GPIO04", value);
+  input += _add_DUST_Option("D3", "D3/GPIO00", value);
+  input += _add_DUST_Option("D4", "D4/GPIO02", value);
+  input += _add_DUST_Option("D5", "D5/GPIO14", value);
+  input += _add_DUST_Option("D6", "D6/GPIO12", value);
+  input += _add_DUST_Option("D7", "D7/GPIO13", value);
   //input += _addOption("D8", "D8/GPIO15", value);
   #ifdef ARDUINO_ARCH_ESP32
-  input += _addOption("D16", "D16/GPIO16", value);
-  input += _addOption("D17", "D17/GPIO17", value);
+  input += _add_DUST_Option("D16", "D16/GPIO16", value);
+  input += _add_DUST_Option("D17", "D17/GPIO17", value);
   #endif
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
   return input;

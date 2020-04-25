@@ -255,13 +255,6 @@ unsigned int hpma115S0_pm25, hpma115S0_pm10;
 //***HPMA115S0 - END***
 #elif defined DUSTSENSOR_SPS30
 //***SPS30 - START***
-#ifdef ARDUINO_ARCH_ESP32
-#define SPS30_RX_PIN = DUST_RX          // D4
-#define SPS30_TX_PIN = DUST_TX          // D5
-#else
-#define SPS30_RX_PIN = DUST_RX           // D2
-#define SPS30_TX_PIN = DUST_TX           // D1
-#endif
 #define SP30_COMMS SERIALPORT1
 #define SPS30_AUTOCLEANINTERVAL -1
 #define SPS30_PERFORMCLEANNOW 1
@@ -711,7 +704,7 @@ void setup() {
     sps30.EnableDebugging(SPS30_DEBUG);
 
     // set pins to use for softserial and Serial1 on ESP32
-    if (SPS30_TX_PIN != 0 && SPS30_RX_PIN != 0) sps30.SetSerialPin(SPS30_RX_PIN, SPS30_TX_PIN);
+    if (DUST_TX != 0 && DUST_RX != 0) sps30.SetSerialPin(DUST_RX, DUST_TX);
 
     // Begin communication channel;
     if (sps30.begin(SP30_COMMS) == false) {

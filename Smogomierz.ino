@@ -81,6 +81,7 @@
   Szkic używa 576496 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46608 bajtów (56%) pamięci dynamicznej, pozostawiając 35312 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
   Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
@@ -660,7 +661,7 @@ void setup() {
 #elif defined ARDUINO_ARCH_ESP32
       err = my_sds.read(&SDSpm25, &SDSpm10);
       if (!err) {
-        Serial.println(F("Data from SDS011!\n");
+        Serial.println(F("Data from SDS011!\n"));
       }
 #endif
     } else {

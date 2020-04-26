@@ -3,7 +3,7 @@
  * engligh strings for
  * WiFiManager, a library for the ESP8266/Arduino platform
  * for configuration of WiFi credentials using a Captive Portal
- * 
+ *
  * @author Creator tzapu
  * @author tablatronix
  * @version 0.0.0
@@ -130,7 +130,7 @@ const char HTTP_HELP[]             PROGMEM =
  "<p/>More information about WiFiManager at <a href='https://github.com/tzapu/WiFiManager'>https://github.com/tzapu/WiFiManager</a>.";
 
 #ifdef JSTEST
-const char HTTP_JS[] PROGMEM = 
+const char HTTP_JS[] PROGMEM =
 "<script>function postAjax(url, data, success) {"
 "    var params = typeof data == 'string' ? data : Object.keys(data).map("
 "            function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }"
@@ -154,8 +154,8 @@ const char HTTP_JS[] PROGMEM =
 	const char HTTP_INFO_esphead[]    PROGMEM = "<h3>esp32</h3><hr><dl>";
 	const char HTTP_INFO_chiprev[]    PROGMEM = "<dt>Chip Rev</dt><dd>{1}</dd>";
   const char HTTP_INFO_lastreset[]    PROGMEM = "<dt>Last reset reason</dt><dd>CPU0: {1}<br/>CPU1: {2}</dd>";
-  const char HTTP_INFO_aphost[]       PROGMEM = "<dt>Acccess Point Hostname</dt><dd>{1}</dd>";  
-#else 
+  const char HTTP_INFO_aphost[]       PROGMEM = "<dt>Acccess Point Hostname</dt><dd>{1}</dd>";
+#else
 	const char HTTP_INFO_esphead[]    PROGMEM = "<h3>esp8266</h3><hr><dl>";
 	const char HTTP_INFO_flashsize[]  PROGMEM = "<dt>Real Flash Size</dt><dd>{1} bytes</dd>";
 	const char HTTP_INFO_fchipid[]    PROGMEM = "<dt>Flash Chip ID</dt><dd>{1}</dd>";
@@ -166,7 +166,7 @@ const char HTTP_JS[] PROGMEM =
 	const char HTTP_INFO_lastreset[]  PROGMEM = "<dt>Last reset reason</dt><dd>{1}</dd>";
 #endif
 
-const char HTTP_INFO_freeheap[]   PROGMEM = "<dt>Memory - Free Heap</dt><dd>{1} bytes available</dd>"; 
+const char HTTP_INFO_freeheap[]   PROGMEM = "<dt>Memory - Free Heap</dt><dd>{1} bytes available</dd>";
 const char HTTP_INFO_wifihead[]   PROGMEM = "<br/><h3>WiFi</h3><hr>";
 const char HTTP_INFO_uptime[]     PROGMEM = "<dt>Uptime</dt><dd>{1} Mins {2} Secs</dd>";
 const char HTTP_INFO_chipid[]     PROGMEM = "<dt>Chip ID</dt><dd>{1}</dd>";
@@ -254,8 +254,9 @@ const char R_paramsave[]          PROGMEM = "/paramsave";
 const char R_restart[]            PROGMEM = "/restart";
 const char R_exit[]               PROGMEM = "/exit";
 const char R_close[]              PROGMEM = "/close";
-const char R_erase[]              PROGMEM = "/erase"; 
+const char R_erase[]              PROGMEM = "/erase";
 const char R_status[]             PROGMEM = "/status";
+const char R_delete[]              PROGMEM = "/del";
 
 
 //Strings
@@ -308,19 +309,19 @@ const char * const WIFI_STA_STATUS[] PROGMEM
   "WL_CONNECTED",       // 3 STATION_GOT_IP
   "WL_CONNECT_FAILED",  // 4 STATION_CONNECT_FAIL, STATION_WRONG_PASSWORD(NI)
   "WL_CONNECTION_LOST", // 5
-  "WL_DISCONNECTED",    // 6 
-  "WL_STATION_WRONG_PASSWORD" // 7 KLUDGE 
+  "WL_DISCONNECTED",    // 6
+  "WL_STATION_WRONG_PASSWORD" // 7 KLUDGE
 };
 
 #ifdef ESP32
 const char * const AUTH_MODE_NAMES[] PROGMEM
 {
     "OPEN",
-    "WEP",             
-    "WPA_PSK",         
-    "WPA2_PSK",        
-    "WPA_WPA2_PSK",    
-    "WPA2_ENTERPRISE", 
+    "WEP",
+    "WPA_PSK",
+    "WPA2_PSK",
+    "WPA_WPA2_PSK",
+    "WPA2_ENTERPRISE",
     "MAX"
 };
 #elif defined(ESP8266)

@@ -10,6 +10,36 @@ char THP_MODEL[32] = "Non";
 char DUST_MODEL[32] = "Non";
 bool FREQUENTMEASUREMENT = false;
 
+bool SECOND_THP = false;
+
+#ifdef ARDUINO_ARCH_ESP8266
+char CONFIG_FIRST_THP_SDA[8] = "D3";
+char CONFIG_FIRST_THP_SCL[8] = "D4";
+int FIRST_THP_SDA = 0; // D3
+int FIRST_THP_SCL = 2; // D4
+#elif defined ARDUINO_ARCH_ESP32
+char CONFIG_FIRST_THP_SDA[8] = "D16";
+char CONFIG_FIRST_THP_SCL[8] = "D17";
+int FIRST_THP_SDA = 16; // D16
+int FIRST_THP_SCL = 17; // D17
+#endif
+
+char CONFIG_SECOND_THP_SDA[8] = "D5";
+char CONFIG_SECOND_THP_SCL[8] = "D6";
+int SECOND_THP_SDA = 14; // D5
+int SECOND_THP_SCL = 12; // D6
+
+char CONFIG_DUST_TX[8] = "D1";
+char CONFIG_DUST_RX[8] = "D2";
+int DUST_TX = 5; // D1
+int DUST_RX = 4; // D2
+
+/*
+   ESP8266
+   13 - D7
+   15 - D8
+*/
+
 int DUST_TIME = 1;
 int NUMBEROFMEASUREMENTS = 10;
 
@@ -46,11 +76,13 @@ char MQTT_USER[64] = "username";
 char MQTT_PASSWORD[64] = "password";
 
 bool MQTT_IP_IN_TOPIC = false;
-bool  MQTT_DEVICENAME_IN_TOPIC = true;
+bool MQTT_DEVICENAME_IN_TOPIC = true;
+bool MQTT_SLASH_AT_THE_BEGINNING = true;
+bool MQTT_SLASH_AT_THE_END = true;
 
 char MQTT_TOPIC_TEMP[128] = "sensor/temperature";
-char MQTT_TOPIC_HUMI[128] = "sensor/pressure";
-char MQTT_TOPIC_PRESS[128] = "sensor/humidity";
+char MQTT_TOPIC_HUMI[128] = "sensor/humidity";
+char MQTT_TOPIC_PRESS[128] = "sensor/pressure";
 char MQTT_TOPIC_PM1[128] = "sensor/PM1";
 char MQTT_TOPIC_PM25[128] = "sensor/PM2.5";
 char MQTT_TOPIC_PM10[128] = "sensor/PM10";
@@ -72,7 +104,7 @@ bool AUTOUPDATE_ON = true;
 #endif
 
 bool CONFIG_AUTH = false;
-char CONFIG_USERNAME[256] = "admin";
+char CONFIG_USERNAME[64] = "admin";
 char CONFIG_PASSWORD[256] = "password";
 
 char MODEL[32] = "white";

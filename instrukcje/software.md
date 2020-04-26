@@ -42,7 +42,7 @@ Po zainstalowaniu ArduinoIDE, musisz dodać w nim obsługę płytek ESP.
 8. Kod, który będziemy wgrywać na płytki ESP wymaga do poprawnego działania, dwóch zewnętrznych bibliotek. Aby je dodać wystarczy wybrać z menu ArduinoIDE "Szkic > Dołącz bibliotekę > Zarządzaj bibliotekami...".
 ![ArduinoIDE8](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE8.jpg)
 
-9. W wyszukiwarce wpisujemy nazwę biblioteki i następnie ją instalujemy. Biblioteki, które musimy doinstalować to: **ArduinoJson(w wersji 6.5.0 lub nowszej)** oraz najnowsze wersje bibliotek: **Adafruit BMP280 Library**, **DHT sensor library by Adafruit**, **ThingSpeak**, **Adafruit Unified Sensor** oraz **PubSubClient**.
+9. W wyszukiwarce wpisujemy nazwę biblioteki i następnie ją instalujemy. Biblioteki, które musimy doinstalować to: **ArduinoJson(w wersji 6.5.0 lub nowszej)** oraz najnowsze wersje bibliotek: **Adafruit BMP280 Library**, **DHT sensor library by Adafruit**, **ThingSpeak**, **Adafruit Unified Sensor**, **DallasTemperature**, **OneWire**(by Jim Studt, tom Pollard…) oraz **PubSubClient**.
 ![ArduinoIDE10](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/screens/ArduinoIDE10.jpg)
 
 10. Musimy jeszcze doinstalować kilka bibliotek, poprzed dodanie plików .zip. Tymi bibliotekami są: [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) oraz [ESPAsyncTCP](https://github.com/me-no-dev/ESPAsyncTCP). W przypadku ESP32 musimy doinstalować jeszcze [AsyncTCP](https://github.com/me-no-dev/AsyncTCP). W przypadku ESP32 musimy również doinstalować Pythona3 oraz [pyserial](https://pypi.org/project/pyserial/).

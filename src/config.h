@@ -10,6 +10,23 @@ extern char THP_MODEL[32];
 extern char DUST_MODEL[32];
 extern bool FREQUENTMEASUREMENT;
 
+extern bool SECOND_THP;
+
+extern char CONFIG_FIRST_THP_SDA[8];
+extern char CONFIG_FIRST_THP_SCL[8];
+extern int  FIRST_THP_SDA;
+extern int  FIRST_THP_SCL;
+
+extern char CONFIG_SECOND_THP_SDA[8];
+extern char CONFIG_SECOND_THP_SCL[8];
+extern int  SECOND_THP_SDA;
+extern int  SECOND_THP_SCL;
+
+extern char CONFIG_DUST_TX[8];
+extern char CONFIG_DUST_RX[8];
+extern int  DUST_TX;
+extern int  DUST_RX;
+
 extern int DUST_TIME;
 extern int NUMBEROFMEASUREMENTS;
 
@@ -45,8 +62,10 @@ extern uint16_t MQTT_PORT;
 extern char MQTT_USER[64];
 extern char MQTT_PASSWORD[64];
 
-extern bool  MQTT_IP_IN_TOPIC;
-extern bool  MQTT_DEVICENAME_IN_TOPIC;
+extern bool MQTT_IP_IN_TOPIC;
+extern bool MQTT_DEVICENAME_IN_TOPIC;
+extern bool MQTT_SLASH_AT_THE_BEGINNING;
+extern bool MQTT_SLASH_AT_THE_END;
 
 extern char MQTT_TOPIC_TEMP[128];
 extern char MQTT_TOPIC_HUMI[128];
@@ -68,7 +87,7 @@ extern bool DEBUG;
 extern bool AUTOUPDATE_ON;
 
 extern bool CONFIG_AUTH;
-extern char CONFIG_USERNAME[256];
+extern char CONFIG_USERNAME[64];
 extern char CONFIG_PASSWORD[256];
 
 extern char MODEL[32];
@@ -88,9 +107,10 @@ const char PMSENSORVERSION[] = "PMS";
 extern char SERVERSOFTWAREVERSION[32];
 extern char CURRENTSOFTWAREVERSION[32];
 #if defined(ARDUINO_ARCH_ESP8266)
-const char SOFTWAREVERSION[] = "2.7.5 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[] = "2.7.8 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "1.0 - ESP8266";
 #elif defined(ARDUINO_ARCH_ESP32)
-const char SOFTWAREVERSION[] = "2.7.5 build " __TIME__ " " __DATE__;
+const char SOFTWAREVERSION[] = "2.7.8 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] = "2.0 - ESP32";
+
 #endif

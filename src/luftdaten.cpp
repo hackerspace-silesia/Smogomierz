@@ -14,22 +14,22 @@ String luftdatenChipId = String(ESP.getChipId());
 String luftdatenChipId = String((uint32_t)(ESP.getEfuseMac()));
 #endif
 
-const char *luftdatenAPIHOST = "api.luftdaten.info";
-const char *luftdatenAPIURL = "/v1/push-sensor-data/";
+const char *luftdatenAPIHOST PROGMEM = "api.luftdaten.info";
+const char *luftdatenAPIURL PROGMEM = "/v1/push-sensor-data/";
 const uint16_t luftdatenAPIPort = 80;
 
-const char *madavideAPIHOST = "api-rrd.madavi.de";
-const char *madavideAPIURL = "/data.php";
+const char *madavideAPIHOST PROGMEM = "api-rrd.madavi.de";
+const char *madavideAPIURL PROGMEM = "/data.php";
 const uint16_t madavideAPIPort = 80;
 
 // Luftdaten.info - https://luftdaten.info
 void sendDUSTLuftdatenJson(JsonObject& json) {
   WiFiClient client;
-  Serial.print("\nconnecting to ");
+  Serial.print(F("\nconnecting to "));
   Serial.println(luftdatenAPIHOST);
 
   if (!client.connect(luftdatenAPIHOST, luftdatenAPIPort)) {
-    Serial.println("connection failed");
+    Serial.println(F("connection failed"));
     delay(1000);
     return;
   }
@@ -52,12 +52,12 @@ void sendDUSTLuftdatenJson(JsonObject& json) {
     Serial.println();
     Serial.println("POST " + String(luftdatenAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(luftdatenAPIHOST));
-    Serial.println("Content-Type: application/json");
-    Serial.println("X-PIN: 1");
+    Serial.println(F("Content-Type: application/json"));
+    Serial.println(F("X-PIN: 1"));
     Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
-    Serial.print("Content-Length: ");
+    Serial.print(F("Content-Length: "));
     Serial.println(measureJson(json));
-    Serial.println("Connection: close");
+    Serial.println(F("Connection: close"));
     Serial.println();
     serializeJsonPretty(json, Serial);
     Serial.println("\n");
@@ -68,11 +68,11 @@ void sendDUSTLuftdatenJson(JsonObject& json) {
 
 void sendTHPLuftdatenJson(JsonObject& json) {
   WiFiClient client;
-  Serial.print("\nconnecting to ");
+  Serial.print(F("\nconnecting to "));
   Serial.println(luftdatenAPIHOST);
 
   if (!client.connect(luftdatenAPIHOST, luftdatenAPIPort)) {
-    Serial.println("connection failed");
+    Serial.println(F("connection failed"));
     delay(1000);
     return;
   }
@@ -90,7 +90,10 @@ void sendTHPLuftdatenJson(JsonObject& json) {
     client.println("X-PIN: 7");
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     client.println("X-PIN: 12");
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    client.println("X-PIN: 13");
   }
+  
   client.println("X-Sensor: smogomierz-" + luftdatenChipId);
   client.print("Content-Length: ");
   client.println(measureJson(json));
@@ -106,22 +109,24 @@ void sendTHPLuftdatenJson(JsonObject& json) {
     Serial.println();
     Serial.println("POST " + String(luftdatenAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(luftdatenAPIHOST));
-    Serial.println("Content-Type: application/json");
+    Serial.println(F("Content-Type: application/json"));
     if (!strcmp(THP_MODEL, "BME280")) {
-      Serial.println("X-PIN: 11");
+      Serial.println(F("X-PIN: 11"));
     } else if (!strcmp(THP_MODEL, "BMP280")) {
-      Serial.println("X-PIN: 3");
+      Serial.println(F("X-PIN: 3"));
     } else if (!strcmp(THP_MODEL, "HTU21")) {
-      Serial.println("X-PIN: 7");
+      Serial.println(F("X-PIN: 7"));
     } else if (!strcmp(THP_MODEL, "DHT22")) {
-      Serial.println("X-PIN: 7");
+      Serial.println(F("X-PIN: 7"));
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
-      Serial.println("X-PIN: 12");
+      Serial.println(F("X-PIN: 12"));
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      Serial.println(F("X-PIN: 13"));
     }
     Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
-    Serial.print("Content-Length: ");
+    Serial.print(F("Content-Length: "));
     Serial.println(measureJson(json));
-    Serial.println("Connection: close");
+    Serial.println(F("Connection: close"));
     Serial.println();
     serializeJsonPretty(json, Serial);
     Serial.println("\n");
@@ -202,6 +207,10 @@ void sendTHPDatatoLuftdaten(float currentTemperature, float currentPressure, flo
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      JsonObject temperature = sensordatavalues.createNestedObject();
+      temperature["value_type"] = "temperature";
+      temperature["value"] = String(currentTemperature);
     }
     sendTHPLuftdatenJson(json);
   }
@@ -210,11 +219,11 @@ void sendTHPDatatoLuftdaten(float currentTemperature, float currentPressure, flo
 // Madavi.de - https://www.madavi.de/sensor/graph.php
 void sendDUSTMadavideJson(JsonObject& json) {
   WiFiClient client;
-  Serial.print("\nconnecting to ");
+  Serial.print(F("\nconnecting to "));
   Serial.println(madavideAPIHOST);
 
   if (!client.connect(madavideAPIHOST, madavideAPIPort)) {
-    Serial.println("connection failed");
+    Serial.println(F("connection failed"));
     delay(1000);
     return;
   }
@@ -238,12 +247,12 @@ void sendDUSTMadavideJson(JsonObject& json) {
     Serial.println();
     Serial.println("POST " + String(madavideAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(madavideAPIHOST));
-    Serial.println("Content-Type: application/json");
-    Serial.println("X-PIN: 1");
+    Serial.println(F("Content-Type: application/json"));
+    Serial.println(F("X-PIN: 1"));
     Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
-    Serial.print("Content-Length: ");
+    Serial.print(F("Content-Length: "));
     Serial.println(measureJson(json));
-    Serial.println("Connection: close");
+    Serial.println(F("Connection: close"));
     Serial.println();
     serializeJsonPretty(json, Serial);
     Serial.println("\n");
@@ -254,7 +263,7 @@ void sendDUSTMadavideJson(JsonObject& json) {
 
 void sendTHPMadavideJson(JsonObject& json) {
   WiFiClient client;
-  Serial.print("\nconnecting to ");
+  Serial.print(F("\nconnecting to "));
   Serial.println(madavideAPIHOST);
 
   if (!client.connect(madavideAPIHOST, madavideAPIPort)) {
@@ -276,6 +285,8 @@ void sendTHPMadavideJson(JsonObject& json) {
     client.println("X-PIN: 7");
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
     client.println("X-PIN: 12");
+  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    client.println("X-PIN: 13");
   }
   client.println("X-Sensor: smogomierz-" + luftdatenChipId);
   client.print("Content-Length: ");
@@ -292,22 +303,24 @@ void sendTHPMadavideJson(JsonObject& json) {
     Serial.println();
     Serial.println("POST " + String(madavideAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(madavideAPIHOST));
-    Serial.println("Content-Type: application/json");
+    Serial.println(F("Content-Type: application/json"));
     if (!strcmp(THP_MODEL, "BME280")) {
-      Serial.println("X-PIN: 11");
+      Serial.println(F("X-PIN: 11"));
     } else if (!strcmp(THP_MODEL, "BMP280")) {
-      Serial.println("X-PIN: 3");
+      Serial.println(F("X-PIN: 3"));
     } else if (!strcmp(THP_MODEL, "HTU21")) {
-      Serial.println("X-PIN: 7");
+      Serial.println(F("X-PIN: 7"));
     } else if (!strcmp(THP_MODEL, "DHT22")) {
-      Serial.println("X-PIN: 7");
+      Serial.println(F("X-PIN: 7"));
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
-      Serial.println("X-PIN: 12");
+      Serial.println(F("X-PIN: 12"));
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      Serial.println(F("X-PIN: 13"));
     }
     Serial.println("X-Sensor: smogomierz-" + luftdatenChipId);
-    Serial.print("Content-Length: ");
+    Serial.print(F("Content-Length: "));
     Serial.println(measureJson(json));
-    Serial.println("Connection: close");
+    Serial.println(F("Connection: close"));
     Serial.println();
     serializeJsonPretty(json, Serial);
     Serial.println("\n");
@@ -395,6 +408,10 @@ void sendTHPDatatoMadavide(float currentTemperature, float currentPressure, floa
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
+    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+      JsonObject temperature = sensordatavalues.createNestedObject();
+      temperature["value_type"] = "temperature";
+      temperature["value"] = String(currentTemperature);
     }
     sendTHPMadavideJson(json);
   }

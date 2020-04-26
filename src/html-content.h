@@ -1,4 +1,9 @@
-const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githack.com/hackerspace-silesia/Smogomierz/dev/src/css/smogly.css'";
+#ifdef ARDUINO_ARCH_ESP8266
+#include <avr/pgmspace.h>
+#endif
+
+const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githack.com/hackerspace-silesia/Smogomierz/master/src/css/smogly.css'";
+// https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/dev/src/css/smogly.css
 // based on bootstrap.min.css - 4.4.1 and Bootswatch v4.4.1
 // https://raw.githack.com
 
@@ -51,7 +56,7 @@ const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><hea
 #endif
 
 #ifdef ARDUINO_ARCH_ESP8266
-const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830; 
+const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>
@@ -62,7 +67,7 @@ const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='htt
 			</body></html>
 	)rawliteral";
 #elif defined ARDUINO_ARCH_ESP32
-const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830; 
+const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>
@@ -93,7 +98,7 @@ const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>
 	<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>
 	)rawliteral";
-	
+
 const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM2.5&type=line&yaxis=ug%2Fm3&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
     <iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM10&type=line&yaxis=ug%2Fm3&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
@@ -108,7 +113,7 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	<center><h1>Smogly - {TEXT_CONFIG_PAGE}</h1></center><br><br>
 	)rawliteral";
 
-	const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = R"rawliteral(<center>		
+	const char WEB_CONFIG_PAGE_CONFIG[] PROGMEM = R"rawliteral(<center>
 	<table class='table table-borderless' style='table-layout:fixed;'>
 	    <thead>
 	      <tr align='center'>
@@ -118,7 +123,7 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 		  <tr align='center'>
 		  <th scope='col'><hr id='left_hr' style='border-color:black;'></th>
 		  <th scope='col'><hr id='right_hr' style='border-color:black;'></th>
-		  </tr>			  
+		  </tr>
 		  <tr>
 		  <th scope='col'><h5>{TEXT_CONFIG_INFO_DEVICE_PAGE}</h5></th>
 		  <th scope='col'><h5>{TEXT_CONFIG_INFO_SERVICES_PAGE}</h5></th>
@@ -126,18 +131,18 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 		  <tr align='center'>
 		  <th scope='col'>{ConfigDeviceButton}</th>
 		  <th scope='col'>{ConfigServicesButton}</th>
-		  </tr>	  
+		  </tr>
 	    </thead>
 	</table>
 	</center>
 	<hr><center><br>
 	{WiFiEraseButton}    {RestoreConfigButton}
 	<br></center>)rawliteral";
-	
-	const char WEB_CONFIG_PAGE_SUBMIT_DEVICE_BUTTON[] PROGMEM = "<input type='submit' name='submit1' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";	
+
+	const char WEB_CONFIG_PAGE_SUBMIT_DEVICE_BUTTON[] PROGMEM = "<input type='submit' name='submit1' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
 
 	const char WEB_CONFIG_PAGE_SUBMIT_SERVICES_BUTTON[] PROGMEM = "<input type='submit' name='submit2' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
-	
+
 	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_SUBMIT_SERVICES_BUTTON[] PROGMEM = "<input type='submit' name='submit3' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
 
 	const char WEB_CONFIG_PAGE_SELECT[] PROGMEM = "<select name='{key}'>";
@@ -147,7 +152,7 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	const char WEB_CONFIG_PAGE_ADDOPTION[] PROGMEM = "<option value='{value}' {srslyValue}{label}</option>";
 
 	const char WEB_CONFIG_PAGE_TEXTIMPUT[] PROGMEM = "<input type='text' maxlength='255' size='20' name='{key}' value='{value}'> {postfix}<br />";
-	
+
 	const char WEB_CONFIG_PAGE_MQTT_TEXTIMPUT[] PROGMEM = "<input type='text' maxlength='120' size='32' name='{key}' value='{value}'>{postfix}";
 
 	const char WEB_CONFIG_PAGE_PASSWDINPUT[] = "<input type='password' maxlength='255' size='20' name='{key}' value='{value}'> {postfix}<br />";
@@ -155,32 +160,32 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	const char WEB_CONFIG_PAGE_INTINPUT[] PROGMEM = "<input type='number' step='1' maxlength='255' name='{key}' value='{value}'> {postfix}<br />";
 
 	const char WEB_CONFIG_PAGE_FLOATINPUT[] = "<input type='number' step='0.000001' maxlength='255' name='{key}' value='{value}'> {postfix}<br />";
-	
+
 	const char WEB_CONFIG_DEVICE_PAGE_BUTTON[] PROGMEM = "<a href='/config_device' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_CONFIG_DEVICE_PAGE}</a>";
-	
+
 	const char WEB_CONFIG_SERVICES_PAGE_BUTTON[] PROGMEM = "<a href='/config_services' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_CONFIG_SERVICES_PAGE}</a>";
 
 	const char WEB_CONFIG_PAGE_WIFIERASE[] PROGMEM = "<a href='/erase_wifi' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_ERASEWIFICONFIG}</a>";
 
 	const char WEB_CONFIG_PAGE_RESTORECONFIG[] PROGMEM = "<a href='/restore_config' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_RESTORESETTINGS}</a>";
-	
+
 	const char WEB_CONFIG_TOP_PAGE_INFO[] PROGMEM = R"rawliteral(<center><div class='card text-white bg-success mb-3' style='max-width: 30rem;'>
 			  <div class='card-body'>
 			    <h4 class='card-title'><strong>{TEXT_SAVED}!</strong></h4>
 			    <p class='card-text'>{TEXT_POSTCONFIG_INFO}</p>
 			  </div></div></center>)rawliteral";
-	
+
 // CONFIG PAGE - END
 // CONFIG DEVICE PAGE - Start
 #ifdef ASYNC_WEBSERVER_ON
-const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_device_save'> 
+const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_device_save'>
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_DEVICE_PAGE}</h1></center><br>
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
 	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 #else
-const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_device'> 
+const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_device'>
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_DEVICE_PAGE}</h1></center><br>
 	{WEB_CONFIG_TOP_PAGE_INFO}
@@ -188,12 +193,28 @@ const char WEB_CONFIG_DEVICE_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POS
 	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
 #endif
+const char WEB_CONFIG_DEVICE_PAGE_SECOND_THP[] PROGMEM = R"rawliteral(
+	<br>
+	{TEXT_SECOND_THP_SDA_SCL} <br>
+	<b>{TEXT_SECOND_THP_SDA}: </b>{SECOND_THP_SDA}
+	<b>{TEXT_SECOND_THP_SCL}: </b>{SECOND_THP_SCL}
+)rawliteral";
+
 const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVICENAME}: </b>{device_name} <br>
 	<b>{TEXT_DEVICENAMEAUTO}: </b>{DEVICENAME_AUTO}
 	<b>{TEXT_SELECTEDLANGUAGE}: </b>{LanguageSelect}
 	<hr>
 	<b>{TEXT_TEMPHUMIPRESSSENSOR}: </b>{THP_MODELSelect}
 	<b>{TEXT_PMSENSOR}: </b>{DUST_MODELSelect}
+	<hr>{TEXT_FIRST_THP_SDA_SCL} - {THP_MODEL}<br>
+	<b>{TEXT_FIRST_THP_SDA}: </b>{FIRST_THP_SDA}
+	<b>{TEXT_FIRST_THP_SCL}: </b>{FIRST_THP_SCL}
+	<!-- <br>
+	<b>{TEXT_SECOND_THP}: </b>{SECOND_THP}
+	{WEB_CONFIG_DEVICE_PAGE_SECOND_THP} -->
+	<br>{TEXT_DUST_TX_RX} - {DUST_MODEL}<br>
+	<b>{TEXT_DUST_TX}: </b>{DUST_TX}
+	<b>{TEXT_DUST_RX}: </b>{DUST_RX}
 	<hr>
 	<b>{TEXT_FREQUENTMEASUREMENTONOFF}: </b>{FREQUENTMEASUREMENT_Select} {TEXT_FREQUENTMEASUREMENTINFO}<br>
 	<b>{TEXT_MEASUREMENTFREQUENCY}: </b>{FREQUENTMEASUREMENT_time}
@@ -224,7 +245,7 @@ const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVIC
 // CONFIG DEVICE PAGE - END
 // CONFIG SERVICES PAGE - Start
 #ifdef ASYNC_WEBSERVER_ON
-const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_services_save'> 
+const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_services_save'>
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br>
 	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
@@ -235,7 +256,7 @@ const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SEN
 	<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}
 	<hr>
 	<b>{TEXT_SMOGLISTSENDING}: </b>{SMOGLIST_ON} {TEXT_SMOGLISTINFO}
-	<hr>	
+	<hr>
 	<b>{TEXT_LUFTDATENSENDING}: </b>{LUFTDATEN_ON}
 	<b>ChipID: </b>{LUFTDATEN_ChipID}
 	<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>
@@ -278,6 +299,8 @@ const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SEN
 	<br><br>
 	<b>{TEXT_MQTT_IP_IN_TOPIC}: </b>{MQTT_IP_IN_TOPIC}
 	<b>{TEXT_MQTT_DEVICENAME_IN_TOPIC}: </b>{MQTT_DEVICENAME_IN_TOPIC}
+	<b>{TEXT_MQTT_SLASH_AT_THE_BEGINNING}: </b>{MQTT_SLASH_AT_THE_BEGINNING}
+	<b>{TEXT_MQTT_SLASH_AT_THE_END}: </b>{MQTT_SLASH_AT_THE_END}
 	<br>
 	<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />
 	<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />
@@ -295,7 +318,7 @@ const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SEN
 	</center>
 	)rawliteral";
 #else
-const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_services'> 
+const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_services'>
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br>
 	{WEB_CONFIG_TOP_PAGE_INFO}
@@ -307,7 +330,7 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='P
 		<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}
 		<hr>
 		<b>{TEXT_SMOGLISTSENDING}: </b>{SMOGLIST_ON} {TEXT_SMOGLISTINFO}
-		<hr>	
+		<hr>
 		<b>{TEXT_LUFTDATENSENDING}: </b>{LUFTDATEN_ON}
 		<b>ChipID: </b>{LUFTDATEN_ChipID}
 		<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>
@@ -352,7 +375,7 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='P
 // CONFIG SERVICES PAGE - END
 // CONFIG ADVANCED MQTT PAGE - Start
 #ifndef ASYNC_WEBSERVER_ON
-	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_adv_mqtt'> 
+	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_adv_mqtt'>
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_ADVANCED_MQTT_PAGE}</h1></center><br>
 	{WEB_CONFIG_TOP_PAGE_INFO}
@@ -369,6 +392,8 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='P
 		<br><br>
 		<b>{TEXT_MQTT_IP_IN_TOPIC}: </b>{MQTT_IP_IN_TOPIC}
 		<b>{TEXT_MQTT_DEVICENAME_IN_TOPIC}: </b>{MQTT_DEVICENAME_IN_TOPIC}
+		<b>{TEXT_MQTT_SLASH_AT_THE_BEGINNING}: </b>{MQTT_SLASH_AT_THE_BEGINNING}
+		<b>{TEXT_MQTT_SLASH_AT_THE_END}: </b>{MQTT_SLASH_AT_THE_END}
 		<br>
 		<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />
 		<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />
@@ -416,7 +441,7 @@ const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = R"rawliteral(<main role='main' cla
 	<br>{TEXT_WIFIRSSI}: <b>{WiFiRSSI}</b>
 	<br>{TEXT_WIFIQUALITY}: <b>{WiFiQuality}</b>
 )rawliteral";
-#else	
+#else
 	const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = R"rawliteral(<main role='main' class='container'><div class='jumbotron'>
 		<center><h1>Smogly - {TEXT_UPDATE_PAGE}</h1></center><br><br>
 		{WEB_UPDATE_INFO_WARNING}

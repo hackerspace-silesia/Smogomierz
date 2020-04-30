@@ -5,11 +5,11 @@
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
 
-#define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
+// #define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
 // #define DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMS5003 / PMS7003 - BME280_0x77
 // #define DUSTSENSOR_SDS011_21 // Nova Fitness SDS011 / SDS021
 // #define DUSTSENSOR_HPMA115S0 // Honeywell HPMA115S0
-// #define DUSTSENSOR_SPS30 // Sensirion SPS30
+#define DUSTSENSOR_SPS30 // Sensirion SPS30
 
 // *******************************************
 
@@ -114,7 +114,7 @@
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 17.01.2020
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 17.01.2020
 #include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 17.01.2020
-#include "src/DHT.h" // https://github.com/adafruit/DHT-sensor-library // CUSTOMIZED! 30.04.2020
+#include "src/DHT.h" // https://github.com/adafruit/DHT-sensor-library // CUSTOMIZED! 1.05.2020
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
 #include "src/pms.h" // https://github.com/fu-hsi/PMS // 17.01.2020
@@ -127,7 +127,7 @@
 #elif defined DUSTSENSOR_HPMA115S0
 #include "src/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 17.01.2020
 #elif defined DUSTSENSOR_SPS30
-#include "src/sps30.h" // https://github.com/paulvha/sps30 // 17.01.2020
+#include "src/sps30.h" // https://github.com/paulvha/sps30 // 1.05.2020
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
 #include "src/pms.h" // https://github.com/fu-hsi/PMS // 17.01.2020
 #endif

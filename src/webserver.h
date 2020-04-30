@@ -133,7 +133,7 @@ void handle_root() {
   } else if (!strcmp(THP_MODEL, "DS18B20")) {
       if (checkDS18B20Status()) {
         message.replace(F("{TEXT_TEMPERATURE}"), (TEXT_TEMPERATURE));
-        message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
+        message.replace(F("{Temperature}"), String(int(currentTemperature)));
         message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
         message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
         message.replace(F("{TEXT_DEWPOINT}: {Dewpoint} °C"), "");
@@ -375,6 +375,9 @@ String _addDUST_MODELSelect(const String &key, const String &value) {
 String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
+  if (!strcmp(THP_MODEL, "DS18B20")) {
+	  input += _add_FIRST_THP_Option("D5", "D5/GPIO14", value);
+  } else {
   input += _add_FIRST_THP_Option("D1", "D1/GPIO05", value);
   input += _add_FIRST_THP_Option("D2", "D2/GPIO04", value);
   input += _add_FIRST_THP_Option("D3", "D3/GPIO00", value);
@@ -387,6 +390,7 @@ String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
   input += _add_FIRST_THP_Option("D16", "D16/GPIO16", value);
   input += _add_FIRST_THP_Option("D17", "D17/GPIO17", value);
   #endif
+}
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
   return input;
 }
@@ -628,9 +632,12 @@ void _handle_config_device(bool is_success) {
 message.replace(F("{TEXT_FIRST_THP_SDA_SCL}"), (TEXT_FIRST_THP_SDA_SCL));
 message.replace(F("{TEXT_FIRST_THP_SDA}"), (TEXT_FIRST_THP_SDA));
 message.replace(F("{FIRST_THP_SDA}"), _add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_THP_SDA", CONFIG_FIRST_THP_SDA));
-message.replace(F("{TEXT_FIRST_THP_SCL}"), (TEXT_FIRST_THP_SCL));
-message.replace(F("{FIRST_THP_SCL}"), _add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_THP_SCL", CONFIG_FIRST_THP_SCL));
-
+if (!strcmp(THP_MODEL, "DHT22") or !strcmp(THP_MODEL, "DS18B20")) {
+	message.replace(F("<b>{TEXT_FIRST_THP_SCL}: </b>{FIRST_THP_SCL}"), "");
+} else {
+	message.replace(F("{TEXT_FIRST_THP_SCL}"), (TEXT_FIRST_THP_SCL));
+	message.replace(F("{FIRST_THP_SCL}"), _add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_THP_SCL", CONFIG_FIRST_THP_SCL));
+}
 message.replace(F("{TEXT_SECOND_THP}"), (TEXT_SECOND_THP));
 message.replace(F("{SECOND_THP}"), _addBoolSelect("SECOND_THP", SECOND_THP));
 

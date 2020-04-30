@@ -114,7 +114,7 @@
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 17.01.2020
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 17.01.2020
 #include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 17.01.2020
-#include <DHT.h>
+#include "src/DHT.h" // https://github.com/adafruit/DHT-sensor-library // CUSTOMIZED! 30.04.2020
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
 #include "src/pms.h" // https://github.com/fu-hsi/PMS // 17.01.2020
@@ -199,7 +199,7 @@ HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
 // DHT22 config
 //#define DHTPIN 13 // D7 on NodeMCU/WeMos board
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
-DHT dht(FIRST_THP_SDA, DHTTYPE);
+DHT dht(DHTTYPE);
 
 // SHT1x – Config
 //#define dataPin 14 //D5
@@ -207,8 +207,9 @@ DHT dht(FIRST_THP_SDA, DHTTYPE);
 SHT1x sht1x(FIRST_THP_SDA, FIRST_THP_SCL);
 
 // DS18B20 – Config
-//const int DS18B20_WireBus = 14;   //D5
-OneWire oneWire(FIRST_THP_SDA);
+//const int DS18B20_WireBus = 14; // D5
+//OneWire oneWire(FIRST_THP_SDA);
+OneWire oneWire(14);
 DallasTemperature DS18B20(&oneWire);
 // TEMP/HUMI/PRESS Sensor config - END
 
@@ -387,6 +388,11 @@ bool checkDHT22Status() {
       Serial.println(F("No data from DHT22 sensor!\n"));
     }
     return false;
+  } else if (isnan(humidity_DHT_Int) && isnan(temperature_DHT_Int)) {
+    if (DEBUG) {
+      Serial.println(F("No data from DHT22 sensor!\n"));
+    }
+    return false;
   } else {
     return true;
   }
@@ -409,9 +415,9 @@ bool checkDS18B20Status() {
   /*
     DS18B20.requestTemperatures();
     int temperature_DS18B20_Int = DS18B20.getTempCByIndex(0);
-    if (temperature_DS18B20_Int == 0) {
+    if (temperature_DS18B20_Int == -127) {
     if (DEBUG) {
-      Serial.println(F("No data from DS18B20 sensor!\n");
+      Serial.println(F("No data from DS18B20 sensor!\n"));
     }
     return false;
     } else {
@@ -826,7 +832,7 @@ void setup() {
   } else if (!strcmp(THP_MODEL, "HTU21")) {
     myHTU21D.begin();
   } else if (!strcmp(THP_MODEL, "DHT22")) {
-    dht.begin();
+    dht.begin(FIRST_THP_SDA);
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
   } else if (!strcmp(THP_MODEL, "DS18B20")) {
     DS18B20.begin();
@@ -1535,6 +1541,11 @@ void takeTHPMeasurements() {
       }
       DS18B20.requestTemperatures();
       currentTemperature = DS18B20.getTempCByIndex(0);
+      /*
+        if (DEBUG) {
+        Serial.println("currentTemperature: " + String(currentTemperature));
+        }
+      */
     } else {
       if (DEBUG) {
         Serial.println(F("No measurements from DS18B20!\n"));
@@ -1880,7 +1891,6 @@ void pm_calibration() {
       } else {
         calib = calib1;
       }
-
     } else if (!strcmp(THP_MODEL, "SHT1x")) {
       if (int(sht1x.readTemperatureC()) < 5 or int(sht1x.readHumidity()) > 60) {
         calib1 = float((200 - (sht1x.readHumidity())) / 150);

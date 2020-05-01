@@ -5,11 +5,11 @@
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
 
-// #define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
+#define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
 // #define DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMS5003 / PMS7003 - BME280_0x77
 // #define DUSTSENSOR_SDS011_21 // Nova Fitness SDS011 / SDS021
 // #define DUSTSENSOR_HPMA115S0 // Honeywell HPMA115S0
-#define DUSTSENSOR_SPS30 // Sensirion SPS30
+// #define DUSTSENSOR_SPS30 // Sensirion SPS30
 
 // *******************************************
 
@@ -78,7 +78,7 @@
   Szkic używa 572208 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 58404 bajtów (71%) pamięci dynamicznej, pozostawiając 23516 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 576496 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 576960 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46608 bajtów (56%) pamięci dynamicznej, pozostawiając 35312 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 
@@ -257,10 +257,19 @@ unsigned int hpma115S0_pm25, hpma115S0_pm10;
 //***HPMA115S0 - END***
 #elif defined DUSTSENSOR_SPS30
 //***SPS30 - START***
+#ifdef ARDUINO_ARCH_ESP8266
+#define SP30_COMMS I2C_COMMS
+#elif defined ARDUINO_ARCH_ESP32
 #define SP30_COMMS SERIALPORT1
+#endif
 #define SPS30_AUTOCLEANINTERVAL -1
 #define SPS30_PERFORMCLEANNOW 1
 #define SPS30_DEBUG 0
+// function prototypes (sometimes the pre-processor does not create prototypes themself on ESPxx)
+void ErrtoMess(char *mess, uint8_t r);
+void Errorloop(char *mess, uint8_t r);
+void GetDeviceInfo();
+bool read_sps30_data();
 // create constructor
 SPS30 sps30;
 float SPS30_PM1, SPS30_PM25, SPS30_PM4, SPS30_PM10;
@@ -706,6 +715,7 @@ void setup() {
   delay(10);
 #elif defined DUSTSENSOR_SPS30
   if (!strcmp(DUST_MODEL, "SPS30")) {
+
     Serial.println(F("Trying to connect to SPS30..."));
     // set driver debug level
     sps30.EnableDebugging(SPS30_DEBUG);
@@ -734,11 +744,11 @@ void setup() {
     GetDeviceInfo();
 
     // do Auto Clean interval
-    SetAutoClean();
+    // SetAutoClean();
 
     // start measurement
     if (sps30.start() == true)
-      Serial.println(F("\nMeasurement started"));
+      Serial.println(F("Measurement started"));
     else
       Errorloop("Could NOT start measurement", 0);
 
@@ -746,9 +756,9 @@ void setup() {
     if (SPS30_PERFORMCLEANNOW) {
       // clean now
       if (sps30.clean() == true)
-        Serial.println(F("fan-cleaning manually started"));
+        Serial.println(F("fan-cleaning manually started\n"));
       else
-        Serial.println(F("Could NOT manually start fan-cleaning"));
+        Serial.println(F("Could NOT manually start fan-cleaning\n"));
     }
 
     if (SP30_COMMS == I2C_COMMS) {
@@ -820,8 +830,8 @@ void setup() {
   if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
     //Wire.begin(0, 2);
-    Wire.begin(FIRST_THP_SDA, FIRST_THP_SCL);
-    BMESensor.begin();
+    //Wire.begin(FIRST_THP_SDA, FIRST_THP_SCL);
+    BMESensor.begin(FIRST_THP_SDA, FIRST_THP_SCL);
 #elif defined ARDUINO_ARCH_ESP32
     bme.begin();
 #endif
@@ -1004,6 +1014,7 @@ void loop() {
 #endif
 #elif defined DUSTSENSOR_HPMA115S0
 #elif defined DUSTSENSOR_SPS30
+  //read_sps30_data();
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.read(data);
@@ -1024,13 +1035,17 @@ void loop() {
     unsigned int current_DUST_Millis = millis();
     if (FREQUENTMEASUREMENT == true ) {
       if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
+        if (DEBUG) {
+          Serial.println(F("\nFREQUENT MEASUREMENT Mode!"));
+        }
         takeNormalnPMMeasurements();
         previous_DUST_Millis = millis();
       }
     }
     if (DEEPSLEEP_ON == true) {
-      Serial.println(F("\nDeepSleep Mode!\n"));
-
+      if (DEBUG) {
+        Serial.println(F("\nDeepSleep Mode!"));
+      }
       takeSleepPMMeasurements();
       yield();
 
@@ -1056,6 +1071,9 @@ void loop() {
 
     } else {
       if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
+        if (DEBUG) {
+          Serial.println(F("\nNormal Mode!"));
+        }
         takeSleepPMMeasurements();
         previous_DUST_Millis = millis();
       }
@@ -1464,7 +1482,7 @@ String addSlash(String receivedString, bool frontSlash, bool backSlash) {
 void takeTHPMeasurements() {
   if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
-    BMESensor.refresh();
+    BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
     //yield();
 #endif
     if (checkBmeStatus() == true) {
@@ -1541,11 +1559,6 @@ void takeTHPMeasurements() {
       }
       DS18B20.requestTemperatures();
       currentTemperature = DS18B20.getTempCByIndex(0);
-      /*
-        if (DEBUG) {
-        Serial.println("currentTemperature: " + String(currentTemperature));
-        }
-      */
     } else {
       if (DEBUG) {
         Serial.println(F("No measurements from DS18B20!\n"));
@@ -1602,6 +1615,7 @@ void takeNormalnPMMeasurements() {
   pmMeasurements[iPM][1] = int(calib * SPS30_PM25);
   pmMeasurements[iPM][2] = int(calib * SPS30_PM10);
   pmMeasurements[iPM][3] = int(calib * SPS30_PM4);
+
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
   pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
@@ -1620,7 +1634,7 @@ void takeNormalnPMMeasurements() {
     Serial.print(pmMeasurements[iPM][3]);
 #endif
     Serial.print(F("\nValue of PM10: "));
-    Serial.print(pmMeasurements[iPM][2]);
+    Serial.println(pmMeasurements[iPM][2]);
   }
   if (++iPM == NUMBEROFMEASUREMENTS) {
     averagePM();
@@ -1633,7 +1647,7 @@ void takeSleepPMMeasurements() {
     Serial.print(F("\nTurning ON PM sensor..."));
   }
 
-#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMSx003
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.wakeUp();
     unsigned int current_2sec_Millis = millis();
@@ -1671,7 +1685,7 @@ void takeSleepPMMeasurements() {
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.sleep();
   }
-#elif defined DUSTSENSOR_SDS011_21
+#elif defined DUSTSENSOR_SDS011_21 // SDSx1
   if (!strcmp(DUST_MODEL, "SDS011/21")) {
 #ifdef ARDUINO_ARCH_ESP8266
     sds.wakeup();
@@ -1774,6 +1788,11 @@ void takeSleepPMMeasurements() {
   if (!strcmp(DUST_MODEL, "SPS30")) {
 
     // WAKE UP SPS30!!
+    //sps30.wakeup();
+    // reset SPS30 connection
+    if (sps30.reset() == false) {
+      Errorloop((char *) "could not reset.", 0);
+    }
 
     unsigned int current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
@@ -1792,7 +1811,6 @@ void takeSleepPMMeasurements() {
     unsigned int current_2sec_Millis = millis();
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
 
-      read_sps30_data();
       takeNormalnPMMeasurements();
       counterNM1++;
 
@@ -1810,6 +1828,7 @@ void takeSleepPMMeasurements() {
 
   if (!strcmp(DUST_MODEL, "SPS30")) {
     // GO TO SLEEP SPS30!!
+    sps30.sleep();
   }
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   if (!strcmp(DUST_MODEL, "PMS7003")) {
@@ -1857,7 +1876,7 @@ void pm_calibration() {
   if (!strcmp(MODEL, "white")) {
     if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
-      BMESensor.refresh();
+      BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
       //yield();
       if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
         calib1 = float((200 - (BMESensor.humidity)) / 150);
@@ -1958,6 +1977,7 @@ void averagePM() {
 #ifdef DUSTSENSOR_SPS30
 bool read_sps30_data()
 {
+
   static bool header = true;
   uint8_t ret, error_cnt = 0;
   struct sps_values val;
@@ -1985,52 +2005,81 @@ bool read_sps30_data()
 
   } while (ret != SPS30_ERR_OK);
 
+
   SPS30_PM1 = val.MassPM1;
   SPS30_PM25 = val.MassPM2;
   SPS30_PM4 = val.MassPM4;
   SPS30_PM10 = val.MassPM10;
+
+  /*
+    pmMeasurements[iPM][0] = int(calib * SPS30_PM1);
+    pmMeasurements[iPM][1] = int(calib * SPS30_PM25);
+    pmMeasurements[iPM][2] = int(calib * SPS30_PM10);
+    pmMeasurements[iPM][3] = int(calib * SPS30_PM4);
+  */
+  return (true);
 }
 
 void GetDeviceInfo()
 {
   char buf[32];
   uint8_t ret;
+  SPS30_version v;
+
   //try to read serial number
   ret = sps30.GetSerialNumber(buf, 32);
-  if (ret == SPS30_ERR_OK) {
-    Serial.print(F("Serial number : "));
-
+  if (ret == ERR_OK) {
+    Serial.print(F("Serial number: "));
     if (strlen(buf) > 0)  Serial.println(buf);
     else Serial.println(F("not available"));
   }
   else
-    ErrtoMess("could not get serial number", ret);
+    ErrtoMess((char *) "could not get serial number ", ret);
+
   // try to get product name
   ret = sps30.GetProductName(buf, 32);
-  if (ret == SPS30_ERR_OK)  {
-    Serial.print(F("Product name  : "));
+  if (ret == ERR_OK)  {
+    Serial.print(F("Product name: "));
 
     if (strlen(buf) > 0)  Serial.println(buf);
     else Serial.println(F("not available"));
   }
   else
-    ErrtoMess("could not get product name.", ret);
-  // try to get article code
-  ret = sps30.GetArticleCode(buf, 32);
-  if (ret == SPS30_ERR_OK)  {
-    Serial.print(F("Article code  : "));
+    ErrtoMess((char *) "could not get product name ", ret);
 
-    if (strlen(buf) > 0)  Serial.println(buf);
-    else Serial.println(F("not available"));
+  // try to get version info
+  ret = sps30.GetVersion(&v);
+  if (ret != ERR_OK) {
+    Serial.println(F("Can not read version info"));
+    return;
   }
-  else
-    ErrtoMess("could not get Article code .", ret);
+
+  Serial.print(F("Firmware level: "));
+  Serial.print(v.major);
+  Serial.print(".");
+  Serial.println(v.minor);
+
+  if (SP30_COMMS != I2C_COMMS) {
+    Serial.print(F("Hardware level: "));
+    Serial.println(v.HW_version);
+
+    Serial.print(F("SHDLC protocol: "));
+    Serial.print(v.SHDLC_major);
+    Serial.print(".");
+    Serial.println(v.SHDLC_minor);
+  }
+
+  Serial.print(F("Library level: "));
+  Serial.print(v.DRV_major);
+  Serial.print(".");
+  Serial.println(v.DRV_minor);
 }
 
 void SetAutoClean()
 {
   uint32_t interval;
   uint8_t ret;
+
   // try to get interval
   ret = sps30.GetAutoCleanInt(&interval);
   if (ret == SPS30_ERR_OK) {
@@ -2039,22 +2088,25 @@ void SetAutoClean()
     Serial.println(F(" seconds"));
   }
   else
-    ErrtoMess("could not get clean interval.", ret);
+    ErrtoMess((char *) "could not get clean interval ", ret);
+
   // only if requested
   if (SPS30_AUTOCLEANINTERVAL == -1) {
-    Serial.println(F("No Auto Clean interval change requested."));
+    Serial.println(F("No Auto Clean interval change requested"));
     return;
   }
+
   // try to set interval
   interval = SPS30_AUTOCLEANINTERVAL;
   ret = sps30.SetAutoCleanInt(interval);
   if (ret == SPS30_ERR_OK) {
-    Serial.print(F("Auto Clean interval now set : "));
+    Serial.print(F("Auto Clean interval now set: "));
     Serial.print(interval);
     Serial.println(F(" seconds"));
   }
   else
-    ErrtoMess("could not set clean interval.", ret);
+    ErrtoMess((char *) "could not set clean interval ", ret);
+
   // try to get interval
   ret = sps30.GetAutoCleanInt(&interval);
   if (ret == SPS30_ERR_OK) {
@@ -2063,17 +2115,15 @@ void SetAutoClean()
     Serial.println(F(" seconds"));
   }
   else
-    ErrtoMess("could not get clean interval.", ret);
+    ErrtoMess((char *) "could not get clean interval ", ret);
 }
 
 void Errorloop(char *mess, uint8_t r)
 {
   if (r) ErrtoMess(mess, r);
   else Serial.println(mess);
-  /*
-    Serial.println(F("Program on hold"));
-    for (;;) delay(100000);
-  */
+  //Serial.println(F("Program on hold"));
+  //for (;;) delay(100000);
 }
 
 void ErrtoMess(char *mess, uint8_t r)
@@ -2083,4 +2133,5 @@ void ErrtoMess(char *mess, uint8_t r)
   sps30.GetErrDescription(r, buf, 80);
   Serial.println(buf);
 }
+
 #endif

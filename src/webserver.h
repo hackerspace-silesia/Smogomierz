@@ -417,6 +417,10 @@ String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
 String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
+  if (!strcmp(DUST_MODEL, "SPS30")) {
+	  input += _add_DUST_Option("D1", "D1/GPIO05", value);
+	  input += _add_DUST_Option("D2", "D2/GPIO04", value);
+  } else {
   input += _add_DUST_Option("D1", "D1/GPIO05", value);
   input += _add_DUST_Option("D2", "D2/GPIO04", value);
   input += _add_DUST_Option("D3", "D3/GPIO00", value);
@@ -429,6 +433,7 @@ String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   input += _add_DUST_Option("D16", "D16/GPIO16", value);
   input += _add_DUST_Option("D17", "D17/GPIO17", value);
   #endif
+}
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
   return input;
 }

@@ -170,9 +170,9 @@ public:
   float pressure = 0;
   float humidity = 0;
   
-  bool begin() {
-    Wire.begin();
-
+  bool begin(int FIRST_THP_SDA, int FIRST_THP_SCL) {
+	Wire.begin(FIRST_THP_SDA, FIRST_THP_SCL);
+	
     if (read8(BME280_REGISTER_CHIPID) != 0x60)
       return false;
 
@@ -183,10 +183,11 @@ public:
     return true;  
   };
   
-  void refresh() {
+  void refresh(int FIRST_THP_SDA, int FIRST_THP_SCL) {
     //------------------temperature
     //int32_t var1, var2;
-
+	begin(FIRST_THP_SDA, FIRST_THP_SCL);
+	  
     int32_t adc_T = read16(BME280_REGISTER_TEMPDATA);
     adc_T <<= 8;
     adc_T |= read8(BME280_REGISTER_TEMPDATA+2);
@@ -252,7 +253,7 @@ public:
     v_x1_u32r = (v_x1_u32r > 419430400) ? 419430400 : v_x1_u32r;
     float h = (v_x1_u32r>>12);
     humidity = h / 1024.0;
-
+	Wire.endTransmission();
   };
 
   //float pressureToAltitude(float seaLevel, float atmospheric) {

@@ -85,6 +85,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+//#include "config.h"
+
 #if !defined INCLUDE_I2C && !defined INCLUDE_UART
 #error you must enable either I2C or UART communication
 #endif
@@ -216,15 +218,17 @@ void SPS30::EnableDebugging(uint8_t act, debug_serial SelectDebugSerial)
  * changed in version 1.4 to get firmware level instead of serial.
  */
 bool SPS30::probe() {
-
+	/*
+	char buf[32];
+	if (GetSerialNumber(buf, 32) == SPS30_ERR_OK) return(true);
+	*/
     SPS30_version v;
-
     if (GetVersion(&v) == SPS30_ERR_OK) {
         _FW_Major = v.major;
         _FW_Minor = v.minor;
         return(true);
     }
-
+	
     return(false);
 }
 
@@ -467,7 +471,7 @@ bool SPS30::Instruct(uint8_t type)
 
         else if (type == SER_RESET){
             _started = false;
-            Wire.begin();       // some I2C channels need a reset
+            Wire.begin(4, 5);       // some I2C channels need a reset
             delay(2000);
         }
 
@@ -1349,7 +1353,7 @@ uint8_t SPS30::I2C_expect()
  */
 void SPS30::I2C_init()
 {
-    Wire.begin();
+    Wire.begin(4, 5);
 }
 
 /**

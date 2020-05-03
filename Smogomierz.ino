@@ -87,11 +87,11 @@
   Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1375786 bajtów (69%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 58664 bajtów (17%) pamięci dynamicznej, pozostawiając 269016 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1377866 bajtów (70%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -2028,7 +2028,7 @@ void GetDeviceInfo()
 
   //try to read serial number
   ret = sps30.GetSerialNumber(buf, 32);
-  if (ret == ERR_OK) {
+  if (ret == SPS30_ERR_OK) {
     Serial.print(F("Serial number: "));
     if (strlen(buf) > 0)  Serial.println(buf);
     else Serial.println(F("not available"));
@@ -2038,7 +2038,7 @@ void GetDeviceInfo()
 
   // try to get product name
   ret = sps30.GetProductName(buf, 32);
-  if (ret == ERR_OK)  {
+  if (ret == SPS30_ERR_OK)  {
     Serial.print(F("Product name: "));
 
     if (strlen(buf) > 0)  Serial.println(buf);
@@ -2049,7 +2049,7 @@ void GetDeviceInfo()
 
   // try to get version info
   ret = sps30.GetVersion(&v);
-  if (ret != ERR_OK) {
+  if (ret != SPS30_ERR_OK) {
     Serial.println(F("Can not read version info"));
     return;
   }

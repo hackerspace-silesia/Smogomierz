@@ -68,7 +68,7 @@ PMS7003 zasilamy bezpośrednio z pinu 5V wyprowadzonego z portu microUSB w obudo
 
 Sensirion SPS30 to laserowy miernik pyłu zawieszonego w powietrzu, który podane pomiary PM1, PM2.5, PM4 oraz PM10. Posiada wbudowany wiatraczek. Urządzenia zasilane jest 5V i wyniki podaje poprzez UART. W naszym projekcie korzystamy z dwóch pinów RX oraz TX do pobierania wyników pomiarów oraz z pinu 5V i GND do zasilania SPS30. Pozostałe piny dostępne w mierniku SPS30 nie będą przez nas wykorzystywane. Sensirion SPS30 posiada system automatyczne czyszczenia kurzu osadzającego się wewnątrz miernika oraz żywotność aż 8 lat. Pomiary z Sensirion SPS30 są jednymi z najbardziej dokładnych. Jest on jednak jednym z droższych mierników. Kosztuje w Polsce około 140 zł.
 
-SPS30 zasilamy bezpośrednio z pinu 5V wyprowadzonego z portu microUSB w obudowie urządzenia. Piny GND podpinamy do dowolnego pinu G(GND) na płytce ESP8266. Pin TX podpinamy do pinu D1 na płytce ESP8266. Pin RX podpinamy do pinu D2 na ESP8266. 
+SPS30 zasilamy bezpośrednio z pinu 5V wyprowadzonego z portu microUSB w obudowie urządzenia. Pin GND podpinamy do dowolnego pinu G(GND) na płytce ESP8266. Pin TX podpinamy do pinu D1 na płytce ESP8266. Pin RX podpinamy do pinu D2 na ESP8266. W przypadku użycia ESP8266 pozostały Pin(pin nr. 4) Sensiriona podpinamy do GND. W przypadku ESP32 zostawiamy go niepodłaczonego.
 
 Pełną ([dokumentację](https://www.sensirion.com/en/environmental-sensors/particulate-matter-sensors-pm25/)) możemy znaleźć na stronie producenta Sensiriona SPS30. Warto również pamiętać, że SPS30 posiada dość nietypową wtyczkę: JST ZH 1.5. Wtyczka posiada 5 pinów i raster 1,5mm.
 

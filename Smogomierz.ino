@@ -1,6 +1,8 @@
 /*
   ESP8266 core for Arduino - 2.6.3
   Arduino core for the ESP32 - 1.0.4
+
+  Adafruit Unified Sensor - 1.1.2
 */
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
@@ -77,10 +79,10 @@
 
   Szkic używa 572208 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 58404 bajtów (71%) pamięci dynamicznej, pozostawiając 23516 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
+  
   Szkic używa 576960 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46608 bajtów (56%) pamięci dynamicznej, pozostawiając 35312 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
+  
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
@@ -302,6 +304,9 @@ unsigned int previous_DUST_Millis = 0;
 unsigned int SENDING_FREQUENCY_interval = 60 * 1000; // 1 minute
 unsigned int previous_SENDING_FREQUENCY_Millis = 0;
 
+unsigned int SENDING_FREQUENCY_AIRMONITOR_interval = 60 * 1000; // 1 minute
+unsigned int previous_SENDING_FREQUENCY_AIRMONITOR_Millis = 0;
+
 unsigned int SENDING_DB_FREQUENCY_interval = 60 * 1000; // 1 minute
 unsigned int previous_SENDING_DB_FREQUENCY_Millis = 0;
 
@@ -439,7 +444,7 @@ bool checkDS18B20Status() {
 
 void minutesToSeconds() {
   DUST_interval = 1000; // 1 second
-  SENDING_FREQUENCY_interval = 1000;
+  SENDING_FREQUENCY_AIRMONITOR_interval = 1000;
   SENDING_DB_FREQUENCY_interval = 1000;
 }
 
@@ -819,6 +824,13 @@ void setup() {
   } else {
     if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
+      if (AIRMONITOR_ON) {
+        if (SENDING_FREQUENCY < 30) {
+          SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * 30;
+        } else {
+          SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * SENDING_FREQUENCY;
+        }
+      }
     }
     if (THINGSPEAK_ON or INFLUXDB_ON or MQTT_ON) {
       SENDING_DB_FREQUENCY_interval = SENDING_DB_FREQUENCY_interval * SENDING_DB_FREQUENCY;
@@ -1113,7 +1125,16 @@ void loop() {
     }
   }
 
-  if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
+  if (AIRMONITOR_ON) {
+    unsigned int current_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
+    if (current_SENDING_FREQUENCY_AIRMONITOR_Millis - previous_SENDING_FREQUENCY_AIRMONITOR_Millis >= SENDING_FREQUENCY_AIRMONITOR_interval) {
+      takeTHPMeasurements();
+      sendDataToExternalServices();
+      previous_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
+    }
+  }
+
+  if (LUFTDATEN_ON or AQI_ECO_ON or SMOGLIST_ON) {
     unsigned int current_SENDING_FREQUENCY_Millis = millis();
     if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
       takeTHPMeasurements();

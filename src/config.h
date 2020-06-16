@@ -11,6 +11,7 @@ extern char DUST_MODEL[32];
 extern bool FREQUENTMEASUREMENT;
 
 extern bool SECOND_THP;
+extern char SECOND_THP_MODEL[32];
 
 extern char CONFIG_FIRST_THP_SDA[8];
 extern char CONFIG_FIRST_THP_SCL[8];
@@ -37,6 +38,7 @@ extern bool AIRMONITOR_ON;
 extern bool AIRMONITOR_GRAPH_ON;
 extern char LATITUDE[16];
 extern char LONGITUDE[16];
+extern char EMAIL[128];
 extern int MYALTITUDE;
 
 extern bool THINGSPEAK_ON;

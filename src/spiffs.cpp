@@ -77,6 +77,7 @@ bool loadConfig() {
   FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
   
   SECOND_THP = json["SECOND_THP"];
+  _safeCpy(SECOND_THP_MODEL, json["SECOND_THP_MODEL"], "Non", 32);
   
   FIRST_THP_SDA = json["FIRST_THP_SDA"];
   FIRST_THP_SCL = json["FIRST_THP_SCL"];
@@ -106,6 +107,7 @@ bool loadConfig() {
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
   _safeCpy(LATITUDE, json["LATITUDE"], "50.263911", 16);
   _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711", 16);
+  _safeCpy(EMAIL, json["EMAIL"], "email@mail.pl", 128);
   MYALTITUDE = json["MYALTITUDE"];
 
   THINGSPEAK_ON = json["THINGSPEAK_ON"];
@@ -183,7 +185,9 @@ bool loadConfig() {
     Serial.println(FREQUENTMEASUREMENT);
 
 	Serial.print(F("Loaded SECOND_THP: "));
-	Serial.println(SECOND_THP);
+	Serial.println(SECOND_THP_MODEL);
+	Serial.print(F("Loaded SECOND_THP_MODEL: "));
+	Serial.println(SECOND_THP_MODEL);
 	
 	Serial.print(F("Loaded FIRST_THP_SDA: "));
 	Serial.println(FIRST_THP_SDA);
@@ -233,6 +237,8 @@ bool loadConfig() {
     Serial.println(LATITUDE);
     Serial.print(F("Loaded LONGITUDE: "));
     Serial.println(LONGITUDE);
+    Serial.print(F("Loaded EMAIL: "));
+    Serial.println(EMAIL);
     Serial.print(F("Loaded MYALTITUDE: "));
     Serial.println(MYALTITUDE);
 
@@ -363,6 +369,7 @@ bool saveConfig() {
   json["FREQUENTMEASUREMENT"] = bool(FREQUENTMEASUREMENT);
 
   json["SECOND_THP"] = bool(SECOND_THP);
+  json["SECOND_THP_MODEL"] = String(SECOND_THP_MODEL);
 
   json["FIRST_THP_SDA"] = int(FIRST_THP_SDA);
   json["FIRST_THP_SCL"] = int(FIRST_THP_SCL);
@@ -392,6 +399,7 @@ bool saveConfig() {
   json["AIRMONITOR_GRAPH_ON"] = bool(AIRMONITOR_GRAPH_ON);
   json["LATITUDE"] = String(LATITUDE);
   json["LONGITUDE"] = String(LONGITUDE);
+  json["EMAIL"] = String(EMAIL);
   json["MYALTITUDE"] = int(MYALTITUDE);
 
   json["THINGSPEAK_ON"] = bool(THINGSPEAK_ON);

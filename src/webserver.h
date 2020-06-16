@@ -359,6 +359,26 @@ String _addTHP_MODELSelect(const String &key, const String &value) {
   return input;
 }
 
+String _addSECOND_THP_MODELSelect(const String &key, const String &value) {
+  String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
+  input.replace("{key}", key);
+  input += _addOption("BME280", "BME280", value);
+  if (strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
+    if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
+      input += _addOption("BME280-SparkFun", "BME280-SparkFun", value);
+    }
+  }
+  input += _addOption("SHT1x", "SHT1x", value);
+  input += _addOption("HTU21", "SHT21/HTU21D", value);
+  input += _addOption("DHT22", "DHT22", value);
+  input += _addOption("BMP280", "BMP280", value);
+  input += _addOption("DS18B20", "DS18B20", value);
+
+  input += _addOption("Non", (TEXT_WITHOUTSENSOR), value);
+  input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
+  return input;
+}
+
 String _addDUST_MODELSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace("{key}", key);
@@ -1378,6 +1398,7 @@ void handle_config_device_post() {
   char oldTHP_MODEL[32];
   strcpy(oldTHP_MODEL, THP_MODEL);
   _parseAsCString(THP_MODEL, WebServer.arg("THP_MODEL"), 32);
+  _parseAsCString(SECOND_THP_MODEL, WebServer.arg("SECOND_THP_MODEL"), 32);
 
   if (strcmp(THP_MODEL, oldTHP_MODEL) and !strcmp(THP_MODEL, "BME280-SparkFun")) {
     need_update = 1;
@@ -1540,6 +1561,8 @@ void handle_config_services_post() {
 
   _parseAsCString(LATITUDE, WebServer.arg("LATITUDE"), 16);
   _parseAsCString(LONGITUDE, WebServer.arg("LONGITUDE"), 16);
+  _parseAsCString(EMAIL, WebServer.arg("EMAIL"), 128);
+  
 
   THINGSPEAK_ON = _parseAsBool(WebServer.arg("THINGSPEAK_ON"));
   THINGSPEAK_GRAPH_ON = _parseAsBool(WebServer.arg("THINGSPEAK_GRAPH_ON"));

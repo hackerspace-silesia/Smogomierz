@@ -11,6 +11,7 @@ char DUST_MODEL[32] = "Non";
 bool FREQUENTMEASUREMENT = false;
 
 bool SECOND_THP = false;
+char SECOND_THP_MODEL[32] = "Non";
 
 #ifdef ARDUINO_ARCH_ESP8266
 char CONFIG_FIRST_THP_SDA[8] = "D3";
@@ -50,6 +51,7 @@ bool AIRMONITOR_ON = false;
 bool AIRMONITOR_GRAPH_ON = true;
 char LATITUDE[16] = "50.263911";
 char LONGITUDE[16] = "18.995711";
+char EMAIL[128] = "email@mail.pl";
 int MYALTITUDE = 271;
 
 bool THINGSPEAK_ON = false;

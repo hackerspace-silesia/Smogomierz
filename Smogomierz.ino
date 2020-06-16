@@ -79,10 +79,10 @@
 
   Szkic używa 572208 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 58404 bajtów (71%) pamięci dynamicznej, pozostawiając 23516 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-  
+
   Szkic używa 576960 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46608 bajtów (56%) pamięci dynamicznej, pozostawiając 35312 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-  
+
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
@@ -323,6 +323,8 @@ int pmMeasurements[10][3];
 #endif
 int iPM, averagePM1, averagePM25, averagePM4, averagePM10 = 0;
 float currentTemperature, currentHumidity, currentPressure = 0;
+float currentTemperature_THP1, currentHumidity_THP1, currentPressure_THP1 = 0;
+float currentTemperature_THP2, currentHumidity_THP2, currentPressure_THP2 = 0;
 float calib = 1;
 
 bool need_update = false;
@@ -1511,13 +1513,13 @@ void takeTHPMeasurements() {
         Serial.println(F("Measurements from BME280!\n"));
       }
 #ifdef ARDUINO_ARCH_ESP8266
-      currentTemperature = BMESensor.temperature;
-      currentPressure = BMESensor.seaLevelForAltitude(MYALTITUDE);
-      currentHumidity = BMESensor.humidity;
+      currentTemperature_THP1 = BMESensor.temperature;
+      currentPressure_THP1 = BMESensor.seaLevelForAltitude(MYALTITUDE);
+      currentHumidity_THP1 = BMESensor.humidity;
 #elif defined ARDUINO_ARCH_ESP32
-      currentTemperature = (bme.readTemperature()); // maybe *0.89 ?
-      currentPressure = (bme.seaLevelForAltitude(MYALTITUDE, (bme.readPressure() / 100.0F)));
-      currentHumidity = (bme.readHumidity()); // maybe *0.89 ?
+      currentTemperature_THP1 = (bme.readTemperature()); // maybe *0.89 ?
+      currentPressure_THP1 = (bme.seaLevelForAltitude(MYALTITUDE, (bme.readPressure() / 100.0F)));
+      currentHumidity_THP1 = (bme.readHumidity()); // maybe *0.89 ?
 #endif
 
     } else {
@@ -1530,8 +1532,8 @@ void takeTHPMeasurements() {
       if (DEBUG) {
         Serial.println(F("Measurements from HTU21!\n"));
       }
-      currentTemperature = myHTU21D.readTemperature();
-      currentHumidity = myHTU21D.readHumidity();
+      currentTemperature_THP1 = myHTU21D.readTemperature();
+      currentHumidity_THP1 = myHTU21D.readHumidity();
     } else {
       if (DEBUG) {
         Serial.println(F("No measurements from HTU21D!\n"));
@@ -1542,8 +1544,8 @@ void takeTHPMeasurements() {
       if (DEBUG) {
         Serial.println(F("Measurements from BMP280!\n"));
       }
-      currentTemperature = bmp.readTemperature();
-      currentPressure = (bmp.readPressure()) / 100;
+      currentTemperature_THP1 = bmp.readTemperature();
+      currentPressure_THP1 = (bmp.readPressure()) / 100;
     } else {
       if (DEBUG) {
         Serial.println(F("No measurements from BMP280!\n"));
@@ -1554,8 +1556,8 @@ void takeTHPMeasurements() {
       if (DEBUG) {
         Serial.println(F("Measurements from DHT22!\n"));
       }
-      currentTemperature = dht.readTemperature();
-      currentHumidity = dht.readHumidity();
+      currentTemperature_THP1 = dht.readTemperature();
+      currentHumidity_THP1 = dht.readHumidity();
     } else {
       if (DEBUG) {
         Serial.println(F("No measurements from DHT22!\n"));
@@ -1566,8 +1568,8 @@ void takeTHPMeasurements() {
       if (DEBUG) {
         Serial.println(F("Measurements from SHT1x!\n"));
       }
-      currentTemperature = sht1x.readTemperatureC();
-      currentHumidity = sht1x.readHumidity();
+      currentTemperature_THP1 = sht1x.readTemperatureC();
+      currentHumidity_THP1 = sht1x.readHumidity();
     } else {
       if (DEBUG) {
         Serial.println(F("No measurements from SHT1x!\n"));
@@ -1579,13 +1581,108 @@ void takeTHPMeasurements() {
         Serial.println(F("Measurements from DS18B20!\n"));
       }
       DS18B20.requestTemperatures();
-      currentTemperature = DS18B20.getTempCByIndex(0);
+      currentTemperature_THP1 = DS18B20.getTempCByIndex(0);
     } else {
       if (DEBUG) {
         Serial.println(F("No measurements from DS18B20!\n"));
       }
     }
   }
+
+  if (SECOND_THP) {
+    if (!strcmp(SECOND_THP_MODEL, "BME280")) {
+#ifdef ARDUINO_ARCH_ESP8266
+      BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
+      //yield();
+#endif
+      if (checkBmeStatus() == true) {
+        if (DEBUG) {
+          Serial.println(F("Measurements from BME280!\n"));
+        }
+#ifdef ARDUINO_ARCH_ESP8266
+        currentTemperature_THP2 = BMESensor.temperature;
+        currentPressure_THP2 = BMESensor.seaLevelForAltitude(MYALTITUDE);
+        currentHumidity_THP2 = BMESensor.humidity;
+#elif defined ARDUINO_ARCH_ESP32
+        currentTemperature_THP2 = (bme.readTemperature()); // maybe *0.89 ?
+        currentPressure_THP2 = (bme.seaLevelForAltitude(MYALTITUDE, (bme.readPressure() / 100.0F)));
+        currentHumidity_THP2 = (bme.readHumidity()); // maybe *0.89 ?
+#endif
+
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from BME280!\n"));
+        }
+      }
+    } else if (!strcmp(SECOND_THP_MODEL, "HTU21")) {
+      if (checkHTU21DStatus() == true) {
+        if (DEBUG) {
+          Serial.println(F("Measurements from HTU21!\n"));
+        }
+        currentTemperature_THP2 = myHTU21D.readTemperature();
+        currentHumidity_THP2 = myHTU21D.readHumidity();
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from HTU21D!\n"));
+        }
+      }
+    } else if (!strcmp(SECOND_THP_MODEL, "BMP280")) {
+      if (checkBmpStatus() == true) {
+        if (DEBUG) {
+          Serial.println(F("Measurements from BMP280!\n"));
+        }
+        currentTemperature_THP2 = bmp.readTemperature();
+        currentPressure_THP2 = (bmp.readPressure()) / 100;
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from BMP280!\n"));
+        }
+      }
+    } else if (!strcmp(SECOND_THP_MODEL, "DHT22")) {
+      if (checkDHT22Status() == true) {
+        if (DEBUG) {
+          Serial.println(F("Measurements from DHT22!\n"));
+        }
+        currentTemperature_THP2 = dht.readTemperature();
+        currentHumidity_THP2 = dht.readHumidity();
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from DHT22!\n"));
+        }
+      }
+    } else if (!strcmp(SECOND_THP_MODEL, "SHT1x")) {
+      if (checkSHT1xStatus() == true) {
+        if (DEBUG) {
+          Serial.println(F("Measurements from SHT1x!\n"));
+        }
+        currentTemperature_THP2 = sht1x.readTemperatureC();
+        currentHumidity_THP2 = sht1x.readHumidity();
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from SHT1x!\n"));
+        }
+      }
+    } else if (!strcmp(SECOND_THP_MODEL, "DS18B20")) {
+      if (checkDS18B20Status() == true) {
+        if (DEBUG) {
+          Serial.println(F("Measurements from DS18B20!\n"));
+        }
+        DS18B20.requestTemperatures();
+        currentTemperature_THP2 = DS18B20.getTempCByIndex(0);
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from DS18B20!\n"));
+        }
+      }
+    }
+  }
+
+
+
+
+  currentTemperature = currentTemperature_THP1;
+  currentHumidity = currentHumidity_THP1;
+  currentPressure = currentPressure_THP1;
 
 }
 

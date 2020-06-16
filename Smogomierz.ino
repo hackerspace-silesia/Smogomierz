@@ -444,7 +444,7 @@ bool checkDS18B20Status() {
 
 void minutesToSeconds() {
   DUST_interval = 1000; // 1 second
-  SENDING_FREQUENCY_AIRMONITOR_interval = 1000;
+  SENDING_FREQUENCY_interval = 1000;
   SENDING_DB_FREQUENCY_interval = 1000;
 }
 

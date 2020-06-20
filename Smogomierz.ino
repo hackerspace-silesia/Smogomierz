@@ -186,6 +186,7 @@
 #define ASCII_ESC 27
 char bufout[10];
 BME280<> BMESensor;
+BME280<> BMESensor_2;
 #elif defined ARDUINO_ARCH_ESP32 // VIN - 3V; GND - G; SCL - D17; SDA - D16
 //#define I2C_SDA = FIRST_THP_SDA
 //#define I2C_SCL = FIRST_THP_SCL
@@ -628,6 +629,12 @@ void setup() {
   fs_setup();
   yield();
 
+  //temporary solution!
+  if (SECOND_THP) {
+    strcpy(SECOND_THP_MODEL, THP_MODEL);
+  }
+
+
 #ifdef ARDUINO_ARCH_ESP32
   disableCore0WDT();
   // disableCore1WDT(); // ESP32-solo-1 so only CORE0!
@@ -846,6 +853,9 @@ void setup() {
     //Wire.begin(0, 2);
     //Wire.begin(FIRST_THP_SDA, FIRST_THP_SCL);
     BMESensor.begin(FIRST_THP_SDA, FIRST_THP_SCL);
+    if (SECOND_THP) {
+      BMESensor_2.begin(SECOND_THP_SDA, SECOND_THP_SCL);
+    }
 #elif defined ARDUINO_ARCH_ESP32
     bme.begin();
 #endif
@@ -1592,7 +1602,7 @@ void takeTHPMeasurements() {
   if (SECOND_THP) {
     if (!strcmp(SECOND_THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
-      BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
+      BMESensor_2.refresh(SECOND_THP_SDA, SECOND_THP_SCL);
       //yield();
 #endif
       if (checkBmeStatus() == true) {
@@ -1600,9 +1610,9 @@ void takeTHPMeasurements() {
           Serial.println(F("Measurements from BME280!\n"));
         }
 #ifdef ARDUINO_ARCH_ESP8266
-        currentTemperature_THP2 = BMESensor.temperature;
-        currentPressure_THP2 = BMESensor.seaLevelForAltitude(MYALTITUDE);
-        currentHumidity_THP2 = BMESensor.humidity;
+        currentTemperature_THP2 = BMESensor_2.temperature;
+        currentPressure_THP2 = BMESensor_2.seaLevelForAltitude(MYALTITUDE);
+        currentHumidity_THP2 = BMESensor_2.humidity;
 #elif defined ARDUINO_ARCH_ESP32
         currentTemperature_THP2 = (bme.readTemperature()); // maybe *0.89 ?
         currentPressure_THP2 = (bme.seaLevelForAltitude(MYALTITUDE, (bme.readPressure() / 100.0F)));
@@ -1677,9 +1687,7 @@ void takeTHPMeasurements() {
     }
   }
 
-
-
-
+//temporary solution!
   currentTemperature = currentTemperature_THP1;
   currentHumidity = currentHumidity_THP1;
   currentPressure = currentPressure_THP1;
@@ -1906,12 +1914,14 @@ void takeSleepPMMeasurements() {
   if (!strcmp(DUST_MODEL, "SPS30")) {
 
     // WAKE UP SPS30!!
-    //sps30.wakeup();
+    sps30.wakeup();
+    delay(10);
     // reset SPS30 connection
-    if (sps30.reset() == false) {
+    /*
+      if (sps30.reset() == false) {
       Errorloop((char *) "could not reset.", 0);
-    }
-
+      }
+    */
     unsigned int current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {

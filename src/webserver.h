@@ -190,6 +190,21 @@ void handle_root() {
     message.replace(F("PM2.5: {colorAveragePM25} {averagePM25} µg/m³"), "");
     message.replace(F("PM10: {colorAveragePM10} {averagePM10} µg/m³"), "");
   }
+  
+  if (SECOND_THP) {
+    if (!strcmp(SECOND_THP_MODEL, "BME280")) {
+      message += FPSTR(WEB_ROOT_PAGE_MEASUREMENTS_THP2);
+      message.replace(F("{TEXT_TEMPERATURE}"), (TEXT_TEMPERATURE));
+      message.replace(F("{TEXT_HUMIDITY}"), (TEXT_HUMIDITY));
+      message.replace(F("{TEXT_PRESSURE}"), (TEXT_PRESSURE));
+      message.replace(F("{TEXT_DEWPOINT}"), (TEXT_DEWPOINT));
+
+      message.replace(F("{Temperature}"), String(int(currentTemperature_THP2)));
+      message.replace(F("{Pressure}"), String(int(currentPressure_THP2)));
+      message.replace(F("{Humidity}"), String(int(currentHumidity_THP2)));
+      message.replace(F("{Dewpoint}"), String(int(pow((currentHumidity_THP2) / 100, 0.125) * (112 + 0.9 * (currentTemperature_THP2)) + 0.1 * (currentTemperature_THP2) - 112)));
+    }
+  }
 
   if (AIRMONITOR_GRAPH_ON) {
     message += FPSTR(WEB_ROOT_PAGE_AIRMONITOR_GRAPH);
@@ -676,6 +691,13 @@ if(SECOND_THP) {
 	message.replace(F("{SECOND_THP_SCL}"), _add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SCL", CONFIG_SECOND_THP_SCL));
 } else {
 	message.replace(F("{WEB_CONFIG_DEVICE_PAGE_SECOND_THP}"), "");
+}
+
+if(SECOND_THP) {
+	message.replace(F("{}"), "");
+	message.replace(F("{}"), "");
+} else {
+	message.replace(F("{}"), "");
 }
 
 message.replace(F("{TEXT_DUST_TX_RX}"), (TEXT_DUST_TX_RX));

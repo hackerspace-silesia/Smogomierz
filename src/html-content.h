@@ -94,6 +94,14 @@ const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = R"rawliteral(<main role='main'
 	<h3>PM10: {colorAveragePM10} {averagePM10} µg/m³</h3>
 	)rawliteral";
 
+const char WEB_ROOT_PAGE_MEASUREMENTS_THP2[] PROGMEM = R"rawliteral(
+		<br><br>
+		<h3>{TEXT_TEMPERATURE}: {Temperature} °C</h3>
+		<h3>{TEXT_HUMIDITY}: {Humidity} %</h3>
+		<h3>{TEXT_PRESSURE}: {Pressure} hPa</h3>
+		<h3>{TEXT_DEWPOINT}: {Dewpoint} °C</h3><p>
+		)rawliteral";
+		
 const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = R"rawliteral(<hr>
 	<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>
 	<iframe src='http://metrics.airmonitor.pl:3000/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>

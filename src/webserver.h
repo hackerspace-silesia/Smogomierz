@@ -630,6 +630,7 @@ void _handle_config_device(bool is_success) {
   message.replace(F("{LanguageSelect}"), _addLanguageSelect("LANGUAGE", LANGUAGE));
   message.replace(F("{TEXT_TEMPHUMIPRESSSENSOR}"), (TEXT_TEMPHUMIPRESSSENSOR));
   message.replace(F("{THP_MODELSelect}"), _addTHP_MODELSelect("THP_MODEL", THP_MODEL));
+
   message.replace(F("{TEXT_PMSENSOR}"), (TEXT_PMSENSOR));
   message.replace(F("{DUST_MODELSelect}"), _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL));
 

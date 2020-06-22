@@ -1687,7 +1687,7 @@ void takeTHPMeasurements() {
     }
   }
 
-//temporary solution!
+  //temporary solution!
   currentTemperature = currentTemperature_THP1;
   currentHumidity = currentHumidity_THP1;
   currentPressure = currentPressure_THP1;
@@ -1915,13 +1915,13 @@ void takeSleepPMMeasurements() {
 
     // WAKE UP SPS30!!
     sps30.wakeup();
-    delay(10);
+    delay(100);
     // reset SPS30 connection
-    /*
-      if (sps30.reset() == false) {
+
+    if (sps30.reset() == false) {
       Errorloop((char *) "could not reset.", 0);
-      }
-    */
+    }
+
     unsigned int current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {

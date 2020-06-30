@@ -2,7 +2,7 @@
   ESP8266 core for Arduino - 2.6.3
   Arduino core for the ESP32 - 1.0.4
 
-  Adafruit Unified Sensor - 1.1.2
+  Adafruit Unified Sensor - 1.1.4
 */
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******

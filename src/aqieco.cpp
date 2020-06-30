@@ -59,9 +59,9 @@ void sendDataToAqiEco(float currentTemperature, float currentPressure, float cur
     JsonObject P2 = sensordatavalues.createNestedObject();
     P2["value_type"] = "SPS30_P2";
     P2["value"] = averagePM25;
-    JsonObject P3 = sensordatavalues.createNestedObject();
-    P2["value_type"] = "SPS30_P4";
-    P2["value"] = averagePM4;
+    JsonObject P4 = sensordatavalues.createNestedObject();
+    P4["value_type"] = "SPS30_P4";
+    P4["value"] = averagePM4;
 }
 
   if (!strcmp(THP_MODEL, "BME280")) {

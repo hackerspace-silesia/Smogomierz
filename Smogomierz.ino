@@ -1,8 +1,9 @@
 /*
-  ESP8266 core for Arduino - 2.6.3
+  ESP8266 core for Arduino - 2.6.4
   Arduino core for the ESP32 - 1.0.4
 
   Adafruit Unified Sensor - 1.1.4
+  DallasTemperature - 3.8.0
 */
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******

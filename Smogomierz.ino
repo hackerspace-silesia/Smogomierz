@@ -1235,7 +1235,7 @@ void sendDataToExternalDBs() {
       influx.setBucket(INFLUXDB_BUCKET);
       influx.setToken(INFLUXDB_TOKEN);
     }
-    if (INFLUXDB_USER != "username" || INFLUXDB_USER != "" && INFLUXDB_PASSWORD != "password" || INFLUXDB_PASSWORD != "") {
+    if ( (strcmp( INFLUXDB_USER, "username") != 0 || INFLUXDB_USER != NULL) && (strcmp(INFLUXDB_PASSWORD, "password") != 0 || INFLUXDB_PASSWORD != NULL) ) {
       influx.setDbAuth(INFLUXDB_DATABASE, INFLUXDB_USER, INFLUXDB_PASSWORD);
     } else {
       influx.setDb(INFLUXDB_DATABASE);

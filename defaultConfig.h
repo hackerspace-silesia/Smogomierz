@@ -48,7 +48,7 @@ bool LUFTDATEN_ON = false;
 bool SMOGLIST_ON = true;
 
 bool AIRMONITOR_ON = false;
-bool AIRMONITOR_GRAPH_ON = true;
+bool AIRMONITOR_GRAPH_ON = false;
 char LATITUDE[16] = "50.263911";
 char LONGITUDE[16] = "18.995711";
 char EMAIL[128] = "email@mail.pl";

@@ -127,8 +127,8 @@
 #ifdef ARDUINO_ARCH_ESP8266
 #include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 4.01.2021
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 4.01.2021
-//#include "src/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 4.01.2021
+// #include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 4.01.2021
+#include "src/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 4.01.2021
 #endif
 
 

@@ -2,7 +2,13 @@
 #define __SDS_ABSTRACT_SERIAL_H__
 
 #ifndef ARDUINO_SAMD_VARIANT_COMPLIANCE // there is no SoftwareSerial available (needed) on SAMD boards.
+
+#ifdef ARDUINO_ARCH_ESP8266
 #include <SoftwareSerial.h>
+#elif defined ARDUINO_ARCH_ESP32
+#include <HardwareSerial.h>
+#endif
+	
 #endif
 #include <HardwareSerial.h>
 

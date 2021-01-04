@@ -46,7 +46,7 @@ Główne zmiany planowane w kolejnych aktualizacjach. Poza wymienionymi poniżej
 + [x] 2.7.6 - Aktualizacja bibliotek, drobne poprawki w działaniu, ekstremalna optymalizacja wykorzystywanej pamięci oraz dodanie wsparcia dla miernika temperatury - DS18b20
 + [x] 2.7.8 - Dodanie możliwości zmiany pinów dla mierników temperatury oraz poziomu pyłu
 + [x] 2.8.0 - Jednoczesna obsługa dwóch takich samych mierników temperatury/wilgotności/ciśneinia. Wyświetlanie danych pomiarowych z obu mierników.
-+ [ ] 2.8.5 - W przypadku dwóch takich samych meirników temperatury/wilgotności/ciśneinia - możliwość możliwość wyboru, które dane z mają być wykorzystywane
-+ [ ] 2.9.0 - Możliwość wysyłania wszystkich danych z obu mierników temperatury/wilgotności/ciśneinia do zewnętrznych baz danych
-+ [ ] 2.9.5 - Jednoczesna obsługa dwóch różnych mierników temperatury/wilgotności/ciśneinia
-+ [ ] 3.0.0 - Integracja z Domoticzem i/lub aplikacją supla
++ [ ] 2.8.5 - Natywne, nieoficjalne(bez MFi) wsparcie dla Apple HomeKit.
++ [ ] 2.9.0 - W przypadku dwóch takich samych meirników temperatury/wilgotności/ciśneinia - możliwość możliwość wyboru, które dane z mają być wykorzystywane.
++ [ ] 2.9.5 - Możliwość wysyłania wszystkich danych z obu mierników temperatury/wilgotności/ciśneinia do zewnętrznych baz danych.
++ [ ] 3.0.0 - Integracja z Domoticzem i/lub aplikacją supla.

@@ -352,6 +352,49 @@ WebServer WebServer(80);
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 
+
+
+
+// https://github.com/Yurik72/ESPHap
+// https://github.com/Yurik72/ESPHap/issues/14 << !!!!
+// HomeKit -- START
+/*
+#ifdef ARDUINO_ARCH_ESP32
+#include <SPIFFS.h>
+#endif
+
+  extern "C" {
+#include "homeintegration.h"
+  }
+
+#ifdef ARDUINO_ARCH_ESP8266
+#include <homekitintegrationcpp.h>
+#endif
+  // #include <hapfilestorage\hapfilestorage.hpp> // ???
+  homekit_service_t* hapservice = {0};
+  String pair_file_name = "/homekit_pair.dat";
+
+  homekit_service_t* homekit_temperature = NULL;
+  homekit_service_t* homekit_humidity = NULL;
+  homekit_service_t* homekit_pm10_level = NULL;
+  homekit_service_t* homekit_pm25_level = NULL;
+
+  homekit_characteristic_t*  pm10_level_characteristic = NULL;
+  homekit_characteristic_t*  pm25_level_characteristic = NULL;
+
+  struct device_data_t {
+    float homekit_temperature = 22.0;
+    float homekit_humidity = 50.0;
+    float homekit_pm10_level = 0.0;
+    float homekit_pm25_level = 0.0;
+  };
+  device_data_t homekit_DeviceData;
+*/
+// HomeKit -- END
+
+
+
+
 #ifndef ASYNC_WEBSERVER_ON
 WiFiManager wifiManager;
 #endif
@@ -1020,6 +1063,54 @@ void setup() {
   //Serial.printf("HTTPServer ready! http://%s.local/\n", device_name);
   Serial.print("HTTPServer ready! http://" + String(device_name) + ".local/\n");
   delay(300);
+
+
+  // HomeKit -- START
+  /*
+  if (HOMEKIT_SUPPORT) {
+#ifdef ARDUINO_ARCH_ESP8266
+    // disable_extra4k_at_link_time(); // ?????
+#endif
+    // delete old keys!
+    // SPIFFS.remove(pair_file_name);
+    init_hap_storage();
+    set_callback_storage_change(storage_changed);
+    hap_setbase_accessorytype(homekit_accessory_category_sensor);
+
+    // Setup ID in format "XXXX" (where X is digit or latin capital letter)
+    // Used for pairing using QR code
+    // default = "SMOG"
+    hap_set_device_setupId((char*)"SMOG");
+
+    // default password = "111-11-111"
+    hap_set_device_password((char*)HOMEKIT_PASSWORD);
+
+    /// init base properties
+    char homekit_id[12];
+    char homekit_software_version[8];
+    String(device_name).toCharArray(homekit_id, String(device_name).length());
+    String(String(SOFTWAREVERSION).substring(0, 5)).toCharArray(homekit_software_version, 8);
+
+#ifdef ARDUINO_ARCH_ESP8266
+    hap_initbase_accessory_service("Smogly", "Smogly", homekit_id, "Smogly-ESP8266", homekit_software_version);
+#else
+    hap_initbase_accessory_service("Smogly", "Smogly", homekit_id, "Smogly-ESP32", homekit_software_version);
+#endif
+
+    homekit_temperature = hap_add_temperature_service("Temperature");
+    homekit_humidity = hap_add_humidity_service("Humidity");
+    homekit_pm10_level = hap_add_air_quality_service("PM10");
+    homekit_pm25_level = hap_add_air_quality_service("PM2.5");
+
+    pm10_level_characteristic = homekit_service_characteristic_by_type(homekit_pm10_level, HOMEKIT_CHARACTERISTIC_PM10_DENSITY);
+    pm25_level_characteristic = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);
+
+    //and finally init HAP
+    hap_init_homekit_server();
+  }
+  */
+  // HomeKit -- END
+
 }
 
 void loop() {
@@ -1698,6 +1789,13 @@ void takeTHPMeasurements() {
   currentHumidity = currentHumidity_THP1;
   currentPressure = currentPressure_THP1;
 
+/*
+  if (HOMEKIT_SUPPORT) {
+    homekit_DeviceData.homekit_temperature = currentTemperature;
+    homekit_DeviceData.homekit_humidity = currentHumidity;
+    notify_hap();
+  }
+*/
 }
 
 void takeNormalnPMMeasurements() {
@@ -1772,6 +1870,7 @@ void takeNormalnPMMeasurements() {
     averagePM();
     iPM = 0;
   }
+
 }
 
 void takeSleepPMMeasurements() {
@@ -2106,6 +2205,14 @@ void averagePM() {
     Serial.print(F("\nAverage PM10: "));
     Serial.print(averagePM10);
   }
+
+/*
+  if (HOMEKIT_SUPPORT) {
+    homekit_DeviceData.homekit_pm10_level = averagePM10;
+    homekit_DeviceData.homekit_pm25_level = averagePM25;
+    notify_hap();
+  }
+*/
 }
 
 #ifdef DUSTSENSOR_SPS30
@@ -2269,3 +2376,89 @@ void ErrtoMess(char *mess, uint8_t r)
 }
 
 #endif
+
+// HomeKit -- START
+/*
+void init_hap_storage() {
+  Serial.print("init_hap_storage");
+#ifdef ARDUINO_ARCH_ESP32
+#define FORMAT_SPIFFS_IF_FAILED true
+  if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
+    Serial.println("SPIFFS Mount Failed");
+    return;
+  }
+#endif
+
+#ifdef ARDUINO_ARCH_ESP8266
+  File fsDAT = SPIFFS.open(pair_file_name, "r");
+#elif defined ARDUINO_ARCH_ESP32
+  File fsDAT = SPIFFS.open(pair_file_name);
+#endif
+
+  if (!fsDAT) {
+    Serial.println("Failed to read pair.dat");
+    return;
+  }
+  int size = hap_get_storage_size_ex();
+  char* buf = new char[size];
+  memset(buf, 0xff, size);
+  int readed = fsDAT.readBytes(buf, size);
+  //Serial.print("Readed bytes ->");
+  //Serial.println(readed);
+  hap_init_storage_ex(buf, size);
+  fsDAT.close();
+  delete []buf;
+
+}
+void storage_changed(char * szstorage, int size) {
+  SPIFFS.remove(pair_file_name);
+#ifdef ARDUINO_ARCH_ESP8266
+  File fsDAT = SPIFFS.open(pair_file_name, "w+");
+#elif defined ARDUINO_ARCH_ESP32
+  File fsDAT = SPIFFS.open(pair_file_name);
+#endif
+  if (!fsDAT) {
+    Serial.println("Failed to open pair.dat");
+    return;
+  }
+  fsDAT.write((uint8_t*)szstorage, size);
+
+  fsDAT.close();
+}
+
+void notify_hap() {
+  if (homekit_temperature) {
+    homekit_characteristic_t * ch_temp = homekit_service_characteristic_by_type(homekit_temperature, HOMEKIT_CHARACTERISTIC_CURRENT_TEMPERATURE);
+    if (ch_temp && !isnan(homekit_DeviceData.homekit_temperature) &&  ch_temp->value.float_value != homekit_DeviceData.homekit_temperature ) {
+      ch_temp->value.float_value = homekit_DeviceData.homekit_temperature;
+      homekit_characteristic_notify(ch_temp, ch_temp->value);
+    }
+  }
+
+  if (homekit_humidity) {
+    homekit_characteristic_t * ch_hum = homekit_service_characteristic_by_type(homekit_humidity, HOMEKIT_CHARACTERISTIC_CURRENT_RELATIVE_HUMIDITY);
+    if (ch_hum && !isnan(homekit_DeviceData.homekit_humidity) && ch_hum->value.float_value != homekit_DeviceData.homekit_humidity) {
+      ch_hum->value.float_value = homekit_DeviceData.homekit_humidity;
+      homekit_characteristic_notify(ch_hum, ch_hum->value);
+    }
+  }
+
+  if (homekit_pm10_level) {
+    homekit_characteristic_t * ch_homekit_pm10_level = homekit_service_characteristic_by_type(homekit_pm10_level, HOMEKIT_CHARACTERISTIC_PM10_DENSITY);
+    if (ch_homekit_pm10_level && !isnan(homekit_DeviceData.homekit_pm10_level) && ch_homekit_pm10_level->value.float_value != homekit_DeviceData.homekit_pm10_level) {
+      ch_homekit_pm10_level->value.float_value = homekit_DeviceData.homekit_pm10_level;
+      homekit_characteristic_notify(ch_homekit_pm10_level, ch_homekit_pm10_level->value);
+    }
+  }
+
+  if (homekit_pm25_level) {
+    homekit_characteristic_t * ch_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);
+    if (ch_homekit_pm25_level && !isnan(homekit_DeviceData.homekit_pm25_level) && ch_homekit_pm25_level->value.float_value != homekit_DeviceData.homekit_pm25_level) {
+      ch_homekit_pm25_level->value.float_value = homekit_DeviceData.homekit_pm25_level;
+      homekit_characteristic_notify(ch_homekit_pm25_level, ch_homekit_pm25_level->value);
+    }
+  }
+
+}
+*/
+// HomeKit -- END

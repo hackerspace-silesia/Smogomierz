@@ -112,3 +112,5 @@ char CONFIG_PASSWORD[256] = "password";
 char MODEL[32] = "white";
 float calib1 = 1.0;
 float calib2 = 1.0;
+
+bool HOMEKIT_SUPPORT = false;

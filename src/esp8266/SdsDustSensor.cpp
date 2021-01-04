@@ -1,6 +1,5 @@
 #include "SdsDustSensor.h"
 
-#ifdef ARDUINO_ARCH_ESP8266
 void SdsDustSensor::write(const Command &command) {
   for (int i = 0; i < Command::length; ++i) {
     sdsStream->write(command.bytes[i]);
@@ -117,7 +116,3 @@ Status SdsDustSensor::retryRead(byte responseId) {
 
   return status;
 }
-
-#elif defined ARDUINO_ARCH_ESP32
-
-#endif

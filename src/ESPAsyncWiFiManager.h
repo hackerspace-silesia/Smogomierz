@@ -151,7 +151,7 @@ public:
   AsyncWiFiManager(AsyncWebServer * server, DNSServer *dns);
   #endif
 
-  void          scan();
+  void          scan(boolean async = false);
   String        scanModal();
   void          loop();
   void          safeLoop();
@@ -218,7 +218,7 @@ private:
 
 
   boolean         _modeless;
-  int             scannow;
+  unsigned long   scannow;
   int             shouldscan;
   boolean         needInfo = true;
 
@@ -267,7 +267,7 @@ private:
   int           connectWifi(String ssid, String pass);
   uint8_t       waitForConnectResult();
   void          setInfo();
-
+  void			copySSIDInfo(wifi_ssid_count_t n);
   String networkListAsString();
 
   void          handleRoot(AsyncWebServerRequest *);

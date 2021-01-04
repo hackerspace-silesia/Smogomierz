@@ -1,6 +1,5 @@
 #include "SdsDustSensorResults.h"
 
-#ifdef ARDUINO_ARCH_ESP8266
 String Result::statusToString() {
   switch (status) {
     case Status::Ok: return "Ok";
@@ -12,7 +11,3 @@ String Result::statusToString() {
     default: return "undefined status";
   }
 }
-#elif defined ARDUINO_ARCH_ESP32
-
-#endif
-

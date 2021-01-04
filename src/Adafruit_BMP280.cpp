@@ -382,11 +382,11 @@ float Adafruit_BMP280::readAltitude(float seaLevelhPa) {
 }
 
 /*!
- * Calculates the pressure at sea level (in hPa) from the specified altitude
- * (in meters), and atmospheric pressure (in hPa).
- * @param  altitude      Altitude in meters
+ * Calculates the pressure at sea level (QFH) from the specified altitude,
+ * and atmospheric pressure (QFE).
+ * @param  altitude      Altitude in m
  * @param  atmospheric   Atmospheric pressure in hPa
- * @return The approximate pressure
+ * @return The approximate pressure in hPa
  */
 float Adafruit_BMP280::seaLevelForAltitude(float altitude, float atmospheric) {
   // Equation taken from BMP180 datasheet (page 17):
@@ -396,6 +396,19 @@ float Adafruit_BMP280::seaLevelForAltitude(float altitude, float atmospheric) {
   // at high altitude.  See this thread for more information:
   // http://forums.adafruit.com/viewtopic.php?f=22&t=58064
   return atmospheric / pow(1.0 - (altitude / 44330.0), 5.255);
+}
+
+/*!
+    @brief  calculates the boiling point  of water by a given pressure
+    @param pressure pressure in hPa
+    @return temperature in °C
+*/
+
+float Adafruit_BMP280::waterBoilingPoint(float pressure) {
+  // Magnusformular for calculation of the boiling point of water at a given
+  // pressure
+  return (234.175 * log(pressure / 6.1078)) /
+         (17.08085 - log(pressure / 6.1078));
 }
 
 /*!

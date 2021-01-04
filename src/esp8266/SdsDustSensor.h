@@ -23,8 +23,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifdef ARDUINO_ARCH_ESP8266
-
 #ifndef __SDS_DUST_SENSOR_H__
 #define __SDS_DUST_SENSOR_H__
 
@@ -38,7 +36,7 @@
 class SdsDustSensor {
 public:
 
-#ifndef ARDUINO_SAMD_VARIANT_COMPLIANCE // there is no SoftwareSerial available (needed) on SAMD boards.
+#if !defined(ARDUINO_SAMD_VARIANT_COMPLIANCE) && !defined(ESP32)
   SdsDustSensor(int pinRx,
                 int pinTx,
                 int retryDelayMs = RETRY_DELAY_MS_DEFAULT,
@@ -185,6 +183,3 @@ private:
 };
 
 #endif // __SDS_DUST_SENSOR_H__
-
-#elif defined ARDUINO_ARCH_ESP32
-#endif

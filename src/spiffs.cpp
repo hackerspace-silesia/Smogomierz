@@ -53,8 +53,8 @@ bool loadConfig() {
   StaticJsonDocument<capacity> jsonBuffer;
   //DynamicJsonDocument jsonBuffer(ESP.getMaxFreeBlockSize());
 #elif defined ARDUINO_ARCH_ESP32
-  //StaticJsonDocument<capacity> jsonBuffer;
-  DynamicJsonDocument jsonBuffer(ESP.getMaxAllocHeap());
+  StaticJsonDocument<capacity> jsonBuffer;
+  //DynamicJsonDocument jsonBuffer(ESP.getMaxAllocHeap());
 #endif
   deserializeJson(jsonBuffer, buf.get());
   JsonObject json = jsonBuffer.as<JsonObject>();
@@ -162,6 +162,8 @@ bool loadConfig() {
   _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 256);
 
   _safeCpy(MODEL, json["MODEL"], "black", 32);
+  
+  HOMEKIT_SUPPORT = json["HOMEKIT_SUPPORT"];
 
   // Real world application would store these values in some variables for
   // later use.
@@ -338,6 +340,9 @@ bool loadConfig() {
     Serial.print(F("Loaded MODEL: "));
     Serial.println(MODEL);
 
+    Serial.print(F("Loaded HOMEKIT_SUPPORT: "));
+    Serial.println(HOMEKIT_SUPPORT);
+
     Serial.print(F("Loaded PMSENSORVERSION: "));
     Serial.println(PMSENSORVERSION);
 
@@ -354,8 +359,8 @@ bool saveConfig() {
   StaticJsonDocument<capacity> jsonBuffer;
   //DynamicJsonDocument jsonBuffer(ESP.getMaxFreeBlockSize());
 #elif defined ARDUINO_ARCH_ESP32
-  //StaticJsonDocument<capacity> jsonBuffer;
-  DynamicJsonDocument jsonBuffer(ESP.getMaxAllocHeap());
+  StaticJsonDocument<capacity> jsonBuffer;
+  //DynamicJsonDocument jsonBuffer(ESP.getMaxAllocHeap());
 #endif
   JsonObject json = jsonBuffer.to<JsonObject>();
   json["DEVICENAME_AUTO"] = bool(DEVICENAME_AUTO);
@@ -454,6 +459,8 @@ bool saveConfig() {
   json["CONFIG_PASSWORD"] = String(CONFIG_PASSWORD);
 
   json["MODEL"] = String(MODEL);
+  
+  json["HOMEKIT_SUPPORT"] = bool(HOMEKIT_SUPPORT);  
 
 #ifdef ARDUINO_ARCH_ESP8266
   File configFile = SPIFFS.open("/config.json", "w");

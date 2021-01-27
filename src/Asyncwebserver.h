@@ -1751,3 +1751,73 @@ void handle_api(AsyncWebServerRequest *request) {
   //WebServer.send(200, "text/json", message);
   request->send(200, "text/json", message);
 }
+
+void homekit_reset(AsyncWebServerRequest *request) {
+  if (CONFIG_AUTH == true) {
+    /*
+      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+      //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+      return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+    */
+    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
+      request->requestAuthentication(NULL, false); // force basic auth
+    }
+  }
+  Serial.println("reset homekit...");
+
+  String pair_file_name = "/homekit_pair.dat";
+  SPIFFS.remove(pair_file_name);
+  
+  request->redirect("/");
+
+  //request->redirect("/");
+  delay(1000);
+  //Serial.println("Restart");
+  //ESP.restart();
+}
+
+void homekit_on(AsyncWebServerRequest *request) {
+  if (CONFIG_AUTH == true) {
+    /*
+      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+      //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+      return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+    */
+    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
+      request->requestAuthentication(NULL, false); // force basic auth
+    }
+  }
+  Serial.println("homekit on...");
+
+  HOMEKIT_SUPPORT = true;
+  saveConfig();
+  
+  request->redirect("/");
+
+  delay(1000);
+  Serial.println("Restart");
+  ESP.restart();
+}
+
+void homekit_off(AsyncWebServerRequest *request) {
+  if (CONFIG_AUTH == true) {
+    /*
+      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+      //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+      return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+    */
+    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
+      request->requestAuthentication(NULL, false); // force basic auth
+    }
+  }
+  Serial.println("homekit off...");
+
+  HOMEKIT_SUPPORT = false;
+  saveConfig();
+  
+  request->redirect("/");
+
+  delay(1000);
+  Serial.println("Restart");
+  ESP.restart();
+}

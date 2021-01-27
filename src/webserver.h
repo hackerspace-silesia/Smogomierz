@@ -2,6 +2,7 @@
 #include <ESP8266httpUpdate.h>
 #elif defined ARDUINO_ARCH_ESP32
 #include <Update.h>
+#include <SPIFFS.h>
 #endif
 
 #include <ArduinoJson.h> // 6.9.0 or later
@@ -781,6 +782,14 @@ message.replace(F("{DUST_RX}"), _add_DUST_TX_RX_Select("CONFIG_DUST_RX", CONFIG_
 #elif defined ARDUINO_ARCH_ESP32
   message.replace(F("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}"), "");
 #endif
+  
+#ifdef ARDUINO_ARCH_ESP8266
+  message.replace(F("{TEXT_HOMEKIT_SUPPORT}"), "");
+  message.replace(F("{HOMEKIT_SUPPORT_ON}"), "");
+#elif defined ARDUINO_ARCH_ESP32
+  message.replace(F("{TEXT_HOMEKIT_SUPPORT}"), "TEXT_HOMEKIT_SUPPORT");
+  message.replace(F("{HOMEKIT_SUPPORT_ON}"), _addBoolSelect("HOMEKIT_SUPPORT", HOMEKIT_SUPPORT));
+#endif
 
   message.replace(F("{WiFiEraseButton}"), _addWiFiErase());
   message.replace(F("{RestoreConfigButton}"), _addRestoreConfig());
@@ -1513,6 +1522,10 @@ void handle_config_device_post() {
 
   _parseAsCString(MODEL, WebServer.arg("MODEL"), 32);
 
+
+  HOMEKIT_SUPPORT = _parseAsBool(WebServer.arg("HOMEKIT_SUPPORT"));
+
+
   if (DEBUG) {
     Serial.println(F("POST CONFIG END!!"));
   }
@@ -1874,4 +1887,64 @@ void handle_api() {
 
   serializeJsonPretty(json, message);
   WebServer.send(200, "text/json", message);
+}
+
+void homekit_reset() {
+    if (CONFIG_AUTH == true) {
+      if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+        //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+        return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+      }
+    }
+  Serial.println("reset homekit...");
+
+  String pair_file_name = "/homekit_pair.dat";
+  SPIFFS.remove(pair_file_name);
+  
+  WebServer.sendHeader("Location", "/", true);
+
+  //request->redirect("/");
+  delay(1000);
+  //Serial.println("Restart");
+  //ESP.restart();
+}
+
+void homekit_on() {
+    if (CONFIG_AUTH == true) {
+      if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+        //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+        return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+      }
+    }
+  Serial.println("homekit on...");
+
+  HOMEKIT_SUPPORT = true;
+  saveConfig();
+
+  delay(1000);
+  
+  WebServer.sendHeader("Location", "/", true);
+  
+  Serial.println("Restart");
+  ESP.restart();
+}
+
+void homekit_off() {
+    if (CONFIG_AUTH == true) {
+      if (!WebServer.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
+        //return WebServer.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
+        return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
+      }
+    }
+  Serial.println("homekit off...");
+
+  HOMEKIT_SUPPORT = false;
+  saveConfig();
+  
+  delay(1000);
+  
+  WebServer.sendHeader("Location", "/", true);
+  
+  Serial.println("Restart");
+  ESP.restart();  
 }

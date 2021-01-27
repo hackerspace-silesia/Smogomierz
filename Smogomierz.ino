@@ -75,26 +75,28 @@
 /*
   ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
 
-  Szkic używa 572208 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 58404 bajtów (71%) pamięci dynamicznej, pozostawiając 23516 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 576960 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46608 bajtów (56%) pamięci dynamicznej, pozostawiając 35312 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   Szkic używa 579496 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 45768 bajtów (55%) pamięci dynamicznej, pozostawiając 36152 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  Szkic używa 580548 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 45888 bajtów (56%) pamięci dynamicznej, pozostawiając 36032 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
-
-  Szkic używa 1322374 bajtów (67%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 60752 bajtów (18%) pamięci dynamicznej, pozostawiając 266928 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   Szkic używa 1375786 bajtów (69%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 58664 bajtów (17%) pamięci dynamicznej, pozostawiając 269016 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   Szkic używa 1377866 bajtów (70%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  *** init homekit support:
+
+  Szkic używa 1543130 bajtów (78%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60808 bajtów (18%) pamięci dynamicznej, pozostawiając 266872 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -358,38 +360,41 @@ PubSubClient mqttclient(espClient);
 // https://github.com/Yurik72/ESPHap
 // https://github.com/Yurik72/ESPHap/issues/14 << !!!!
 // HomeKit -- START
-/*
 #ifdef ARDUINO_ARCH_ESP32
 #include <SPIFFS.h>
 #endif
 
-  extern "C" {
-#include "homeintegration.h"
-  }
+#ifdef ARDUINO_ARCH_ESP32
+extern "C" {
+#include "homeintegration.h"  // https://github.com/Yurik72/ESPHap
+}
+#endif
 
 #ifdef ARDUINO_ARCH_ESP8266
-#include <homekitintegrationcpp.h>
+//#include <homekitintegrationcpp.h>
 #endif
-  // #include <hapfilestorage\hapfilestorage.hpp> // ???
-  homekit_service_t* hapservice = {0};
-  String pair_file_name = "/homekit_pair.dat";
 
-  homekit_service_t* homekit_temperature = NULL;
-  homekit_service_t* homekit_humidity = NULL;
-  homekit_service_t* homekit_pm10_level = NULL;
-  homekit_service_t* homekit_pm25_level = NULL;
+#ifdef ARDUINO_ARCH_ESP32
+// #include <hapfilestorage\hapfilestorage.hpp> // ???
+homekit_service_t* hapservice = {0};
+String pair_file_name = "/homekit_pair.dat";
 
-  homekit_characteristic_t*  pm10_level_characteristic = NULL;
-  homekit_characteristic_t*  pm25_level_characteristic = NULL;
+homekit_service_t* homekit_temperature = NULL;
+homekit_service_t* homekit_humidity = NULL;
+homekit_service_t* homekit_pm10_level = NULL;
+homekit_service_t* homekit_pm25_level = NULL;
 
-  struct device_data_t {
-    float homekit_temperature = 22.0;
-    float homekit_humidity = 50.0;
-    float homekit_pm10_level = 0.0;
-    float homekit_pm25_level = 0.0;
-  };
-  device_data_t homekit_DeviceData;
-*/
+homekit_characteristic_t*  pm10_level_characteristic = NULL;
+homekit_characteristic_t*  pm25_level_characteristic = NULL;
+
+struct device_data_t {
+  float homekit_temperature = 22.0;
+  float homekit_humidity = 50.0;
+  float homekit_pm10_level = 0.0;
+  float homekit_pm25_level = 0.0;
+};
+device_data_t homekit_DeviceData;
+#endif
 // HomeKit -- END
 
 
@@ -997,6 +1002,11 @@ void setup() {
   server.on("/restore_config", HTTP_GET, restore_config);
   server.on("/fwupdate", HTTP_GET, fwupdate);
   server.on("/autoupdate_on", HTTP_GET, autoupdate_on);
+
+  server.on("/homekit_reset", HTTP_GET, homekit_reset);
+  server.on("/homekit_on", HTTP_GET, homekit_on);
+  server.on("/homekit_off", HTTP_GET, homekit_off);
+
   server.onNotFound(handle_root);
 #else
   //  WebServer config - Start
@@ -1014,6 +1024,11 @@ void setup() {
   WebServer.on("/restore_config", HTTP_GET, restore_config);
   WebServer.on("/fwupdate", HTTP_GET, fwupdate);
   WebServer.on("/autoupdate_on", HTTP_GET, autoupdate_on);
+
+  WebServer.on("/homekit_reset", HTTP_GET, homekit_reset);
+  WebServer.on("/homekit_on", HTTP_GET, homekit_on);
+  WebServer.on("/homekit_off", HTTP_GET, homekit_off);
+
   WebServer.onNotFound(handle_root);
 
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1066,7 +1081,7 @@ void setup() {
 
 
   // HomeKit -- START
-  /*
+#ifdef ARDUINO_ARCH_ESP32
   if (HOMEKIT_SUPPORT) {
 #ifdef ARDUINO_ARCH_ESP8266
     // disable_extra4k_at_link_time(); // ?????
@@ -1099,6 +1114,7 @@ void setup() {
 
     homekit_temperature = hap_add_temperature_service("Temperature");
     homekit_humidity = hap_add_humidity_service("Humidity");
+
     homekit_pm10_level = hap_add_air_quality_service("PM10");
     homekit_pm25_level = hap_add_air_quality_service("PM2.5");
 
@@ -1108,7 +1124,7 @@ void setup() {
     //and finally init HAP
     hap_init_homekit_server();
   }
-  */
+#endif
   // HomeKit -- END
 
 }
@@ -1789,13 +1805,13 @@ void takeTHPMeasurements() {
   currentHumidity = currentHumidity_THP1;
   currentPressure = currentPressure_THP1;
 
-/*
+#ifdef ARDUINO_ARCH_ESP32
   if (HOMEKIT_SUPPORT) {
     homekit_DeviceData.homekit_temperature = currentTemperature;
     homekit_DeviceData.homekit_humidity = currentHumidity;
     notify_hap();
   }
-*/
+#endif
 }
 
 void takeNormalnPMMeasurements() {
@@ -2206,13 +2222,13 @@ void averagePM() {
     Serial.print(averagePM10);
   }
 
-/*
+#ifdef ARDUINO_ARCH_ESP32
   if (HOMEKIT_SUPPORT) {
     homekit_DeviceData.homekit_pm10_level = averagePM10;
     homekit_DeviceData.homekit_pm25_level = averagePM25;
     notify_hap();
   }
-*/
+#endif
 }
 
 #ifdef DUSTSENSOR_SPS30
@@ -2378,7 +2394,7 @@ void ErrtoMess(char *mess, uint8_t r)
 #endif
 
 // HomeKit -- START
-/*
+#ifdef ARDUINO_ARCH_ESP32
 void init_hap_storage() {
   Serial.print("init_hap_storage");
 #ifdef ARDUINO_ARCH_ESP32
@@ -2410,6 +2426,7 @@ void init_hap_storage() {
   delete []buf;
 
 }
+
 void storage_changed(char * szstorage, int size) {
   SPIFFS.remove(pair_file_name);
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2426,6 +2443,7 @@ void storage_changed(char * szstorage, int size) {
   fsDAT.close();
 }
 
+// HomeKit -- START
 void notify_hap() {
   if (homekit_temperature) {
     homekit_characteristic_t * ch_temp = homekit_service_characteristic_by_type(homekit_temperature, HOMEKIT_CHARACTERISTIC_CURRENT_TEMPERATURE);
@@ -2460,5 +2478,5 @@ void notify_hap() {
   }
 
 }
-*/
+#endif
 // HomeKit -- END

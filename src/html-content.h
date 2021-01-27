@@ -244,6 +244,7 @@ const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVIC
 	<!-- <b>{TEXT_CALIB2}: </b>{calib2} -->
 	<b>{TEXT_SOFTWATEVERSION}: </b>{SOFTWAREVERSION}
 	<br><b>{TEXT_AUTOUPDATEON}: </b>{AUTOUPDATEON} {TEXT_UPDATEPAGEAUTOUPDATEWARNING}
+	<br><b>{TEXT_HOMEKIT_SUPPORT}: </b>{HOMEKIT_SUPPORT_ON}
 	<hr><center><br>
 	{WiFiEraseButton}  {RestoreConfigButton}
 	<br><br></center><hr><br><center>

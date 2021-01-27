@@ -2085,7 +2085,7 @@ String WiFiManager::getInfoData(String id){
     p = FPSTR(HTTP_INFO_temp);
     p.replace(FPSTR(T_1),(String)temperatureRead());
     p.replace(FPSTR(T_2),(String)((temperatureRead()+32)*1.8));
-    p.replace(FPSTR(T_3),(String)hallRead());
+    // p.replace(FPSTR(T_3),(String)hallRead());
   }
   #endif
   return p;

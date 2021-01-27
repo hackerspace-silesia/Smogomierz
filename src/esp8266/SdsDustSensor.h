@@ -23,6 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifdef ARDUINO_ARCH_ESP8266
+
 #ifndef __SDS_DUST_SENSOR_H__
 #define __SDS_DUST_SENSOR_H__
 
@@ -183,3 +185,5 @@ private:
 };
 
 #endif // __SDS_DUST_SENSOR_H__
+
+#endif

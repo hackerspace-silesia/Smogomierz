@@ -1,3 +1,5 @@
+#ifdef ARDUINO_ARCH_ESP8266
+
 #include "SdsDustSensor.h"
 
 void SdsDustSensor::write(const Command &command) {
@@ -116,3 +118,5 @@ Status SdsDustSensor::retryRead(byte responseId) {
 
   return status;
 }
+
+#endif

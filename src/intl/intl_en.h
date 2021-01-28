@@ -156,3 +156,5 @@ char EN_INTL_THEFORM[12] PROGMEM = "the form";
 char EN_INTL_CONNECTEDWIFI[28] PROGMEM = "Connected to a WiFi(SSID)";
 char EN_INTL_WIFIRSSI[28] PROGMEM = "WiFi Signal Strength(RSSI)";
 char EN_INTL_WIFIQUALITY[26] PROGMEM = "WiFi Signal Quality";
+
+char EN_INTL_HOMEKIT_SUPPORT[32] PROGMEM = "Apple HomeKit Support";

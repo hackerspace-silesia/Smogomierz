@@ -787,7 +787,7 @@ message.replace(F("{DUST_RX}"), _add_DUST_TX_RX_Select("CONFIG_DUST_RX", CONFIG_
   message.replace(F("{TEXT_HOMEKIT_SUPPORT}"), "");
   message.replace(F("{HOMEKIT_SUPPORT_ON}"), "");
 #elif defined ARDUINO_ARCH_ESP32
-  message.replace(F("{TEXT_HOMEKIT_SUPPORT}"), "TEXT_HOMEKIT_SUPPORT");
+  message.replace(F("{TEXT_HOMEKIT_SUPPORT}"), TEXT_HOMEKIT_SUPPORT);
   message.replace(F("{HOMEKIT_SUPPORT_ON}"), _addBoolSelect("HOMEKIT_SUPPORT", HOMEKIT_SUPPORT));
 #endif
 

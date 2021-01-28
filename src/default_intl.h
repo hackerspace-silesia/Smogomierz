@@ -154,6 +154,8 @@ extern char TEXT_CONNECTEDWIFI[28] = "Connected to a WiFi(SSID)";
 extern char TEXT_WIFIRSSI[28] = "WiFi Signal Strength(RSSI)";
 extern char TEXT_WIFIQUALITY[26] = "WiFi Signal Quality";
 
+extern char TEXT_HOMEKIT_SUPPORT[32] = "Apple HomeKit Support";
+
 extern char TEXT_AIRQUALITY_TOPIC[12] = "Airquality";
 #ifdef ARDUINO_ARCH_ESP8266
 static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";

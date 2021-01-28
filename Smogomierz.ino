@@ -2462,40 +2462,44 @@ void notify_hap() {
   }
 
   if (homekit_pm10_level) {
-    homekit_characteristic_t * ch_homekit_pm10_level = homekit_service_characteristic_by_type(homekit_pm10_level, HOMEKIT_CHARACTERISTIC_PM10_DENSITY);
-    if (ch_homekit_pm10_level && !isnan(homekit_DeviceData.homekit_pm10_level) && ch_homekit_pm10_level->value.float_value != homekit_DeviceData.homekit_pm10_level) {
-      ch_homekit_pm10_level->value.float_value = homekit_DeviceData.homekit_pm10_level;
-      homekit_characteristic_notify(ch_homekit_pm10_level, ch_homekit_pm10_level->value);
+    HAP_NOTIFY_CHANGES(float, pm10_level_characteristic, homekit_DeviceData.homekit_pm10_level, 0.0)
+    homekit_characteristic_t* hc_homekit_pm10_level = homekit_service_characteristic_by_type(homekit_pm10_level, HOMEKIT_CHARACTERISTIC_PM10_DENSITY);
+    if ( hc_homekit_pm10_level) {
+      uint8_t air_quality_pm10 = pm10_air_quality_level(homekit_DeviceData.homekit_pm10_level, (uint8_t)(* hc_homekit_pm10_level->min_value) + 1, (uint8_t)(* hc_homekit_pm10_level->max_value));
+      // Serial.println("Noify level:" + String(air_quality_pm10));
+      HAP_NOTIFY_CHANGES(int, hc_homekit_pm10_level, air_quality_pm10, 0)
     }
   }
-  /*
-    if (homekit_pm25_level) {
-      homekit_characteristic_t * ch_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);
-      if (ch_homekit_pm25_level && !isnan(homekit_DeviceData.homekit_pm25_level) && ch_homekit_pm25_level->value.float_value != homekit_DeviceData.homekit_pm25_level) {
-        ch_homekit_pm25_level->value.float_value = homekit_DeviceData.homekit_pm25_level;
-        homekit_characteristic_notify(ch_homekit_pm25_level, ch_homekit_pm25_level->value);
-      }
-    }
-  */
+
   if (homekit_pm25_level) {
-    HAP_NOTIFY_CHANGES(float, pm25_level_characteristic, homekit_DeviceData.homekit_pm25_level, 0)
-    homekit_characteristic_t* hc_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_AIR_QUALITY);
+    HAP_NOTIFY_CHANGES(float, pm25_level_characteristic, homekit_DeviceData.homekit_pm25_level, 0.0)
+    homekit_characteristic_t* hc_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);
     if ( hc_homekit_pm25_level) {
       uint8_t air_quality_pm25 = pm25_air_quality_level(homekit_DeviceData.homekit_pm25_level, (uint8_t)(* hc_homekit_pm25_level->min_value) + 1, (uint8_t)(* hc_homekit_pm25_level->max_value));
       // Serial.println("Noify level:" + String(air_quality_pm25));
-      HAP_NOTIFY_CHANGES(int,  hc_homekit_pm25_level, air_quality_pm25, 0)
+      HAP_NOTIFY_CHANGES(int, hc_homekit_pm25_level, air_quality_pm25, 0)
     }
   }
 }
 
-#define PM25_RANGE_EXCELLENT_LEVEL 1000.0
-#define PM25_RANGE_POOR_LEVEL 2000.0
+#define PM25_RANGE_EXCELLENT_LEVEL 20.0
+#define PM25_RANGE_POOR_LEVEL 100.0
 uint8_t pm25_air_quality_level(float input_value, uint8_t min, uint8_t max) {
   if (input_value < PM25_RANGE_EXCELLENT_LEVEL)
     return min;
   if (input_value > PM25_RANGE_POOR_LEVEL)
     return max;
   return ((int)input_value) / ((PM25_RANGE_POOR_LEVEL - PM25_RANGE_EXCELLENT_LEVEL) / (float)(max - min));
+}
+
+#define PM10_RANGE_EXCELLENT_LEVEL 50.0
+#define PM10_RANGE_POOR_LEVEL 150.0
+uint8_t pm10_air_quality_level(float input_value, uint8_t min, uint8_t max) {
+  if (input_value < PM10_RANGE_EXCELLENT_LEVEL)
+    return min;
+  if (input_value > PM10_RANGE_POOR_LEVEL)
+    return max;
+  return ((int)input_value) / ((PM10_RANGE_POOR_LEVEL - PM10_RANGE_EXCELLENT_LEVEL) / (float)(max - min));
 }
 #endif
 // HomeKit -- END

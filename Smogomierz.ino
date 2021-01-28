@@ -371,11 +371,11 @@ extern "C" {
 #endif
 
 #ifdef ARDUINO_ARCH_ESP8266
-//#include <homekitintegrationcpp.h>
+// #include <homekitintegrationcpp.h>
 #endif
 
 #ifdef ARDUINO_ARCH_ESP32
-// #include <hapfilestorage\hapfilestorage.hpp> // ???
+#include <hapfilestorage/hapfilestorage.hpp>
 homekit_service_t* hapservice = {0};
 String pair_file_name = "/homekit_pair.dat";
 
@@ -2408,7 +2408,7 @@ void init_hap_storage() {
 #ifdef ARDUINO_ARCH_ESP8266
   File fsDAT = SPIFFS.open(pair_file_name, "r");
 #elif defined ARDUINO_ARCH_ESP32
-  File fsDAT = SPIFFS.open(pair_file_name);
+  File fsDAT = SPIFFS.open(pair_file_name, FILE_READ);
 #endif
 
   if (!fsDAT) {
@@ -2432,7 +2432,7 @@ void storage_changed(char * szstorage, int size) {
 #ifdef ARDUINO_ARCH_ESP8266
   File fsDAT = SPIFFS.open(pair_file_name, "w+");
 #elif defined ARDUINO_ARCH_ESP32
-  File fsDAT = SPIFFS.open(pair_file_name);
+  File fsDAT = SPIFFS.open(pair_file_name, FILE_WRITE);
 #endif
   if (!fsDAT) {
     Serial.println("Failed to open pair.dat");
@@ -2468,15 +2468,34 @@ void notify_hap() {
       homekit_characteristic_notify(ch_homekit_pm10_level, ch_homekit_pm10_level->value);
     }
   }
-
+  /*
+    if (homekit_pm25_level) {
+      homekit_characteristic_t * ch_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);
+      if (ch_homekit_pm25_level && !isnan(homekit_DeviceData.homekit_pm25_level) && ch_homekit_pm25_level->value.float_value != homekit_DeviceData.homekit_pm25_level) {
+        ch_homekit_pm25_level->value.float_value = homekit_DeviceData.homekit_pm25_level;
+        homekit_characteristic_notify(ch_homekit_pm25_level, ch_homekit_pm25_level->value);
+      }
+    }
+  */
   if (homekit_pm25_level) {
-    homekit_characteristic_t * ch_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);
-    if (ch_homekit_pm25_level && !isnan(homekit_DeviceData.homekit_pm25_level) && ch_homekit_pm25_level->value.float_value != homekit_DeviceData.homekit_pm25_level) {
-      ch_homekit_pm25_level->value.float_value = homekit_DeviceData.homekit_pm25_level;
-      homekit_characteristic_notify(ch_homekit_pm25_level, ch_homekit_pm25_level->value);
+    HAP_NOTIFY_CHANGES(float, pm25_level_characteristic, homekit_DeviceData.homekit_pm25_level, 0)
+    homekit_characteristic_t* hc_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_AIR_QUALITY);
+    if ( hc_homekit_pm25_level) {
+      uint8_t air_quality_pm25 = pm25_air_quality_level(homekit_DeviceData.homekit_pm25_level, (uint8_t)(* hc_homekit_pm25_level->min_value) + 1, (uint8_t)(* hc_homekit_pm25_level->max_value));
+      // Serial.println("Noify level:" + String(air_quality_pm25));
+      HAP_NOTIFY_CHANGES(int,  hc_homekit_pm25_level, air_quality_pm25, 0)
     }
   }
+}
 
+#define PM25_RANGE_EXCELLENT_LEVEL 1000.0
+#define PM25_RANGE_POOR_LEVEL 2000.0
+uint8_t pm25_air_quality_level(float input_value, uint8_t min, uint8_t max) {
+  if (input_value < PM25_RANGE_EXCELLENT_LEVEL)
+    return min;
+  if (input_value > PM25_RANGE_POOR_LEVEL)
+    return max;
+  return ((int)input_value) / ((PM25_RANGE_POOR_LEVEL - PM25_RANGE_EXCELLENT_LEVEL) / (float)(max - min));
 }
 #endif
 // HomeKit -- END

@@ -1896,17 +1896,17 @@ void homekit_reset() {
         return WebServer.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
       }
     }
-  Serial.println("reset homekit...");
+  Serial.println("homekit reset...");
 
   String pair_file_name = "/homekit_pair.dat";
   SPIFFS.remove(pair_file_name);
   
+  yield();
   WebServer.sendHeader("Location", "/", true);
-
-  //request->redirect("/");
+  WebServer.send ( 302, "text/plain", "");
   delay(1000);
-  //Serial.println("Restart");
-  //ESP.restart();
+  Serial.println(F("Restart"));
+  ESP.restart();
 }
 
 void homekit_on() {
@@ -1921,11 +1921,11 @@ void homekit_on() {
   HOMEKIT_SUPPORT = true;
   saveConfig();
 
-  delay(1000);
-  
+  yield();
   WebServer.sendHeader("Location", "/", true);
-  
-  Serial.println("Restart");
+  WebServer.send ( 302, "text/plain", "");
+  delay(1000);
+  Serial.println(F("Restart"));
   ESP.restart();
 }
 
@@ -1941,10 +1941,10 @@ void homekit_off() {
   HOMEKIT_SUPPORT = false;
   saveConfig();
   
-  delay(1000);
-  
+  yield();
   WebServer.sendHeader("Location", "/", true);
-  
-  Serial.println("Restart");
-  ESP.restart();  
+  WebServer.send ( 302, "text/plain", "");
+  delay(1000);
+  Serial.println(F("Restart"));
+  ESP.restart();
 }

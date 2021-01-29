@@ -2474,7 +2474,6 @@ void notify_hap() {
       HAP_NOTIFY_CHANGES(int, hc_homekit_pm10_level, air_quality_pm10, 0)
     }
   }
-
   
   if (homekit_pm25_level) {
     HAP_NOTIFY_CHANGES(float, pm25_level_characteristic, homekit_DeviceData.homekit_pm25_level, 0.0)

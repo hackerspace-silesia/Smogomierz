@@ -159,6 +159,8 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 		strcpy(TEXT_WIFIQUALITY, EN_INTL_WIFIQUALITY);
 		
 		strcpy(TEXT_HOMEKIT_SUPPORT, EN_INTL_HOMEKIT_SUPPORT);
+		strcpy(TEXT_HOMEKIT_IS_PAIRED, EN_INTL_HOMEKIT_IS_PAIRED);	
+		strcpy(TEXT_PAGE_HOMEKIT_RESET, EN_INTL_PAGE_HOMEKIT_RESET);	
 		
 		*/
 	} else if (SELECTED_LANGUAGE == 2) { //polish translation
@@ -314,7 +316,9 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 		strcpy(TEXT_WIFIRSSI, PL_INTL_WIFIRSSI);
 		strcpy(TEXT_WIFIQUALITY, PL_INTL_WIFIQUALITY);
 		
-		strcpy(TEXT_HOMEKIT_SUPPORT, PL_INTL_HOMEKIT_SUPPORT);		
+		strcpy(TEXT_HOMEKIT_SUPPORT, PL_INTL_HOMEKIT_SUPPORT);	
+		strcpy(TEXT_HOMEKIT_IS_PAIRED, PL_INTL_HOMEKIT_IS_PAIRED);	
+		strcpy(TEXT_PAGE_HOMEKIT_RESET, PL_INTL_PAGE_HOMEKIT_RESET);	
 
 	} else { //others future translations
 		Serial.println(F("Other Translation!\n"));

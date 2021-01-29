@@ -175,6 +175,8 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 
 	const char WEB_CONFIG_PAGE_WIFIERASE[] PROGMEM = "<a href='/erase_wifi' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_ERASEWIFICONFIG}</a>";
 
+	const char WEB_CONFIG_PAGE_HOMEKIT_RESET[] PROGMEM = "<a href='/homekit_reset' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_PAGE_HOMEKIT_RESET}</a>";
+
 	const char WEB_CONFIG_PAGE_RESTORECONFIG[] PROGMEM = "<a href='/restore_config' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_RESTORESETTINGS}</a>";
 
 	const char WEB_CONFIG_TOP_PAGE_INFO[] PROGMEM = R"rawliteral(<center><div class='card text-white bg-success mb-3' style='max-width: 30rem;'>
@@ -245,6 +247,8 @@ const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVIC
 	<b>{TEXT_SOFTWATEVERSION}: </b>{SOFTWAREVERSION}
 	<br><b>{TEXT_AUTOUPDATEON}: </b>{AUTOUPDATEON} {TEXT_UPDATEPAGEAUTOUPDATEWARNING}
 	<br><b>{TEXT_HOMEKIT_SUPPORT}: </b>{HOMEKIT_SUPPORT_ON}
+	<b>{TEXT_HOMEKIT_IS_PAIRED}: </b>{HOMEKIT_PAIRED_RESET}
+	
 	<hr><center><br>
 	{WiFiEraseButton}  {RestoreConfigButton}
 	<br><br></center><hr><br><center>

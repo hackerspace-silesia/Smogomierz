@@ -157,4 +157,6 @@ char EN_INTL_CONNECTEDWIFI[28] PROGMEM = "Connected to a WiFi(SSID)";
 char EN_INTL_WIFIRSSI[28] PROGMEM = "WiFi Signal Strength(RSSI)";
 char EN_INTL_WIFIQUALITY[26] PROGMEM = "WiFi Signal Quality";
 
-char EN_INTL_HOMEKIT_SUPPORT[32] PROGMEM = "Apple HomeKit Support";
+char EN_INTL_HOMEKIT_SUPPORT[26] PROGMEM = "Apple HomeKit Support";
+char EN_INTL_HOMEKIT_IS_PAIRED[94] = "If you want to connect a new iOS/macOS device, you need to erase the current paired devices";
+char EN_INTL_PAGE_HOMEKIT_RESET[30] = "Delete the paired device";

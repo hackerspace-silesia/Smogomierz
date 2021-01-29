@@ -358,10 +358,13 @@ PubSubClient mqttclient(espClient);
 
 
 // https://github.com/Yurik72/ESPHap
-// https://github.com/Yurik72/ESPHap/issues/14 << !!!!
 // HomeKit -- START
 #ifdef ARDUINO_ARCH_ESP32
 #include <SPIFFS.h>
+#endif
+
+#ifdef ARDUINO_ARCH_ESP8266
+#include "coredecls.h"
 #endif
 
 #ifdef ARDUINO_ARCH_ESP32
@@ -371,11 +374,12 @@ extern "C" {
 #endif
 
 #ifdef ARDUINO_ARCH_ESP8266
-// #include <homekitintegrationcpp.h>
+// #include "homekitintegrationcpp.h" // https://github.com/Yurik72/ESPHap/issues/14 << !!!!
 #endif
 
 #ifdef ARDUINO_ARCH_ESP32
 #include <hapfilestorage/hapfilestorage.hpp>
+
 homekit_service_t* hapservice = {0};
 String pair_file_name = "/homekit_pair.dat";
 
@@ -390,8 +394,8 @@ homekit_characteristic_t*  pm25_level_characteristic = NULL;
 struct device_data_t {
   float homekit_temperature = 22.0;
   float homekit_humidity = 50.0;
-  float homekit_pm10_level = 0.0;
-  float homekit_pm25_level = 0.0;
+  float homekit_pm10_level = 10.0;
+  float homekit_pm25_level = 20.0;
 };
 device_data_t homekit_DeviceData;
 #endif
@@ -2471,6 +2475,7 @@ void notify_hap() {
     }
   }
 
+  
   if (homekit_pm25_level) {
     HAP_NOTIFY_CHANGES(float, pm25_level_characteristic, homekit_DeviceData.homekit_pm25_level, 0.0)
     homekit_characteristic_t* hc_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);

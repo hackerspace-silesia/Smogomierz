@@ -157,4 +157,6 @@ char PL_INTL_CONNECTEDWIFI[28] PROGMEM = "Połączony z WiFi(SSID)";
 char PL_INTL_WIFIRSSI[28] PROGMEM = "Siła sygnału WiFi(RSSI)";
 char PL_INTL_WIFIQUALITY[26] PROGMEM = "Jakość sygnału WiFi";
 
-char PL_INTL_HOMEKIT_SUPPORT[32] PROGMEM = "Apple HomeKit";
+char PL_INTL_HOMEKIT_SUPPORT[26] PROGMEM = "Apple HomeKit";
+char PL_INTL_HOMEKIT_IS_PAIRED[94] = "Aby podłączyć nowe urządzenie iOS/macOS, musisz skasować aktualnie sparowane";
+char PL_INTL_PAGE_HOMEKIT_RESET[30] = "Skasuj sparowane urządzenie";

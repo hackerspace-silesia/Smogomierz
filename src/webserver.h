@@ -569,6 +569,12 @@ String _addRestoreConfig() {
   return RestoreConfig;
 }
 
+String _add_homekit_reset() {
+  String homekit_reset = FPSTR(WEB_CONFIG_PAGE_HOMEKIT_RESET);
+  homekit_reset.replace("{TEXT_PAGE_HOMEKIT_RESET}", (TEXT_PAGE_HOMEKIT_RESET));
+  return homekit_reset;
+}
+
 void handle_config() {
   String message = FPSTR(WEB_PAGE_HEADER);
   message.replace(F("{WEB_PAGE_CSS}"), FPSTR(WEB_PAGE_HEADER_CSS));
@@ -789,6 +795,18 @@ message.replace(F("{DUST_RX}"), _add_DUST_TX_RX_Select("CONFIG_DUST_RX", CONFIG_
 #elif defined ARDUINO_ARCH_ESP32
   message.replace(F("{TEXT_HOMEKIT_SUPPORT}"), TEXT_HOMEKIT_SUPPORT);
   message.replace(F("{HOMEKIT_SUPPORT_ON}"), _addBoolSelect("HOMEKIT_SUPPORT", HOMEKIT_SUPPORT));
+  if (HOMEKIT_SUPPORT == true) {
+      // Serial.println("homekit_is_paired: " + String(homekit_is_paired()));
+	  if (String(homekit_is_paired()) == "1") {
+		  message.replace(F("{TEXT_HOMEKIT_IS_PAIRED}"), (TEXT_HOMEKIT_IS_PAIRED));
+		  message.replace(F("{HOMEKIT_PAIRED_RESET}"), _add_homekit_reset());  
+	  } else {
+		  message.replace(F("<b>{TEXT_HOMEKIT_IS_PAIRED}: </b>{HOMEKIT_PAIRED_RESET}"), "");  		
+	  } 	
+  } else {
+	  message.replace(F("<b>{TEXT_HOMEKIT_IS_PAIRED}: </b>{HOMEKIT_PAIRED_RESET}"), "");  	
+  }
+	  
 #endif
 
   message.replace(F("{WiFiEraseButton}"), _addWiFiErase());

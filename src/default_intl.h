@@ -154,7 +154,9 @@ extern char TEXT_CONNECTEDWIFI[28] = "Connected to a WiFi(SSID)";
 extern char TEXT_WIFIRSSI[28] = "WiFi Signal Strength(RSSI)";
 extern char TEXT_WIFIQUALITY[26] = "WiFi Signal Quality";
 
-extern char TEXT_HOMEKIT_SUPPORT[32] = "Apple HomeKit Support";
+extern char TEXT_HOMEKIT_SUPPORT[26] = "Apple HomeKit Support";
+extern char TEXT_HOMEKIT_IS_PAIRED[94] = "If you want to connect a new iOS/macOS device, you need to erase the current paired devices";
+extern char TEXT_PAGE_HOMEKIT_RESET[30] = "Delete the paired device";
 
 extern char TEXT_AIRQUALITY_TOPIC[12] = "Airquality";
 #ifdef ARDUINO_ARCH_ESP8266

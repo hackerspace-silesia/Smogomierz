@@ -295,6 +295,7 @@ PMS::DATA data;
 // DUST Sensor config - END
 
 char device_name[20];
+char mqqt_id[20];
 
 unsigned int DUST_interval = 60 * 1000; // 1 minute
 unsigned int previous_DUST_Millis = 0;
@@ -448,7 +449,7 @@ void MQTTreconnect() {
   if (!mqttclient.connected()) {
     Serial.print(F("Attempting MQTT connection..."));
     // Attempt to connect
-    if (mqttclient.connect("ESP8266Client", MQTT_USER, MQTT_PASSWORD)) {
+    if (mqttclient.connect(mqqt_id, MQTT_USER, MQTT_PASSWORD)) {
       Serial.println(F("connected"));
     } else {
       Serial.print(F("failed, rc="));
@@ -860,6 +861,8 @@ void setup() {
   } else {
     strncpy(device_name, DEVICENAME, 20);
   }
+  
+  strcpy(mqqt_id, device_name);
 
   Serial.print(F("Device name: "));
   Serial.println(device_name);

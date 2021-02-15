@@ -1460,9 +1460,7 @@ void sendDataToExternalDBs() {
       }
     }
 
-    if (DEEPSLEEP_ON == true) {
-      mqttclient.disconnect();
-    }
+	mqttclient.disconnect();
 
   }
 

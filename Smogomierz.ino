@@ -514,7 +514,8 @@ void MQTTreconnect() {
   if (!mqttclient.connected()) {
     Serial.print(F("Attempting MQTT connection..."));
     // Attempt to connect
-    if (mqttclient.connect("ESP8266Client", MQTT_USER, MQTT_PASSWORD)) {
+    //if (mqttclient.connect("ESP8266Client", MQTT_USER, MQTT_PASSWORD)) {
+    if (mqttclient.connect(device_name, MQTT_USER, MQTT_PASSWORD)) {
       Serial.println(F("connected"));
     } else {
       Serial.print(F("failed, rc="));
@@ -1607,9 +1608,9 @@ void sendDataToExternalDBs() {
       }
     }
 
-    if (DEEPSLEEP_ON == true) {
-      mqttclient.disconnect();
-    }
+    //if (DEEPSLEEP_ON == true) {
+    mqttclient.disconnect();
+    //}
 
   }
 
@@ -2474,7 +2475,7 @@ void notify_hap() {
       HAP_NOTIFY_CHANGES(int, hc_homekit_pm10_level, air_quality_pm10, 0)
     }
   }
-  
+
   if (homekit_pm25_level) {
     HAP_NOTIFY_CHANGES(float, pm25_level_characteristic, homekit_DeviceData.homekit_pm25_level, 0.0)
     homekit_characteristic_t* hc_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);

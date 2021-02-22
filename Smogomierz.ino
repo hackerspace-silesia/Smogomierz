@@ -670,9 +670,10 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 #include "src/translator.h"
 
 // all HTML content
-#include "src/html-content.h"
+#include "src/html/html-content.h"
 #ifdef ASYNC_WEBSERVER_ON
 #include "src/html/html-config-device.h"
+#include "src/html/html-config-services.h"
 #endif
 
 // library doesnt support arguments :/
@@ -1001,6 +1002,7 @@ void setup() {
   server.on("/config_device", HTTP_GET, handle_config_device);
   server.on("/config_services_save", HTTP_GET, handle_config_services_save);
   server.on("/config_services", HTTP_GET, handle_config_services);
+  
   server.on("/update", HTTP_GET, handle_update);
   server.on("/update_done", HTTP_POST, handle_update_done, handle_update_progress_cb);
   server.on("/api", HTTP_GET, handle_api);

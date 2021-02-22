@@ -1,11 +1,11 @@
-// CONFIG DEVICE PAGE HTML
+// CONFIG SERVICES PAGE HTML
 /*
 % -> &#37;
 
 		%{SMOGLY_LOGO_URL}%
 
 */
-const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
+const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15&#37;'>
 	<a class='navbar-brand' href='/'>Smogly</a>
 	  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarColor02' aria-controls='navbarColor02' aria-expanded='false' aria-label='Toggle navigation'>
@@ -24,61 +24,90 @@ const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Lan
 		  </li>
 	    </ul>
 </div></nav><form method='GET' action='/config_services_save'>
-					<main role='main' class='container'><div class='jumbotron'>
-					<center><h1>Smogly - %{TEXT_CONFIG_DEVICE_PAGE}%</h1></center><br>%{TEXT_INSTRUCIONSLINK}%<br><br>
-					<b>%{TEXT_DEVICENAME}%: </b>%{device_name}% <br>
-					<b>%{TEXT_DEVICENAMEAUTO}%: </b>%{DEVICENAME_AUTO}%
-					<b>%{TEXT_SELECTEDLANGUAGE}%: </b>%{LanguageSelect}%
-					<hr>
-					<b>%{TEXT_TEMPHUMIPRESSSENSOR}%: </b>%{THP_MODELSelect}%
-					<b>%{TEXT_PMSENSOR}%: </b>%{DUST_MODELSelect}%
-					<hr>%{TEXT_FIRST_THP_SDA_SCL}% - %{THP_MODEL}%<br>
-					<b>%{TEXT_FIRST_THP_SDA}%: </b>%{FIRST_THP_SDA}%
-					<b>%{TEXT_FIRST_THP_SCL}%: </b>%{FIRST_THP_SCL}%
-					<br>
-					<b>%{TEXT_SECOND_THP}%: </b>%{SECOND_THP}%
-					%{WEB_CONFIG_DEVICE_PAGE_SECOND_THP}%
-					<br>%{TEXT_DUST_TX_RX}% - %{DUST_MODEL}%<br>
-					<b>%{TEXT_DUST_TX}%: </b>%{DUST_TX}%
-					<b>%{TEXT_DUST_RX}%: </b>%{DUST_RX}%
-					<hr>
-					<b>%{TEXT_FREQUENTMEASUREMENTONOFF}%: </b>%{FREQUENTMEASUREMENT_Select}% %{TEXT_FREQUENTMEASUREMENTINFO}%<br>
-					<b>%{TEXT_MEASUREMENTFREQUENCY}%: </b>%{FREQUENTMEASUREMENT_time}%
-					<b>%{TEXT_AVERAGELASTRESULT}%: </b>%{NUMBEROFMEASUREMENTS}%
-					<hr><b>DeepSleep: </b>%{DEEPSLEEP_ON}% %{TEXT_DEEPSLEEPINFO}%
-					<hr>
-					<b>%{TEXT_DISPLAYPM1}%: </b> %{DISPLAY_PM1}%
-					<b>%{TEXT_ALTITUDEINFO}%: </b>%{MYALTITUDE}%
-					<hr>
-					<b>%{TEXT_SECURECONFIGUPDATEPAGE}%: </b>%{CONFIG_AUTH}%
-					<b>%{TEXT_SECURELOGIN}%: </b>%{CONFIG_USERNAME}%
-					<b>%{TEXT_SECUREPASSWD}%: </b>%{CONFIG_PASSWORD}%
-					%{TEXT_SECURELOGOUTINFO}%
-					<hr>
-					<b>Debug: </b>%{DEBUG}%
-					<b>%{TEXT_CALIBMETHOD}%: </b>%{CalibrationModelSelect}%
-					<b>%{TEXT_CALIB1}%: </b>%{calib1}%
-					<br>
-					<!-- <b>%{TEXT_CALIB2}%: </b>%{calib2}% -->
-					<b>%{TEXT_SOFTWATEVERSION}%: </b>%{SOFTWAREVERSION}%
-					<br><b>%{TEXT_AUTOUPDATEON}%: </b>%{AUTOUPDATEON}% %{TEXT_UPDATEPAGEAUTOUPDATEWARNING}%
-					<br><b>%{TEXT_HOMEKIT_SUPPORT}%: </b>%{HOMEKIT_SUPPORT_ON}%
-					<b>%{TEXT_HOMEKIT_IS_PAIRED}%: </b>%{HOMEKIT_PAIRED_RESET}%
-					<hr><center><br>
-					%{WiFiEraseButton}%  %{RestoreConfigButton}%
-					<br><br></center><hr><br><center>
-					%{SubmitButton}%
-	</center>
-		<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
-			<script type='text/javascript'>
-		  		document.write(new Date().getFullYear());
-			</script>
-			</center></div></main></form>
-					<script src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous'></script>
-					<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous'></script>
-					<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous'></script>
-					</body></html>)rawliteral";
+	<main role='main' class='container'><div class='jumbotron'>
+	<center><h1>Smogly - %{TEXT_CONFIG_SERVICES_PAGE}%</h1></center><br>%{TEXT_INSTRUCIONSLINK}%<br><br>
+						<b>%{TEXT_SENDINGINTERVAL}%: </b>%{SENDING_FREQUENCY}%
+							<b>%{TEXT_DBSENDINGINTERVAL}%: </b>%{SENDING_DB_FREQUENCY}%
+							<hr>
+							<b>%{TEXT_SMOGLISTSENDING}%: </b>%{SMOGLIST_ON}% %{TEXT_SMOGLISTINFO}%
+							<hr>
+							<b>%{TEXT_LUFTDATENSENDING}%: </b>%{LUFTDATEN_ON}%
+							<b>ChipID: </b>%{LUFTDATEN_ChipID}%
+								%{Sensors_Pins_html}%				
+							<hr>
+							<b>%{TEXT_AQIECOSENDING}%: </b>%{AQI_ECO_ON}%
+							<b>%{TEXT_AQIECOSERVER}%: </b>%{AQI_ECO_HOST}%
+							<b>%{TEXT_AQIECOPATH}%: </b>%{AQI_ECO_PATH}%
+							<b>%{ESP_MODEL}% ID: </b>%{AQI_ECO_ChipID}%
+							<hr>
+							<b>%{TEXT_AIRMONITORSENDING}%: </b>%{AIRMONITOR_ON}%
+							<b>%{TEXT_AIRMONITORCHARTS}%: </b>%{AIRMONITOR_GRAPH_ON}%
+							<b>%{TEXT_AIRMONITORCOORDINATESINFO}%:
+							<br>%{TEXT_AIRMONITORLATITUDE}%: </b>%{LATITUDE}%
+							<b>%{TEXT_AIRMONITORLONGITUDE}%: </b>%{LONGITUDE}%
+							<hr>
+							<b>%{TEXT_THINGSPEAKSENDING}%: </b>%{THINGSPEAK_ON}%
+							<b>%{TEXT_THINGSPEAKCHARTS}%: </b>%{THINGSPEAK_GRAPH_ON}%
+							<b>%{TEXT_THINGSPEAK_WRITE_API_KEY}%: </b>%{THINGSPEAK_API_KEY}%
+							<b>%{TEXT_THINGSPEAKCHANNELID}%: </b>%{THINGSPEAK_CHANNEL_ID}%
+							<b>%{TEXT_THINGSPEAK_READ_API_KEY}%: </b>%{THINGSPEAK_READ_API_KEY}%
+							<hr>
+							<b>%{TEXT_INFLUXDBSENDING}%: </b>%{INFLUXDB_ON}%
+							<b>%{TEXT_INFLUXDBVERSION}%: </b>%{INFLUXDB_VERSION}%
+							<b>%{TEXT_INFLUXDBSERVER}%: </b>%{INFLUXDB_HOST}%
+							<b>%{TEXT_INFLUXDBPORT}%: </b>%{INFLUXDB_PORT}%
+							<b>%{TEXT_INFLUXDBNAME}%: </b>%{INFLUXDB_DATABASE}%
+							<b>%{TEXT_INFLUXDBUSER}%: </b>%{INFLUXDB_USER}%
+							<b>%{TEXT_INFLUXDBPASSWD}%: </b>%{INFLUXDB_PASSWORD}%
+							%{WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2}%
+							<hr>
+							<br><b>%{TEXT_MQTTSENDING}%: </b>%{MQTT_ON}%
+							<b>%{TEXT_MQTTSERVER}%: </b>%{MQTT_HOST}%
+							<b>%{TEXT_MQTTPORT}%: </b>%{MQTT_PORT}%
+							<b>%{TEXT_MQTTUSER}%: </b>%{MQTT_USER}%
+							<b>%{TEXT_MQTTPASSWD}%: </b>%{MQTT_PASSWORD}%
+								<!--
+							<br>%{TEXT_MQTT_TOPIC_INFO}%
+							<br><br>
+							<b>%{TEXT_MQTT_IP_IN_TOPIC}%: </b>%{MQTT_IP_IN_TOPIC}%
+							<b>%{TEXT_MQTT_DEVICENAME_IN_TOPIC}%: </b>%{MQTT_DEVICENAME_IN_TOPIC}%
+							<b>%{TEXT_MQTT_SLASH_AT_THE_BEGINNING}%: </b>%{MQTT_SLASH_AT_THE_BEGINNING}%
+							<b>%{TEXT_MQTT_SLASH_AT_THE_END}%: </b>%{MQTT_SLASH_AT_THE_END}%
+							<br>
+							<b>%{TEXT_TEMP_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%/%{MQTT_TEMP}%<br />
+							<b>%{TEXT_HUMI_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_HUMI}%/%{MQTT_HUMI}%<br />
+							<b>%{TEXT_PRESS_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PRESS}%/%{MQTT_PRESS}%<br />
+							<b>%{TEXT_PM1_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM1}%/%{MQTT_PM1}%<br />
+							<b>%{TEXT_PM25_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM25}%/%{MQTT_PM25}%<br />
+							<b>%{TEXT_PM10_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM10}%/%{MQTT_PM10}%<br />
+							<b>%{TEXT_AIRQUALITY_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_AIRQUALITY}%/%{MQTT_AIRQUALITY}%<br />
+							<br>
+								--!>
+							<br><center>%{AdvancedMQTTConfigButton}%</center><br>
+							<hr><center><br>
+							%{WiFiEraseButton}%  %{RestoreConfigButton}%
+							<br><br></center><hr><br><center>
+							%{SubmitButton}%
+							</form></center>
+								<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+	<script type='text/javascript'>
+  		document.write(new Date().getFullYear());
+	</script>
+	</center></div></main></form>
+			<script src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous'></script>
+			<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous'></script>
+			<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous'></script>
+			</body></html>
+	)rawliteral";
 
+const char WEB_CONFIG_SERVICES_THP_SENSOR_PIN[] = R"rawliteral(<br><b>%{THPSENSOR}%</b> Sensor PIN: <b>%{THPXPIN}%</b>)rawliteral";
+const char WEB_CONFIG_SERVICES_DUST_MODEL_SENSOR_PIN[] = R"rawliteral(<br><b>%{DUSTSENSOR}%</b> Sensor PIN: <b>%{DUSTXPIN}%</b>)rawliteral";
+
+const char WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2[] = R"rawliteral(<b>{TEXT_INFLUXDBORG}: </b>{INFLUXDB_ORG}
+	<b>{TEXT_INFLUXDBBUCKET}: </b>{INFLUXDB_BUCKET}
+	<b>{TEXT_INFLUXDBTOKEN}: </b>{INFLUXDB_TOKEN})rawliteral";
+
+const char ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON[]  = "<a href='/config_adv_mqtt' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_CONFIG_ADV_MQTT}</a>";
 
 /*
 	

@@ -16,9 +16,7 @@
 
 // *******************************************
 
-#ifdef ARDUINO_ARCH_ESP32
-//#define ASYNC_WEBSERVER_ON // - EXPERIMENTAL - FOR ESP32 ONLY!
-#endif
+//#define ASYNC_WEBSERVER_ON // - EXPERIMENTAL
 
 /*
 
@@ -142,7 +140,7 @@
 #include "src/pms.h" // https://github.com/fu-hsi/PMS // 4.01.2021
 #endif
 
-#include "src/spiffs.h"
+#include "src/smogly_spiffs.h"
 #include "src/config.h"
 #include "defaultConfig.h"
 #include "src/autoupdate.h"
@@ -673,6 +671,9 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 
 // all HTML content
 #include "src/html-content.h"
+#ifdef ASYNC_WEBSERVER_ON
+#include "src/html/html-config-device.h"
+#endif
 
 // library doesnt support arguments :/
 #ifdef ASYNC_WEBSERVER_ON
@@ -974,7 +975,7 @@ void setup() {
   delay(250);
 
 #ifdef ASYNC_WEBSERVER_ON
-  Serial.println(F("\nIP Address: " + String(WiFi.localIP().toString()) + "\n"));
+  Serial.println("\nIP Address: " + String(WiFi.localIP().toString()) + "\n");
 #endif
 
   // check update

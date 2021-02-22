@@ -355,6 +355,193 @@ bool loadConfig() {
 }
 
 bool saveConfig() {
+	/*
+	if (DEBUG) {
+	    Serial.print(F("Saved DEVICENAME_AUTO: "));
+	    Serial.println(DEVICENAME_AUTO);
+	    Serial.print(F("Saved DEVICENAME: "));
+	    Serial.println(DEVICENAME);
+	    Serial.print(F("Saved LANGUAGE: "));
+	    Serial.println(LANGUAGE);
+	    Serial.print(F("Saved SELECTED_LANGUAGE: "));
+	    Serial.println(SELECTED_LANGUAGE);
+
+	    Serial.print(F("Saved THP_MODEL: "));
+	    Serial.println(THP_MODEL);
+	    Serial.print(F("Saved DUST_MODEL: "));
+	    Serial.println(DUST_MODEL);
+	    Serial.print(F("Saved DISPLAY_PM1: "));
+	    Serial.println(DISPLAY_PM1);
+	    Serial.print(F("Saved FREQUENTMEASUREMENT: "));
+	    Serial.println(FREQUENTMEASUREMENT);
+
+		Serial.print(F("Saved SECOND_THP: "));
+		Serial.println(SECOND_THP_MODEL);
+		Serial.print(F("Saved SECOND_THP_MODEL: "));
+		Serial.println(SECOND_THP_MODEL);
+	
+		Serial.print(F("Saved FIRST_THP_SDA: "));
+		Serial.println(FIRST_THP_SDA);
+		Serial.print(F("Saved FIRST_THP_SCL: "));
+	    Serial.println(FIRST_THP_SCL);
+
+		Serial.print(F("Saved SECOND_THP_SDA: "));
+		Serial.println(SECOND_THP_SDA);
+		Serial.print(F("Saved SECOND_THP_SCL: "));
+	    Serial.println(SECOND_THP_SCL);
+
+		Serial.print(F("Saved DUST_TX: "));
+		Serial.println(DUST_TX);
+		Serial.print(F("Saved DUST_RX: "));
+	    Serial.println(DUST_RX);
+
+		Serial.print(F("Saved CONFIG_FIRST_THP_SDA: "));
+		Serial.println(CONFIG_FIRST_THP_SDA);
+		Serial.print(F("Saved CONFIG_FIRST_THP_SCL: "));
+	    Serial.println(CONFIG_FIRST_THP_SCL);
+
+		Serial.print(F("Saved CONFIG_SECOND_THP_SDA: "));
+		Serial.println(CONFIG_SECOND_THP_SDA);
+		Serial.print(F("Saved CONFIG_SECOND_THP_SCL: "));
+	    Serial.println(CONFIG_SECOND_THP_SCL);
+
+		Serial.print(F("Saved CONFIG_DUST_TX: "));
+		Serial.println(CONFIG_DUST_TX);
+		Serial.print(F("Saved CONFIG_DUST_RX: "));
+	    Serial.println(CONFIG_DUST_RX);
+
+	    Serial.print(F("Saved DUST_TIME: "));
+	    Serial.println(DUST_TIME);
+	    Serial.print(F("Saved NUMBEROFMEASUREMENTS: "));
+	    Serial.println(NUMBEROFMEASUREMENTS);
+
+		Serial.print(F("Saved LUFTDATEN_ON: "));
+		Serial.println(LUFTDATEN_ON);
+		Serial.print(F("Saved SMOGLIST_ON: "));
+		Serial.println(SMOGLIST_ON);
+
+	    Serial.print(F("Saved AIRMONITOR_ON: "));
+	    Serial.println(AIRMONITOR_ON);
+	    Serial.print(F("Saved AIRMONITOR_GRAPH_ON: "));
+	    Serial.println(AIRMONITOR_GRAPH_ON);
+	    Serial.print(F("Saved LATITUDE: "));
+	    Serial.println(LATITUDE);
+	    Serial.print(F("Saved LONGITUDE: "));
+	    Serial.println(LONGITUDE);
+	    Serial.print(F("Saved EMAIL: "));
+	    Serial.println(EMAIL);
+	    Serial.print(F("Saved MYALTITUDE: "));
+	    Serial.println(MYALTITUDE);
+
+	    Serial.print(F("Saved THINGSPEAK_ON: "));
+	    Serial.println(THINGSPEAK_ON);
+	    Serial.print(F("Saved THINGSPEAK_GRAPH_ON: "));
+	    Serial.println(THINGSPEAK_GRAPH_ON);
+	    Serial.print(F("Saved THINGSPEAK_API_KEY: "));
+	    Serial.println(THINGSPEAK_API_KEY);
+	    Serial.print(F("Saved THINGSPEAK_CHANNEL_ID: "));
+	    Serial.println(THINGSPEAK_CHANNEL_ID);
+	    Serial.print(F("Saved THINGSPEAK_READ_API_KEY: "));
+	    Serial.println(THINGSPEAK_READ_API_KEY);
+
+	    Serial.print(F("Saved INFLUXDB_ON: "));
+	    Serial.println(INFLUXDB_ON);
+	    Serial.print(F("Saved INFLUXDB_VERSION: "));
+	    Serial.println(INFLUXDB_VERSION);
+	    Serial.print(F("Saved INFLUXDB_HOST: "));
+	    Serial.println(INFLUXDB_HOST);
+	    Serial.print(F("Saved INFLUXDB_PORT: "));
+	    Serial.println(INFLUXDB_PORT);
+	    Serial.print(F("Saved INFLUXDB_DATABASE: "));
+	    Serial.println(INFLUXDB_DATABASE);
+	    Serial.print(F("Saved INFLUXDB_USER: "));
+	    Serial.println(INFLUXDB_USER);
+	    Serial.print(F("Saved INFLUXDB_PASSWORD: "));
+	    Serial.println(INFLUXDB_PASSWORD);
+	    Serial.print(F("Saved INFLUXDB_ORG: "));
+	    Serial.println(INFLUXDB_ORG);
+	    Serial.print(F("Saved INFLUXDB_BUCKET: "));
+	    Serial.println(INFLUXDB_BUCKET);
+	    Serial.print(F("Saved INFLUXDB_TOKEN: "));
+	    Serial.println(INFLUXDB_TOKEN);
+
+	    Serial.print(F("Saved MQTT_ON: "));
+	    Serial.println(MQTT_ON);
+	    Serial.print(F("Saved MQTT_HOST: "));
+	    Serial.println(MQTT_HOST);
+	    Serial.print(F("Saved MQTT_PORT: "));
+	    Serial.println(MQTT_PORT);
+	    Serial.print(F("Saved MQTT_USER: "));
+	    Serial.println(MQTT_USER);
+	    Serial.print(F("Saved MQTT_PASSWORD: "));
+	    Serial.println(MQTT_PASSWORD);
+
+	    Serial.print(F("Saved MQTT_IP_IN_TOPIC: "));
+	    Serial.println(MQTT_IP_IN_TOPIC);
+	    Serial.print(F("Saved MQTT_DEVICENAME_IN_TOPIC: "));
+	    Serial.println(MQTT_DEVICENAME_IN_TOPIC);
+	    Serial.print(F("Saved MQTT_SLASH_AT_THE_BEGINNING: "));
+	    Serial.println(MQTT_SLASH_AT_THE_BEGINNING);
+	    Serial.print(F("Saved MQTT_SLASH_AT_THE_END: "));
+	    Serial.println(MQTT_SLASH_AT_THE_END);	
+
+	    Serial.print(F("Saved MQTT_TOPIC_TEMP: "));
+	    Serial.println(MQTT_TOPIC_TEMP);
+	    Serial.print(F("Saved MQTT_TOPIC_HUMI: "));
+	    Serial.println(MQTT_TOPIC_HUMI);
+	    Serial.print(F("Saved MQTT_TOPIC_PRESS: "));
+	    Serial.println(MQTT_TOPIC_PRESS);
+	    Serial.print(F("Saved MQTT_TOPIC_PM1: "));
+	    Serial.println(MQTT_TOPIC_PM1);
+	    Serial.print(F("Saved MQTT_TOPIC_PM25: "));
+	    Serial.println(MQTT_TOPIC_PM25);
+	    Serial.print(F("Saved MQTT_TOPIC_PM10: "));
+	    Serial.println(MQTT_TOPIC_PM10);
+	    Serial.print(F("Saved MQTT_TOPIC_AIRQUALITY: "));
+	    Serial.println(MQTT_TOPIC_AIRQUALITY);
+
+	    Serial.print(F("Saved AQI_ECO_ON: "));
+	    Serial.println(AQI_ECO_ON);
+	    Serial.print(F("Saved AQI_ECO_HOST: "));
+	    Serial.println(AQI_ECO_HOST);
+	    Serial.print(F("Saved AQI_ECO_PATH: "));
+	    Serial.println(AQI_ECO_PATH);
+
+		Serial.print(F("Saved SENDING_FREQUENCY: "));
+	    Serial.println(SENDING_FREQUENCY);
+		Serial.print(F("Saved SENDING_DB_FREQUENCY: "));
+	    Serial.println(SENDING_DB_FREQUENCY);
+		Serial.print(F("Saved DEEPSLEEP_ON: "));
+	    Serial.println(DEEPSLEEP_ON);
+
+	    Serial.print(F("Saved DEBUG: "));
+	    Serial.println(DEBUG);
+	    Serial.print(F("Saved AUTOUPDATE_ON: "));
+	    Serial.println(AUTOUPDATE_ON);
+
+	    Serial.print(F("Saved CONFIG_AUTH: "));
+	    Serial.println(CONFIG_AUTH);
+	    Serial.print(F("Saved CONFIG_USERNAME: "));
+	    Serial.println(CONFIG_USERNAME);
+	    Serial.print(F("Saved CONFIG_PASSWORD: "));
+	    Serial.println(CONFIG_PASSWORD);
+
+	    Serial.print(F("Saved MODEL: "));
+	    Serial.println(MODEL);
+
+	    Serial.print(F("Saved HOMEKIT_SUPPORT: "));
+	    Serial.println(HOMEKIT_SUPPORT);
+
+	    Serial.print(F("Saved PMSENSORVERSION: "));
+	    Serial.println(PMSENSORVERSION);
+
+	    Serial.print(F("Saved SOFTWAREVERSION: "));
+	    Serial.println(SOFTWAREVERSION);
+
+		Serial.println(F("\n"));
+	}
+	*/
+	
 #ifdef ARDUINO_ARCH_ESP8266
   StaticJsonDocument<capacity> jsonBuffer;
   //DynamicJsonDocument jsonBuffer(ESP.getMaxFreeBlockSize());

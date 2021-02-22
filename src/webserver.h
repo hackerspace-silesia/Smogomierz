@@ -6,14 +6,16 @@
 #endif
 
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "spiffs.h"
+#include "smogly_spiffs.h"
 #include <FS.h>
 
 const char* www_realm PROGMEM = "Custom Auth Realm";
 String authFailResponse = "<meta http-equiv='refresh' content='0; url=/' /> Authentication Failed! <p><a href='/'>Redirect</a></p>";
 
 void handle_root() {
-  String message = FPSTR(WEB_PAGE_HEADER);
+	String message;
+	
+  message += FPSTR(WEB_PAGE_HEADER);
   message.replace(F("{WEB_PAGE_CSS}"), FPSTR(WEB_PAGE_HEADER_CSS));
   message.replace(F("{Language}"), (TEXT_LANG));
   message.replace(F("{CurrentPageTitle}"), (TEXT_INDEX_PAGE));
@@ -220,6 +222,12 @@ void handle_root() {
   }
 
   message += FPSTR(WEB_PAGE_FOOTER);
+  
+  if (DEBUG) {
+	Serial.print("ROOT - message.length(): ");
+    Serial.println(message.length()); // keep it under 20000!
+	Serial.print("\n");
+  }
   WebServer.send(200, "text/html", message);
 }
 
@@ -652,7 +660,6 @@ void _handle_config_device(bool is_success) {
   message.replace(F("{LanguageSelect}"), _addLanguageSelect("LANGUAGE", LANGUAGE));
   message.replace(F("{TEXT_TEMPHUMIPRESSSENSOR}"), (TEXT_TEMPHUMIPRESSSENSOR));
   message.replace(F("{THP_MODELSelect}"), _addTHP_MODELSelect("THP_MODEL", THP_MODEL));
-
   message.replace(F("{TEXT_PMSENSOR}"), (TEXT_PMSENSOR));
   message.replace(F("{DUST_MODELSelect}"), _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL));
 

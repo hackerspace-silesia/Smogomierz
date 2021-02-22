@@ -1,5 +1,5 @@
 #include "ArduinoJson.h" // 6.5.0 beta or later !!!
-#include "spiffs.h"
+#include "smogly_spiffs.h"
 
 void handle_root () {
   String message;

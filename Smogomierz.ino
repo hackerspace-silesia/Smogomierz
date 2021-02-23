@@ -16,7 +16,7 @@
 
 // *******************************************
 
-//#define ASYNC_WEBSERVER_ON // - EXPERIMENTAL
+#define ASYNC_WEBSERVER_ON
 
 /*
 
@@ -82,6 +82,12 @@
   Szkic używa 580548 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 45888 bajtów (56%) pamięci dynamicznej, pozostawiając 36032 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  ASYNC_WEBSERVER_ON
+
+  Szkic używa 565628 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 52560 bajtów (64%) pamięci dynamicznej, pozostawiając 29360 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  ================================================================================================================================================
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
@@ -95,6 +101,11 @@
 
   Szkic używa 1543130 bajtów (78%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 60808 bajtów (18%) pamięci dynamicznej, pozostawiając 266872 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  ASYNC_WEBSERVER_ON
+
+  Szkic używa 1493878 bajtów (75%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60424 bajtów (18%) pamięci dynamicznej, pozostawiając 267256 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -1002,7 +1013,8 @@ void setup() {
   server.on("/config_device", HTTP_GET, handle_config_device);
   server.on("/config_services_save", HTTP_GET, handle_config_services_save);
   server.on("/config_services", HTTP_GET, handle_config_services);
-  
+  server.on("/config_adv_mqtt_save", HTTP_GET, handle_adv_mqtt_config_save);
+  server.on("/config_adv_mqtt", HTTP_GET, handle_adv_mqtt_config);
   server.on("/update", HTTP_GET, handle_update);
   server.on("/update_done", HTTP_POST, handle_update_done, handle_update_progress_cb);
   server.on("/api", HTTP_GET, handle_api);
@@ -1010,11 +1022,9 @@ void setup() {
   server.on("/restore_config", HTTP_GET, restore_config);
   server.on("/fwupdate", HTTP_GET, fwupdate);
   server.on("/autoupdate_on", HTTP_GET, autoupdate_on);
-
   server.on("/homekit_reset", HTTP_GET, homekit_reset);
   server.on("/homekit_on", HTTP_GET, homekit_on);
   server.on("/homekit_off", HTTP_GET, homekit_off);
-
   server.onNotFound(handle_root);
 #else
   //  WebServer config - Start
@@ -1297,6 +1307,27 @@ void loop() {
 #endif
     delay(5000);
   }
+
+
+  /*
+
+    unsigned int current_SENDING_FREQUENCY_Millis = millis();
+    if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
+    #ifdef ARDUINO_ARCH_ESP32
+      if (HOMEKIT_SUPPORT) {
+        homekit_DeviceData.homekit_temperature = float(random(-11.00, 45));
+        homekit_DeviceData.homekit_humidity = float(random(0.0, 99));
+        homekit_DeviceData.homekit_pm10_level = int(random(0, 3000));
+        homekit_DeviceData.homekit_pm25_level = int(random(0, 2000));
+        notify_hap();
+      }
+    #endif
+      previous_SENDING_FREQUENCY_Millis = millis();
+    }
+
+  */
+
+
 
 } // loop() - END
 

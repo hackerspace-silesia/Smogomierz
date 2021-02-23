@@ -160,7 +160,7 @@ const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
 
 	const char WEB_CONFIG_PAGE_SUBMIT_SERVICES_BUTTON[] = "<input type='submit' name='submit2' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
 
-	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_SUBMIT_SERVICES_BUTTON[] PROGMEM = "<input type='submit' name='submit3' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
+	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_SUBMIT_SERVICES_BUTTON[] = "<input type='submit' name='submit3' class='btn btn-outline-danger' value='{TEXT_SAVE}' /></form>";
 
 	const char WEB_CONFIG_PAGE_SELECT[] PROGMEM = "<select name='{key}'>";
 
@@ -266,80 +266,7 @@ const char WEB_CONFIG_DEVICE_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_DEVIC
 	)rawliteral";
 // CONFIG DEVICE PAGE - END
 // CONFIG SERVICES PAGE - Start
-#ifdef ASYNC_WEBSERVER_ON
-const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_services_save'>
-	<main role='main' class='container'><div class='jumbotron'>
-	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br>
-	<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>
-	{TEXT_INSTRUCIONSLINK}<br><br>
-	)rawliteral";
-
-const char WEB_CONFIG_SERVICES_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>{TEXT_SENDINGINTERVAL}: </b>{SENDING_FREQUENCY}
-	<b>{TEXT_DBSENDINGINTERVAL}: </b>{SENDING_DB_FREQUENCY}
-	<hr>
-	<b>{TEXT_SMOGLISTSENDING}: </b>{SMOGLIST_ON} {TEXT_SMOGLISTINFO}
-	<hr>
-	<b>{TEXT_LUFTDATENSENDING}: </b>{LUFTDATEN_ON}
-	<b>ChipID: </b>{LUFTDATEN_ChipID}
-	<br><b>{THPSENSOR}</b> Sensor PIN: <b>{THPXPIN}</b>
-	<br><b>{DUSTSENSOR}</b> Sensor PIN: <b>{DUSTXPIN}</b>
-	<hr>
-	<b>{TEXT_AQIECOSENDING}: </b>{AQI_ECO_ON}
-	<b>{TEXT_AQIECOSERVER}: </b>{AQI_ECO_HOST}
-	<b>{TEXT_AQIECOPATH}: </b>{AQI_ECO_PATH}
-	<b>{ESP_MODEL} ID: </b>{AQI_ECO_ChipID}
-	<hr>
-	<b>{TEXT_AIRMONITORSENDING}: </b>{AIRMONITOR_ON}
-	<b>{TEXT_AIRMONITORCHARTS}: </b>{AIRMONITOR_GRAPH_ON}
-	<b>{TEXT_AIRMONITORCOORDINATESINFO}:
-	<br>{TEXT_AIRMONITORLATITUDE}: </b>{LATITUDE}
-	<b>{TEXT_AIRMONITORLONGITUDE}: </b>{LONGITUDE}
-	<hr>
-	<b>{TEXT_THINGSPEAKSENDING}: </b>{THINGSPEAK_ON}
-	<b>{TEXT_THINGSPEAKCHARTS}: </b>{THINGSPEAK_GRAPH_ON}
-	<b>{TEXT_THINGSPEAK_WRITE_API_KEY}: </b>{THINGSPEAK_API_KEY}
-	<b>{TEXT_THINGSPEAKCHANNELID}: </b>{THINGSPEAK_CHANNEL_ID}
-	<b>{TEXT_THINGSPEAK_READ_API_KEY}: </b>{THINGSPEAK_READ_API_KEY}
-	<hr>
-	<b>{TEXT_INFLUXDBSENDING}: </b>{INFLUXDB_ON}
-	<b>{TEXT_INFLUXDBVERSION}: </b>{INFLUXDB_VERSION}
-	<b>{TEXT_INFLUXDBSERVER}: </b>{INFLUXDB_HOST}
-	<b>{TEXT_INFLUXDBPORT}: </b>{INFLUXDB_PORT}
-	<b>{TEXT_INFLUXDBNAME}: </b>{INFLUXDB_DATABASE}
-	<b>{TEXT_INFLUXDBUSER}: </b>{INFLUXDB_USER}
-	<b>{TEXT_INFLUXDBPASSWD}: </b>{INFLUXDB_PASSWORD}
-	<b>{TEXT_INFLUXDBORG}: </b>{INFLUXDB_ORG}
-	<b>{TEXT_INFLUXDBBUCKET}: </b>{INFLUXDB_BUCKET}
-	<b>{TEXT_INFLUXDBTOKEN}: </b>{INFLUXDB_TOKEN}
-	<hr>
-	<br><b>{TEXT_MQTTSENDING}: </b>{MQTT_ON}
-	<b>{TEXT_MQTTSERVER}: </b>{MQTT_HOST}
-	<b>{TEXT_MQTTPORT}: </b>{MQTT_PORT}
-	<b>{TEXT_MQTTUSER}: </b>{MQTT_USER}
-	<b>{TEXT_MQTTPASSWD}: </b>{MQTT_PASSWORD}
-	<br>{TEXT_MQTT_TOPIC_INFO}
-	<br><br>
-	<b>{TEXT_MQTT_IP_IN_TOPIC}: </b>{MQTT_IP_IN_TOPIC}
-	<b>{TEXT_MQTT_DEVICENAME_IN_TOPIC}: </b>{MQTT_DEVICENAME_IN_TOPIC}
-	<b>{TEXT_MQTT_SLASH_AT_THE_BEGINNING}: </b>{MQTT_SLASH_AT_THE_BEGINNING}
-	<b>{TEXT_MQTT_SLASH_AT_THE_END}: </b>{MQTT_SLASH_AT_THE_END}
-	<br>
-	<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />
-	<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />
-	<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />
-	<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />
-	<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />
-	<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />
-	<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />
-	<br>
-	<br><center>{AdvancedMQTTConfigButton}</center><br>
-	<hr><center><br>
-	{WiFiEraseButton}  {RestoreConfigButton}
-	<br><br></center><hr><br><center>
-	{SubmitButton}
-	</center>
-	)rawliteral";
-#else
+#ifndef ASYNC_WEBSERVER_ON
 const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_services'>
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_CONFIG_SERVICES_PAGE}</h1></center><br>
@@ -396,7 +323,15 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='P
 #endif
 // CONFIG SERVICES PAGE - END
 // CONFIG ADVANCED MQTT PAGE - Start
-#ifndef ASYNC_WEBSERVER_ON
+#ifdef ASYNC_WEBSERVER_ON
+	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='GET' action='/config_adv_mqtt_save'>
+	<main role='main' class='container'><div class='jumbotron'>
+	<center><h1>Smogly - {TEXT_ADVANCED_MQTT_PAGE}</h1></center><br>
+	{WEB_CONFIG_TOP_PAGE_INFO}
+	<br><hr><br>
+	{TEXT_INSTRUCIONSLINK}<br><br>
+	)rawliteral";
+#else
 	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='POST' action='/config_adv_mqtt'>
 	<main role='main' class='container'><div class='jumbotron'>
 	<center><h1>Smogly - {TEXT_ADVANCED_MQTT_PAGE}</h1></center><br>
@@ -404,6 +339,7 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='P
 	<br><hr><br>
 	{TEXT_INSTRUCIONSLINK}<br><br>
 	)rawliteral";
+#endif
 
 	const char WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG[] PROGMEM = R"rawliteral(<br><b>{TEXT_MQTTSENDING}: </b>{MQTT_ON}
 		<b>{TEXT_MQTTSERVER}: </b>{MQTT_HOST}
@@ -431,7 +367,7 @@ const char WEB_CONFIG_SERVICES_PAGE_TOP[] PROGMEM = R"rawliteral(<form method='P
 		{SubmitButton}
 		</center>
 		)rawliteral";
-#endif
+		//#endif
 // CONFIG ADVANCED MQTT PAGE - END
 // UPDATE BUTTONS - START
 

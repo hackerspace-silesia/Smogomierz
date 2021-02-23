@@ -3,6 +3,7 @@
 #elif defined ARDUINO_ARCH_ESP32
 #include <Update.h>
 #include <SPIFFS.h>
+#include <ESPmDNS.h>
 #endif
 
 #include <ArduinoJson.h> // 6.9.0 or later
@@ -512,6 +513,12 @@ String _addSubmitServices() {
   return submitServices;
 }
 
+String _addSubmitAdvMQTT() {
+  String submitAdvMQTT = FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_SUBMIT_SERVICES_BUTTON);
+  submitAdvMQTT.replace("{TEXT_SAVE}", (TEXT_SAVE));
+  return submitAdvMQTT;
+}
+
 String _addWiFiErase() {
   String WiFiErase = FPSTR(WEB_CONFIG_PAGE_WIFIERASE);
   WiFiErase.replace("{TEXT_ERASEWIFICONFIG}", (TEXT_ERASEWIFICONFIG));
@@ -522,6 +529,12 @@ String _addRestoreConfig() {
   String RestoreConfig = FPSTR(WEB_CONFIG_PAGE_RESTORECONFIG);
   RestoreConfig.replace("{TEXT_RESTORESETTINGS}", (TEXT_RESTORESETTINGS));
   return RestoreConfig;
+}
+
+String _add_homekit_reset() {
+  String homekit_reset = FPSTR(WEB_CONFIG_PAGE_HOMEKIT_RESET);
+  homekit_reset.replace("{TEXT_PAGE_HOMEKIT_RESET}", (TEXT_PAGE_HOMEKIT_RESET));
+  return homekit_reset;
 }
 
 //void handle_config() {
@@ -567,7 +580,7 @@ request->send(200, "text/html", message);
 
 String handle_config_device_processor(const String& var)
 {
-	Serial.println("var: " + var);
+	//Serial.println("var: " + var);
 	String message;
 	
     if (var == "{Language}") {
@@ -593,12 +606,326 @@ String handle_config_device_processor(const String& var)
     }
       if (var == "{UpdatePageTitle}") {
         message += (TEXT_UPDATE_PAGE);
-  	  } 
-	
+  	  } 	
       if (var == "{TEXT_CONFIG_DEVICE_PAGE}") {	
     message += (TEXT_CONFIG_DEVICE_PAGE);
-  }
+  }  
+    if (var == "{TEXT_INSTRUCIONSLINK}") {	
+  message += (TEXT_INSTRUCIONSLINK);
+  message.replace(F("{GITHUB_LINK}"), String(GITHUB_LINK));
+  message.replace(F("{TEXT_HERE}"), (TEXT_HERE));
+}
+
+    if (var == "{TEXT_DEVICENAME}") {	
+  message += (TEXT_DEVICENAME);
+}  
+
+    if (var == "{device_name}") {	
+		if (DEVICENAME_AUTO) {
+		  message += (device_name);
+		} else {
+			message += (_addTextInput("DEVICENAME", DEVICENAME));
+		}
+}  
+
+    if (var == "{TEXT_DEVICENAMEAUTO}") {	
+  message += (TEXT_DEVICENAMEAUTO);
+}  
+    if (var == "{DEVICENAME_AUTO}") {	
+  message += (_addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO));
+}  
+    if (var == "{TEXT_SELECTEDLANGUAGE}") {	
+  message += (TEXT_SELECTEDLANGUAGE);
+}  
+    if (var == "{LanguageSelect}") {	
+  message += (_addLanguageSelect("LANGUAGE", LANGUAGE));
+}  
+    if (var == "{TEXT_TEMPHUMIPRESSSENSOR}") {	
+  message += (TEXT_TEMPHUMIPRESSSENSOR);
+}  
+    if (var == "{THP_MODELSelect}") {	
+  message += (_addTHP_MODELSelect("THP_MODEL", THP_MODEL));
+}  
+    if (var == "{TEXT_PMSENSOR}") {	
+  message += (TEXT_PMSENSOR);
+}  
+    if (var == "{DUST_MODELSelect}") {	
+  message += (_addDUST_MODELSelect("DUST_MODEL", DUST_MODEL));
+}  
+
+if (var == "{WEB_CONFIG_DEVICE_PAGE_FIRST_TH") {
+	if (strcmp(THP_MODEL, "Non")) {
+	message += (WEB_CONFIG_DEVICE_PAGE_FIRST_THP_PINS);
+} else {
+	message += "";
+}
+}
+
+if (var == "{THP_MODEL}") {	
+	message += (THP_MODEL);
+}
+if (var == "{TEXT_FIRST_THP_SDA_SCL}") {	
+	message += (TEXT_FIRST_THP_SDA_SCL);
+}
+if (var == "{TEXT_FIRST_THP_SDA}") {	
+	message += (TEXT_FIRST_THP_SDA);
+}
+if (var == "{FIRST_THP_SDA}") {	
+	message += (_add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_THP_SDA", CONFIG_FIRST_THP_SDA));
+}
+if (var == "{TEXT_FIRST_THP_SCL}") {	
+	if (!strcmp(THP_MODEL, "DHT22") or !strcmp(THP_MODEL, "DS18B20")) {
+		message += ("");
+	} else {
+		message += (TEXT_FIRST_THP_SCL);
+	}
+}
+if (var == "{FIRST_THP_SCL}") {	
+	if (!strcmp(THP_MODEL, "DHT22") or !strcmp(THP_MODEL, "DS18B20")) {
+		message += ("");
+	} else {
+		message += (_add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_THP_SCL", CONFIG_FIRST_THP_SCL));
+	}
+}
+
+if (var == "{WEB_CONFIG_DEVICE_PAGE_SECOND_T") {	
+	if (strcmp(THP_MODEL, "Non")) {
+	message += (WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS);
+} else {
+	message += ("");
+}
+}
+if (var == "{TEXT_SECOND_THP}") {	
+	message += (TEXT_SECOND_THP);
+}
+if (var == "{SECOND_THP}") {	
+	message += (_addBoolSelect("SECOND_THP", SECOND_THP));
+}
+if (var == "{TEXT_SECOND_THP_SDA_SCL}") {	
+	message += (TEXT_SECOND_THP_SDA_SCL);
+}
+if (var == "{TEXT_SECOND_THP_SDA}") {	
+	message += (TEXT_SECOND_THP_SDA);
+}
+if (var == "{SECOND_THP_SDA}") {	
+	message += (_add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SDA", CONFIG_SECOND_THP_SDA));
+}
+if (var == "{TEXT_SECOND_THP_SCL}") {	
+	message += (TEXT_SECOND_THP_SCL);
+}
+if (var == "{SECOND_THP_SCL}") {	
+	message += (_add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SCL", CONFIG_SECOND_THP_SCL));
+}						
+						
+
+if (var == "{WEB_CONFIG_DEVICE_PAGE_DUST_PIN") {	
+if (strcmp(DUST_MODEL, "Non")) {
+	message += (WEB_CONFIG_DEVICE_PAGE_DUST_PINS);
+} else {
+	message += "";
+}
+}
+
+if (var == "{DUST_MODEL}") {	
+	message += (DUST_MODEL);
+}	
+if (var == "{TEXT_DUST_TX_RX}") {	
+	message += (TEXT_DUST_TX_RX);
+}
+if (var == "{TEXT_DUST_TX}") {	
+	message += (TEXT_DUST_TX);
+}
+if (var == "{DUST_TX}") {	
+	message += (_add_DUST_TX_RX_Select("CONFIG_DUST_TX", CONFIG_DUST_TX));
+}
+if (var == "{TEXT_DUST_RX}") {	
+	message += (TEXT_DUST_RX);
+}
+if (var == "{DUST_RX}") {	
+	message += (_add_DUST_TX_RX_Select("CONFIG_DUST_RX", CONFIG_DUST_RX));
+}
+
+if (var == "{TEXT_FREQUENTMEASUREMENTONOFF}") {	
+	message += (TEXT_FREQUENTMEASUREMENTONOFF);
+}
+if (var == "{FREQUENTMEASUREMENT_Select}") {	
+	message += (_addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
+}	
+if (var == "{TEXT_FREQUENTMEASUREMENTINFO}") {	
+	message += (TEXT_FREQUENTMEASUREMENTINFO);
+}	
+if (var == "{TEXT_MEASUREMENTFREQUENCY}") {	
+	message += (TEXT_MEASUREMENTFREQUENCY);
+}		
+if (var == "{FREQUENTMEASUREMENT_time}") {	
+if (FREQUENTMEASUREMENT == true) {
+  message += (_addIntInput("DUST_TIME", DUST_TIME, "{TEXT_SECONDS}"));
+  message.replace(F("{TEXT_SECONDS}"), (TEXT_SECONDS));
+} else {
+  message += (_addIntInput("DUST_TIME", DUST_TIME, "{TEXT_MINUTES}"));
+  message.replace(F("{TEXT_MINUTES}"), (TEXT_MINUTES));
+}
+}
+
+if (var == "{TEXT_AVERAGELASTRESULT}") {	
+	message += (TEXT_AVERAGELASTRESULT);
+}
+if (var == "{NUMBEROFMEASUREMENTS}") {	
+	message += (_addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "{TEXT_PMMEASUREMENTS}"));
+    message.replace(F("{TEXT_PMMEASUREMENTS}"), (TEXT_PMMEASUREMENTS));	
+}
+
+if (var == "{TEXT_DEEPSLEEPINFO}") {	
+#ifdef ARDUINO_ARCH_ESP8266
+    message += (TEXT_DEEPSLEEPINFO);
+#elif defined ARDUINO_ARCH_ESP32
+    message += (TEXT_DEEPSLEEPINFO_ESP32);
+#endif
+    message.replace(F("{INTERFACEWWWONTIME}"), String(int(NUMBEROFMEASUREMENTS) * 2 + 10 ));
+    message.replace(F("{SENDING_FREQUENCY}"), String(SENDING_FREQUENCY));
+}
+if (var == "{DEEPSLEEP_ON}") {	
+	message += (_addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
+}
+
+if (var == "{WEB_CONFIG_DEVICE_SHOWING_PM1}") {	
+	if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "SPS30")) {
+message += (WEB_CONFIG_DEVICE_SHOWING_PM1);
+} else {
+  message += ("");
+}
+}
+if (var == "{TEXT_DISPLAYPM1}") {	
+	  message += (TEXT_DISPLAYPM1);
+}
+if (var == "{DISPLAY_PM1}") {	
+	  message += (_addBoolSelect("DISPLAY_PM1", DISPLAY_PM1));
+	  message.replace(F("{TEXT_DISPLAYPM1}"), (TEXT_DISPLAYPM1));
+}
+if (var == "{TEXT_ALTITUDEINFO}") {	
+	message += (TEXT_ALTITUDEINFO);
+	message.replace(F("{WSPOLRZEDNE_GPS_LINK}"), String(WSPOLRZEDNE_GPS_LINK));
+	message.replace(F("{TEXT_HERE}"), (TEXT_HERE));
+}
+if (var == "{MYALTITUDE}") {	
+message += (_addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m"));
+}
+
+if (var == "{TEXT_SECURECONFIGUPDATEPAGE}") {	
+message += (TEXT_SECURECONFIGUPDATEPAGE);
+}
+if (var == "{CONFIG_AUTH}") {	
+message += (_addBoolSelect("CONFIG_AUTH", CONFIG_AUTH));
+}
+if (var == "{TEXT_SECURELOGIN}") {	
+message += (TEXT_SECURELOGIN);
+}
+if (var == "{CONFIG_USERNAME}") {	
+message += (_addTextInput("CONFIG_USERNAME", CONFIG_USERNAME));
+}
+if (var == "{TEXT_SECUREPASSWD}") {	
+message += (TEXT_SECUREPASSWD);
+}
+if (var == "{CONFIG_PASSWORD}") {	
+message += (_addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD));
+}
+
+if (var == "{TEXT_SECURELOGOUTINFO}") {	
+if (!CONFIG_AUTH) {
+  message += ("");
+} else {
+  message += (TEXT_SECURELOGOUTINFO);
+}
+}
+
+if (var == "{DEBUG}") {	
+message += (_addBoolSelect("DEBUG", DEBUG));
+}
+if (var == "{TEXT_CALIBMETHOD}") {	
+message += (TEXT_CALIBMETHOD);
+}
+if (var == "{CalibrationModelSelect}") {	
+message += (_addModelSelect("MODEL", MODEL));
+}
+if (var == "{TEXT_CALIB1}") {	
+message += (TEXT_CALIB1);
+}
+if (var == "{calib1}") {	
+message += (String(calib1));
+}
+if (var == "{TEXT_CALIB2}") {	
+message += (TEXT_CALIB2);
+}
+if (var == "{calib2}") {	
+message += (String(calib2));
+}
+
+if (var == "{TEXT_SOFTWATEVERSION}") {	
+message += (TEXT_SOFTWATEVERSION);
+}
+if (var == "{SOFTWAREVERSION}") {	
+message += (SOFTWAREVERSION);
+}
+
+if (var == "{TEXT_AUTOUPDATEON}") {	
+message += (TEXT_AUTOUPDATEON);
+}
+if (var == "{AUTOUPDATEON}") {	
+message += (_addBoolSelect("AUTOUPDATE_ON", AUTOUPDATE_ON));
+}
+  /*
+if (var == "{TEXT_UPDATEPAGEAUTOUPDATEWARNIN}") {	
+#ifdef ARDUINO_ARCH_ESP8266
+  message += (TEXT_UPDATEPAGEAUTOUPDATEWARNING);
+#elif defined ARDUINO_ARCH_ESP32
+  message += ("");
+#endif
+}
+  */
+
+#ifdef ARDUINO_ARCH_ESP8266
+if (var == "{WEB_CONFIG_DEVICE_HOMEKIT}") {	
+message += ("");
+}
+#elif defined ARDUINO_ARCH_ESP32
+if (var == "{WEB_CONFIG_DEVICE_HOMEKIT}") {	
+message += (WEB_CONFIG_DEVICE_HOMEKIT);
+}
+
+if (var == "{TEXT_HOMEKIT_SUPPORT}") {	
+message += (TEXT_HOMEKIT_SUPPORT);
+}
+if (var == "{HOMEKIT_SUPPORT_ON}") {	
+message += (_addBoolSelect("HOMEKIT_SUPPORT", HOMEKIT_SUPPORT));
+}
+if (var == "{TEXT_HOMEKIT_IS_PAIRED}") {	
+if (HOMEKIT_SUPPORT == true) {
+    // Serial.println("homekit_is_paired: " + String(homekit_is_paired()));
+  if (String(homekit_is_paired()) == "1") {
+	  message += (TEXT_HOMEKIT_IS_PAIRED);
+	}
+  }	
+}
+if (var == "{HOMEKIT_PAIRED_RESET}") {	
+if (HOMEKIT_SUPPORT == true) {
+    // Serial.println("homekit_is_paired: " + String(homekit_is_paired()));
+  if (String(homekit_is_paired()) == "1") {
+	  message += (_add_homekit_reset());  
+	}
+  }	
+}
+#endif
   
+if (var == "{WiFiEraseButton}") {
+	message += (_addWiFiErase());	
+}
+if (var == "{RestoreConfigButton}") {
+	message += (_addRestoreConfig());	
+}
+if (var == "{SubmitButton}") {	
+	message += (_addSubmitDevice());
+}
+
     return message;	
 }
 
@@ -610,227 +937,13 @@ void handle_config_device(AsyncWebServerRequest *request) {
 	      }
   }
   
-  
-  
-  
-  String message;
-  
-  message = FPSTR(WEB_PAGE_HEADER);
-  message.replace(F("{WEB_PAGE_CSS}"), FPSTR(WEB_PAGE_HEADER_CSS));
-  message.replace(F("{Language}"), (TEXT_LANG));
-  message.replace(F("{CurrentPageTitle}"), (TEXT_CONFIG_PAGE));
-  message.replace(F("{IndexPageTitle}"), (TEXT_INDEX_PAGE));
-  message.replace(F("{ConfigPageTitle}"), (TEXT_CONFIG_PAGE));
-  message.replace(F("{UpdatePageTitle}"), (TEXT_UPDATE_PAGE));
-
-  message += FPSTR(WEB_CONFIG_DEVICE_PAGE_TOP);
-  message.replace(F("{TEXT_CONFIG_DEVICE_PAGE}"), (TEXT_CONFIG_DEVICE_PAGE));
-
-  message.replace(F("{WEB_CONFIG_TOP_PAGE_INFO}"), "");
-  message.replace("<div style='color: #2f7a2d'> <strong>{TEXT_SAVED}!</strong> - {TEXT_POSTCONFIG_INFO} </div><br><hr><br>", "");
-
-  message.replace(F("{TEXT_INSTRUCIONSLINK}"), (TEXT_INSTRUCIONSLINK));
-  message.replace(F("{GITHUB_LINK}"), String(GITHUB_LINK));
-  message.replace(F("{TEXT_HERE}"), (TEXT_HERE));
-
-  message += FPSTR(WEB_CONFIG_DEVICE_PAGE_CONFIG);
-
-  message.replace(F("{TEXT_DEVICENAME}"), (TEXT_DEVICENAME));
-  if (DEVICENAME_AUTO) {
-    message.replace(F("{device_name}"), (device_name));
-  } else {
-    message.replace(F("{device_name}"), _addTextInput("DEVICENAME", DEVICENAME));
-  }
-
-  message.replace(F("{TEXT_DEVICENAMEAUTO}"), (TEXT_DEVICENAMEAUTO));
-  message.replace(F("{DEVICENAME_AUTO}"), _addBoolSelect("DEVICENAME_AUTO", DEVICENAME_AUTO));
-  message.replace(F("{TEXT_SELECTEDLANGUAGE}"), (TEXT_SELECTEDLANGUAGE));
-  message.replace(F("{LanguageSelect}"), _addLanguageSelect("LANGUAGE", LANGUAGE));
-  message.replace(F("{TEXT_TEMPHUMIPRESSSENSOR}"), (TEXT_TEMPHUMIPRESSSENSOR));
-  message.replace(F("{THP_MODELSelect}"), _addTHP_MODELSelect("THP_MODEL", THP_MODEL));
-  message.replace(F("{TEXT_PMSENSOR}"), (TEXT_PMSENSOR));
-  message.replace(F("{DUST_MODELSelect}"), _addDUST_MODELSelect("DUST_MODEL", DUST_MODEL));
-
-
- if (!strcmp(THP_MODEL, "Non")) {
-	message.replace(F("<hr>{TEXT_FIRST_THP_SDA_SCL} - {THP_MODEL}<br>"), "");
-	message.replace(F("<b>{TEXT_FIRST_THP_SDA}: </b>{FIRST_THP_SDA}"), "");
-	message.replace(F("<b>{TEXT_FIRST_THP_SCL}: </b>{FIRST_THP_SCL}"), "");
- } else {
- 	message.replace(F("{THP_MODEL}"), (THP_MODEL));
- }
-
- if (!strcmp(DUST_MODEL, "Non")) {
- 	message.replace(F("<br>{TEXT_DUST_TX_RX} - {DUST_MODEL}<br>"), "");
-	message.replace(F("<b>{TEXT_DUST_TX}: </b>{DUST_TX}"), "");
-	message.replace(F("<b>{TEXT_DUST_RX}: </b>{DUST_RX}"), "");
- } else {
-	  if (!strcmp(THP_MODEL, "Non")) {
-		 message.replace(F("<br>{TEXT_DUST_TX_RX} - {DUST_MODEL}<br>"), "<hr>{TEXT_DUST_TX_RX} - {DUST_MODEL}<br>"); 
-	  }
- 	message.replace(F("{DUST_MODEL}"), (DUST_MODEL));
- }
-
-
-message.replace(F("{TEXT_FIRST_THP_SDA_SCL}"), (TEXT_FIRST_THP_SDA_SCL));
-message.replace(F("{TEXT_FIRST_THP_SDA}"), (TEXT_FIRST_THP_SDA));
-message.replace(F("{FIRST_THP_SDA}"), _add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_THP_SDA", CONFIG_FIRST_THP_SDA));
-if (!strcmp(THP_MODEL, "DHT22") or !strcmp(THP_MODEL, "DS18B20")) {
-	message.replace(F("<b>{TEXT_FIRST_THP_SCL}: </b>{FIRST_THP_SCL}"), "");
-} else {
-	message.replace(F("{TEXT_FIRST_THP_SCL}"), (TEXT_FIRST_THP_SCL));
-	message.replace(F("{FIRST_THP_SCL}"), _add_FIRST_THP_SDA_SCL_Select("CONFIG_FIRST_THP_SCL", CONFIG_FIRST_THP_SCL));
-}
-message.replace(F("{TEXT_SECOND_THP}"), (TEXT_SECOND_THP));
-message.replace(F("{SECOND_THP}"), _addBoolSelect("SECOND_THP", SECOND_THP));
-
-if(SECOND_THP) {
-    message.replace(F("{WEB_CONFIG_DEVICE_PAGE_SECOND_THP}"), FPSTR(WEB_CONFIG_DEVICE_PAGE_SECOND_THP));
-	message.replace(F("{TEXT_SECOND_THP_SDA_SCL}"), (TEXT_SECOND_THP_SDA_SCL));
-	message.replace(F("{TEXT_SECOND_THP_SDA}"), (TEXT_SECOND_THP_SDA));
-	message.replace(F("{SECOND_THP_SDA}"), _add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SDA", CONFIG_SECOND_THP_SDA));
-	message.replace(F("{TEXT_SECOND_THP_SCL}"), (TEXT_SECOND_THP_SCL));
-	message.replace(F("{SECOND_THP_SCL}"), _add_SECOND_THP_SDA_SCL_Select("CONFIG_SECOND_THP_SCL", CONFIG_SECOND_THP_SCL));
-} else {
-	message.replace(F("{WEB_CONFIG_DEVICE_PAGE_SECOND_THP}"), "");
-}
-
-if(SECOND_THP) {
-	message.replace(F("{}"), "");
-	message.replace(F("{}"), "");
-} else {
-	message.replace(F("{}"), "");
-}
-
-message.replace(F("{TEXT_DUST_TX_RX}"), (TEXT_DUST_TX_RX));
-message.replace(F("{TEXT_DUST_TX}"), (TEXT_DUST_TX));
-message.replace(F("{DUST_TX}"), _add_DUST_TX_RX_Select("CONFIG_DUST_TX", CONFIG_DUST_TX));
-message.replace(F("{TEXT_DUST_RX}"), (TEXT_DUST_RX));
-message.replace(F("{DUST_RX}"), _add_DUST_TX_RX_Select("CONFIG_DUST_RX", CONFIG_DUST_RX));
-
-  message.replace(F("{TEXT_FREQUENTMEASUREMENTONOFF}"), (TEXT_FREQUENTMEASUREMENTONOFF));
-  message.replace(F("{TEXT_FREQUENTMEASUREMENTINFO}"), (TEXT_FREQUENTMEASUREMENTINFO));
-  message.replace(F("{TEXT_MEASUREMENTFREQUENCY}"), (TEXT_MEASUREMENTFREQUENCY));
-
-  message.replace(F("{FREQUENTMEASUREMENT_Select}"), _addBoolSelect("FREQUENTMEASUREMENT", FREQUENTMEASUREMENT));
-
-  if (FREQUENTMEASUREMENT == true) {
-    message.replace(F("{FREQUENTMEASUREMENT_time}"), _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_SECONDS}"));
-    message.replace(F("{TEXT_SECONDS}"), (TEXT_SECONDS));
-  } else {
-    message.replace(F("{FREQUENTMEASUREMENT_time}"), _addIntInput("DUST_TIME", DUST_TIME, "{TEXT_MINUTES}"));
-    message.replace(F("{TEXT_MINUTES}"), (TEXT_MINUTES));
-  }
-
-  message.replace(F("{TEXT_AVERAGELASTRESULT}"), (TEXT_AVERAGELASTRESULT));
-  message.replace(F("{NUMBEROFMEASUREMENTS}"), _addIntInput("NUMBEROFMEASUREMENTS", NUMBEROFMEASUREMENTS, "{TEXT_PMMEASUREMENTS}"));
-  message.replace(F("{TEXT_PMMEASUREMENTS}"), (TEXT_PMMEASUREMENTS));
-
-  if (FREQUENTMEASUREMENT == true) {
-    message.replace(F("<hr><b>DeepSleep: </b>{DEEPSLEEP_ON} {TEXT_DEEPSLEEPINFO}"), "");
-  } else {
-#ifdef ARDUINO_ARCH_ESP8266
-    message.replace(F("{TEXT_DEEPSLEEPINFO}"), TEXT_DEEPSLEEPINFO);
-#elif defined ARDUINO_ARCH_ESP32
-    message.replace(F("{TEXT_DEEPSLEEPINFO}"), TEXT_DEEPSLEEPINFO_ESP32);
-#endif
-    message.replace(F("{INTERFACEWWWONTIME}"), String(int(NUMBEROFMEASUREMENTS) * 2 + 10 ));
-    message.replace(F("{SENDING_FREQUENCY}"), String(SENDING_FREQUENCY));
-    message.replace(F("{DEEPSLEEP_ON}"), _addBoolSelect("DEEPSLEEP_ON", DEEPSLEEP_ON));
-  }
-
-  if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "SPS30")) {
-    message.replace(F("{DISPLAY_PM1}"), _addBoolSelect("DISPLAY_PM1", DISPLAY_PM1));
-    message.replace(F("{TEXT_DISPLAYPM1}"), (TEXT_DISPLAYPM1));
-  } else {
-    message.replace(F("<b>{TEXT_DISPLAYPM1}: </b> {DISPLAY_PM1}"), "");
-  }
-  message.replace(F("{TEXT_ALTITUDEINFO}"), (TEXT_ALTITUDEINFO));
-  message.replace(F("{WSPOLRZEDNE_GPS_LINK}"), String(WSPOLRZEDNE_GPS_LINK));
-  message.replace(F("{TEXT_HERE}"), (TEXT_HERE));
-  message.replace(F("{MYALTITUDE}"), _addIntInput("MYALTITUDE", MYALTITUDE, "m.n.p.m"));
-
-  message.replace(F("{TEXT_SECURECONFIGUPDATEPAGE}"), (TEXT_SECURECONFIGUPDATEPAGE));
-  message.replace(F("{CONFIG_AUTH}"), _addBoolSelect("CONFIG_AUTH", CONFIG_AUTH));
-  message.replace(F("{TEXT_SECURELOGIN}"), (TEXT_SECURELOGIN));
-
-  message.replace(F("{CONFIG_USERNAME}"), _addTextInput("CONFIG_USERNAME", CONFIG_USERNAME));
-  message.replace(F("{TEXT_SECUREPASSWD}"), (TEXT_SECUREPASSWD));
-  message.replace(F("{CONFIG_PASSWORD}"), _addPasswdInput("CONFIG_PASSWORD", CONFIG_PASSWORD));
-
-  if (!CONFIG_AUTH) {
-    message.replace(F("{TEXT_SECURELOGOUTINFO}"), "");
-  } else {
-    message.replace(F("{TEXT_SECURELOGOUTINFO}"), (TEXT_SECURELOGOUTINFO));
-  }
-  
-    message.replace(F("{DEBUG}"), _addBoolSelect("DEBUG", DEBUG));
-  message.replace(F("{TEXT_CALIBMETHOD}"), (TEXT_CALIBMETHOD));
-  message.replace(F("{CalibrationModelSelect}"), _addModelSelect("MODEL", MODEL));
-  //#ifdef ARDUINO_ARCH_ESP32 // EN: 6280 -- PL: 6299 FULL ON - 8015
-  message.replace(F("{TEXT_CALIB1}"), (TEXT_CALIB1));
-  message.replace(F("{calib1}"), String(calib1));
-  message.replace(F("{TEXT_CALIB2}"), (TEXT_CALIB2));
-  message.replace(F("{calib2}"), String(calib2));
-
-  message.replace(F("{TEXT_SOFTWATEVERSION}"), (TEXT_SOFTWATEVERSION));
-  message.replace(F("{SOFTWAREVERSION}"), SOFTWAREVERSION);
-  //#endif
-  message.replace(F("{TEXT_AUTOUPDATEON}"), TEXT_AUTOUPDATEON);
-  message.replace(F("{AUTOUPDATEON}"), _addBoolSelect("AUTOUPDATE_ON", AUTOUPDATE_ON));
-  
-  /*
-#ifdef ARDUINO_ARCH_ESP8266
-  message.replace(F("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}"), TEXT_UPDATEPAGEAUTOUPDATEWARNING);
-#elif defined ARDUINO_ARCH_ESP32
-  message.replace(F("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}"), "");
-#endif
-  */
-  
-  message.replace(F("{TEXT_UPDATEPAGEAUTOUPDATEWARNING}"), "");
-
-#ifdef ARDUINO_ARCH_ESP8266
-  message.replace(F("<br><b>{TEXT_HOMEKIT_SUPPORT}: </b>{HOMEKIT_SUPPORT_ON}"), "");
-  message.replace(F("<b>{TEXT_HOMEKIT_IS_PAIRED}: </b>{HOMEKIT_PAIRED_RESET}"), "");  	
-#elif defined ARDUINO_ARCH_ESP32
-  message.replace(F("{TEXT_HOMEKIT_SUPPORT}"), TEXT_HOMEKIT_SUPPORT);
-  message.replace(F("{HOMEKIT_SUPPORT_ON}"), _addBoolSelect("HOMEKIT_SUPPORT", HOMEKIT_SUPPORT));
-  if (HOMEKIT_SUPPORT == true) {
-      // Serial.println("homekit_is_paired: " + String(homekit_is_paired()));
-	  if (String(homekit_is_paired()) == "1") {
-		  message.replace(F("{TEXT_HOMEKIT_IS_PAIRED}"), (TEXT_HOMEKIT_IS_PAIRED));
-		  message.replace(F("{HOMEKIT_PAIRED_RESET}"), _add_homekit_reset());  
-	  } else {
-		  message.replace(F("<b>{TEXT_HOMEKIT_IS_PAIRED}: </b>{HOMEKIT_PAIRED_RESET}"), "");  		
-	  } 	
-  } else {
-	  message.replace(F("<b>{TEXT_HOMEKIT_IS_PAIRED}: </b>{HOMEKIT_PAIRED_RESET}"), "");  	
-  }	  
-#endif
-
-  message.replace(F("{WiFiEraseButton}"), _addWiFiErase());
-  message.replace(F("{RestoreConfigButton}"), _addRestoreConfig());
-  message.replace(F("{SubmitButton}"), _addSubmitDevice());
-  message += FPSTR(WEB_PAGE_FOOTER);
-  
-  
-  /*
-  if (DEBUG) {
-  	Serial.print("handle_config_device - message.length(): ");
-    Serial.println(message.length()); // keep it under 20000! // under 6500 for ESP8266
-  	Serial.print("\n");
-  }
-*/	
-  /*
   if (DEBUG) {
 	Serial.print("sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): ");
-  Serial.println(sizeof(WEB_CONFIG_DEVICE_PAGE_ALL)); // sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): 5518
+  Serial.println(sizeof(WEB_CONFIG_DEVICE_PAGE_ALL)); // sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): 3781
 	Serial.print("\n");
 }
-*/
-  	//Serial.println("message: " + message);	
-  request->send(200, "text/html", message);
-	//request->send_P(200, "text/html", WEB_CONFIG_DEVICE_PAGE_ALL, handle_config_device_processor);
+
+request->send_P(200, "text/html", WEB_CONFIG_DEVICE_PAGE_ALL, handle_config_device_processor);
 }
 
 String handle_config_services_processor(const String& var)
@@ -1188,7 +1301,7 @@ if (var == "{AIRMONITOR_ON}") {
   	message += "";
   }
   	}
-	
+	/*
     if (var == "{TEXT_MQTTSENDING}") {	
      message += (TEXT_MQTTSENDING);
     }
@@ -1219,7 +1332,7 @@ if (var == "{MQTT_USER}") {
 if (var == "{MQTT_PASSWORD}") {	
     message += (_addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
  }
- 
+ */
  /*
  if (var == "{TEXT_MQTT_TOPIC_INFO}") {	
   message += (TEXT_MQTT_TOPIC_INFO);
@@ -1267,19 +1380,6 @@ if (var == "{MQTT_PASSWORD}") {
  }
  */
  
- /*
-
-	<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />
-	<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />
-	<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />
-	<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />
-	<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />
-	<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />
-	<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />
-	
- */
- 
- 
  if (var == "{AdvancedMQTTConfigButton}") {	
   message += (ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON);
   message.replace(F("{TEXT_CONFIG_ADV_MQTT}"), (TEXT_CONFIG_ADV_MQTT));
@@ -1318,6 +1418,364 @@ void handle_config_services(AsyncWebServerRequest *request) {
 
 	   request->send_P(200, "text/html", WEB_CONFIG_SERVICES_PAGE_ALL, handle_config_services_processor);
   //request->send(200, "text/html", message);
+}
+
+void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
+  if (CONFIG_AUTH == true) {
+	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
+	        request->requestAuthentication(NULL,false); // force basic auth
+	      }
+  }
+  String message;
+  
+  message += FPSTR(WEB_PAGE_HEADER);
+  message.replace(F("{WEB_PAGE_CSS}"), FPSTR(WEB_PAGE_HEADER_CSS));
+  message.replace(F("{Language}"), (TEXT_LANG));
+  message.replace(F("{CurrentPageTitle}"), (TEXT_CONFIG_PAGE));
+  message.replace(F("{IndexPageTitle}"), (TEXT_INDEX_PAGE));
+  message.replace(F("{ConfigPageTitle}"), (TEXT_CONFIG_PAGE));
+  message.replace(F("{UpdatePageTitle}"), (TEXT_UPDATE_PAGE));
+
+  message += FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP);
+  message.replace(F("{TEXT_ADVANCED_MQTT_PAGE}"), (TEXT_CONFIG_ADV_MQTT));
+
+  message.replace(F("{WEB_CONFIG_TOP_PAGE_INFO}"), "");
+  
+  message.replace(F("{TEXT_INSTRUCIONSLINK}"), (TEXT_INSTRUCIONSLINK));
+  message.replace(F("{GITHUB_LINK}"), String(GITHUB_LINK));
+  message.replace(F("{TEXT_HERE}"), (TEXT_HERE));
+
+  message += FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG);
+
+  message.replace(F("{TEXT_MQTTSENDING}"), (TEXT_MQTTSENDING));
+  message.replace(F("{MQTT_ON}"), _addBoolSelect("MQTT_ON", MQTT_ON));
+  message.replace(F("{TEXT_MQTTSERVER}"), (TEXT_MQTTSERVER));
+  message.replace(F("{MQTT_HOST}"), _addTextInput("MQTT_HOST", MQTT_HOST));
+  message.replace(F("{TEXT_MQTTPORT}"), (TEXT_MQTTPORT));
+  message.replace(F("{MQTT_PORT}"), _addIntInput("MQTT_PORT", MQTT_PORT));
+  message.replace(F("{TEXT_MQTTUSER}"), (TEXT_MQTTUSER));
+  message.replace(F("{MQTT_USER}"), _addTextInput("MQTT_USER", MQTT_USER));
+  message.replace(F("{TEXT_MQTTPASSWD}"), (TEXT_MQTTPASSWD));
+  message.replace(F("{MQTT_PASSWORD}"), _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
+
+  message.replace(F("{TEXT_MQTT_TOPIC_INFO}"), (TEXT_MQTT_TOPIC_INFO));
+
+  message.replace(F("{TEXT_MQTT_IP_IN_TOPIC}"), (TEXT_MQTT_IP_IN_TOPIC));
+  message.replace(F("{MQTT_IP_IN_TOPIC}"), _addBoolSelect("MQTT_IP_IN_TOPIC", MQTT_IP_IN_TOPIC));
+
+  message.replace(F("{TEXT_MQTT_DEVICENAME_IN_TOPIC}"), (TEXT_MQTT_DEVICENAME_IN_TOPIC));
+  message.replace(F("{MQTT_DEVICENAME_IN_TOPIC}"), _addBoolSelect("MQTT_DEVICENAME_IN_TOPIC", MQTT_DEVICENAME_IN_TOPIC));
+
+  message.replace(F("{TEXT_MQTT_SLASH_AT_THE_BEGINNING}"), (TEXT_MQTT_SLASH_AT_THE_BEGINNING));
+  message.replace(F("{MQTT_SLASH_AT_THE_BEGINNING}"), _addBoolSelect("MQTT_SLASH_AT_THE_BEGINNING", MQTT_SLASH_AT_THE_BEGINNING));
+  
+  message.replace(F("{TEXT_MQTT_SLASH_AT_THE_END}"), (TEXT_MQTT_SLASH_AT_THE_END));
+  message.replace(F("{MQTT_SLASH_AT_THE_END}"), _addBoolSelect("MQTT_SLASH_AT_THE_END", MQTT_SLASH_AT_THE_END));
+
+  if (!MQTT_SLASH_AT_THE_BEGINNING) {
+	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"));
+	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"));
+	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"));
+	  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), F("<b>{TEXT_PM1_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"));
+	  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), F("<b>{TEXT_PM25_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"));
+	  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"), F("<b>{TEXT_PM10_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"));
+	  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"));
+  }
+  
+  if (!MQTT_SLASH_AT_THE_END) {
+   message.replace(F("{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), F("{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"));
+   message.replace(F("{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), F("{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"));
+   message.replace(F("{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), F("{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"));
+   message.replace(F("{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), F("{MQTT_TOPIC_PM1}={MQTT_PM1}<br />"));
+   message.replace(F("{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), F("{MQTT_TOPIC_PM25}={MQTT_PM25}<br />"));
+   message.replace(F("{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"), F("{MQTT_TOPIC_PM10}={MQTT_PM10}<br />"));
+   message.replace(F("{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), F("{MQTT_TOPIC_AIRQUALITY}={MQTT_AIRQUALITY}<br />"));
+  }
+
+  if (strcmp(THP_MODEL, "Non")) {
+    takeTHPMeasurements();
+    if (!strcmp(THP_MODEL, "BME280")) {
+      if (checkBmeStatus() == true) {
+	      message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+	  	  message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+
+	      message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
+	      message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+
+	      message.replace(F("{MQTT_PRESS}"), String(int(currentPressure)));
+	      message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from BME280!\n"));
+        }
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+	  
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "BMP280")) {
+      if (checkBmpStatus() == true) {
+	      message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+	  	  message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+
+	      message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+		  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+		  
+		  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+		  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+
+	      message.replace(F("{MQTT_PRESS}"), String(int(currentPressure)));
+	      message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from BMP280!\n"));
+        }
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+	  
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "HTU21")) {
+      if (checkHTU21DStatus() == true) {
+	      message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+	  	  message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+
+	      message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
+	      message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+
+	      message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+		  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+		  
+	  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+	  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), ""); 
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from HTU21!\n"));
+        }
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+	  
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "DHT22")) {
+      if (checkDHT22Status() == true) {
+	      message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+	  	  message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+
+	      message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
+	      message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+
+	      message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+		  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+		  
+	  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+	  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from DHT22!\n"));
+        }
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+	  
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+      }
+    }
+
+    if (!strcmp(THP_MODEL, "SHT1x")) {
+      if (checkDHT22Status() == true) {
+	      message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+	  	  message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+
+	      message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
+	      message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+
+	      message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+	      message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+		  
+	  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+	  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+      } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from SHT1x!\n"));
+        }
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+	  
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+      }
+    }
+	 if (!strcmp(THP_MODEL, "DS18B20")) {
+    if (checkDS18B20Status()) {
+
+      message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+  	  message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+
+    	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+    	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+    	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+    	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+		  
+	  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+	  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");		  
+	  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+	  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+    } else {
+        if (DEBUG) {
+          Serial.println(F("No measurements from DS18B20!\n"));
+        }
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+	  
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+    	}
+	}
+  } else {
+	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
+	  
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+  	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"), "");
+  	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
+  	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
+  }
+
+ if (strcmp(DUST_MODEL, "Non")) {
+     message.replace(F("{MQTT_PM1}"), String(int(averagePM1)));
+	 message.replace(F("{MQTT_TOPIC_PM1}"), _addMQTTTextInput("MQTT_TOPIC_PM1", MQTT_TOPIC_PM1));
+     message.replace(F("{MQTT_PM25}"), String(int(averagePM25)));
+	 message.replace(F("{MQTT_TOPIC_PM25}"), _addMQTTTextInput("MQTT_TOPIC_PM25", MQTT_TOPIC_PM25));
+     message.replace(F("{MQTT_PM10}"), String(int(averagePM10)));
+	 message.replace(F("{MQTT_TOPIC_PM10}"), _addMQTTTextInput("MQTT_TOPIC_PM10", MQTT_TOPIC_PM10));
+
+     if (averagePM25 <= 10) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "EXCELLENT");
+     } else if (averagePM25 > 10 && averagePM25 <= 20) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "GOOD");
+     } else if (averagePM25 > 20 && averagePM25 <= 25) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "FAIR");
+     } else if (averagePM25 > 25 && averagePM25 <= 50) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "INFERIOR");
+     } else if (averagePM25 > 50) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "POOR");
+     } else {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "UNKNOWN");
+     }
+     message.replace(F("{MQTT_TOPIC_AIRQUALITY}"), _addMQTTTextInput("MQTT_TOPIC_AIRQUALITY", MQTT_TOPIC_AIRQUALITY));
+ } else {
+  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), "");
+  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), "");
+  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"), "");
+  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), "");
+  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), "");
+  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), "");
+  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"), "");
+  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), "");
+  
+  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}={MQTT_PM1}<br />"), "");
+  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}={MQTT_PM25}<br />"), "");
+  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}={MQTT_PM10}<br />"), "");
+  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}={MQTT_AIRQUALITY}<br />"), "");
+  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}={MQTT_PM1}<br />"), "");
+  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}={MQTT_PM25}<br />"), "");
+  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}={MQTT_PM10}<br />"), "");
+  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}={MQTT_AIRQUALITY}<br />"), "");
+ }
+
+    message.replace(F("{TEXT_TEMP_TOPIC}"), (TEXT_TEMPERATURE));
+    message.replace(F("{TEXT_HUMI_TOPIC}"), (TEXT_HUMIDITY));
+    message.replace(F("{TEXT_PRESS_TOPIC}"), (TEXT_PRESSURE));
+    message.replace(F("{TEXT_PM1_TOPIC}"), "PM1");
+	message.replace(F("{TEXT_PM25_TOPIC}"), "PM2.5");
+	message.replace(F("{TEXT_PM10_TOPIC}"), "PM10");
+	message.replace(F("{TEXT_AIRQUALITY_TOPIC}"), (TEXT_AIRQUALITY_TOPIC));
+
+  if (MQTT_DEVICENAME_IN_TOPIC) {
+	  message.replace(F("{MQTT_DEVICENAME}"), (String(device_name) + "/"));
+  } else {
+	  message.replace(F("{MQTT_DEVICENAME}"), "");
+  }
+  if (MQTT_IP_IN_TOPIC) {
+		  message.replace(F("{MQTT_IP}"), (String(WiFi.localIP().toString()) + "/"));
+  } else {
+	  message.replace(F("{MQTT_IP}"), "");
+  }
+
+  message.replace(F("{RestoreConfigButton}"), _addRestoreConfig());
+  message.replace(F("{SubmitButton}"), _addSubmitAdvMQTT());
+  message += FPSTR(WEB_PAGE_FOOTER);
+
+  if (DEBUG) {
+  	Serial.print("handle_adv_mqtt_config - message.length(): "); // 18754
+    Serial.println(message.length()); // keep it under 20000!
+  	Serial.print("\n");
+}
+  request->send(200, "text/html", message);
 }
 
 bool _parseAsBool(String value) {
@@ -1475,7 +1933,9 @@ for(int i=0;i<paramsNr;i++){
 	}
 	
 	if (request->hasParam("DEEPSLEEP_ON")) {
+		 if (FREQUENTMEASUREMENT == false) {
 		DEEPSLEEP_ON = _parseAsBool(request->getParam("DEEPSLEEP_ON")->value());
+	}
 	}
 	
 	if (request->hasParam("MYALTITUDE")) {
@@ -1675,62 +2135,6 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
 		_parseAsCString(INFLUXDB_TOKEN, request->getParam("INFLUXDB_TOKEN")->value(), 64);
 	}
 
-	if (request->hasParam("MQTT_ON")) {
-		MQTT_ON = _parseAsBool(request->getParam("MQTT_ON")->value());
-	}
-	
-	if (request->hasParam("MQTT_HOST")) {
-		_parseAsCString(MQTT_HOST, request->getParam("MQTT_HOST")->value(), 128);
-	}
-	
-	if (request->hasParam("MQTT_PORT")) {
-		MQTT_PORT = (request->getParam("MQTT_PORT")->value()).toInt();
-	}
-	
-	if (request->hasParam("MQTT_USER")) {
-		_parseAsCString(MQTT_USER, request->getParam("MQTT_USER")->value(), 64);
-	}
-	
-	if (request->hasParam("MQTT_PASSWORD")) {
-		_parseAsCString(MQTT_PASSWORD, request->getParam("MQTT_PASSWORD")->value(), 64);
-	}
-	
-	if (request->hasParam("MQTT_IP_IN_TOPIC")) {
-		MQTT_IP_IN_TOPIC = _parseAsBool(request->getParam("MQTT_IP_IN_TOPIC")->value());
-	}
-	
-	if (request->hasParam("MQTT_DEVICENAME_IN_TOPIC")) {
-		MQTT_DEVICENAME_IN_TOPIC = _parseAsBool(request->getParam("MQTT_DEVICENAME_IN_TOPIC")->value());
-	}
-
-	if (request->hasParam("MQTT_TOPIC_TEMP")) {
-		_parseAsCString(MQTT_TOPIC_TEMP, request->getParam("MQTT_TOPIC_TEMP")->value(), 128);
-	}
-	
-	if (request->hasParam("MQTT_TOPIC_HUMI")) {
-		_parseAsCString(MQTT_TOPIC_HUMI, request->getParam("MQTT_TOPIC_HUMI")->value(), 128);
-	}
-	
-	if (request->hasParam("MQTT_TOPIC_PRESS")) {
-		_parseAsCString(MQTT_TOPIC_PRESS, request->getParam("MQTT_TOPIC_PRESS")->value(), 128);
-	}
-	
-	if (request->hasParam("MQTT_TOPIC_PM1")) {
-		_parseAsCString(MQTT_TOPIC_PM1, request->getParam("MQTT_TOPIC_PM1")->value(), 128);
-	}
-	
-	if (request->hasParam("MQTT_TOPIC_PM25")) {
-		_parseAsCString(MQTT_TOPIC_PM25, request->getParam("MQTT_TOPIC_PM25")->value(), 128);
-	}
-	
-	if (request->hasParam("MQTT_TOPIC_PM10")) {
-		_parseAsCString(MQTT_TOPIC_PM10, request->getParam("MQTT_TOPIC_PM10")->value(), 128);
-	}
-	
-	if (request->hasParam("MQTT_TOPIC_AIRQUALITY")) {
-		_parseAsCString(MQTT_TOPIC_AIRQUALITY, request->getParam("MQTT_TOPIC_AIRQUALITY")->value(), 128);
-	}
-
   if (DEBUG) {
     Serial.println("POST SERVICES CONFIG END!!");
   }
@@ -1747,13 +2151,21 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
 }
   
 static void handle_update_progress_cb(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
-  uint32_t free_space = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+#ifdef ARDUINO_ARCH_ESP8266
+    uint32_t free_space = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+#elif defined ARDUINO_ARCH_ESP32
+
+#endif  
   if (!index){
     Serial.println("Update");
-    //Update.runAsync(true);
+#ifdef ARDUINO_ARCH_ESP8266
+    Update.runAsync(true);
     if (!Update.begin(free_space)) {
       Update.printError(Serial);
     }
+#elif defined ARDUINO_ARCH_ESP32
+
+#endif  
   }
 
   if (Update.write(data, len) != len) {
@@ -1938,6 +2350,91 @@ void fwupdate(AsyncWebServerRequest *request) {
   */
   request->redirect("/");
   delay(1000);
+}
+
+void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
+  if (DEBUG) {
+    Serial.println(F("handle_adv_mqtt_config_save!"));
+  }
+
+	if (request->hasParam("MQTT_ON")) {
+		MQTT_ON = _parseAsBool(request->getParam("MQTT_ON")->value());
+	}
+	
+	if (request->hasParam("MQTT_HOST")) {
+		_parseAsCString(MQTT_HOST, request->getParam("MQTT_HOST")->value(), 128);
+	}
+	
+	if (request->hasParam("MQTT_PORT")) {
+		MQTT_PORT = (request->getParam("MQTT_PORT")->value()).toInt();
+	}
+	
+	if (request->hasParam("MQTT_USER")) {
+		_parseAsCString(MQTT_USER, request->getParam("MQTT_USER")->value(), 64);
+	}
+	
+	if (request->hasParam("MQTT_PASSWORD")) {
+		_parseAsCString(MQTT_PASSWORD, request->getParam("MQTT_PASSWORD")->value(), 64);
+	}
+	
+	if (request->hasParam("MQTT_IP_IN_TOPIC")) {
+		MQTT_IP_IN_TOPIC = _parseAsBool(request->getParam("MQTT_IP_IN_TOPIC")->value());
+	}
+	
+	if (request->hasParam("MQTT_DEVICENAME_IN_TOPIC")) {
+		MQTT_DEVICENAME_IN_TOPIC = _parseAsBool(request->getParam("MQTT_DEVICENAME_IN_TOPIC")->value());
+	}
+	
+	if (request->hasParam("MQTT_SLASH_AT_THE_BEGINNING")) {
+		MQTT_SLASH_AT_THE_BEGINNING = _parseAsBool(request->getParam("MQTT_SLASH_AT_THE_BEGINNING")->value());
+	}
+	
+	if (request->hasParam("MQTT_SLASH_AT_THE_END")) {
+		MQTT_SLASH_AT_THE_END = _parseAsBool(request->getParam("MQTT_SLASH_AT_THE_END")->value());
+	}
+
+	if (request->hasParam("MQTT_TOPIC_TEMP")) {
+		_parseAsCString(MQTT_TOPIC_TEMP, request->getParam("MQTT_TOPIC_TEMP")->value(), 128);
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_HUMI")) {
+		_parseAsCString(MQTT_TOPIC_HUMI, request->getParam("MQTT_TOPIC_HUMI")->value(), 128);
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_PRESS")) {
+		_parseAsCString(MQTT_TOPIC_PRESS, request->getParam("MQTT_TOPIC_PRESS")->value(), 128);
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_PM1")) {
+		_parseAsCString(MQTT_TOPIC_PM1, request->getParam("MQTT_TOPIC_PM1")->value(), 128);
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_PM25")) {
+		_parseAsCString(MQTT_TOPIC_PM25, request->getParam("MQTT_TOPIC_PM25")->value(), 128);
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_PM10")) {
+		_parseAsCString(MQTT_TOPIC_PM10, request->getParam("MQTT_TOPIC_PM10")->value(), 128);
+	}
+	
+	if (request->hasParam("MQTT_TOPIC_AIRQUALITY")) {
+		_parseAsCString(MQTT_TOPIC_AIRQUALITY, request->getParam("MQTT_TOPIC_AIRQUALITY")->value(), 128);
+	}
+
+  if (DEBUG) {
+    Serial.println(F("handle_adv_mqtt_config_save CONFIG END!!"));
+  }
+
+  saveConfig();
+  //delay(250);
+  // https://github.com/esp8266/Arduino/issues/1722
+  //ESP.reset();
+  //yield();
+
+  request->redirect("/");
+  delay(1000);
+  Serial.println("Restart");
+  ESP.restart();
 }
 
 //void autoupdate_on() {

@@ -61,28 +61,6 @@ const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{L
 							<b>%{TEXT_INFLUXDBPASSWD}%: </b>%{INFLUXDB_PASSWORD}%
 							%{WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2}%
 							<hr>
-							<br><b>%{TEXT_MQTTSENDING}%: </b>%{MQTT_ON}%
-							<b>%{TEXT_MQTTSERVER}%: </b>%{MQTT_HOST}%
-							<b>%{TEXT_MQTTPORT}%: </b>%{MQTT_PORT}%
-							<b>%{TEXT_MQTTUSER}%: </b>%{MQTT_USER}%
-							<b>%{TEXT_MQTTPASSWD}%: </b>%{MQTT_PASSWORD}%
-								<!--
-							<br>%{TEXT_MQTT_TOPIC_INFO}%
-							<br><br>
-							<b>%{TEXT_MQTT_IP_IN_TOPIC}%: </b>%{MQTT_IP_IN_TOPIC}%
-							<b>%{TEXT_MQTT_DEVICENAME_IN_TOPIC}%: </b>%{MQTT_DEVICENAME_IN_TOPIC}%
-							<b>%{TEXT_MQTT_SLASH_AT_THE_BEGINNING}%: </b>%{MQTT_SLASH_AT_THE_BEGINNING}%
-							<b>%{TEXT_MQTT_SLASH_AT_THE_END}%: </b>%{MQTT_SLASH_AT_THE_END}%
-							<br>
-							<b>%{TEXT_TEMP_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%/%{MQTT_TEMP}%<br />
-							<b>%{TEXT_HUMI_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_HUMI}%/%{MQTT_HUMI}%<br />
-							<b>%{TEXT_PRESS_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PRESS}%/%{MQTT_PRESS}%<br />
-							<b>%{TEXT_PM1_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM1}%/%{MQTT_PM1}%<br />
-							<b>%{TEXT_PM25_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM25}%/%{MQTT_PM25}%<br />
-							<b>%{TEXT_PM10_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM10}%/%{MQTT_PM10}%<br />
-							<b>%{TEXT_AIRQUALITY_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_AIRQUALITY}%/%{MQTT_AIRQUALITY}%<br />
-							<br>
-								--!>
 							<br><center>%{AdvancedMQTTConfigButton}%</center><br>
 							<hr><center><br>
 							%{WiFiEraseButton}%  %{RestoreConfigButton}%

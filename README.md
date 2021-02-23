@@ -41,4 +41,4 @@ Gotowe zestawy części potrzebnych do zbudowania własnego Smogly, dostępne s�
 
 ## Roadmap
 
-Lista z głównymi zmianami planowanymi w kolejnych wersjach oprogramowania znajsuje się [TUTAJ](https://docs.google.com/spreadsheets/d/1rpeKPuAakPwytqsNge7glb-UtNLumsx8-7kQvhxXOng/edit?usp=sharing). Poza wymienionymi w linkowanym arkuszu, przy każdej aktualizacji staram się aktualizować wsyzstkie biblioteki i eliminować znalezione błędy.
+Lista z głównymi zmianami planowanymi w kolejnych wersjach oprogramowania znajduje się [TUTAJ](https://docs.google.com/spreadsheets/d/1rpeKPuAakPwytqsNge7glb-UtNLumsx8-7kQvhxXOng/edit?usp=sharing). Poza wymienionymi w linkowanym arkuszu funkcjami, przy każdej aktualizacji staram się uaktualnić wsyzstkie wykorzystywane biblioteki i eliminować znalezione błędy.

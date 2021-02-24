@@ -13,6 +13,7 @@
 const char* www_realm = "Custom Auth Realm";
 String authFailResponse = "<meta http-equiv='refresh' content='0; url=/' /> Authentication Failed! <p><a href='/'>Redirect</a></p>";
 
+
 //void handle_root() {
 void handle_root(AsyncWebServerRequest *request) {
 	String message;

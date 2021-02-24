@@ -334,6 +334,8 @@ unsigned int previous_2sec_Millis = 0;
 unsigned int REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned int previous_REBOOT_Millis = 0;
 
+unsigned long time_now_temp = 0;
+
 #ifdef DUSTSENSOR_SPS30
 int pmMeasurements[10][4];
 #else
@@ -362,9 +364,6 @@ WebServer WebServer(80);
 
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
-
-
-
 
 // https://github.com/Yurik72/ESPHap
 // HomeKit -- START
@@ -696,11 +695,24 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 
 void setup() {
   Serial.begin(115200);
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 1) {
+    //wait approx. 1 ms
+  }
+#else
   yield();
+#endif
 
   fs_setup();
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 1) {
+    //wait approx. 1 ms
+  }
+#else
   yield();
-
+#endif
   //temporary solution!
   if (SECOND_THP) {
     strcpy(SECOND_THP_MODEL, THP_MODEL);
@@ -713,7 +725,14 @@ void setup() {
 #endif
 
   loadtranslation(SELECTED_LANGUAGE);
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 1) {
+    //wait approx. 1 ms
+  }
+#else
   yield();
+#endif
 
   set_I2C_PINS(CONFIG_FIRST_THP_SDA, 1);
   set_I2C_PINS(CONFIG_FIRST_THP_SCL, 2);
@@ -738,11 +757,25 @@ void setup() {
 #endif
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 500) {
+        //wait approx. 500 ms
+      }
+#else
       delay(500);
+#endif
       pms.activeMode();
     } else {
       pms.passiveMode();
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 500) {
+        //wait approx. 500 ms
+      }
+#else
       delay(500);
+#endif
       pms.sleep();
     }
   }
@@ -777,7 +810,16 @@ void setup() {
 #endif
     }
   }
+
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 10) {
+    //wait approx. 10 ms
+  }
+#else
   delay(10);
+#endif
+
 #elif defined DUSTSENSOR_HPMA115S0
   if (!strcmp(DUST_MODEL, "HPMA115S0")) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -785,20 +827,55 @@ void setup() {
 #elif defined ARDUINO_ARCH_ESP32
     hpmaSerial.begin(9600, SERIAL_8N1, DUST_TX, DUST_RX); //HPMA115S0 serial
 #endif
+#ifdef ASYNC_WEBSERVER_ON
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 100) {
+      //wait approx. 100 ms
+    }
+#else
     delay(100);
+#endif
     if (FREQUENTMEASUREMENT == true) {
       hpma115S0.Init();
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 100) {
+        //wait approx. 100 ms
+      }
+#else
       delay(100);
+#endif
       hpma115S0.EnableAutoSend();
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 100) {
+        //wait approx. 100 ms
+      }
+#else
       delay(100);
+#endif
       hpma115S0.StartParticleMeasurement();
     } else {
       hpma115S0.Init();
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 100) {
+        //wait approx. 100 ms
+      }
+#else
       delay(100);
+#endif
       hpma115S0.StopParticleMeasurement();
     }
   }
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 10) {
+    //wait approx. 10 ms
+  }
+#else
   delay(10);
+#endif
 #elif defined DUSTSENSOR_SPS30
   if (!strcmp(DUST_MODEL, "SPS30")) {
 
@@ -865,16 +942,37 @@ void setup() {
 #endif
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 500) {
+        //wait approx. 500 ms
+      }
+#else
       delay(500);
+#endif
       pms.activeMode();
     } else {
       pms.passiveMode();
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 500) {
+        //wait approx. 500 ms
+      }
+#else
       delay(500);
+#endif
       pms.sleep();
     }
   }
 #endif
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 1) {
+    //wait approx. 1 ms
+  }
+#else
   yield();
+#endif
   // DUST SENSOR setup - END
 
   if (SENDING_FREQUENCY < DUST_TIME) {
@@ -883,7 +981,14 @@ void setup() {
   if (SENDING_DB_FREQUENCY == 0) {
     SENDING_DB_FREQUENCY = SENDING_FREQUENCY;
   }
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 1) {
+    //wait approx. 1 ms
+  }
+#else
   yield();
+#endif
 
   if (FREQUENTMEASUREMENT == true) {
     minutesToSeconds();
@@ -917,7 +1022,14 @@ void setup() {
       SENDING_DB_FREQUENCY_interval = SENDING_DB_FREQUENCY_interval * SENDING_DB_FREQUENCY;
     }
   }
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 1) {
+    //wait approx. 1 ms
+  }
+#else
   yield();
+#endif
 
   // TEMP/HUMI/PRESS Sensor seturp - START
   if (!strcmp(THP_MODEL, "BME280")) {
@@ -943,7 +1055,14 @@ void setup() {
   } else if (!strcmp(THP_MODEL, "DS18B20")) {
     DS18B20.begin();
   }
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 1) {
+    //wait approx. 1 ms
+  }
+#else
   yield();
+#endif
   // TEMP/HUMI/PRESS Sensor setup - END
 
   // get ESP id
@@ -984,7 +1103,15 @@ void setup() {
     wifiManager.setConfigPortalBlocking(false);
 #endif
   }
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 250) {
+    //wait approx. 250 ms
+  }
+#else
   delay(250);
+#endif
+
 
 #ifdef ASYNC_WEBSERVER_ON
   Serial.println("\nIP Address: " + String(WiFi.localIP().toString()) + "\n");
@@ -1095,8 +1222,15 @@ void setup() {
   MDNS.addService("http", "tcp", 80);
   //Serial.printf("HTTPServer ready! http://%s.local/\n", device_name);
   Serial.print("HTTPServer ready! http://" + String(device_name) + ".local/\n");
-  delay(300);
 
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 300) {
+    //wait approx. 300 ms
+  }
+#else
+  delay(300);
+#endif
 
   // HomeKit -- START
 #ifdef ARDUINO_ARCH_ESP32
@@ -1151,10 +1285,26 @@ void loop() {
   if (need_update == true && AUTOUPDATE_ON) {
     for (int i = 0; i < 5 ; i++) {
       doUpdate(0);
+
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 1000) {
+        //wait approx. 1000 ms
+      }
+#else
       delay(1000);
+#endif
+
     }
   }
+#ifdef ASYNC_WEBSERVER_ON
+  time_now_temp = millis();
+  while (millis() < time_now_temp + 1) {
+    //wait approx. 1 ms
+  }
+#else
   yield();
+#endif
 
   pm_calibration();
 
@@ -1176,7 +1326,6 @@ void loop() {
   }
 #endif
   // DUST SENSOR refresh data - END
-  //yield();
 
 #ifndef ASYNC_WEBSERVER_ON
   WebServer.handleClient();
@@ -1202,7 +1351,14 @@ void loop() {
         Serial.println(F("\nDeepSleep Mode!"));
       }
       takeSleepPMMeasurements();
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 1) {
+        //wait approx. 1 ms
+      }
+#else
       yield();
+#endif
 
       if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         takeTHPMeasurements();
@@ -1217,7 +1373,16 @@ void loop() {
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
       Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
+
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 1) {
+        //wait approx. 1 ms
+      }
+#else
       yield();
+#endif
+
 #elif defined ARDUINO_ARCH_ESP32
       Serial.println(F("Going to sleep now"));
       Serial.flush();
@@ -1252,13 +1417,28 @@ void loop() {
         takeTHPMeasurements();
         sendDataToExternalDBs();
       }
+
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 1) {
+        //wait approx. 1 ms
+      }
+#else
       yield();
+#endif
 
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
       Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 1) {
+        //wait approx. 1 ms
+      }
+#else
       yield();
+#endif
 #elif defined ARDUINO_ARCH_ESP32
       Serial.println(F("Going to sleep now"));
       Serial.flush();
@@ -1298,14 +1478,28 @@ void loop() {
   unsigned int current_REBOOT_Millis = millis();
   if (current_REBOOT_Millis - previous_REBOOT_Millis >= REBOOT_interval) {
     Serial.println(F("autoreboot..."));
+#ifdef ASYNC_WEBSERVER_ON
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1000) {
+      //wait approx. 1000 ms
+    }
+#else
     delay(1000);
+#endif
     previous_REBOOT_Millis = millis();
 #ifdef ARDUINO_ARCH_ESP8266
     ESP.reset();
 #elif defined ARDUINO_ARCH_ESP32
     ESP.restart();
 #endif
+#ifdef ASYNC_WEBSERVER_ON
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 5000) {
+      //wait approx. 5000 ms
+    }
+#else
     delay(5000);
+#endif
   }
 
 
@@ -1364,12 +1558,12 @@ void sendDataToExternalServices() {
 }
 
 void sendDataToExternalDBs() {
+
   if (MQTT_ON) {
     if (!mqttclient.connected()) {
       MQTTreconnect();
     }
     mqttclient.loop();
-    //yield();
   }
 
   if (THINGSPEAK_ON) {
@@ -1668,7 +1862,6 @@ void takeTHPMeasurements() {
   if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
     BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
-    //yield();
 #endif
     if (checkBmeStatus() == true) {
       if (DEBUG) {
@@ -1755,7 +1948,6 @@ void takeTHPMeasurements() {
     if (!strcmp(SECOND_THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
       BMESensor_2.refresh(SECOND_THP_SDA, SECOND_THP_SCL);
-      //yield();
 #endif
       if (checkBmeStatus() == true) {
         if (DEBUG) {
@@ -1861,7 +2053,9 @@ void takeNormalnPMMeasurements() {
 #elif defined DUSTSENSOR_SDS011_21
 #ifdef ARDUINO_ARCH_ESP8266
   PmResult SDSdata = sds.queryPm();
+#ifndef ASYNC_WEBSERVER_ON
   delay(1000);
+#endif
   if (SDSdata.isOk()) {
     pmMeasurements[iPM][0] = int(calib * 0);
     pmMeasurements[iPM][1] = int(calib * SDSdata.pm25);
@@ -1882,7 +2076,9 @@ void takeNormalnPMMeasurements() {
 #elif defined DUSTSENSOR_HPMA115S0
   if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
     if (hpma115S0_pm25 == 0 and hpma115S0_pm10 == 0) {
+#ifndef ASYNC_WEBSERVER_ON
       delay(100);
+#endif
       hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10);
       pmMeasurements[iPM][0] = int(calib * 0);
       pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
@@ -1936,20 +2132,26 @@ void takeSleepPMMeasurements() {
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMSx003
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.wakeUp();
+#ifndef ASYNC_WEBSERVER_ON
     unsigned int current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
-#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
-#endif
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
+#endif
     pms.requestRead();
   }
 
   int counterNM1 = 0;
   while (counterNM1 < NUMBEROFMEASUREMENTS) {
+#ifdef ASYNC_WEBSERVER_ON
+    if (pms.readUntil(data)) {
+      takeNormalnPMMeasurements();
+      counterNM1++;
+    }
+#else
     unsigned int current_2sec_Millis = millis();
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
 
@@ -1960,7 +2162,6 @@ void takeSleepPMMeasurements() {
 
       previous_2sec_Millis = millis();
     }
-#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
 #endif
   }
@@ -1981,37 +2182,40 @@ void takeSleepPMMeasurements() {
 
 #endif
 
+#ifndef ASYNC_WEBSERVER_ON
     unsigned int current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
-#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
-#endif
-      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
+#endif
   }
 
   int counterNM1 = 0;
   while (counterNM1 < NUMBEROFMEASUREMENTS) {
+#ifdef ASYNC_WEBSERVER_ON
+#ifdef ARDUINO_ARCH_ESP8266
+    PmResult SDSdata = sds.queryPm();
+#endif
+    takeNormalnPMMeasurements();
+    counterNM1++;
+#else
     unsigned int current_2sec_Millis = millis();
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
 #ifdef ARDUINO_ARCH_ESP8266
       PmResult SDSdata = sds.queryPm();
 #elif defined ARDUINO_ARCH_ESP32
-
 #endif
       delay(1000);
       takeNormalnPMMeasurements();
       counterNM1++;
       previous_2sec_Millis = millis();
     }
-#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
-#endif
-    //yield();
     delay(10);
+#endif
   }
   if (DEBUG) {
     Serial.print(F("\nTurning OFF PM sensor...\n"));
@@ -2028,25 +2232,34 @@ void takeSleepPMMeasurements() {
 #elif defined DUSTSENSOR_HPMA115S0
   if (!strcmp(DUST_MODEL, "HPMA115S0")) {
     hpma115S0.Init();
+#ifndef ASYNC_WEBSERVER_ON
     delay(10);
+#endif
     hpma115S0.EnableAutoSend();
+#ifndef ASYNC_WEBSERVER_ON
     delay(10);
+#endif
     hpma115S0.StartParticleMeasurement();
 
+#ifndef ASYNC_WEBSERVER_ON
     unsigned int current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
-#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
-#endif
       delay(10);
-      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
+#endif
   }
   int counterNM1 = 0;
   while (counterNM1 < NUMBEROFMEASUREMENTS) {
+#ifdef ASYNC_WEBSERVER_ON
+    if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
+      takeNormalnPMMeasurements();
+      counterNM1++;
+    }
+#else
     unsigned int current_2sec_Millis = millis();
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
       if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
@@ -2055,11 +2268,9 @@ void takeSleepPMMeasurements() {
       }
       previous_2sec_Millis = millis();
     }
-#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
-#endif
-    //yield();
     delay(10);
+#endif
   }
   if (DEBUG) {
     Serial.print(F("\nTurning OFF PM sensor...\n"));
@@ -2067,7 +2278,9 @@ void takeSleepPMMeasurements() {
 
   if (!strcmp(DUST_MODEL, "HPMA115S0")) {
     hpma115S0.DisableAutoSend();
+#ifndef ASYNC_WEBSERVER_ON
     delay(10);
+#endif
     hpma115S0.StopParticleMeasurement();
   }
 #elif defined DUSTSENSOR_SPS30
@@ -2075,27 +2288,32 @@ void takeSleepPMMeasurements() {
 
     // WAKE UP SPS30!!
     sps30.wakeup();
+#ifndef ASYNC_WEBSERVER_ON
     delay(100);
+#endif
     // reset SPS30 connection
 
     if (sps30.reset() == false) {
       Errorloop((char *) "could not reset.", 0);
     }
 
+#ifndef ASYNC_WEBSERVER_ON
     unsigned int current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
-#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
-#endif
       delay(10);
-      //yield();
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
+#endif
   }
   int counterNM1 = 0;
   while (counterNM1 < NUMBEROFMEASUREMENTS) {
+#ifdef ASYNC_WEBSERVER_ON
+    takeNormalnPMMeasurements();
+    counterNM1++;
+#else
     unsigned int current_2sec_Millis = millis();
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
 
@@ -2104,11 +2322,9 @@ void takeSleepPMMeasurements() {
 
       previous_2sec_Millis = millis();
     }
-#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
-#endif
-    //yield();
     delay(10);
+#endif
   }
   if (DEBUG) {
     Serial.print(F("\nTurning OFF PM sensor...\n"));
@@ -2121,20 +2337,26 @@ void takeSleepPMMeasurements() {
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.wakeUp();
+#ifndef ASYNC_WEBSERVER_ON
     unsigned int current_2sec_Millis = millis();
     previous_2sec_Millis = millis();
     while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
-#ifndef ASYNC_WEBSERVER_ON
       WebServer.handleClient();
-#endif
       previous_2sec_Millis = millis();
     }
     previous_2sec_Millis = 0;
+#endif
     pms.requestRead();
   }
 
   int counterNM1 = 0;
   while (counterNM1 < NUMBEROFMEASUREMENTS) {
+#ifdef ASYNC_WEBSERVER_ON
+    if (pms.readUntil(data)) {
+      takeNormalnPMMeasurements();
+      counterNM1++;
+    }
+#else
     unsigned int current_2sec_Millis = millis();
     if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
 
@@ -2145,7 +2367,6 @@ void takeSleepPMMeasurements() {
 
       previous_2sec_Millis = millis();
     }
-#ifndef ASYNC_WEBSERVER_ON
     WebServer.handleClient();
 #endif
   }
@@ -2157,6 +2378,7 @@ void takeSleepPMMeasurements() {
     pms.sleep();
   }
 #endif
+
 }
 
 void pm_calibration() {
@@ -2165,7 +2387,6 @@ void pm_calibration() {
     if (!strcmp(THP_MODEL, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
       BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
-      //yield();
       if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
         calib1 = float((200 - (BMESensor.humidity)) / 150);
         calib2 = calib1 / 2;
@@ -2290,7 +2511,14 @@ bool read_sps30_data()
         ErrtoMess("Error during reading values: ", ret);
         return (false);
       }
+#ifdef ASYNC_WEBSERVER_ON
+      time_now_temp = millis();
+      while (millis() < time_now_temp + 1000) {
+        //wait approx. 1000 ms
+      }
+#else
       delay(1000);
+#endif
     }
 
     // if other error

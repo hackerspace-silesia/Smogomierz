@@ -1381,11 +1381,10 @@ if (var == "{MQTT_PASSWORD}") {
  }
  */
  
- if (var == "{AdvancedMQTTConfigButton}") {	
-  message += (ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON);
-  message.replace(F("{TEXT_CONFIG_ADV_MQTT}"), (TEXT_CONFIG_ADV_MQTT));
- }
- 
+    if (var == "{AdvancedMQTTConfigButton}") {	
+     message += (ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON);
+     message.replace(F("{TEXT_CONFIG_ADV_MQTT}"), (TEXT_CONFIG_ADV_MQTT));
+    }
  
  if (var == "{WiFiEraseButton}") {	
   message += (_addWiFiErase());
@@ -1643,7 +1642,7 @@ if (MQTT_IP_IN_TOPIC) {
 	  
       return message;
 }
-
+#ifdef ARDUINO_ARCH_ESP32
 void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
 	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
@@ -1651,9 +1650,88 @@ void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
 	      }
   }
   
-  /*
-  String message;
+  if (DEBUG) {
+	Serial.print("sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL): ");
+  Serial.println(sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL)); // sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL): 2998
+	Serial.print("\n");
+}
 
+   request->send_P(200, "text/html", WEB_CONFIG_ADV_MQTT_PAGE_ALL, handle_adv_mqtt_config_processor);
+}
+#endif
+
+#ifdef ARDUINO_ARCH_ESP8266
+void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
+  if (CONFIG_AUTH == true) {
+	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
+	        request->requestAuthentication(NULL,false); // force basic auth
+	      }
+  }
+  String message;
+  message += FPSTR(WEB_PAGE_HEADER);
+  message.replace(F("{WEB_PAGE_CSS}"), FPSTR(WEB_PAGE_HEADER_CSS));
+  message.replace(F("{Language}"), (TEXT_LANG));
+  message.replace(F("{CurrentPageTitle}"), (TEXT_CONFIG_PAGE));
+  message.replace(F("{IndexPageTitle}"), (TEXT_INDEX_PAGE));
+  message.replace(F("{ConfigPageTitle}"), (TEXT_CONFIG_PAGE));
+  message.replace(F("{UpdatePageTitle}"), (TEXT_UPDATE_PAGE));
+
+  message += FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_TOP);
+  message.replace(F("{TEXT_ADVANCED_MQTT_PAGE}"), (TEXT_CONFIG_ADV_MQTT));
+
+  message.replace(F("{WEB_CONFIG_TOP_PAGE_INFO}"), "");
+  
+  message.replace(F("{TEXT_INSTRUCIONSLINK}"), (TEXT_INSTRUCIONSLINK));
+  message.replace(F("{GITHUB_LINK}"), String(GITHUB_LINK));
+  message.replace(F("{TEXT_HERE}"), (TEXT_HERE));
+
+  message += FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG);
+
+  message.replace(F("{TEXT_MQTTSENDING}"), (TEXT_MQTTSENDING));
+  message.replace(F("{MQTT_ON}"), _addBoolSelect("MQTT_ON", MQTT_ON));
+  message.replace(F("{TEXT_MQTTSERVER}"), (TEXT_MQTTSERVER));
+  message.replace(F("{MQTT_HOST}"), _addTextInput("MQTT_HOST", MQTT_HOST));
+  message.replace(F("{TEXT_MQTTPORT}"), (TEXT_MQTTPORT));
+  message.replace(F("{MQTT_PORT}"), _addIntInput("MQTT_PORT", MQTT_PORT));
+  message.replace(F("{TEXT_MQTTUSER}"), (TEXT_MQTTUSER));
+  message.replace(F("{MQTT_USER}"), _addTextInput("MQTT_USER", MQTT_USER));
+  message.replace(F("{TEXT_MQTTPASSWD}"), (TEXT_MQTTPASSWD));
+  message.replace(F("{MQTT_PASSWORD}"), _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
+
+  message.replace(F("{TEXT_MQTT_TOPIC_INFO}"), (TEXT_MQTT_TOPIC_INFO));
+
+  message.replace(F("{TEXT_MQTT_IP_IN_TOPIC}"), (TEXT_MQTT_IP_IN_TOPIC));
+  message.replace(F("{MQTT_IP_IN_TOPIC}"), _addBoolSelect("MQTT_IP_IN_TOPIC", MQTT_IP_IN_TOPIC));
+
+  message.replace(F("{TEXT_MQTT_DEVICENAME_IN_TOPIC}"), (TEXT_MQTT_DEVICENAME_IN_TOPIC));
+  message.replace(F("{MQTT_DEVICENAME_IN_TOPIC}"), _addBoolSelect("MQTT_DEVICENAME_IN_TOPIC", MQTT_DEVICENAME_IN_TOPIC));
+
+  message.replace(F("{TEXT_MQTT_SLASH_AT_THE_BEGINNING}"), (TEXT_MQTT_SLASH_AT_THE_BEGINNING));
+  message.replace(F("{MQTT_SLASH_AT_THE_BEGINNING}"), _addBoolSelect("MQTT_SLASH_AT_THE_BEGINNING", MQTT_SLASH_AT_THE_BEGINNING));
+  
+  message.replace(F("{TEXT_MQTT_SLASH_AT_THE_END}"), (TEXT_MQTT_SLASH_AT_THE_END));
+  message.replace(F("{MQTT_SLASH_AT_THE_END}"), _addBoolSelect("MQTT_SLASH_AT_THE_END", MQTT_SLASH_AT_THE_END));
+
+  if (!MQTT_SLASH_AT_THE_BEGINNING) {
+	  message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"));
+	  message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"));
+	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"));
+	  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), F("<b>{TEXT_PM1_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"));
+	  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), F("<b>{TEXT_PM25_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"));
+	  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"), F("<b>{TEXT_PM10_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"));
+	  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"));
+  }
+  
+  if (!MQTT_SLASH_AT_THE_END) {
+   message.replace(F("{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), F("{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"));
+   message.replace(F("{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), F("{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"));
+   message.replace(F("{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), F("{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"));
+   message.replace(F("{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), F("{MQTT_TOPIC_PM1}={MQTT_PM1}<br />"));
+   message.replace(F("{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), F("{MQTT_TOPIC_PM25}={MQTT_PM25}<br />"));
+   message.replace(F("{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"), F("{MQTT_TOPIC_PM10}={MQTT_PM10}<br />"));
+   message.replace(F("{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), F("{MQTT_TOPIC_AIRQUALITY}={MQTT_AIRQUALITY}<br />"));
+  }
+  
   if (strcmp(THP_MODEL, "Non")) {
     takeTHPMeasurements();
     if (!strcmp(THP_MODEL, "BME280")) {
@@ -1867,23 +1945,79 @@ void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   	  message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
   }
 
+ if (strcmp(DUST_MODEL, "Non")) {
+     message.replace(F("{MQTT_PM1}"), String(int(averagePM1)));
+	 message.replace(F("{MQTT_TOPIC_PM1}"), _addMQTTTextInput("MQTT_TOPIC_PM1", MQTT_TOPIC_PM1));
+     message.replace(F("{MQTT_PM25}"), String(int(averagePM25)));
+	 message.replace(F("{MQTT_TOPIC_PM25}"), _addMQTTTextInput("MQTT_TOPIC_PM25", MQTT_TOPIC_PM25));
+     message.replace(F("{MQTT_PM10}"), String(int(averagePM10)));
+	 message.replace(F("{MQTT_TOPIC_PM10}"), _addMQTTTextInput("MQTT_TOPIC_PM10", MQTT_TOPIC_PM10));
+
+     if (averagePM25 <= 10) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "EXCELLENT");
+     } else if (averagePM25 > 10 && averagePM25 <= 20) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "GOOD");
+     } else if (averagePM25 > 20 && averagePM25 <= 25) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "FAIR");
+     } else if (averagePM25 > 25 && averagePM25 <= 50) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "INFERIOR");
+     } else if (averagePM25 > 50) {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "POOR");
+     } else {
+   	  message.replace(F("{MQTT_AIRQUALITY}"), "UNKNOWN");
+     }
+     message.replace(F("{MQTT_TOPIC_AIRQUALITY}"), _addMQTTTextInput("MQTT_TOPIC_AIRQUALITY", MQTT_TOPIC_AIRQUALITY));
+ } else {
+  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), "");
+  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), "");
+  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"), "");
+  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), "");
+  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), "");
+  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), "");
+  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}/{MQTT_PM10}<br />"), "");
+  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), "");
+  
+  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}={MQTT_PM1}<br />"), "");
+  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}={MQTT_PM25}<br />"), "");
+  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}={MQTT_PM10}<br />"), "");
+  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}={MQTT_AIRQUALITY}<br />"), "");
+  message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}={MQTT_PM1}<br />"), "");
+  message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}={MQTT_PM25}<br />"), "");
+  message.replace(F("<b>{TEXT_PM10_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM10}={MQTT_PM10}<br />"), "");
+  message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}={MQTT_AIRQUALITY}<br />"), "");
+ }
+
+    message.replace(F("{TEXT_TEMP_TOPIC}"), (TEXT_TEMPERATURE));
+    message.replace(F("{TEXT_HUMI_TOPIC}"), (TEXT_HUMIDITY));
+    message.replace(F("{TEXT_PRESS_TOPIC}"), (TEXT_PRESSURE));
+    message.replace(F("{TEXT_PM1_TOPIC}"), "PM1");
+	message.replace(F("{TEXT_PM25_TOPIC}"), "PM2.5");
+	message.replace(F("{TEXT_PM10_TOPIC}"), "PM10");
+	message.replace(F("{TEXT_AIRQUALITY_TOPIC}"), (TEXT_AIRQUALITY_TOPIC));
+
+  if (MQTT_DEVICENAME_IN_TOPIC) {
+	  message.replace(F("{MQTT_DEVICENAME}"), (String(device_name) + "/"));
+  } else {
+	  message.replace(F("{MQTT_DEVICENAME}"), "");
+  }
+  if (MQTT_IP_IN_TOPIC) {
+		  message.replace(F("{MQTT_IP}"), (String(WiFi.localIP().toString()) + "/"));
+  } else {
+	  message.replace(F("{MQTT_IP}"), "");
+  }
+  
+  message.replace(F("{RestoreConfigButton}"), _addRestoreConfig());
+  message.replace(F("{SubmitButton}"), _addSubmitAdvMQTT());
+  message += FPSTR(WEB_PAGE_FOOTER);
+  
   if (DEBUG) {
   	Serial.print("handle_adv_mqtt_config - message.length(): "); // 18754
     Serial.println(message.length()); // keep it under 20000!
   	Serial.print("\n");
 }
   request->send(200, "text/html", message);
-  */
-  
-  if (DEBUG) {
-	Serial.print("sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL): ");
-  Serial.println(sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL)); // sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL): 2998
-	Serial.print("\n");
 }
-
-   request->send_P(200, "text/html", WEB_CONFIG_ADV_MQTT_PAGE_ALL, handle_adv_mqtt_config_processor);
-   
-}
+#endif
 
 bool _parseAsBool(String value) {
   return value == "yes";

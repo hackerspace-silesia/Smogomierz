@@ -84,8 +84,8 @@
 
   ASYNC_WEBSERVER_ON
 
-  Szkic używa 564424 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 53360 bajtów (65%) pamięci dynamicznej, pozostawiając 28560 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 565628 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 52560 bajtów (64%) pamięci dynamicznej, pozostawiając 29360 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ================================================================================================================================================
 
@@ -104,8 +104,8 @@
 
   ASYNC_WEBSERVER_ON
 
-  Szkic używa 1464086 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 60432 bajtów (18%) pamięci dynamicznej, pozostawiając 267248 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  Szkic używa 1493878 bajtów (75%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60424 bajtów (18%) pamięci dynamicznej, pozostawiając 267256 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 

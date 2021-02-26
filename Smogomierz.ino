@@ -1,6 +1,6 @@
 /*
-  ESP8266 core for Arduino - 2.6.4
-  Arduino core for the ESP32 - 1.0.4
+  ESP8266 core for Arduino - 2.7.4
+  Arduino core for the ESP32 - 1.0.4!! // 1.0.5 NO SUPPORTED!
 
   Adafruit Unified Sensor - 1.1.4
   DallasTemperature - 3.8.0
@@ -104,8 +104,8 @@
 
   ASYNC_WEBSERVER_ON
 
-  Szkic używa 1493878 bajtów (75%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 60424 bajtów (18%) pamięci dynamicznej, pozostawiając 267256 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  SSzkic używa 1464086 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 60432 bajtów (18%) pamięci dynamicznej, pozostawiając 267248 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 

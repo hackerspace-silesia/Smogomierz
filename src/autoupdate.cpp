@@ -167,6 +167,8 @@ String checkUpdate_UNSAFE(int checkUpdateSW) {
 
 bool checkUpdate(int checkUpdateSW) {
   const char* ServerSW;
+  //ServerSW = (String(SOFTWAREVERSION).substring(0, int(String(SOFTWAREVERSION).indexOf("build")) - 1)).c_str();
+  ServerSW = "0.0.0";
   String Data[3];
 
 #if defined(ARDUINO_ARCH_ESP8266)

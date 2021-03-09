@@ -16,7 +16,9 @@
 
 // *******************************************
 
+//#ifdef ARDUINO_ARCH_ESP32
 #define ASYNC_WEBSERVER_ON
+//#endif
 
 /*
 
@@ -1087,6 +1089,12 @@ void setup() {
 
 #ifndef ASYNC_WEBSERVER_ON
   wifiManager.setCountry("US");
+#endif
+
+#ifdef ARDUINO_ARCH_ESP8266
+  WiFi.hostname(device_name);
+#elif defined ARDUINO_ARCH_ESP32
+  WiFi.setHostname(device_name);
 #endif
 
   if (wifiManager.autoConnect(device_name)) {

@@ -933,9 +933,11 @@ if (var == "{SubmitButton}") {
 //void _handle_config_device(bool is_success) {
 void handle_config_device(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
+	  /*
 	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
 	        request->requestAuthentication(NULL,false); // force basic auth
 	      }
+	  */
   }
   
   if (DEBUG) {
@@ -1405,9 +1407,11 @@ if (var == "{MQTT_PASSWORD}") {
 //void _handle_config_services(bool is_success) {
 void handle_config_services(AsyncWebServerRequest *request) {
 	  if (CONFIG_AUTH == true) {
+		  /*
 		  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
 		        request->requestAuthentication(NULL,false); // force basic auth
 		      }
+	  */
 	  }
 	  
 	  if (DEBUG) {
@@ -1645,9 +1649,11 @@ if (MQTT_IP_IN_TOPIC) {
 #ifdef ARDUINO_ARCH_ESP32
 void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
+	  /*
 	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
 	        request->requestAuthentication(NULL,false); // force basic auth
 	      }
+	  */
   }
   
   if (DEBUG) {
@@ -1663,9 +1669,11 @@ void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
 #ifdef ARDUINO_ARCH_ESP8266
 void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
+	  /*
 	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
 	        request->requestAuthentication(NULL,false); // force basic auth
 	      }
+	  */
   }
   String message;
   message += FPSTR(WEB_PAGE_HEADER);
@@ -2432,15 +2440,11 @@ void handle_update_done(AsyncWebServerRequest *request) {
 //void handle_update() {            //Handler for the handle_update
 void handle_update(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
-  	  /*
-      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
-        //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
-        return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
-      }
-  	*/
+		/*
   	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
   	        request->requestAuthentication(NULL,false); // force basic auth
   	      }
+		*/
     }
     String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
@@ -2520,14 +2524,10 @@ void handle_update(AsyncWebServerRequest *request) {
 void erase_wifi(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
   	  /*
-      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
-        //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
-        return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
-      }
-  	*/
   	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
   	        request->requestAuthentication(NULL,false); // force basic auth
   	      }
+		*/
     }
   Serial.println("Erasing Config...");
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2549,14 +2549,10 @@ void erase_wifi(AsyncWebServerRequest *request) {
 void restore_config(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
   	  /*
-      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
-        //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
-        return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
-      }
-  	*/
   	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
   	        request->requestAuthentication(NULL,false); // force basic auth
   	      }
+		*/
     }
   Serial.println("Restoring default settings...");
   deleteConfig();
@@ -2574,14 +2570,10 @@ void restore_config(AsyncWebServerRequest *request) {
 void fwupdate(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
   	  /*
-      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
-        //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
-        return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
-      }
-  	*/
   	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
   	        request->requestAuthentication(NULL,false); // force basic auth
   	      }
+		*/
     }
   doUpdate(0);
   delay(1000);
@@ -2682,14 +2674,10 @@ void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
 void autoupdate_on(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
   	  /*
-      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
-        //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
-        return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
-      }
-  	*/
   	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
   	        request->requestAuthentication(NULL,false); // force basic auth
   	      }
+		*/
     }
   AUTOUPDATE_ON = true;
   saveConfig();

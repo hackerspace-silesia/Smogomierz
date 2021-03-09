@@ -2753,13 +2753,10 @@ void handle_api(AsyncWebServerRequest *request) {
 void homekit_reset(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     /*
-      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
-      //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
-      return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
-    */
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
       request->requestAuthentication(NULL, false); // force basic auth
     }
+	  */
   }
   Serial.println("reset homekit...");
 
@@ -2777,13 +2774,10 @@ void homekit_reset(AsyncWebServerRequest *request) {
 void homekit_on(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     /*
-      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
-      //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
-      return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
-    */
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
       request->requestAuthentication(NULL, false); // force basic auth
     }
+	 */
   }
   Serial.println("homekit on...");
 
@@ -2800,13 +2794,10 @@ void homekit_on(AsyncWebServerRequest *request) {
 void homekit_off(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     /*
-      if (!server.authenticate(CONFIG_USERNAME, CONFIG_PASSWORD)) {
-      //return server.requestAuthentication(BASIC_AUTH, www_realm, authFailResponse);
-      return server.requestAuthentication(DIGEST_AUTH, www_realm, authFailResponse);
-    */
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
       request->requestAuthentication(NULL, false); // force basic auth
     }
+	  */
   }
   Serial.println("homekit off...");
 
@@ -2818,4 +2809,17 @@ void homekit_off(AsyncWebServerRequest *request) {
   delay(1000);
   Serial.println("Restart");
   ESP.restart();
+}
+
+void logout(AsyncWebServerRequest *request) {
+  if (CONFIG_AUTH == true) {
+    /*
+    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
+      request->requestAuthentication(NULL, false); // force basic auth
+    }
+	  */
+  }
+  Serial.println("logout...");
+  request->send(401);
+  request->redirect("/");
 }

@@ -1161,6 +1161,7 @@ void setup() {
   server.on("/homekit_reset", HTTP_GET, homekit_reset);
   server.on("/homekit_on", HTTP_GET, homekit_on);
   server.on("/homekit_off", HTTP_GET, homekit_off);
+  server.on("/logout", HTTP_GET, logout);
   server.onNotFound(handle_root);
 #else
   //  WebServer config - Start

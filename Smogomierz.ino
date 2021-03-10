@@ -86,8 +86,8 @@
 
   ASYNC_WEBSERVER_ON
 
-  Szkic używa 565628 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 52560 bajtów (64%) pamięci dynamicznej, pozostawiając 29360 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 567132 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 53456 bajtów (65%) pamięci dynamicznej, pozostawiając 28464 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ================================================================================================================================================
 
@@ -1161,7 +1161,7 @@ void setup() {
   server.on("/homekit_reset", HTTP_GET, homekit_reset);
   server.on("/homekit_on", HTTP_GET, homekit_on);
   server.on("/homekit_off", HTTP_GET, homekit_off);
-  server.on("/logout", HTTP_GET, logout);
+  //server.on("/logout", HTTP_GET, logout);
   server.onNotFound(handle_root);
 #else
   //  WebServer config - Start

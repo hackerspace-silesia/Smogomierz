@@ -932,13 +932,10 @@ if (var == "{SubmitButton}") {
 
 //void _handle_config_device(bool is_success) {
 void handle_config_device(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-	  /*
-	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-	        request->requestAuthentication(NULL,false); // force basic auth
-	      }
-	  */
-  }
+    if (CONFIG_AUTH == true) {
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
+    }
   
   if (DEBUG) {
 	Serial.print("sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): ");
@@ -1406,13 +1403,10 @@ if (var == "{MQTT_PASSWORD}") {
 
 //void _handle_config_services(bool is_success) {
 void handle_config_services(AsyncWebServerRequest *request) {
-	  if (CONFIG_AUTH == true) {
-		  /*
-		  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-		        request->requestAuthentication(NULL,false); // force basic auth
-		      }
-	  */
-	  }
+    if (CONFIG_AUTH == true) {
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
+    }
 	  
 	  if (DEBUG) {
     	Serial.print("sizeof(WEB_CONFIG_SERVICES_PAGE_ALL): ");
@@ -1648,13 +1642,10 @@ if (MQTT_IP_IN_TOPIC) {
 }
 #ifdef ARDUINO_ARCH_ESP32
 void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-	  /*
-	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-	        request->requestAuthentication(NULL,false); // force basic auth
-	      }
-	  */
-  }
+    if (CONFIG_AUTH == true) {
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
+    }
   
   if (DEBUG) {
 	Serial.print("sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL): ");
@@ -1668,13 +1659,10 @@ void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
 
 #ifdef ARDUINO_ARCH_ESP8266
 void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-	  /*
-	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-	        request->requestAuthentication(NULL,false); // force basic auth
-	      }
-	  */
-  }
+    if (CONFIG_AUTH == true) {
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
+    }
   String message;
   message += FPSTR(WEB_PAGE_HEADER);
   message.replace(F("{WEB_PAGE_CSS}"), FPSTR(WEB_PAGE_HEADER_CSS));
@@ -2440,11 +2428,8 @@ void handle_update_done(AsyncWebServerRequest *request) {
 //void handle_update() {            //Handler for the handle_update
 void handle_update(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
-		/*
-  	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-  	        request->requestAuthentication(NULL,false); // force basic auth
-  	      }
-		*/
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
     String message = FPSTR(WEB_PAGE_HEADER);
   message.replace("{WEB_PAGE_CSS}", FPSTR(WEB_PAGE_HEADER_CSS));
@@ -2523,11 +2508,8 @@ void handle_update(AsyncWebServerRequest *request) {
 //void erase_wifi() {
 void erase_wifi(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
-  	  /*
-  	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-  	        request->requestAuthentication(NULL,false); // force basic auth
-  	      }
-		*/
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
   Serial.println("Erasing Config...");
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2548,11 +2530,8 @@ void erase_wifi(AsyncWebServerRequest *request) {
 //void restore_config() {
 void restore_config(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
-  	  /*
-  	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-  	        request->requestAuthentication(NULL,false); // force basic auth
-  	      }
-		*/
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
   Serial.println("Restoring default settings...");
   deleteConfig();
@@ -2569,11 +2548,8 @@ void restore_config(AsyncWebServerRequest *request) {
 //void fwupdate() {
 void fwupdate(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
-  	  /*
-  	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-  	        request->requestAuthentication(NULL,false); // force basic auth
-  	      }
-		*/
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
   doUpdate(0);
   delay(1000);
@@ -2673,11 +2649,8 @@ void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
 //void autoupdate_on() {
 void autoupdate_on(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
-  	  /*
-  	  if(!request->authenticate(CONFIG_USERNAME,CONFIG_PASSWORD,NULL,false)) {
-  	        request->requestAuthentication(NULL,false); // force basic auth
-  	      }
-		*/
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
   AUTOUPDATE_ON = true;
   saveConfig();
@@ -2751,13 +2724,10 @@ void handle_api(AsyncWebServerRequest *request) {
 }
 
 void homekit_reset(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    /*
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
-      request->requestAuthentication(NULL, false); // force basic auth
+    if (CONFIG_AUTH == true) {
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
-	  */
-  }
   Serial.println("reset homekit...");
 
   String pair_file_name = "/homekit_pair.dat";
@@ -2772,13 +2742,10 @@ void homekit_reset(AsyncWebServerRequest *request) {
 }
 
 void homekit_on(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    /*
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
-      request->requestAuthentication(NULL, false); // force basic auth
+    if (CONFIG_AUTH == true) {
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
-	 */
-  }
   Serial.println("homekit on...");
 
   HOMEKIT_SUPPORT = true;
@@ -2792,13 +2759,10 @@ void homekit_on(AsyncWebServerRequest *request) {
 }
 
 void homekit_off(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    /*
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
-      request->requestAuthentication(NULL, false); // force basic auth
+    if (CONFIG_AUTH == true) {
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
-	  */
-  }
   Serial.println("homekit off...");
 
   HOMEKIT_SUPPORT = false;
@@ -2810,16 +2774,15 @@ void homekit_off(AsyncWebServerRequest *request) {
   Serial.println("Restart");
   ESP.restart();
 }
-
+/*
 void logout(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    /*
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD, NULL, false)) {
-      request->requestAuthentication(NULL, false); // force basic auth
+    if (CONFIG_AUTH == true) {
+        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+            return request->requestAuthentication();
     }
-	  */
-  }
+	
   Serial.println("logout...");
   request->send(401);
   request->redirect("/");
 }
+*/

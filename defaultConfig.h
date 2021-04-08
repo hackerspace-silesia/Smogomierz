@@ -49,6 +49,7 @@ bool SMOGLIST_ON = true;
 
 bool AIRMONITOR_ON = false;
 bool AIRMONITOR_GRAPH_ON = false;
+char AIRMONITOR_API_KEY[64] = "";
 char LATITUDE[16] = "50.263911";
 char LONGITUDE[16] = "18.995711";
 char EMAIL[128] = "email@mail.pl";
@@ -100,7 +101,7 @@ bool DEEPSLEEP_ON = false;
 
 bool DEBUG = false;
 #ifdef ARDUINO_ARCH_ESP8266
-bool AUTOUPDATE_ON = false;
+bool AUTOUPDATE_ON = true;
 #elif defined ARDUINO_ARCH_ESP32
 bool AUTOUPDATE_ON = true;
 #endif

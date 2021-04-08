@@ -8,8 +8,11 @@
 #include <ArduinoJson.h>
 #include "config.h"
 
-const char *airMonitorServerName PROGMEM = "api.airmonitor.pl";
-const uint16_t airMonitorPort = 5000;
+// const char *airMonitorServerName PROGMEM = "api.airmonitor.pl";
+// const uint16_t airMonitorPort = 5000;
+
+const char *airMonitorServerName PROGMEM = "airmonitor.pl/prod/measurements";
+const uint16_t airMonitorPort = 80;
 
 void sendJson(JsonObject& json) {
     WiFiClient client;
@@ -26,6 +29,7 @@ void sendJson(JsonObject& json) {
     delay(100); 
 
     client.println("POST /api HTTP/1.1");
+    client.println("X-Api-Key: " + String(AIRMONITOR_API_KEY));
     client.println("Content-Type: application/json");
     client.print("Content-Length: ");
 	client.println(measureJson(json));
@@ -60,7 +64,7 @@ void sendDUSTData(int averagePM1, int averagePM25, int averagePM10) {
 		json["sensor"] = "HPMA115S0";
 	}
 	if (!strcmp(DUST_MODEL, "SDS011/21")) {
-		json["sensor"] = "SDS011";
+		json["sensor"] = "SDS021";
 	}
 	if (!strcmp(DUST_MODEL, "SPS30")) {
 		json["sensor"] = "SPS30";

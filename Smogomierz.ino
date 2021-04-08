@@ -1,5 +1,5 @@
 /*
-  ESP8266 core for Arduino - 2.7.4
+  ESP8266 core for Arduino - 2.7.4 // NodeMCU 1.0; Flash Size: 4MB (FS:1MB OTA:~1019KB)
   Arduino core for the ESP32 - 1.0.4!! // 1.0.5 NO SUPPORTED!
 
   Adafruit Unified Sensor - 1.1.4
@@ -677,16 +677,16 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 }
 
 // default translation - english
-#include "src/default_intl.h"
+#include "intl/default_intl.h"
 
 #include "src/translator.h"
 
 // all HTML content
-#include "src/html/html-content.h"
+#include "html/html-content.h"
 #ifdef ASYNC_WEBSERVER_ON
-#include "src/html/html-config-device.h"
-#include "src/html/html-config-services.h"
-#include "src/html/html-config-adv-mqtt.h"
+#include "html/html-config-device.h"
+#include "html/html-config-services.h"
+#include "html/html-config-adv-mqtt.h"
 #endif
 
 // library doesnt support arguments :/

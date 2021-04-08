@@ -1195,6 +1195,12 @@ if (var == "{AIRMONITOR_ON}") {
  if (var == "{AIRMONITOR_GRAPH_ON}") {	
      message += (_addBoolSelect("AIRMONITOR_GRAPH_ON", AIRMONITOR_GRAPH_ON));
   }
+  if (var == "{TEXT_AIRMONITOR_API_KEY}") {	
+   message += (TEXT_AIRMONITOR_API_KEY);
+  }
+  if (var == "{AIRMONITOR_API_KEY}") {	
+	  message += (_addTextInput("AIRMONITOR_API_KEY", AIRMONITOR_API_KEY));
+   }
   if (var == "{TEXT_AIRMONITORCOORDINATESINFO}") {	
       message += (TEXT_AIRMONITORCOORDINATESINFO);
 	  message.replace(F("{LATLONG_LINK}"), (LATLONG_LINK));
@@ -2304,6 +2310,10 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
 
 	if (request->hasParam("AIRMONITOR_GRAPH_ON")) {
 		AIRMONITOR_GRAPH_ON = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
+	}
+	
+	if (request->hasParam("AIRMONITOR_API_KEY")) {
+		_parseAsCString(AIRMONITOR_API_KEY, request->getParam("AIRMONITOR_API_KEY")->value(), 64);
 	}
 	
 	if (request->hasParam("LATITUDE")) {

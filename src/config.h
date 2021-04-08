@@ -36,6 +36,7 @@ extern bool SMOGLIST_ON;
 
 extern bool AIRMONITOR_ON;
 extern bool AIRMONITOR_GRAPH_ON;
+extern char AIRMONITOR_API_KEY[64];
 extern char LATITUDE[16];
 extern char LONGITUDE[16];
 extern char EMAIL[128];

@@ -78,7 +78,7 @@ extern char TEXT_SMOGLISTINFO[242] = "Smoglist is a service that collects Smogly
 
 extern char TEXT_AIRMONITORSENDING[128] = "Sending data to the {AIRMONITOR_LINK} service(requires filling out {AIRMONITORFORM_LINK}; Sensor: e.g. {PMSENSORMODEL})";
 extern char TEXT_AIRMONITORCHARTS[48] = "Displaying charts from the AirMonitor site";
-extern char TEXT_AIRMONITOR_API_KEY[32] = "AirMonitor ApiKey";
+extern char TEXT_AIRMONITOR_API_KEY[32] = "AirMonitor API Key";
 extern char TEXT_AIRMONITORCOORDINATESINFO[74] = "Geographical coordinates(you can check it {LATLONG_LINK})";
 extern char TEXT_AIRMONITORLATITUDE[24] = "Latitude";
 extern char TEXT_AIRMONITORLONGITUDE[24] = "Longitude";

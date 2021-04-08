@@ -1,7 +1,7 @@
 #pragma once
 
-#include "intl/intl_en.h"
-#include "intl/intl_pl.h"
+#include "../intl/intl_en.h"
+#include "../intl/intl_pl.h"
 
 void loadtranslation(int SELECTED_LANGUAGE) {
 	if (SELECTED_LANGUAGE == 1) { //english translataion

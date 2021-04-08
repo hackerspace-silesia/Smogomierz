@@ -419,3 +419,31 @@ const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = R"rawliteral(<main role='main' cla
 	)rawliteral";
 #endif
 // UPDATE PAGE - END
+
+
+
+#ifdef ARDUINO_ARCH_ESP8266
+static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
+static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
+static char LUFTDATEN_LINK[] = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
+static char LUFTDATENFORM_LINK[] = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
+static char SMOGLIST_LINK[] = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
+static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='https://airmonitor.pl/prod/mapa' target='_blank'>AirMonitor</a>";
+static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://airmonitor.pl/prod/station_registration' target='_blank'>{TEXT_THEFORM}</a>";
+static char LATLONG_LINK[] = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
+static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
+static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
+#elif defined ARDUINO_ARCH_ESP32
+static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
+static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
+static char LUFTDATEN_LINK[] = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
+static char LUFTDATENFORM_LINK[] = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
+static char SMOGLIST_LINK[] = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
+static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='https://airmonitor.pl/prod/mapa' target='_blank'>AirMonitor</a>";
+static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://airmonitor.pl/prod/station_registration' target='_blank'>{TEXT_THEFORM}</a>";
+static char LATLONG_LINK[] = "<a title='latlong.net' href='https://www.latlong.net' target='_blank'>{TEXT_HERE}</a>";
+static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
+static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
+static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
+#endif

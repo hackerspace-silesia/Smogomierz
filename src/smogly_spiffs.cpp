@@ -105,6 +105,7 @@ bool loadConfig() {
 
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
+  _safeCpy(AIRMONITOR_API_KEY, json["AIRMONITOR_API_KEY"], "", 64);
   _safeCpy(LATITUDE, json["LATITUDE"], "50.263911", 16);
   _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711", 16);
   _safeCpy(EMAIL, json["EMAIL"], "email@mail.pl", 128);
@@ -235,6 +236,8 @@ bool loadConfig() {
     Serial.println(AIRMONITOR_ON);
     Serial.print(F("Loaded AIRMONITOR_GRAPH_ON: "));
     Serial.println(AIRMONITOR_GRAPH_ON);
+    Serial.print(F("Loaded AIRMONITOR_API_KEY: "));
+    Serial.println(AIRMONITOR_API_KEY);	
     Serial.print(F("Loaded LATITUDE: "));
     Serial.println(LATITUDE);
     Serial.print(F("Loaded LONGITUDE: "));
@@ -424,6 +427,8 @@ bool saveConfig() {
 	    Serial.println(AIRMONITOR_ON);
 	    Serial.print(F("Saved AIRMONITOR_GRAPH_ON: "));
 	    Serial.println(AIRMONITOR_GRAPH_ON);
+	    Serial.print(F("Saved AIRMONITOR_API_KEY: "));
+	    Serial.println(AIRMONITOR_API_KEY);	
 	    Serial.print(F("Saved LATITUDE: "));
 	    Serial.println(LATITUDE);
 	    Serial.print(F("Saved LONGITUDE: "));
@@ -589,6 +594,8 @@ bool saveConfig() {
 
   json["AIRMONITOR_ON"] = bool(AIRMONITOR_ON);
   json["AIRMONITOR_GRAPH_ON"] = bool(AIRMONITOR_GRAPH_ON);
+  json["AIRMONITOR_API_KEY"] = String(AIRMONITOR_API_KEY);
+  
   json["LATITUDE"] = String(LATITUDE);
   json["LONGITUDE"] = String(LONGITUDE);
   json["EMAIL"] = String(EMAIL);

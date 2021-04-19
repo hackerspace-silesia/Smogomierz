@@ -11,24 +11,25 @@
 // const char *airMonitorServerName PROGMEM = "api.airmonitor.pl";
 // const uint16_t airMonitorPort = 5000;
 
-const char *airMonitorServerName PROGMEM = "airmonitor.pl/prod/measurements";
-const uint16_t airMonitorPort = 80;
+const char *airMonitorServerName PROGMEM = "airmonitor.pl";
+// const uint16_t airMonitorPort = 80;
+const uint16_t airMonitorPort = 443; // HTTPS!
+
 
 void sendJson(JsonObject& json) {
     WiFiClient client;
     Serial.print(F("\nconnecting to "));
     Serial.println(airMonitorServerName);
-
+	
     if (!client.connect(airMonitorServerName, airMonitorPort)) {
         Serial.println(F("connection failed"));
         Serial.println(F("wait 1 sec...\n"));
         delay(1000);
         return;
     }
-
     delay(100); 
 
-    client.println("POST /api HTTP/1.1");
+    client.println("POST /prod/measurements HTTP/1.1");
     client.println("X-Api-Key: " + String(AIRMONITOR_API_KEY));
     client.println("Content-Type: application/json");
     client.print("Content-Length: ");

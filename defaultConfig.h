@@ -70,7 +70,7 @@ char INFLUXDB_USER[64] = "username";
 char INFLUXDB_PASSWORD[64] = "password";
 char INFLUXDB_ORG[64] = "myOrg";
 char INFLUXDB_BUCKET[64] = "myBucket";
-char INFLUXDB_TOKEN[64] = "myToken";
+char INFLUXDB_TOKEN[128] = "myToken";
 
 bool MQTT_ON = false;
 char MQTT_HOST[128] = "MQTT_ADRESS";

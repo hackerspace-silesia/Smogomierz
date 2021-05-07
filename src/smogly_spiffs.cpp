@@ -126,7 +126,7 @@ bool loadConfig() {
   _safeCpy(INFLUXDB_PASSWORD, json["INFLUXDB_PASSWORD"], "password", 64);
   _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 64);
   _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 64);
-  _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 64);
+  _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 128);
 
   MQTT_ON = json["MQTT_ON"];
   _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host", 128);

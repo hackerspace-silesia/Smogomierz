@@ -2379,7 +2379,7 @@ void handle_config_services_save(AsyncWebServerRequest *request) {
 		_parseAsCString(INFLUXDB_BUCKET, request->getParam("INFLUXDB_BUCKET")->value(), 64);
 	}
 	if (request->hasParam("INFLUXDB_TOKEN")) {
-		_parseAsCString(INFLUXDB_TOKEN, request->getParam("INFLUXDB_TOKEN")->value(), 64);
+		_parseAsCString(INFLUXDB_TOKEN, request->getParam("INFLUXDB_TOKEN")->value(), 128);
 	}
 
   if (DEBUG) {

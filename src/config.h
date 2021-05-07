@@ -57,7 +57,7 @@ extern char INFLUXDB_USER[64];
 extern char INFLUXDB_PASSWORD[64];
 extern char INFLUXDB_ORG[64];
 extern char INFLUXDB_BUCKET[64];
-extern char INFLUXDB_TOKEN[64];
+extern char INFLUXDB_TOKEN[128];
 
 extern bool MQTT_ON;
 extern char MQTT_HOST[128];

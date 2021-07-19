@@ -103,3 +103,5 @@ ENV/
 # mypy
 .mypy_cache/
 .DS_Store
+.vscode/arduino.json
+.vscode/c_cpp_properties.json

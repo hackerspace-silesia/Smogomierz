@@ -316,7 +316,9 @@ bool checkUpdate(int checkUpdateSW) {
 }
 
 void doUpdate(int doUpdateSW) {
-#if defined(ARDUINO_ARCH_ESP32)
+#if defined(ARDUINO_ARCH_ESP8266)
+    WiFiClientSecure client;
+#elif defined(ARDUINO_ARCH_ESP32)
   setUpdateClock();
   WiFiClientSecure client;
   client.setCACert(rootCACertificate);
@@ -408,7 +410,7 @@ void doUpdate(int doUpdateSW) {
     }
 
 #if defined(ARDUINO_ARCH_ESP8266)
-    t_httpUpdate_return ret = ESPhttpUpdate.update(BinURL);
+    t_httpUpdate_return ret = ESPhttpUpdate.update(client, BinURL);
 #elif defined(ARDUINO_ARCH_ESP32)
     t_httpUpdate_return ret = httpUpdate.update(client, BinURL);
 #endif

@@ -1,6 +1,6 @@
 /*
-  ESP8266 core for Arduino - 2.7.4 // NodeMCU 1.0; Flash Size: 4MB (FS:1MB OTA:~1019KB)
-  Arduino core for the ESP32 - 1.0.4!! // 1.0.5 NO SUPPORTED!
+  ESP8266 core for Arduino - 3.0.1 // NodeMCU 1.0; Flash Size: 4MB (FS:1MB OTA:~1019KB)
+  Arduino core for the ESP32 - 1.0.4!! // 1.0.5 NOT SUPPORTED!
 
   Adafruit Unified Sensor - 1.1.4
   DallasTemperature - 3.8.0
@@ -16,15 +16,13 @@
 
 // *******************************************
 
-//#ifdef ARDUINO_ARCH_ESP32
 #define ASYNC_WEBSERVER_ON
-//#endif
 
 /*
 
    ESP8266
 
-  Podłączenie czujnikow dla ESP8266 NodeMCU:
+  Podłączenie czujnikow dla ES§P8266 NodeMCU:
   BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
   SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6
@@ -75,19 +73,13 @@
 /*
   ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
 
-  Szkic używa 576960 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 46608 bajtów (56%) pamięci dynamicznej, pozostawiając 35312 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  Szkic używa 579496 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 45768 bajtów (55%) pamięci dynamicznej, pozostawiając 36152 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 580548 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 45888 bajtów (56%) pamięci dynamicznej, pozostawiając 36032 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ASYNC_WEBSERVER_ON
 
-  Szkic używa 567132 bajtów (54%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 53456 bajtów (65%) pamięci dynamicznej, pozostawiając 28464 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 689537 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 55132 bajtów (67%) pamięci dynamicznej, pozostawiając 26788 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ================================================================================================================================================
 
@@ -114,7 +106,7 @@
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
 #ifdef ASYNC_WEBSERVER_ON
-#include "src/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 4.01.2021
+#include "src/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 19.07.2021
 #else
 #include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 4.01.2021 DEV
 #endif
@@ -684,9 +676,12 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 // all HTML content
 #include "html/html-content.h"
 #ifdef ASYNC_WEBSERVER_ON
+#include "html/html-root.h"
+#include "html/html-config.h"
 #include "html/html-config-device.h"
 #include "html/html-config-services.h"
 #include "html/html-config-adv-mqtt.h"
+#include "html/html-update.h"
 #endif
 
 // library doesnt support arguments :/
@@ -699,20 +694,26 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 void setup() {
   Serial.begin(115200);
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 1) {
-    //wait approx. 1 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1) {
+      //wait approx. 1 ms
+    }
+  */
+  yield();
 #else
   yield();
 #endif
 
   fs_setup();
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 1) {
-    //wait approx. 1 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1) {
+      //wait approx. 1 ms
+    }
+  */
+  yield();
 #else
   yield();
 #endif
@@ -729,10 +730,13 @@ void setup() {
 
   loadtranslation(SELECTED_LANGUAGE);
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 1) {
-    //wait approx. 1 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1) {
+      //wait approx. 1 ms
+    }
+  */
+  yield();
 #else
   yield();
 #endif
@@ -761,10 +765,14 @@ void setup() {
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 500) {
-        //wait approx. 500 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 500) {
+              //wait approx. 500 ms
+            }
+      */
+      yield();
+      delay(500);
 #else
       delay(500);
 #endif
@@ -772,10 +780,14 @@ void setup() {
     } else {
       pms.passiveMode();
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 500) {
-        //wait approx. 500 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 500) {
+              //wait approx. 500 ms
+            }
+      */
+      yield();
+      delay(500);
 #else
       delay(500);
 #endif
@@ -815,10 +827,13 @@ void setup() {
   }
 
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 10) {
-    //wait approx. 10 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 10) {
+      //wait approx. 10 ms
+    }
+  */
+  yield();
 #else
   delay(10);
 #endif
@@ -831,29 +846,38 @@ void setup() {
     hpmaSerial.begin(9600, SERIAL_8N1, DUST_TX, DUST_RX); //HPMA115S0 serial
 #endif
 #ifdef ASYNC_WEBSERVER_ON
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 100) {
-      //wait approx. 100 ms
-    }
+    /*
+        time_now_temp = millis();
+        while (millis() < time_now_temp + 100) {
+          //wait approx. 100 ms
+        }
+    */
+    yield();
 #else
     delay(100);
 #endif
     if (FREQUENTMEASUREMENT == true) {
       hpma115S0.Init();
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 100) {
-        //wait approx. 100 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 100) {
+              //wait approx. 100 ms
+            }
+      */
+      yield();
 #else
       delay(100);
 #endif
       hpma115S0.EnableAutoSend();
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 100) {
-        //wait approx. 100 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 100) {
+              //wait approx. 100 ms
+            }
+      */
+      yield();
 #else
       delay(100);
 #endif
@@ -861,10 +885,13 @@ void setup() {
     } else {
       hpma115S0.Init();
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 100) {
-        //wait approx. 100 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 100) {
+              //wait approx. 100 ms
+            }
+      */
+      yield();
 #else
       delay(100);
 #endif
@@ -872,10 +899,13 @@ void setup() {
     }
   }
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 10) {
-    //wait approx. 10 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 10) {
+      //wait approx. 10 ms
+    }
+  */
+  yield();
 #else
   delay(10);
 #endif
@@ -946,10 +976,14 @@ void setup() {
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 500) {
-        //wait approx. 500 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 500) {
+              //wait approx. 500 ms
+            }
+      */
+      yield();
+      delay(500);
 #else
       delay(500);
 #endif
@@ -957,10 +991,13 @@ void setup() {
     } else {
       pms.passiveMode();
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 500) {
-        //wait approx. 500 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 500) {
+              //wait approx. 500 ms
+            }
+      */
+      yield();
 #else
       delay(500);
 #endif
@@ -969,10 +1006,13 @@ void setup() {
   }
 #endif
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 1) {
-    //wait approx. 1 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1) {
+      //wait approx. 1 ms
+    }
+  */
+  yield();
 #else
   yield();
 #endif
@@ -985,10 +1025,13 @@ void setup() {
     SENDING_DB_FREQUENCY = SENDING_FREQUENCY;
   }
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 1) {
-    //wait approx. 1 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1) {
+      //wait approx. 1 ms
+    }
+  */
+  yield();
 #else
   yield();
 #endif
@@ -1026,10 +1069,13 @@ void setup() {
     }
   }
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 1) {
-    //wait approx. 1 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1) {
+      //wait approx. 1 ms
+    }
+  */
+  yield();
 #else
   yield();
 #endif
@@ -1059,10 +1105,13 @@ void setup() {
     DS18B20.begin();
   }
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 1) {
-    //wait approx. 1 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1) {
+      //wait approx. 1 ms
+    }
+  */
+  yield();
 #else
   yield();
 #endif
@@ -1113,10 +1162,13 @@ void setup() {
 #endif
   }
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 250) {
-    //wait approx. 250 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 250) {
+      //wait approx. 250 ms
+    }
+  */
+  yield();
 #else
   delay(250);
 #endif
@@ -1234,10 +1286,13 @@ void setup() {
   Serial.print("HTTPServer ready! http://" + String(device_name) + ".local/\n");
 
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 300) {
-    //wait approx. 300 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 300) {
+      //wait approx. 300 ms
+    }
+  */
+  yield();
 #else
   delay(300);
 #endif
@@ -1297,10 +1352,15 @@ void loop() {
       doUpdate(0);
 
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 1000) {
-        //wait approx. 1000 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 1000) {
+              //wait approx. 1000 ms
+            }
+      */
+      yield();
+      delay(1000);
+
 #else
       delay(1000);
 #endif
@@ -1308,10 +1368,13 @@ void loop() {
     }
   }
 #ifdef ASYNC_WEBSERVER_ON
-  time_now_temp = millis();
-  while (millis() < time_now_temp + 1) {
-    //wait approx. 1 ms
-  }
+  /*
+    time_now_temp = millis();
+    while (millis() < time_now_temp + 1) {
+      //wait approx. 1 ms
+    }
+  */
+  yield();
 #else
   yield();
 #endif
@@ -1362,10 +1425,13 @@ void loop() {
       }
       takeSleepPMMeasurements();
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 1) {
-        //wait approx. 1 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 1) {
+              //wait approx. 1 ms
+            }
+      */
+      yield();
 #else
       yield();
 #endif
@@ -1385,10 +1451,13 @@ void loop() {
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
 
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 1) {
-        //wait approx. 1 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 1) {
+              //wait approx. 1 ms
+            }
+      */
+      yield();
 #else
       yield();
 #endif
@@ -1429,10 +1498,13 @@ void loop() {
       }
 
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 1) {
-        //wait approx. 1 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 1) {
+              //wait approx. 1 ms
+            }
+      */
+      yield();
 #else
       yield();
 #endif
@@ -1442,10 +1514,13 @@ void loop() {
       Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 1) {
-        //wait approx. 1 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 1) {
+              //wait approx. 1 ms
+            }
+      */
+      yield();
 #else
       yield();
 #endif
@@ -1488,28 +1563,16 @@ void loop() {
   unsigned int current_REBOOT_Millis = millis();
   if (current_REBOOT_Millis - previous_REBOOT_Millis >= REBOOT_interval) {
     Serial.println(F("autoreboot..."));
-#ifdef ASYNC_WEBSERVER_ON
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1000) {
-      //wait approx. 1000 ms
-    }
-#else
     delay(1000);
-#endif
     previous_REBOOT_Millis = millis();
+
 #ifdef ARDUINO_ARCH_ESP8266
     ESP.reset();
 #elif defined ARDUINO_ARCH_ESP32
     ESP.restart();
 #endif
-#ifdef ASYNC_WEBSERVER_ON
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 5000) {
-      //wait approx. 5000 ms
-    }
-#else
+
     delay(5000);
-#endif
   }
 
 
@@ -2480,6 +2543,8 @@ void averagePM() {
   averagePM4 = averagePM4 / NUMBEROFMEASUREMENTS;
 #endif
   if (DEBUG) {
+    Serial.print(F("\n"));
+    Serial.print(F("========================================"));
     Serial.print(F("\n\nAverage PM1: "));
     Serial.print(averagePM1);
     Serial.print(F("\nAverage PM2.5: "));
@@ -2490,6 +2555,9 @@ void averagePM() {
 #endif
     Serial.print(F("\nAverage PM10: "));
     Serial.print(averagePM10);
+    Serial.print(F("\n\n"));
+    Serial.print(F("========================================"));
+    Serial.print(F("\n"));
   }
 
 #ifdef ARDUINO_ARCH_ESP32
@@ -2522,10 +2590,13 @@ bool read_sps30_data()
         return (false);
       }
 #ifdef ASYNC_WEBSERVER_ON
-      time_now_temp = millis();
-      while (millis() < time_now_temp + 1000) {
-        //wait approx. 1000 ms
-      }
+      /*
+            time_now_temp = millis();
+            while (millis() < time_now_temp + 1000) {
+              //wait approx. 1000 ms
+            }
+      */
+      yield();
 #else
       delay(1000);
 #endif

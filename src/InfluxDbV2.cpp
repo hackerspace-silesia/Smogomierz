@@ -69,15 +69,19 @@ void InfluxdbV2::setToken(String token){
 
 void InfluxdbV2::begin() {
   // TODO: recreate HttpClient on db change?
+	WiFiClient client_influxDB;
+
 	if (!strcmp(INFLUXDB_VERSION, "2")) {	
-		http.begin(_host, _port, "/api/v2/write?org=" + _org + "&bucket=" + _bucket);
+		
+		http.begin(client_influxDB, _host, _port, "/api/v2/write?org=" + _org + "&bucket=" + _bucket);
+		
 		http.addHeader("Authorization", "Token " + _token);
 	  	http.addHeader("Content-Type", "text/plain");
 	} else {
 		if (_user and _pass) {
-			http.begin(_host, _port, "/write?u=" + _user + "&p=" + _pass + "&db=" + _db);
+			http.begin(client_influxDB, _host, _port, "/write?u=" + _user + "&p=" + _pass + "&db=" + _db);
 		} else {
-			http.begin(_host, _port, "/write?&db=" + _db);
+			http.begin(client_influxDB, _host, _port, "/write?&db=" + _db);
 		}
 		http.addHeader("Content-Type", "text/plain");
 	}

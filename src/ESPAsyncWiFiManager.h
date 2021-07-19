@@ -15,7 +15,7 @@
 #define ESPAsyncWiFiManager_h
 
 #if defined(ESP8266)
-//#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
 #else
 #include <WiFi.h>
 #include "esp_wps.h"
@@ -48,9 +48,7 @@ extern "C" {
 #endif
 
 const char WFM_HTTP_HEAD[] PROGMEM            = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/><meta charset='UTF-8'><title>{v}</title>";
-//const char HTTP_STYLE[] PROGMEM           = "<style>.c{text-align: center;} div,input{padding:5px;font-size:1em;} input{width:95%;} body{text-align: center;font-family:verdana;} button{border:0;border-radius:0.3rem;background-color:#1fa3ec;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;} .q{float: right;width: 64px;text-align: right;} .l{background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAALVBMVEX///8EBwfBwsLw8PAzNjaCg4NTVVUjJiZDRUUUFxdiZGSho6OSk5Pg4eFydHTCjaf3AAAAZElEQVQ4je2NSw7AIAhEBamKn97/uMXEGBvozkWb9C2Zx4xzWykBhFAeYp9gkLyZE0zIMno9n4g19hmdY39scwqVkOXaxph0ZCXQcqxSpgQpONa59wkRDOL93eAXvimwlbPbwwVAegLS1HGfZAAAAABJRU5ErkJggg==\") no-repeat left center;background-size: 1em;}</style>";
-
-const char HTTP_STYLE[]            PROGMEM = "<style>"
+const char HTTP_STYLE[] PROGMEM           = "<style>"
 ".c,body{text-align:center;font-family:verdana}div,input{padding:5px;font-size:1em;margin:5px 0;box-sizing:border-box;}"
 "input,button,.msg{border-radius:.3rem;width: 100%}"
 "button,input[type='button'],input[type='submit']{cursor:pointer;border:0;background-color:#20BF55;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%}"
@@ -78,7 +76,6 @@ const char HTTP_STYLE[]            PROGMEM = "<style>"
 "body.invert .q[role=img]{-webkit-filter:invert(1);filter:invert(1);}"
 "input:disabled {opacity: 0.5;}"
 "</style>";
-
 const char HTTP_SCRIPT[] PROGMEM          = "<script>function c(l){document.getElementById('s').value=l.innerText||l.textContent;document.getElementById('p').focus();}</script>";
 const char HTTP_HEAD_END[] PROGMEM        = "</head><body><div style='text-align:left;display:inline-block;min-width:260px;'>";
 const char HTTP_PORTAL_OPTIONS[] PROGMEM  = "<form action=\"/wifi\" method=\"get\"><button><center>Podłącz do WiFi <br> WiFi Config</center></button></form><br/><form action=\"/r\" method=\"post\"><button><center>Uruchom ponownie <br> Restart</center></button></form>";
@@ -87,12 +84,8 @@ const char HTTP_FORM_START[] PROGMEM      = "<form method='get' action='wifisave
 const char HTTP_FORM_PARAM[] PROGMEM      = "<br/><input id='{i}' name='{n}' length={l} placeholder='{p}' value='{v}' {c}>";
 const char HTTP_FORM_END[] PROGMEM        = "<br/><button type='submit'><center>Zapisz <br> Save</center></button></form>";
 const char HTTP_SCAN_LINK[] PROGMEM       = "<br/><div class=\"c\"><a href=\"/wifi\"><button name='refresh' value='1'><center>Odśwież <br> Refresh</center></button></div>";
-
-//const char HTTP_SAVED[] PROGMEM           = "<div>Credentials Saved<br />Trying to connect ESP to network.<br />If it fails reconnect to AP to try again</div>";
-const char HTTP_SAVED[]            PROGMEM = "<div class='msg'></center><strong>PL:</strong><br>Zapisano ustawienia<br />Za chwilę nastąpi restart Smogly. Jeśli nie uda się połączyć z siecią WiFi - spróbuj ponownie skonfigurować urządzenie.<br><br><strong>EN:</strong><br>Saving Credentials<br/>Trying to connect Smogly to network.<br/>If it fails reconnect - try again</div>";
-
-//const char HTTP_END[] PROGMEM             = "</div></body></html>";
-const char HTTP_END[]              PROGMEM = R"rawliteral(</div><br><hr><center>Smogly &#9830;
+const char HTTP_SAVED[] PROGMEM           = "<div class='msg'></center><strong>PL:</strong><br>Zapisano ustawienia<br />Za chwilę nastąpi restart Smogly. Jeśli nie uda się połączyć z siecią WiFi - spróbuj ponownie skonfigurować urządzenie.<br><br><strong>EN:</strong><br>Saving Credentials<br/>Trying to connect Smogly to network.<br/>If it fails reconnect - try again</div>";
+const char HTTP_END[] PROGMEM             = R"rawliteral(</div><br><hr><center>Smogly &#9830;
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>

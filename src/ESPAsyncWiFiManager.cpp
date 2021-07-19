@@ -120,7 +120,9 @@ void AsyncWiFiManager::setupConfigPortal() {
   #else
   dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
   #endif
-  dnsServer->start(DNS_PORT, "*", WiFi.softAPIP());
+  if (!dnsServer->start(DNS_PORT, "*", WiFi.softAPIP())) {
+    DEBUG_WM(F("Could not start Captive DNS Server!"));
+  }
 
   setInfo();
 
@@ -545,12 +547,8 @@ boolean  AsyncWiFiManager::startConfigPortal(char const *apName, char const *apP
   }
 
   server->reset();
-  #ifdef USE_EADNS
-  *dnsServer=AsyncDNSServer();
-  #else
-  *dnsServer=DNSServer();
-  #endif
-
+  dnsServer->stop();
+  
   return  WiFi.status() == WL_CONNECTED;
 }
 
@@ -689,7 +687,13 @@ String AsyncWiFiManager::getConfigPortalSSID() {
 void AsyncWiFiManager::resetSettings() {
   DEBUG_WM(F("settings invalidated"));
   DEBUG_WM(F("THIS MAY CAUSE AP NOT TO START UP PROPERLY. YOU NEED TO COMMENT IT OUT AFTER ERASING THE DATA."));
+	
+  WiFi.mode(WIFI_AP_STA); // cannot erase if not in STA mode !
+  WiFi.persistent(true);
+  // WiFi.disconnect(true,true);
   WiFi.disconnect(true);
+  WiFi.persistent(false);	
+	
   //delay(200);
 }
 void AsyncWiFiManager::setTimeout(unsigned long seconds) {

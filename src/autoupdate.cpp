@@ -17,20 +17,21 @@
 
 // ********************** Config **********************
 
-const char* GitHubhost PROGMEM = "api.github.com";
-const char* HShost PROGMEM = "smogomierz.hs-silesia.pl";
-const int httpsPort = 443;
+// const char* GitHubhost PROGMEM = "api.github.com";
+// const char* HShost PROGMEM = "smogomierz.hs-silesia.pl";
+// const int httpsPort = 443;
 
 // Last update: 27.01.2021 - https://www.grc.com/fingerprints.htm
-const char GitHubfingerprint[] PROGMEM = "DF B2 29 C6 A6 38 1A 59 9D C9 AD 92 2D 26 F5 3C 83 8F A5 87"; // api.github.com
-const char HSfingerprint[] PROGMEM = "E8 51 FC 5D 35 80 A7 57 61 11 2B 3D EC 19 2E 7F C2 B0 20 06"; // https://smogomierz.hs-silesia.pl
+// const char GitHubfingerprint[] PROGMEM = "DF B2 29 C6 A6 38 1A 59 9D C9 AD 92 2D 26 F5 3C 83 8F A5 87"; // api.github.com
+// const char HSfingerprint[] PROGMEM = "E8 51 FC 5D 35 80 A7 57 61 11 2B 3D EC 19 2E 7F C2 B0 20 06"; // https://smogomierz.hs-silesia.pl
 
 // ******************** Config End ********************
 
 bool safeConnection = true;
 
-#if defined(ARDUINO_ARCH_ESP32)
 
+
+#if defined(ARDUINO_ARCH_ESP32)
 /**
  * This is lets-encrypt-x3-cross-signed.pem
  *	R3 at https://certlogik.com/ssl-checker/
@@ -84,7 +85,7 @@ void setUpdateClock() {
   Serial.print(asctime(&timeinfo));
 }
 
-String checkUpdate_UNSAFE(int checkUpdateSW) {
+String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
   safeConnection = false;
   String UNSAFE_ServerSW;
 
@@ -98,9 +99,9 @@ String checkUpdate_UNSAFE(int checkUpdateSW) {
 #endif
 
   HTTPClient http;
-
+  
 #if defined(ARDUINO_ARCH_ESP8266)
-  String UNSAFE_latestJSONlink = "http://smogomierz.hs-silesia.pl/firmware/latest_esp8266.json";
+  const char* UNSAFE_latestJSONlink = "http://smogomierz.hs-silesia.pl/firmware/latest_esp8266.json";
 #elif defined(ARDUINO_ARCH_ESP32)
   String UNSAFE_latestJSONlink = "http://smogomierz.hs-silesia.pl/firmware/latest_esp32.json";
 #endif
@@ -128,7 +129,7 @@ String checkUpdate_UNSAFE(int checkUpdateSW) {
         JsonObject UNSAFE_json = jsonBuffer.as<JsonObject>();
 
         if (checkUpdateSW == 0) {
-          UNSAFE_ServerSW = UNSAFE_json[PMSENSORVERSION].as<String>();
+          UNSAFE_ServerSW = UNSAFE_json[String(PMSENSORVERSION)].as<String>();
         } else if (checkUpdateSW == 1) {
           UNSAFE_ServerSW = UNSAFE_json["PMS-SparkFunBME280"].as<String>();
         } else if (checkUpdateSW == 2) {
@@ -140,7 +141,7 @@ String checkUpdate_UNSAFE(int checkUpdateSW) {
         } else if (checkUpdateSW == 5) {
           UNSAFE_ServerSW = UNSAFE_json["SPS30"].as<String>();
         } else if (checkUpdateSW >= 6) {
-          UNSAFE_ServerSW = UNSAFE_json[PMSENSORVERSION].as<String>();
+          UNSAFE_ServerSW = UNSAFE_json[String(PMSENSORVERSION)].as<String>();
         }
 
       }
@@ -150,13 +151,13 @@ String checkUpdate_UNSAFE(int checkUpdateSW) {
       if (DEBUG) {
         Serial.printf("GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
       }
-      return "0.0.0";
+      return F("0.0.0");
     }
   } else {
     if (DEBUG) {
       Serial.printf("Unable to connect\n");
     }
-    return "0.0.0";
+    return F("0.0.0");
   }
 
   UNSAFE_client.stop();
@@ -165,10 +166,10 @@ String checkUpdate_UNSAFE(int checkUpdateSW) {
 
 
 
-bool checkUpdate(int checkUpdateSW) {
-  const char* ServerSW;
+bool checkUpdate(unsigned char & checkUpdateSW) {
+  const char* ServerSW = "0.0.0";
   //ServerSW = (String(SOFTWAREVERSION).substring(0, int(String(SOFTWAREVERSION).indexOf("build")) - 1)).c_str();
-  ServerSW = "0.0.0";
+  // ServerSW = "0.0.0";
   String Data[3];
 
 #if defined(ARDUINO_ARCH_ESP8266)
@@ -193,7 +194,7 @@ bool checkUpdate(int checkUpdateSW) {
   HTTPClient https;
   
 #if defined(ARDUINO_ARCH_ESP8266)
-  String latestJSONlink = "http://smogomierz.hs-silesia.pl/firmware/latest_esp8266.json";
+  const char* latestJSONlink = "http://smogomierz.hs-silesia.pl/firmware/latest_esp8266.json";
 #elif defined(ARDUINO_ARCH_ESP32)
   String latestJSONlink = "https://smogomierz.hs-silesia.pl/firmware/latest_esp32.json";
 #endif
@@ -221,7 +222,7 @@ bool checkUpdate(int checkUpdateSW) {
         JsonObject json = jsonBuffer.as<JsonObject>();
 		
         if (checkUpdateSW == 0) {
-          ServerSW = json[PMSENSORVERSION];
+          ServerSW = json[String(PMSENSORVERSION)];
         } else if (checkUpdateSW == 1) {
           ServerSW = json["PMS-SparkFunBME280"];
         } else if (checkUpdateSW == 2) {
@@ -233,7 +234,7 @@ bool checkUpdate(int checkUpdateSW) {
         } else if (checkUpdateSW == 5) {
           ServerSW = json["SPS30"];
         } else if (checkUpdateSW >= 6) {
-          ServerSW = json[PMSENSORVERSION];
+          ServerSW = json[String(PMSENSORVERSION)];
         }
       }
     } else if (httpCode == -1) {
@@ -277,9 +278,9 @@ bool checkUpdate(int checkUpdateSW) {
   }
 
   if (DEBUG) {
-    Serial.println("\nSERVER SOFTWARE VERSION: " + Data[0]);
+    Serial.println(F("\nSERVER SOFTWARE VERSION: ") + Data[0]);
     if (checkUpdateSW == 0) {
-      Serial.println("CURRENT SOFTWARE VERSION: " + Data[2]);
+      Serial.println(F("CURRENT SOFTWARE VERSION: ") + Data[2]);
     }
   }
 
@@ -315,7 +316,8 @@ bool checkUpdate(int checkUpdateSW) {
   }
 }
 
-void doUpdate(int doUpdateSW) {
+void doUpdate(unsigned char & doUpdateSW) {
+	
 #if defined(ARDUINO_ARCH_ESP8266)
     WiFiClientSecure client;
 #elif defined(ARDUINO_ARCH_ESP32)
@@ -330,16 +332,16 @@ void doUpdate(int doUpdateSW) {
     if (DEBUG) {
       Serial.println(F("Starting firmware upgrade...\n"));
 #if defined(ARDUINO_ARCH_ESP8266)
-      Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
+      Serial.println(F("Free Heap: ") + String(ESP.getFreeHeap()));
       delay(10);
-      Serial.println("Sketch Space: " + String(ESP.getFreeSketchSpace()));
+      Serial.println(F("Sketch Space: ") + String(ESP.getFreeSketchSpace()));
       delay(10);
 #endif
     }
-    String BinURL;
+    String BinURL = "";
     if (doUpdateSW == 0) {
 #if defined(ARDUINO_ARCH_ESP8266)
-      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + "_ESP8266.bin";
+      BinURL = F("http://smogomierz.hs-silesia.pl/firmware/esp8266/") + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
 #elif defined(ARDUINO_ARCH_ESP32)
 	  if (safeConnection == true) {
         	BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + "_ESP32.bin";
@@ -349,57 +351,57 @@ void doUpdate(int doUpdateSW) {
 #endif
     } else if (doUpdateSW == 1) {
 #if defined(ARDUINO_ARCH_ESP8266)
-      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + "PMS-SparkFunBME280" + "_ESP8266.bin";
+      BinURL = F("http://smogomierz.hs-silesia.pl/firmware/esp8266/") + String(SERVERSOFTWAREVERSION) + F("_PMS-SparkFunBME280_ESP8266.bin");
 #elif defined(ARDUINO_ARCH_ESP32)
 	  if (safeConnection == true) {
-      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "PMS-SparkFunBME280" + "_ESP32.bin";
+      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_PMS-SparkFunBME280_ESP32.bin";
 	  } else {
-	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "PMS-SparkFunBME280" + "_ESP32.bin";
+	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_PMS-SparkFunBME280_ESP32.bin";
 	  }
 #endif
     } else if (doUpdateSW == 2) {
 #if defined(ARDUINO_ARCH_ESP8266)
-      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + "SDS011" + "_ESP8266.bin";
+      BinURL = F("http://smogomierz.hs-silesia.pl/firmware/esp8266/") + String(SERVERSOFTWAREVERSION) + F("_SDS011_ESP8266.bin");
 #elif defined(ARDUINO_ARCH_ESP32)
 	  if (safeConnection == true) {
-      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "SDS011" + "_ESP32.bin";
+      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_SDS011_ESP32.bin";
 	  } else {
-	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "SDS011" + "_ESP32.bin";
+	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_SDS011_ESP32.bin";
 	  }
 #endif
     } else if (doUpdateSW == 3) {
 #if defined(ARDUINO_ARCH_ESP8266)
-      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + "HPMA115S0" + "_ESP8266.bin";
+      BinURL = F("http://smogomierz.hs-silesia.pl/firmware/esp8266/") + String(SERVERSOFTWAREVERSION) + F("_HPMA115S0_ESP8266.bin");
 #elif defined(ARDUINO_ARCH_ESP32)
 	  if (safeConnection == true) {
-      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "HPMA115S0" + "_ESP32.bin";
+      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_HPMA115S0_ESP32.bin";
 	  } else {
-	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "HPMA115S0" + "_ESP32.bin";
+	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_HPMA115S0_ESP32.bin";
 	  }
 #endif
     } else if (doUpdateSW == 4) {
 #if defined(ARDUINO_ARCH_ESP8266)
-      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + "PMS" + "_ESP8266.bin";
+      BinURL = F("http://smogomierz.hs-silesia.pl/firmware/esp8266/") + String(SERVERSOFTWAREVERSION) + F("_PMS_ESP8266.bin");
 #elif defined(ARDUINO_ARCH_ESP32)
 	  if (safeConnection == true) {
-      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "PMS" + "_ESP32.bin";
+      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_PMS_ESP32.bin";
 	  } else {
-	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "PMS" + "_ESP32.bin";
+	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_PMS_ESP32.bin";
 	  }
 #endif
     } else if (doUpdateSW == 5) {
 #if defined(ARDUINO_ARCH_ESP8266)
-      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + "SPS30" + "_ESP8266.bin";
+      BinURL = F("http://smogomierz.hs-silesia.pl/firmware/esp8266/") + String(SERVERSOFTWAREVERSION) + F("_SPS30_ESP8266.bin");
 #elif defined(ARDUINO_ARCH_ESP32)
 	  if (safeConnection == true) {
-      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "SPS30" + "_ESP32.bin";
+      BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_SPS30_ESP32.bin";
 	  } else {
-	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + "SPS30" + "_ESP32.bin";
+	      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_SPS30_ESP32.bin";
 	  }
 #endif
     } else if (doUpdateSW >= 6) {
 #if defined(ARDUINO_ARCH_ESP8266)
-      BinURL = "http://smogomierz.hs-silesia.pl/firmware/esp8266/" + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + "_ESP8266.bin";
+      BinURL = F("http://smogomierz.hs-silesia.pl/firmware/esp8266/") + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
 #elif defined(ARDUINO_ARCH_ESP32)
 	  if (safeConnection == true) {
       BinURL = "https://smogomierz.hs-silesia.pl/firmware/esp32/" + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + "_ESP32.bin";

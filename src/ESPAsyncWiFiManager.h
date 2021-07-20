@@ -47,7 +47,8 @@ extern "C" {
 #include <rom/rtc.h>
 #endif
 
-const char WFM_HTTP_HEAD[] PROGMEM            = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/><meta charset='UTF-8'><title>{v}</title>";
+
+const char WFM_HTTP_HEAD[] PROGMEM = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/><meta charset='UTF-8'><title>{v}</title>";
 const char HTTP_STYLE[] PROGMEM           = "<style>"
 ".c,body{text-align:center;font-family:verdana}div,input{padding:5px;font-size:1em;margin:5px 0;box-sizing:border-box;}"
 "input,button,.msg{border-radius:.3rem;width: 100%}"

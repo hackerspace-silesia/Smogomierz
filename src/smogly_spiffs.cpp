@@ -8,11 +8,13 @@
 #define FORMAT_SPIFFS_IF_FAILED true
 
 //const int capacity = JSON_OBJECT_SIZE(70);
+/*
 #ifdef ARDUINO_ARCH_ESP8266
 	const int capacity = 6144;
 #elif defined ARDUINO_ARCH_ESP32
 	const int capacity = 4608;
 #endif
+	*/
 
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {
   const char* val = obj.as<const char*>();
@@ -28,6 +30,12 @@ bool loadConfig() {
   File configFile = SPIFFS.open("/config.json", "r");
 #elif defined ARDUINO_ARCH_ESP32
   File configFile = SPIFFS.open("/config.json");
+#endif
+  
+#ifdef ARDUINO_ARCH_ESP8266
+	const short capacity = 6144;
+#elif defined ARDUINO_ARCH_ESP32
+	const short capacity = 4608;
 #endif
 
   if (!configFile) {
@@ -68,16 +76,16 @@ bool loadConfig() {
 
   DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
   _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz", 32);
-  _safeCpy(LANGUAGE, json["LANGUAGE"], "english", 32);
+  _safeCpy(LANGUAGE, json["LANGUAGE"], "english", 12);
   SELECTED_LANGUAGE = json["SELECTED_LANGUAGE"];
 
-  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non", 32);
-  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non", 32);
+  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non", 12);
+  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non", 12);
   DISPLAY_PM1 = json["DISPLAY_PM1"];
   FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
   
   SECOND_THP = json["SECOND_THP"];
-  _safeCpy(SECOND_THP_MODEL, json["SECOND_THP_MODEL"], "Non", 32);
+  _safeCpy(SECOND_THP_MODEL, json["SECOND_THP_MODEL"], "Non", 12);
   
   FIRST_THP_SDA = json["FIRST_THP_SDA"];
   FIRST_THP_SCL = json["FIRST_THP_SCL"];
@@ -88,14 +96,14 @@ bool loadConfig() {
   DUST_TX = json["DUST_TX"];
   DUST_RX = json["DUST_RX"];
 
-  _safeCpy(CONFIG_FIRST_THP_SDA, json["CONFIG_FIRST_THP_SDA"], "D3", 8);
-  _safeCpy(CONFIG_FIRST_THP_SCL, json["CONFIG_FIRST_THP_SCL"], "D4", 8);
+  _safeCpy(CONFIG_FIRST_THP_SDA, json["CONFIG_FIRST_THP_SDA"], "D3", 4);
+  _safeCpy(CONFIG_FIRST_THP_SCL, json["CONFIG_FIRST_THP_SCL"], "D4", 4);
 
-  _safeCpy(CONFIG_SECOND_THP_SDA, json["CONFIG_SECOND_THP_SDA"], "D5", 8);
-  _safeCpy(CONFIG_SECOND_THP_SCL, json["CONFIG_SECOND_THP_SCL"], "D6", 8);
+  _safeCpy(CONFIG_SECOND_THP_SDA, json["CONFIG_SECOND_THP_SDA"], "D5", 4);
+  _safeCpy(CONFIG_SECOND_THP_SCL, json["CONFIG_SECOND_THP_SCL"], "D6", 4);
 
-  _safeCpy(CONFIG_DUST_TX, json["CONFIG_DUST_TX"], "D1", 8);
-  _safeCpy(CONFIG_DUST_RX, json["CONFIG_DUST_RX"], "D2", 8);
+  _safeCpy(CONFIG_DUST_TX, json["CONFIG_DUST_TX"], "D1", 4);
+  _safeCpy(CONFIG_DUST_RX, json["CONFIG_DUST_RX"], "D2", 4);
 
   DUST_TIME = json["DUST_TIME"];
   NUMBEROFMEASUREMENTS = json["NUMBEROFMEASUREMENTS"];
@@ -105,10 +113,10 @@ bool loadConfig() {
 
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
   AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
-  _safeCpy(AIRMONITOR_API_KEY, json["AIRMONITOR_API_KEY"], "", 64);
+  _safeCpy(AIRMONITOR_API_KEY, json["AIRMONITOR_API_KEY"], "", 48);
   _safeCpy(LATITUDE, json["LATITUDE"], "50.263911", 16);
   _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711", 16);
-  _safeCpy(EMAIL, json["EMAIL"], "email@mail.pl", 128);
+  _safeCpy(EMAIL, json["EMAIL"], "email@mail.pl", 64);
   MYALTITUDE = json["MYALTITUDE"];
 
   THINGSPEAK_ON = json["THINGSPEAK_ON"];
@@ -118,20 +126,20 @@ bool loadConfig() {
   _safeCpy(THINGSPEAK_READ_API_KEY, json["THINGSPEAK_READ_API_KEY"], "READ_API_KEY", 32);
 
   INFLUXDB_ON = json["INFLUXDB_ON"];
-  _safeCpy(INFLUXDB_VERSION, json["INFLUXDB_VERSION"], "1", 16);
+  _safeCpy(INFLUXDB_VERSION, json["INFLUXDB_VERSION"], "1", 4);
   _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host", 128);
   INFLUXDB_PORT = json["INFLUXDB_PORT"];
-  _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 64);
-  _safeCpy(INFLUXDB_USER, json["INFLUXDB_USER"], "user", 64);
+  _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 32);
+  _safeCpy(INFLUXDB_USER, json["INFLUXDB_USER"], "user", 32);
   _safeCpy(INFLUXDB_PASSWORD, json["INFLUXDB_PASSWORD"], "password", 64);
-  _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 64);
-  _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 64);
+  _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 32);
+  _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 32);
   _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 128);
 
   MQTT_ON = json["MQTT_ON"];
   _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host", 128);
   MQTT_PORT = json["MQTT_PORT"];
-  _safeCpy(MQTT_USER, json["MQTT_USER"], "user", 64);
+  _safeCpy(MQTT_USER, json["MQTT_USER"], "user", 32);
   _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password", 64);
 
   MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
@@ -139,16 +147,16 @@ bool loadConfig() {
   MQTT_SLASH_AT_THE_BEGINNING = json["MQTT_SLASH_AT_THE_BEGINNING"];
   MQTT_SLASH_AT_THE_END = json["MQTT_SLASH_AT_THE_END"];
 
-  _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 128);
-  _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 128);
-  _safeCpy(MQTT_TOPIC_PRESS, json["MQTT_TOPIC_PRESS"], "MQTT_TOPIC_PRESS", 128);
-  _safeCpy(MQTT_TOPIC_PM1, json["MQTT_TOPIC_PM1"], "MQTT_TOPIC_PM1", 128);
-  _safeCpy(MQTT_TOPIC_PM25, json["MQTT_TOPIC_PM25"], "MQTT_TOPIC_PM25", 128);
-  _safeCpy(MQTT_TOPIC_PM10, json["MQTT_TOPIC_PM10"], "MQTT_TOPIC_PM10", 128);
-  _safeCpy(MQTT_TOPIC_AIRQUALITY, json["MQTT_TOPIC_AIRQUALITY"], "MQTT_TOPIC_AIRQUALITY", 128);
+  _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 64);
+  _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 64);
+  _safeCpy(MQTT_TOPIC_PRESS, json["MQTT_TOPIC_PRESS"], "MQTT_TOPIC_PRESS", 64);
+  _safeCpy(MQTT_TOPIC_PM1, json["MQTT_TOPIC_PM1"], "MQTT_TOPIC_PM1", 64);
+  _safeCpy(MQTT_TOPIC_PM25, json["MQTT_TOPIC_PM25"], "MQTT_TOPIC_PM25", 64);
+  _safeCpy(MQTT_TOPIC_PM10, json["MQTT_TOPIC_PM10"], "MQTT_TOPIC_PM10", 64);
+  _safeCpy(MQTT_TOPIC_AIRQUALITY, json["MQTT_TOPIC_AIRQUALITY"], "MQTT_TOPIC_AIRQUALITY", 32);
 
   AQI_ECO_ON = json["AQI_ECO_ON"];
-  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 128);
+  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 64);
   _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path", 64);
 
   SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
@@ -159,10 +167,10 @@ bool loadConfig() {
   AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
 
   CONFIG_AUTH = json["CONFIG_AUTH"];
-  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 64);
-  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 256);
+  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 32);
+  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 64);
 
-  _safeCpy(MODEL, json["MODEL"], "black", 32);
+  _safeCpy(MODEL, json["MODEL"], "black", 12);
   
   HOMEKIT_SUPPORT = json["HOMEKIT_SUPPORT"];
 
@@ -546,6 +554,12 @@ bool saveConfig() {
 		Serial.println(F("\n"));
 	}
 	*/
+	
+#ifdef ARDUINO_ARCH_ESP8266
+	const short capacity = 6144;
+#elif defined ARDUINO_ARCH_ESP32
+	const short capacity = 4608;
+#endif
 	
 #ifdef ARDUINO_ARCH_ESP8266
   StaticJsonDocument<capacity> jsonBuffer;

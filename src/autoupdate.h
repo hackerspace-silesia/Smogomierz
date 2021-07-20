@@ -1,4 +1,4 @@
 #pragma once
 
-void doUpdate(int doUpdateSW);
-bool checkUpdate(int checkUpdateSW);
+void doUpdate(unsigned char & doUpdateSW);
+bool checkUpdate(unsigned char & checkUpdateSW);

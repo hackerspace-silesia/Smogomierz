@@ -8,8 +8,16 @@
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
 
+#define INTL_OLD  // old translataion system
+// #define INTL_PL  // polish translataion
+// #define INTL_EN  // english translataion
+
+// *******************************************
+
+// ****** CHOOSE(uncomment) ONLY ONE!!! ******
+
 #define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
-// #define DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMS5003 / PMS7003 - BME280_0x77
+// #define DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMS5003 / PM§S7003 - BME280_0x77
 // #define DUSTSENSOR_SDS011_21 // Nova Fitness SDS011 / SDS021
 // #define DUSTSENSOR_HPMA115S0 // Honeywell HPMA115S0
 // #define DUSTSENSOR_SPS30 // Sensirion SPS30
@@ -76,10 +84,20 @@
   Szkic używa 580548 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 45888 bajtów (56%) pamięci dynamicznej, pozostawiając 36032 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  ASYNC_WEBSERVER_ON
+  ASYNC_WEBSERVER_ON + INTL_OLD
 
   Szkic używa 689537 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 55132 bajtów (67%) pamięci dynamicznej, pozostawiając 26788 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 671413 bajtów (64%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 46772 bajtów (57%) pamięci dynamicznej, pozostawiając 35148 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+
+  ASYNC_WEBSERVER_ON + INTL_PL
+
+  Szkic używa 662541 bajtów (63%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 40528 bajtów (49%) pamięci dynamicznej, pozostawiając 41392 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
 
   ================================================================================================================================================
 
@@ -98,7 +116,7 @@
 
   ASYNC_WEBSERVER_ON
 
-  SSzkic używa 1464086 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1464086 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 60432 bajtów (18%) pamięci dynamicznej, pozostawiając 267248 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -119,6 +137,7 @@
 #elif defined ARDUINO_ARCH_ESP32
 #include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 4.01.2021
 #endif
+
 #include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 4.01.2021
 #include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 4.01.2021
 #include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 4.01.2021
@@ -148,6 +167,7 @@
 #include "src/smogly_spiffs.h"
 #include "src/config.h"
 #include "defaultConfig.h"
+
 #include "src/autoupdate.h"
 #include "src/smoglist.h"
 
@@ -322,23 +342,25 @@ unsigned int previous_SENDING_FREQUENCY_AIRMONITOR_Millis = 0;
 unsigned int SENDING_DB_FREQUENCY_interval = 60 * 1000; // 1 minute
 unsigned int previous_SENDING_DB_FREQUENCY_Millis = 0;
 
-unsigned int TwoSec_interval = 2 * 1000; // 2 second
+unsigned short TwoSec_interval = 2 * 1000; // 2 second
 unsigned int previous_2sec_Millis = 0;
 
 unsigned int REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned int previous_REBOOT_Millis = 0;
 
-unsigned long time_now_temp = 0;
+// unsigned long time_now_temp = 0;
 
 #ifdef DUSTSENSOR_SPS30
-int pmMeasurements[10][4];
+unsigned short pmMeasurements[10][4];
 #else
-int pmMeasurements[10][3];
+unsigned short pmMeasurements[10][3];
 #endif
-int iPM, averagePM1, averagePM25, averagePM4, averagePM10 = 0;
+
+unsigned char iPM = 0;
+unsigned short averagePM1, averagePM25, averagePM4, averagePM10 = 0;
 float currentTemperature, currentHumidity, currentPressure = 0;
-float currentTemperature_THP1, currentHumidity_THP1, currentPressure_THP1 = 0;
-float currentTemperature_THP2, currentHumidity_THP2, currentPressure_THP2 = 0;
+// float currentTemperature_THP1, currentHumidity_THP1, currentPressure_THP1 = 0;
+// float currentTemperature_THP2, currentHumidity_THP2, currentPressure_THP2 = 0;
 float calib = 1;
 
 bool need_update = false;
@@ -669,9 +691,18 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 }
 
 // default translation - english
+#ifdef INTL_OLD
 #include "intl/default_intl.h"
-
 #include "src/translator.h"
+#endif
+
+#ifdef INTL_EN
+#include "intl/new_default_intl.h"
+#endif
+
+#ifdef INTL_PL
+#include "intl/new_intl_pl.h"
+#endif
 
 // all HTML content
 #include "html/html-content.h"
@@ -693,30 +724,11 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 
 void setup() {
   Serial.begin(115200);
-#ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1) {
-      //wait approx. 1 ms
-    }
-  */
   yield();
-#else
-  yield();
-#endif
 
   fs_setup();
-#ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1) {
-      //wait approx. 1 ms
-    }
-  */
   yield();
-#else
-  yield();
-#endif
+
   //temporary solution!
   if (SECOND_THP) {
     strcpy(SECOND_THP_MODEL, THP_MODEL);
@@ -728,18 +740,10 @@ void setup() {
   // disableCore1WDT(); // ESP32-solo-1 so only CORE0!
 #endif
 
+#ifdef INTL_OLD
   loadtranslation(SELECTED_LANGUAGE);
-#ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1) {
-      //wait approx. 1 ms
-    }
-  */
-  yield();
-#else
-  yield();
 #endif
+  yield();
 
   set_I2C_PINS(CONFIG_FIRST_THP_SDA, 1);
   set_I2C_PINS(CONFIG_FIRST_THP_SCL, 2);
@@ -765,12 +769,6 @@ void setup() {
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
 #ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 500) {
-              //wait approx. 500 ms
-            }
-      */
       yield();
       delay(500);
 #else
@@ -780,12 +778,6 @@ void setup() {
     } else {
       pms.passiveMode();
 #ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 500) {
-              //wait approx. 500 ms
-            }
-      */
       yield();
       delay(500);
 #else
@@ -827,12 +819,6 @@ void setup() {
   }
 
 #ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 10) {
-      //wait approx. 10 ms
-    }
-  */
   yield();
 #else
   delay(10);
@@ -846,12 +832,6 @@ void setup() {
     hpmaSerial.begin(9600, SERIAL_8N1, DUST_TX, DUST_RX); //HPMA115S0 serial
 #endif
 #ifdef ASYNC_WEBSERVER_ON
-    /*
-        time_now_temp = millis();
-        while (millis() < time_now_temp + 100) {
-          //wait approx. 100 ms
-        }
-    */
     yield();
 #else
     delay(100);
@@ -859,24 +839,12 @@ void setup() {
     if (FREQUENTMEASUREMENT == true) {
       hpma115S0.Init();
 #ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 100) {
-              //wait approx. 100 ms
-            }
-      */
       yield();
 #else
       delay(100);
 #endif
       hpma115S0.EnableAutoSend();
 #ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 100) {
-              //wait approx. 100 ms
-            }
-      */
       yield();
 #else
       delay(100);
@@ -885,12 +853,6 @@ void setup() {
     } else {
       hpma115S0.Init();
 #ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 100) {
-              //wait approx. 100 ms
-            }
-      */
       yield();
 #else
       delay(100);
@@ -899,12 +861,6 @@ void setup() {
     }
   }
 #ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 10) {
-      //wait approx. 10 ms
-    }
-  */
   yield();
 #else
   delay(10);
@@ -976,12 +932,6 @@ void setup() {
     if (FREQUENTMEASUREMENT == true) {
       pms.wakeUp();
 #ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 500) {
-              //wait approx. 500 ms
-            }
-      */
       yield();
       delay(500);
 #else
@@ -991,12 +941,6 @@ void setup() {
     } else {
       pms.passiveMode();
 #ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 500) {
-              //wait approx. 500 ms
-            }
-      */
       yield();
 #else
       delay(500);
@@ -1005,17 +949,8 @@ void setup() {
     }
   }
 #endif
-#ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1) {
-      //wait approx. 1 ms
-    }
-  */
+
   yield();
-#else
-  yield();
-#endif
   // DUST SENSOR setup - END
 
   if (SENDING_FREQUENCY < DUST_TIME) {
@@ -1024,17 +959,8 @@ void setup() {
   if (SENDING_DB_FREQUENCY == 0) {
     SENDING_DB_FREQUENCY = SENDING_FREQUENCY;
   }
-#ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1) {
-      //wait approx. 1 ms
-    }
-  */
+
   yield();
-#else
-  yield();
-#endif
 
   if (FREQUENTMEASUREMENT == true) {
     minutesToSeconds();
@@ -1051,7 +977,7 @@ void setup() {
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
 #define TIME_TO_SLEEP  int(SENDING_FREQUENCY_interval/1000)        /* Time ESP32 will go to sleep (in seconds) */
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
-    Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds\n");
+    Serial.println(F("Setup ESP32 to sleep for every ") + String(TIME_TO_SLEEP) + F(" Seconds\n"));
 #endif
   } else {
     if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
@@ -1068,17 +994,8 @@ void setup() {
       SENDING_DB_FREQUENCY_interval = SENDING_DB_FREQUENCY_interval * SENDING_DB_FREQUENCY;
     }
   }
-#ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1) {
-      //wait approx. 1 ms
-    }
-  */
+
   yield();
-#else
-  yield();
-#endif
 
   // TEMP/HUMI/PRESS Sensor seturp - START
   if (!strcmp(THP_MODEL, "BME280")) {
@@ -1104,17 +1021,8 @@ void setup() {
   } else if (!strcmp(THP_MODEL, "DS18B20")) {
     DS18B20.begin();
   }
-#ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1) {
-      //wait approx. 1 ms
-    }
-  */
+
   yield();
-#else
-  yield();
-#endif
   // TEMP/HUMI/PRESS Sensor setup - END
 
   // get ESP id
@@ -1162,24 +1070,18 @@ void setup() {
 #endif
   }
 #ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 250) {
-      //wait approx. 250 ms
-    }
-  */
   yield();
 #else
   delay(250);
 #endif
 
-
 #ifdef ASYNC_WEBSERVER_ON
-  Serial.println("\nIP Address: " + String(WiFi.localIP().toString()) + "\n");
+  Serial.println(F("\nIP Address: ") + String(WiFi.localIP().toString()) + F("\n"));
 #endif
 
   // check update
-  if (checkUpdate(0) == true) {
+  unsigned char checkUpdate_x = 0;
+  if (checkUpdate(checkUpdate_x) == true) {
     need_update = true;
   } else {
     need_update = false;
@@ -1250,7 +1152,7 @@ void setup() {
     HTTPUpload& upload = WebServer.upload();
     if (upload.status == UPLOAD_FILE_START) {
       //Serial.printf("Update: %s\n", upload.filename.c_str());
-      Serial.print("Update: " + String(upload.filename.c_str()) + "\n");
+      Serial.print(F("Update: ") + String(upload.filename.c_str()) + F("\n"));
       if (!Update.begin(UPDATE_SIZE_UNKNOWN)) { //start with max available size
         Update.printError(Serial);
       }
@@ -1262,7 +1164,7 @@ void setup() {
     } else if (upload.status == UPLOAD_FILE_END) {
       if (Update.end(true)) { //true to set the size to the current progress
         //Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
-        Serial.print("Update Success: " + String(upload.totalSize) + "\nRebooting...\n");
+        Serial.print(F("Update Success: ") + String(upload.totalSize) + F("\nRebooting...\n"));
       } else {
         Update.printError(Serial);
       }
@@ -1283,15 +1185,9 @@ void setup() {
 
   MDNS.addService("http", "tcp", 80);
   //Serial.printf("HTTPServer ready! http://%s.local/\n", device_name);
-  Serial.print("HTTPServer ready! http://" + String(device_name) + ".local/\n");
+  Serial.print(F("HTTPServer ready! http://") + String(device_name) + F(".local/\n"));
 
 #ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 300) {
-      //wait approx. 300 ms
-    }
-  */
   yield();
 #else
   delay(300);
@@ -1347,17 +1243,18 @@ void setup() {
 }
 
 void loop() {
+  /*
+    Serial.print(F("========================================\n"));
+    Serial.println(F("Free Heap: " + String(ESP.getFreeHeap())));
+    Serial.print(F("========================================\n"));
+  */
+
   if (need_update == true && AUTOUPDATE_ON) {
     for (int i = 0; i < 5 ; i++) {
-      doUpdate(0);
+      unsigned char x = 0;
+      doUpdate(x);
 
 #ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 1000) {
-              //wait approx. 1000 ms
-            }
-      */
       yield();
       delay(1000);
 
@@ -1367,17 +1264,8 @@ void loop() {
 
     }
   }
-#ifdef ASYNC_WEBSERVER_ON
-  /*
-    time_now_temp = millis();
-    while (millis() < time_now_temp + 1) {
-      //wait approx. 1 ms
-    }
-  */
+
   yield();
-#else
-  yield();
-#endif
 
   pm_calibration();
 
@@ -1424,17 +1312,7 @@ void loop() {
         Serial.println(F("\nDeepSleep Mode!"));
       }
       takeSleepPMMeasurements();
-#ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 1) {
-              //wait approx. 1 ms
-            }
-      */
       yield();
-#else
-      yield();
-#endif
 
       if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
         takeTHPMeasurements();
@@ -1446,21 +1324,11 @@ void loop() {
       }
 
 #ifdef ARDUINO_ARCH_ESP8266
-      Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+      Serial.println(F("Going into deep sleep for ") + String(SENDING_FREQUENCY) + F(" minutes!"));
       Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
 
-#ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 1) {
-              //wait approx. 1 ms
-            }
-      */
       yield();
-#else
-      yield();
-#endif
 
 #elif defined ARDUINO_ARCH_ESP32
       Serial.println(F("Going to sleep now"));
@@ -1497,33 +1365,13 @@ void loop() {
         sendDataToExternalDBs();
       }
 
-#ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 1) {
-              //wait approx. 1 ms
-            }
-      */
       yield();
-#else
-      yield();
-#endif
 
 #ifdef ARDUINO_ARCH_ESP8266
-      Serial.println("Going into deep sleep for " + String(SENDING_FREQUENCY) + " minutes!");
+      Serial.println(F("Going into deep sleep for ") + String(SENDING_FREQUENCY) + F(" minutes!"));
       Serial.flush();
       ESP.deepSleep(SENDING_FREQUENCY * 60 * 1000000); // *1000000 - secunds
-#ifdef ASYNC_WEBSERVER_ON
-      /*
-            time_now_temp = millis();
-            while (millis() < time_now_temp + 1) {
-              //wait approx. 1 ms
-            }
-      */
       yield();
-#else
-      yield();
-#endif
 #elif defined ARDUINO_ARCH_ESP32
       Serial.println(F("Going to sleep now"));
       Serial.flush();
@@ -1768,13 +1616,13 @@ void sendDataToExternalDBs() {
 
     String MQTT_FINAL_TEMP, MQTT_FINAL_HUMI, MQTT_FINAL_PRESS, MQTT_FINAL_PM1, MQTT_FINAL_PM25, MQTT_FINAL_PM10, MQTT_FINAL_AIRQUALITY;
     if (MQTT_DEVICENAME_IN_TOPIC) {
-      MQTT_FINAL_TEMP = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_TEMP);
-      MQTT_FINAL_HUMI = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_HUMI);
-      MQTT_FINAL_PRESS = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_PRESS);
-      MQTT_FINAL_PM1 = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_PM1);
-      MQTT_FINAL_PM25 = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_PM25);
-      MQTT_FINAL_PM10 = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_PM10);
-      MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_NAME) + "/" + String(MQTT_TOPIC_AIRQUALITY);
+      MQTT_FINAL_TEMP = String(MQTT_DEVICE_NAME) + F("/") + String(MQTT_TOPIC_TEMP);
+      MQTT_FINAL_HUMI = String(MQTT_DEVICE_NAME) + F("/") + String(MQTT_TOPIC_HUMI);
+      MQTT_FINAL_PRESS = String(MQTT_DEVICE_NAME) + F("/") + String(MQTT_TOPIC_PRESS);
+      MQTT_FINAL_PM1 = String(MQTT_DEVICE_NAME) + F("/") + String(MQTT_TOPIC_PM1);
+      MQTT_FINAL_PM25 = String(MQTT_DEVICE_NAME) + F("/") + String(MQTT_TOPIC_PM25);
+      MQTT_FINAL_PM10 = String(MQTT_DEVICE_NAME) + F("/") + String(MQTT_TOPIC_PM10);
+      MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_NAME) + F("/") + String(MQTT_TOPIC_AIRQUALITY);
     } else {
       MQTT_FINAL_TEMP = String(MQTT_TOPIC_TEMP);
       MQTT_FINAL_HUMI = String(MQTT_TOPIC_HUMI);
@@ -1785,22 +1633,22 @@ void sendDataToExternalDBs() {
       MQTT_FINAL_AIRQUALITY = String(MQTT_TOPIC_AIRQUALITY);
     }
     if (MQTT_IP_IN_TOPIC) {
-      MQTT_FINAL_TEMP = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_TEMP);
-      MQTT_FINAL_HUMI = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_HUMI);
-      MQTT_FINAL_PRESS = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PRESS);
-      MQTT_FINAL_PM1 = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PM1);
-      MQTT_FINAL_PM25 = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PM25);
-      MQTT_FINAL_PM10 = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_PM10);
-      MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_IPADRESS) + "/" + String(MQTT_FINAL_AIRQUALITY);
+      MQTT_FINAL_TEMP = String(MQTT_DEVICE_IPADRESS) + F("/") + String(MQTT_FINAL_TEMP);
+      MQTT_FINAL_HUMI = String(MQTT_DEVICE_IPADRESS) + F("/") + String(MQTT_FINAL_HUMI);
+      MQTT_FINAL_PRESS = String(MQTT_DEVICE_IPADRESS) + F("/") + String(MQTT_FINAL_PRESS);
+      MQTT_FINAL_PM1 = String(MQTT_DEVICE_IPADRESS) + F("/") + String(MQTT_FINAL_PM1);
+      MQTT_FINAL_PM25 = String(MQTT_DEVICE_IPADRESS) + F("/") + String(MQTT_FINAL_PM25);
+      MQTT_FINAL_PM10 = String(MQTT_DEVICE_IPADRESS) + F("/") + String(MQTT_FINAL_PM10);
+      MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_IPADRESS) + F("/") + String(MQTT_FINAL_AIRQUALITY);
     }
     if (MQTT_SLASH_AT_THE_BEGINNING) {
-      MQTT_FINAL_TEMP = "/" + MQTT_FINAL_TEMP;
-      MQTT_FINAL_HUMI = "/" + MQTT_FINAL_HUMI;
-      MQTT_FINAL_PRESS = "/" + MQTT_FINAL_PRESS;
-      MQTT_FINAL_PM1 = "/" + MQTT_FINAL_PM1;
-      MQTT_FINAL_PM25 = "/" + MQTT_FINAL_PM25;
-      MQTT_FINAL_PM10 = "/" + MQTT_FINAL_PM10;
-      MQTT_FINAL_AIRQUALITY = "/" + MQTT_FINAL_AIRQUALITY;
+      MQTT_FINAL_TEMP = F("/") + MQTT_FINAL_TEMP;
+      MQTT_FINAL_HUMI = F("/") + MQTT_FINAL_HUMI;
+      MQTT_FINAL_PRESS = F("/") + MQTT_FINAL_PRESS;
+      MQTT_FINAL_PM1 = F("/") + MQTT_FINAL_PM1;
+      MQTT_FINAL_PM25 = F("/") + MQTT_FINAL_PM25;
+      MQTT_FINAL_PM10 = F("/") + MQTT_FINAL_PM10;
+      MQTT_FINAL_AIRQUALITY = F("/") + MQTT_FINAL_AIRQUALITY;
     } else {
       MQTT_FINAL_TEMP = MQTT_FINAL_TEMP;
       MQTT_FINAL_HUMI = MQTT_FINAL_HUMI;
@@ -1812,13 +1660,13 @@ void sendDataToExternalDBs() {
     }
 
     if (MQTT_SLASH_AT_THE_END) {
-      MQTT_FINAL_TEMP = MQTT_FINAL_TEMP + "/";
-      MQTT_FINAL_HUMI = MQTT_FINAL_HUMI + "/";
-      MQTT_FINAL_PRESS = MQTT_FINAL_PRESS + "/";
-      MQTT_FINAL_PM1 = MQTT_FINAL_PM1 + "/";
-      MQTT_FINAL_PM25 = MQTT_FINAL_PM25 + "/";
-      MQTT_FINAL_PM10 = MQTT_FINAL_PM10 + "/";
-      MQTT_FINAL_AIRQUALITY = MQTT_FINAL_AIRQUALITY + "/";
+      MQTT_FINAL_TEMP = MQTT_FINAL_TEMP + F("/");
+      MQTT_FINAL_HUMI = MQTT_FINAL_HUMI + F("/");
+      MQTT_FINAL_PRESS = MQTT_FINAL_PRESS + F("/");
+      MQTT_FINAL_PM1 = MQTT_FINAL_PM1 + F("/");
+      MQTT_FINAL_PM25 = MQTT_FINAL_PM25 + F("/");
+      MQTT_FINAL_PM10 = MQTT_FINAL_PM10 + F("/");
+      MQTT_FINAL_AIRQUALITY = MQTT_FINAL_AIRQUALITY + F("/");
     }
 
     if (strcmp(DUST_MODEL, "Non")) {
@@ -1912,27 +1760,30 @@ void sendDataToExternalDBs() {
     //if (DEEPSLEEP_ON == true) {
     mqttclient.disconnect();
     //}
-
   }
 
 }
 
 String addSlash(String receivedString, bool frontSlash, bool backSlash) {
   if (frontSlash) {
-    if (String(receivedString.charAt(0)) != "/") {
+    if (String(receivedString.charAt(0)) != F("/")) {
       receivedString = "/" + receivedString;
     }
   }
   if (backSlash) {
-    if (String(receivedString.charAt(receivedString.length() - 1)) != "/") {
-      receivedString = receivedString + "/";
+    if (String(receivedString.charAt(receivedString.length() - 1)) != F("/")) {
+      receivedString = receivedString + F("/");
     }
   }
   return receivedString;
 }
 
 void takeTHPMeasurements() {
+  float currentTemperature_THP1, currentHumidity_THP1, currentPressure_THP1 = 0;
+  float currentTemperature_THP2, currentHumidity_THP2, currentPressure_THP2 = 0;
+
   if (!strcmp(THP_MODEL, "BME280")) {
+
 #ifdef ARDUINO_ARCH_ESP8266
     BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
 #endif
@@ -2035,7 +1886,6 @@ void takeTHPMeasurements() {
         currentPressure_THP2 = (bme.seaLevelForAltitude(MYALTITUDE, (bme.readPressure() / 100.0F)));
         currentHumidity_THP2 = (bme.readHumidity()); // maybe *0.89 ?
 #endif
-
       } else {
         if (DEBUG) {
           Serial.println(F("No measurements from BME280!\n"));
@@ -2119,10 +1969,19 @@ void takeTHPMeasurements() {
 }
 
 void takeNormalnPMMeasurements() {
+  /*
+    #ifdef DUSTSENSOR_SPS30
+    unsigned short pmMeasurements[9][3];
+    #else
+    unsigned short pmMeasurements[9][2];
+    #endif
+  */
+  // unsigned char iPM = 0;
+
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
-  pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
-  pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
-  pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+  pmMeasurements[iPM][0] = (calib * data.PM_AE_UG_1_0);
+  pmMeasurements[iPM][1] = (calib * data.PM_AE_UG_2_5);
+  pmMeasurements[iPM][2] = (calib * data.PM_AE_UG_10_0);
 #elif defined DUSTSENSOR_SDS011_21
 #ifdef ARDUINO_ARCH_ESP8266
   PmResult SDSdata = sds.queryPm();
@@ -2130,18 +1989,18 @@ void takeNormalnPMMeasurements() {
   delay(1000);
 #endif
   if (SDSdata.isOk()) {
-    pmMeasurements[iPM][0] = int(calib * 0);
-    pmMeasurements[iPM][1] = int(calib * SDSdata.pm25);
-    pmMeasurements[iPM][2] = int(calib * SDSdata.pm10);
+    pmMeasurements[iPM][0] = (calib * 0);
+    pmMeasurements[iPM][1] = (calib * SDSdata.pm25);
+    pmMeasurements[iPM][2] = (calib * SDSdata.pm10);
   } else {
     Serial.println(F("\nCould not read values from SDS sensor :( "));
   }
 #elif defined ARDUINO_ARCH_ESP32
   err = my_sds.read(&SDSpm25, &SDSpm10);
   if (!err) {
-    pmMeasurements[iPM][0] = int(calib * 0);
-    pmMeasurements[iPM][1] = int(calib * SDSpm25);
-    pmMeasurements[iPM][2] = int(calib * SDSpm10);
+    pmMeasurements[iPM][0] = (calib * 0);
+    pmMeasurements[iPM][1] = (calib * SDSpm25);
+    pmMeasurements[iPM][2] = (calib * SDSpm10);
   } else {
     Serial.println(F("\nCould not read values from SDS sensor :( "));
   }
@@ -2153,27 +2012,27 @@ void takeNormalnPMMeasurements() {
       delay(100);
 #endif
       hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10);
-      pmMeasurements[iPM][0] = int(calib * 0);
-      pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
-      pmMeasurements[iPM][2] = int(calib * hpma115S0_pm10);
+      pmMeasurements[iPM][0] = (calib * 0);
+      pmMeasurements[iPM][1] = (calib * hpma115S0_pm25);
+      pmMeasurements[iPM][2] = (calib * hpma115S0_pm10);
     } else {
-      pmMeasurements[iPM][0] = int(calib * 0);
-      pmMeasurements[iPM][1] = int(calib * hpma115S0_pm25);
-      pmMeasurements[iPM][2] = int(calib * hpma115S0_pm10);
+      pmMeasurements[iPM][0] = (calib * 0);
+      pmMeasurements[iPM][1] = (calib * hpma115S0_pm25);
+      pmMeasurements[iPM][2] = (calib * hpma115S0_pm10);
     }
   }
 #elif defined DUSTSENSOR_SPS30
   read_sps30_data();
 
-  pmMeasurements[iPM][0] = int(calib * SPS30_PM1);
-  pmMeasurements[iPM][1] = int(calib * SPS30_PM25);
-  pmMeasurements[iPM][2] = int(calib * SPS30_PM10);
-  pmMeasurements[iPM][3] = int(calib * SPS30_PM4);
+  pmMeasurements[iPM][0] = (calib * SPS30_PM1);
+  pmMeasurements[iPM][1] = (calib * SPS30_PM25);
+  pmMeasurements[iPM][2] = (calib * SPS30_PM10);
+  pmMeasurements[iPM][3] = (calib * SPS30_PM4);
 
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
-  pmMeasurements[iPM][0] = int(calib * data.PM_AE_UG_1_0);
-  pmMeasurements[iPM][1] = int(calib * data.PM_AE_UG_2_5);
-  pmMeasurements[iPM][2] = int(calib * data.PM_AE_UG_10_0);
+  pmMeasurements[iPM][0] = (calib * data.PM_AE_UG_1_0);
+  pmMeasurements[iPM][1] = (calib * data.PM_AE_UG_2_5);
+  pmMeasurements[iPM][2] = (calib * data.PM_AE_UG_10_0);
 #endif
 
   if (DEBUG) {
@@ -2458,6 +2317,7 @@ void pm_calibration() {
   // Automatic calibration - START
   if (!strcmp(MODEL, "white")) {
     if (!strcmp(THP_MODEL, "BME280")) {
+
 #ifdef ARDUINO_ARCH_ESP8266
       BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
       if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
@@ -2661,7 +2521,7 @@ void GetDeviceInfo()
 
   Serial.print(F("Firmware level: "));
   Serial.print(v.major);
-  Serial.print(".");
+  Serial.print(F("."));
   Serial.println(v.minor);
 
   if (SP30_COMMS != I2C_COMMS) {
@@ -2670,13 +2530,13 @@ void GetDeviceInfo()
 
     Serial.print(F("SHDLC protocol: "));
     Serial.print(v.SHDLC_major);
-    Serial.print(".");
+    Serial.print(F("."));
     Serial.println(v.SHDLC_minor);
   }
 
   Serial.print(F("Library level: "));
   Serial.print(v.DRV_major);
-  Serial.print(".");
+  Serial.print(F("."));
   Serial.println(v.DRV_minor);
 }
 
@@ -2744,11 +2604,11 @@ void ErrtoMess(char *mess, uint8_t r)
 // HomeKit -- START
 #ifdef ARDUINO_ARCH_ESP32
 void init_hap_storage() {
-  Serial.print("init_hap_storage");
+  Serial.print(F("init_hap_storage"));
 #ifdef ARDUINO_ARCH_ESP32
 #define FORMAT_SPIFFS_IF_FAILED true
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
-    Serial.println("SPIFFS Mount Failed");
+    Serial.println(F("SPIFFS Mount Failed"));
     return;
   }
 #endif
@@ -2760,14 +2620,14 @@ void init_hap_storage() {
 #endif
 
   if (!fsDAT) {
-    Serial.println("Failed to read pair.dat");
+    Serial.println(F("Failed to read pair.dat"));
     return;
   }
   int size = hap_get_storage_size_ex();
   char* buf = new char[size];
   memset(buf, 0xff, size);
   int readed = fsDAT.readBytes(buf, size);
-  //Serial.print("Readed bytes ->");
+  //Serial.print(F("Readed bytes ->"));
   //Serial.println(readed);
   hap_init_storage_ex(buf, size);
   fsDAT.close();
@@ -2783,7 +2643,7 @@ void storage_changed(char * szstorage, int size) {
   File fsDAT = SPIFFS.open(pair_file_name, FILE_WRITE);
 #endif
   if (!fsDAT) {
-    Serial.println("Failed to open pair.dat");
+    Serial.println(F("Failed to open pair.dat"));
     return;
   }
   fsDAT.write((uint8_t*)szstorage, size);
@@ -2814,7 +2674,7 @@ void notify_hap() {
     homekit_characteristic_t* hc_homekit_pm10_level = homekit_service_characteristic_by_type(homekit_pm10_level, HOMEKIT_CHARACTERISTIC_PM10_DENSITY);
     if ( hc_homekit_pm10_level) {
       uint8_t air_quality_pm10 = pm10_air_quality_level(homekit_DeviceData.homekit_pm10_level, (uint8_t)(* hc_homekit_pm10_level->min_value) + 1, (uint8_t)(* hc_homekit_pm10_level->max_value));
-      // Serial.println("Noify level:" + String(air_quality_pm10));
+      // Serial.println(F("Noify level:") + String(air_quality_pm10));
       HAP_NOTIFY_CHANGES(int, hc_homekit_pm10_level, air_quality_pm10, 0)
     }
   }
@@ -2824,7 +2684,7 @@ void notify_hap() {
     homekit_characteristic_t* hc_homekit_pm25_level = homekit_service_characteristic_by_type(homekit_pm25_level, HOMEKIT_CHARACTERISTIC_PM25_DENSITY);
     if ( hc_homekit_pm25_level) {
       uint8_t air_quality_pm25 = pm25_air_quality_level(homekit_DeviceData.homekit_pm25_level, (uint8_t)(* hc_homekit_pm25_level->min_value) + 1, (uint8_t)(* hc_homekit_pm25_level->max_value));
-      // Serial.println("Noify level:" + String(air_quality_pm25));
+      // Serial.println(F("Noify level:") + String(air_quality_pm25));
       HAP_NOTIFY_CHANGES(int, hc_homekit_pm25_level, air_quality_pm25, 0)
     }
   }

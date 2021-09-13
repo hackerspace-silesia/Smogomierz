@@ -25,18 +25,10 @@ void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int Cha
   }
 }
 
+#ifdef ARDUINO_ARCH_ESP8266
 bool loadConfig() {
-#ifdef ARDUINO_ARCH_ESP8266
   File configFile = SPIFFS.open("/config.json", "r");
-#elif defined ARDUINO_ARCH_ESP32
-  File configFile = SPIFFS.open("/config.json");
-#endif
-  
-#ifdef ARDUINO_ARCH_ESP8266
-	const short capacity = 6144;
-#elif defined ARDUINO_ARCH_ESP32
-	const short capacity = 4608;
-#endif
+  const short capacity = 6144;
 
   if (!configFile) {
     Serial.println(F("Failed to open config file"));
@@ -57,13 +49,9 @@ bool loadConfig() {
   // use configFile.readString instead.
   configFile.readBytes(buf.get(), size);
 
-#ifdef ARDUINO_ARCH_ESP8266
   StaticJsonDocument<capacity> jsonBuffer;
   //DynamicJsonDocument jsonBuffer(ESP.getMaxFreeBlockSize());
-#elif defined ARDUINO_ARCH_ESP32
-  StaticJsonDocument<capacity> jsonBuffer;
-  //DynamicJsonDocument jsonBuffer(ESP.getMaxAllocHeap());
-#endif
+
   deserializeJson(jsonBuffer, buf.get());
   JsonObject json = jsonBuffer.as<JsonObject>();
 
@@ -167,8 +155,8 @@ bool loadConfig() {
   AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
 
   CONFIG_AUTH = json["CONFIG_AUTH"];
-  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 32);
-  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 64);
+  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 64);
+  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 128);
 
   _safeCpy(MODEL, json["MODEL"], "black", 12);
   
@@ -364,7 +352,336 @@ bool loadConfig() {
   }
   return true;
 }
+#elif defined ARDUINO_ARCH_ESP32
+bool loadConfig() {
+  File configFile = SPIFFS.open("/config.json");
+  
+const short capacity = 4608;
 
+  if (!configFile) {
+    Serial.println("Failed to open config file");
+    return false;
+  }
+
+  size_t size = configFile.size();
+  if (size > 2048) {
+      Serial.println("Config file size is too large");
+      return false;
+  }
+
+  // Allocate a buffer to store contents of the file.
+  std::unique_ptr<char[]> buf(new char[size]);
+
+  // We don't use String here because ArduinoJson library requires the input
+  // buffer to be mutable. If you don't use ArduinoJson, you may as well
+  // use configFile.readString instead.
+  configFile.readBytes(buf.get(), size);
+
+
+  StaticJsonDocument<capacity> jsonBuffer;
+  //DynamicJsonDocument jsonBuffer(ESP.getMaxAllocHeap());
+  deserializeJson(jsonBuffer, buf.get());
+  JsonObject json = jsonBuffer.as<JsonObject>();
+
+  if (json.isNull()) {
+    Serial.println("Failed to parse config file");
+    return false;
+  }
+
+  // REMEMBER TO ADD/EDIT KEYS IN config.h AND webserver.h!!
+
+  DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
+  _safeCpy(DEVICENAME, json["DEVICENAME"], "smogomierz", 32);
+  _safeCpy(LANGUAGE, json["LANGUAGE"], "english", 12);
+  SELECTED_LANGUAGE = json["SELECTED_LANGUAGE"];
+
+  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non", 12);
+  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non", 12);
+  DISPLAY_PM1 = json["DISPLAY_PM1"];
+  FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
+  
+  SECOND_THP = json["SECOND_THP"];
+  _safeCpy(SECOND_THP_MODEL, json["SECOND_THP_MODEL"], "Non", 12);
+  
+  FIRST_THP_SDA = json["FIRST_THP_SDA"];
+  FIRST_THP_SCL = json["FIRST_THP_SCL"];
+
+  SECOND_THP_SDA = json["SECOND_THP_SDA"];
+  SECOND_THP_SCL = json["SECOND_THP_SCL"];
+
+  DUST_TX = json["DUST_TX"];
+  DUST_RX = json["DUST_RX"];
+
+  _safeCpy(CONFIG_FIRST_THP_SDA, json["CONFIG_FIRST_THP_SDA"], "D3", 4);
+  _safeCpy(CONFIG_FIRST_THP_SCL, json["CONFIG_FIRST_THP_SCL"], "D4", 4);
+
+  _safeCpy(CONFIG_SECOND_THP_SDA, json["CONFIG_SECOND_THP_SDA"], "D5", 4);
+  _safeCpy(CONFIG_SECOND_THP_SCL, json["CONFIG_SECOND_THP_SCL"], "D6", 4);
+
+  _safeCpy(CONFIG_DUST_TX, json["CONFIG_DUST_TX"], "D1", 4);
+  _safeCpy(CONFIG_DUST_RX, json["CONFIG_DUST_RX"], "D2", 4);
+
+  DUST_TIME = json["DUST_TIME"];
+  NUMBEROFMEASUREMENTS = json["NUMBEROFMEASUREMENTS"];
+
+  LUFTDATEN_ON = json["LUFTDATEN_ON"];
+  SMOGLIST_ON = json["SMOGLIST_ON"];
+
+  AIRMONITOR_ON = json["AIRMONITOR_ON"];
+  AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
+  _safeCpy(AIRMONITOR_API_KEY, json["AIRMONITOR_API_KEY"], "", 48);
+  _safeCpy(LATITUDE, json["LATITUDE"], "50.263911", 16);
+  _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711", 16);
+  _safeCpy(EMAIL, json["EMAIL"], "email@mail.pl", 64);
+  MYALTITUDE = json["MYALTITUDE"];
+
+  THINGSPEAK_ON = json["THINGSPEAK_ON"];
+  THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
+  _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"], "WRITE_API_KEY", 32);
+  THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
+  _safeCpy(THINGSPEAK_READ_API_KEY, json["THINGSPEAK_READ_API_KEY"], "READ_API_KEY", 32);
+
+  INFLUXDB_ON = json["INFLUXDB_ON"];
+  _safeCpy(INFLUXDB_VERSION, json["INFLUXDB_VERSION"], "1", 4);
+  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host", 128);
+  INFLUXDB_PORT = json["INFLUXDB_PORT"];
+  _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 32);
+  _safeCpy(INFLUXDB_USER, json["INFLUXDB_USER"], "user", 32);
+  _safeCpy(INFLUXDB_PASSWORD, json["INFLUXDB_PASSWORD"], "password", 64);
+  _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 32);
+  _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 32);
+  _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 128);
+
+  MQTT_ON = json["MQTT_ON"];
+  _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host", 128);
+  MQTT_PORT = json["MQTT_PORT"];
+  _safeCpy(MQTT_USER, json["MQTT_USER"], "user", 32);
+  _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password", 64);
+
+  MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
+  MQTT_DEVICENAME_IN_TOPIC = json["MQTT_DEVICENAME_IN_TOPIC"];
+  MQTT_SLASH_AT_THE_BEGINNING = json["MQTT_SLASH_AT_THE_BEGINNING"];
+  MQTT_SLASH_AT_THE_END = json["MQTT_SLASH_AT_THE_END"];
+
+  _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 64);
+  _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 64);
+  _safeCpy(MQTT_TOPIC_PRESS, json["MQTT_TOPIC_PRESS"], "MQTT_TOPIC_PRESS", 64);
+  _safeCpy(MQTT_TOPIC_PM1, json["MQTT_TOPIC_PM1"], "MQTT_TOPIC_PM1", 64);
+  _safeCpy(MQTT_TOPIC_PM25, json["MQTT_TOPIC_PM25"], "MQTT_TOPIC_PM25", 64);
+  _safeCpy(MQTT_TOPIC_PM10, json["MQTT_TOPIC_PM10"], "MQTT_TOPIC_PM10", 64);
+  _safeCpy(MQTT_TOPIC_AIRQUALITY, json["MQTT_TOPIC_AIRQUALITY"], "MQTT_TOPIC_AIRQUALITY", 32);
+
+  AQI_ECO_ON = json["AQI_ECO_ON"];
+  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 64);
+  _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path", 64);
+
+  SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
+  SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
+  DEEPSLEEP_ON = json["DEEPSLEEP_ON"];
+
+  DEBUG = json["DEBUG"];
+  AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
+
+  CONFIG_AUTH = json["CONFIG_AUTH"];
+  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 32);
+  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 64);
+
+  _safeCpy(MODEL, json["MODEL"], "black", 12);
+  
+  HOMEKIT_SUPPORT = json["HOMEKIT_SUPPORT"];
+
+  // Real world application would store these values in some variables for
+  // later use.
+  if (DEBUG) {
+    Serial.print("Loaded DEVICENAME_AUTO: ");
+    Serial.println(DEVICENAME_AUTO);
+    Serial.print("Loaded DEVICENAME: ");
+    Serial.println(DEVICENAME);
+    Serial.print("Loaded LANGUAGE: ");
+    Serial.println(LANGUAGE);
+    Serial.print("Loaded SELECTED_LANGUAGE: ");
+    Serial.println(SELECTED_LANGUAGE);
+
+    Serial.print("Loaded THP_MODEL: ");
+    Serial.println(THP_MODEL);
+    Serial.print("Loaded DUST_MODEL: ");
+    Serial.println(DUST_MODEL);
+    Serial.print("Loaded DISPLAY_PM1: ");
+    Serial.println(DISPLAY_PM1);
+    Serial.print("Loaded FREQUENTMEASUREMENT: ");
+    Serial.println(FREQUENTMEASUREMENT);
+
+	Serial.print("Loaded SECOND_THP: ");
+	Serial.println(SECOND_THP_MODEL);
+	Serial.print("Loaded SECOND_THP_MODEL: ");
+	Serial.println(SECOND_THP_MODEL);
+	
+	Serial.print("Loaded FIRST_THP_SDA: ");
+	Serial.println(FIRST_THP_SDA);
+	Serial.print("Loaded FIRST_THP_SCL: ");
+    Serial.println(FIRST_THP_SCL);
+
+	Serial.print("Loaded SECOND_THP_SDA: ");
+	Serial.println(SECOND_THP_SDA);
+	Serial.print("Loaded SECOND_THP_SCL: ");
+    Serial.println(SECOND_THP_SCL);
+
+	Serial.print("Loaded DUST_TX: ");
+	Serial.println(DUST_TX);
+	Serial.print("Loaded DUST_RX: ");
+    Serial.println(DUST_RX);
+
+	Serial.print("Loaded CONFIG_FIRST_THP_SDA: ");
+	Serial.println(CONFIG_FIRST_THP_SDA);
+	Serial.print("Loaded CONFIG_FIRST_THP_SCL: ");
+    Serial.println(CONFIG_FIRST_THP_SCL);
+
+	Serial.print("Loaded CONFIG_SECOND_THP_SDA: ");
+	Serial.println(CONFIG_SECOND_THP_SDA);
+	Serial.print("Loaded CONFIG_SECOND_THP_SCL: ");
+    Serial.println(CONFIG_SECOND_THP_SCL);
+
+	Serial.print("Loaded CONFIG_DUST_TX: ");
+	Serial.println(CONFIG_DUST_TX);
+	Serial.print("Loaded CONFIG_DUST_RX: ");
+    Serial.println(CONFIG_DUST_RX);
+
+    Serial.print("Loaded DUST_TIME: ");
+    Serial.println(DUST_TIME);
+    Serial.print("Loaded NUMBEROFMEASUREMENTS: ");
+    Serial.println(NUMBEROFMEASUREMENTS);
+
+	Serial.print("Loaded LUFTDATEN_ON: ");
+	Serial.println(LUFTDATEN_ON);
+	Serial.print("Loaded SMOGLIST_ON: ");
+	Serial.println(SMOGLIST_ON);
+
+    Serial.print("Loaded AIRMONITOR_ON: ");
+    Serial.println(AIRMONITOR_ON);
+    Serial.print("Loaded AIRMONITOR_GRAPH_ON: ");
+    Serial.println(AIRMONITOR_GRAPH_ON);
+    Serial.print("Loaded AIRMONITOR_API_KEY: ");
+    Serial.println(AIRMONITOR_API_KEY);	
+    Serial.print("Loaded LATITUDE: ");
+    Serial.println(LATITUDE);
+    Serial.print("Loaded LONGITUDE: ");
+    Serial.println(LONGITUDE);
+    Serial.print("Loaded EMAIL: ");
+    Serial.println(EMAIL);
+    Serial.print("Loaded MYALTITUDE: ");
+    Serial.println(MYALTITUDE);
+
+    Serial.print("Loaded THINGSPEAK_ON: ");
+    Serial.println(THINGSPEAK_ON);
+    Serial.print("Loaded THINGSPEAK_GRAPH_ON: ");
+    Serial.println(THINGSPEAK_GRAPH_ON);
+    Serial.print("Loaded THINGSPEAK_API_KEY: ");
+    Serial.println(THINGSPEAK_API_KEY);
+    Serial.print("Loaded THINGSPEAK_CHANNEL_ID: ");
+    Serial.println(THINGSPEAK_CHANNEL_ID);
+    Serial.print("Loaded THINGSPEAK_READ_API_KEY: ");
+    Serial.println(THINGSPEAK_READ_API_KEY);
+
+    Serial.print("Loaded INFLUXDB_ON: ");
+    Serial.println(INFLUXDB_ON);
+    Serial.print("Loaded INFLUXDB_VERSION: ");
+    Serial.println(INFLUXDB_VERSION);
+    Serial.print("Loaded INFLUXDB_HOST: ");
+    Serial.println(INFLUXDB_HOST);
+    Serial.print("Loaded INFLUXDB_PORT: ");
+    Serial.println(INFLUXDB_PORT);
+    Serial.print("Loaded INFLUXDB_DATABASE: ");
+    Serial.println(INFLUXDB_DATABASE);
+    Serial.print("Loaded INFLUXDB_USER: ");
+    Serial.println(INFLUXDB_USER);
+    Serial.print("Loaded INFLUXDB_PASSWORD: ");
+    Serial.println(INFLUXDB_PASSWORD);
+    Serial.print("Loaded INFLUXDB_ORG: ");
+    Serial.println(INFLUXDB_ORG);
+    Serial.print("Loaded INFLUXDB_BUCKET: ");
+    Serial.println(INFLUXDB_BUCKET);
+    Serial.print("Loaded INFLUXDB_TOKEN: ");
+    Serial.println(INFLUXDB_TOKEN);
+
+    Serial.print("Loaded MQTT_ON: ");
+    Serial.println(MQTT_ON);
+    Serial.print("Loaded MQTT_HOST: ");
+    Serial.println(MQTT_HOST);
+    Serial.print("Loaded MQTT_PORT: ");
+    Serial.println(MQTT_PORT);
+    Serial.print("Loaded MQTT_USER: ");
+    Serial.println(MQTT_USER);
+    Serial.print("Loaded MQTT_PASSWORD: ");
+    Serial.println(MQTT_PASSWORD);
+
+    Serial.print("Loaded MQTT_IP_IN_TOPIC: ");
+    Serial.println(MQTT_IP_IN_TOPIC);
+    Serial.print("Loaded MQTT_DEVICENAME_IN_TOPIC: ");
+    Serial.println(MQTT_DEVICENAME_IN_TOPIC);
+    Serial.print("Loaded MQTT_SLASH_AT_THE_BEGINNING: ");
+    Serial.println(MQTT_SLASH_AT_THE_BEGINNING);
+    Serial.print("Loaded MQTT_SLASH_AT_THE_END: ");
+    Serial.println(MQTT_SLASH_AT_THE_END);	
+
+    Serial.print("Loaded MQTT_TOPIC_TEMP: ");
+    Serial.println(MQTT_TOPIC_TEMP);
+    Serial.print("Loaded MQTT_TOPIC_HUMI: ");
+    Serial.println(MQTT_TOPIC_HUMI);
+    Serial.print("Loaded MQTT_TOPIC_PRESS: ");
+    Serial.println(MQTT_TOPIC_PRESS);
+    Serial.print("Loaded MQTT_TOPIC_PM1: ");
+    Serial.println(MQTT_TOPIC_PM1);
+    Serial.print("Loaded MQTT_TOPIC_PM25: ");
+    Serial.println(MQTT_TOPIC_PM25);
+    Serial.print("Loaded MQTT_TOPIC_PM10: ");
+    Serial.println(MQTT_TOPIC_PM10);
+    Serial.print("Loaded MQTT_TOPIC_AIRQUALITY: ");
+    Serial.println(MQTT_TOPIC_AIRQUALITY);
+
+    Serial.print("Loaded AQI_ECO_ON: ");
+    Serial.println(AQI_ECO_ON);
+    Serial.print("Loaded AQI_ECO_HOST: ");
+    Serial.println(AQI_ECO_HOST);
+    Serial.print("Loaded AQI_ECO_PATH: ");
+    Serial.println(AQI_ECO_PATH);
+
+	Serial.print("Loaded SENDING_FREQUENCY: ");
+    Serial.println(SENDING_FREQUENCY);
+	Serial.print("Loaded SENDING_DB_FREQUENCY: ");
+    Serial.println(SENDING_DB_FREQUENCY);
+	Serial.print("Loaded DEEPSLEEP_ON: ");
+    Serial.println(DEEPSLEEP_ON);
+
+    Serial.print("Loaded DEBUG: ");
+    Serial.println(DEBUG);
+    Serial.print("Loaded AUTOUPDATE_ON: ");
+    Serial.println(AUTOUPDATE_ON);
+
+    Serial.print("Loaded CONFIG_AUTH: ");
+    Serial.println(CONFIG_AUTH);
+    Serial.print("Loaded CONFIG_USERNAME: ");
+    Serial.println(CONFIG_USERNAME);
+    Serial.print("Loaded CONFIG_PASSWORD: ");
+    Serial.println(CONFIG_PASSWORD);
+
+    Serial.print("Loaded MODEL: ");
+    Serial.println(MODEL);
+
+    Serial.print("Loaded HOMEKIT_SUPPORT: ");
+    Serial.println(HOMEKIT_SUPPORT);
+
+    Serial.print("Loaded PMSENSORVERSION: ");
+    Serial.println(PMSENSORVERSION);
+
+    Serial.print("Loaded SOFTWAREVERSION: ");
+    Serial.println(SOFTWAREVERSION);
+
+	Serial.println("\n");
+  }
+  return true;
+}
+#endif
+	
 bool saveConfig() {
 	/*
 	if (DEBUG) {
@@ -677,13 +994,21 @@ bool saveConfig() {
 #endif
 
   if (!configFile) {
+#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("Failed to open config file for writing"));
+#elif defined ARDUINO_ARCH_ESP32
+    Serial.println(("Failed to open config file for writing"));
+#endif
     return false;
   }
 
   serializeJson(json, configFile);
   if (DEBUG) {
+#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("config saved"));
+#elif defined ARDUINO_ARCH_ESP32
+    Serial.println(("config saved"));
+#endif
   }
   return true;
 }
@@ -693,20 +1018,21 @@ void fs_setup() {
 	delay(10);
 #endif
 
-  Serial.println(F("Mounting FS..."));
-
 #ifdef ARDUINO_ARCH_ESP8266
+  Serial.println(F("Mounting FS..."));
   if (!SPIFFS.begin()) {
     Serial.println(F("Failed to mount file system"));
     return;
   }
 #elif defined ARDUINO_ARCH_ESP32
+  Serial.println(("Mounting FS..."));
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
-    Serial.println(F("SPIFFS Mount Failed"));
+    Serial.println(("SPIFFS Mount Failed"));
     return;
   }
 #endif
 
+#ifdef ARDUINO_ARCH_ESP8266
   if (!loadConfig()) {
     Serial.println(F("Failed to load config"));
     Serial.println(F("Saving the current config..."));
@@ -714,6 +1040,16 @@ void fs_setup() {
   } else {
     Serial.println(F("Config loaded"));
   }
+#elif defined ARDUINO_ARCH_ESP32
+  if (!loadConfig()) {
+    Serial.println(("Failed to load config"));
+    Serial.println(("Saving the current config..."));
+    saveConfig();
+  } else {
+    Serial.println(("Config loaded"));
+  }
+#endif
+  
 
 }
 

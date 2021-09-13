@@ -1,3 +1,5 @@
+//#pragma once
+	
 #ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266httpUpdate.h>
 #elif defined ARDUINO_ARCH_ESP32
@@ -13,7 +15,7 @@
 // const char* www_realm = "Custom Auth Realm";
 // String authFailResponse = "<meta http-equiv='refresh' content='0; url=/' /> Authentication Failed! <p><a href='/'>Redirect</a></p>";
 
-String handle_root_processor(const String& var)
+static String handle_root_processor(const String& var)
 {
   // Serial.println(F("var: ") + var);
   String message;
@@ -260,7 +262,7 @@ String handle_root_processor(const String& var)
 }
 
 //void handle_root() {
-void handle_root(AsyncWebServerRequest *request) {
+static void handle_root(AsyncWebServerRequest *request) {
   if (DEBUG) {
     Serial.print(F("sizeof(WEB_ROOT_PAGE_ALL): "));
     Serial.println(sizeof(WEB_ROOT_PAGE_ALL)); // sizeof(WEB_ROOT_PAGE_ALL): ~2255
@@ -270,7 +272,7 @@ void handle_root(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", WEB_ROOT_PAGE_ALL, handle_root_processor);
 }
 
-String _addOption(const String &value, const String &label, const String &srslyValue) {
+static String _addOption(const String &value, const String &label, const String &srslyValue) {
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
   if (value == srslyValue) {
@@ -282,7 +284,7 @@ String _addOption(const String &value, const String &label, const String &srslyV
   return option;
 }
 
-String _add_FIRST_THP_Option(const String &value, const String &label, const String &srslyValue) {
+static String _add_FIRST_THP_Option(const String &value, const String &label, const String &srslyValue) {
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
 
@@ -312,7 +314,7 @@ String _add_FIRST_THP_Option(const String &value, const String &label, const Str
   return option;
 }
 
-String _add_SECOND_THP_Option(const String &value, const String &label, const String &srslyValue) {
+static String _add_SECOND_THP_Option(const String &value, const String &label, const String &srslyValue) {
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
 
@@ -342,7 +344,7 @@ String _add_SECOND_THP_Option(const String &value, const String &label, const St
   return option;
 }
 
-String _add_DUST_Option(const String &value, const String &label, const String &srslyValue) {
+static String _add_DUST_Option(const String &value, const String &label, const String &srslyValue) {
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
 
@@ -372,17 +374,17 @@ String _add_DUST_Option(const String &value, const String &label, const String &
   return option;
 }
 
-String _addBoolSelect(const String &key, const bool &value) {
+static String _addBoolSelect(const String &key, const bool &value) {
   String selectValue = value ? "yes" : "no";
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
-  input.replace(F("{key}"), key);
+  input.replace("{key}", key);
   input += _addOption("yes", (TEXT_YES), selectValue);
   input += _addOption("no", (TEXT_NO), selectValue);
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
   return input;
 }
 
-String _addModelSelect(const String &key, const String &value) {
+static String _addModelSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   input += _addOption("red", (TEXT_WITHOUTCALIBRATION), value);
@@ -402,7 +404,7 @@ String _addModelSelect(const String &key, const String &value) {
   return input;
 }
 
-String _addTHP_MODELSelect(const String &key, const String &value) {
+static String _addTHP_MODELSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   input += _addOption(F("BME280"), F("BME280"), value);
@@ -421,7 +423,7 @@ String _addTHP_MODELSelect(const String &key, const String &value) {
   return input;
 }
 
-String _addDUST_MODELSelect(const String &key, const String &value) {
+static String _addDUST_MODELSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   input += _addOption(F("PMS7003"), F("PMS5003/7003"), value);
@@ -434,7 +436,7 @@ String _addDUST_MODELSelect(const String &key, const String &value) {
   return input;
 }
 
-String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
+static String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   if (!strcmp(THP_MODEL, "DS18B20")) {
@@ -457,7 +459,7 @@ String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
   return input;
 }
 
-String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
+static String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   input += _add_SECOND_THP_Option(F("D1"), F("D1/GPIO05"), value);
@@ -476,7 +478,7 @@ String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
   return input;
 }
 
-String _add_DUST_TX_RX_Select(const String &key, const String &value) {
+static String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   if (!strcmp(DUST_MODEL, "SPS30")) {
@@ -500,7 +502,7 @@ String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   return input;
 }
 
-String _addINFLUXDB_VERSIONSelect(const String &key, const String &value) {
+static String _addINFLUXDB_VERSIONSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   input += _addOption(F("1"), F("1.x"), value);
@@ -509,7 +511,7 @@ String _addINFLUXDB_VERSIONSelect(const String &key, const String &value) {
   return input;
 }
 
-String _addLanguageSelect(const String &key, const String &value) {
+static String _addLanguageSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   input += _addOption(F("polish"), (TEXT_INTL_PL), value);
@@ -518,14 +520,14 @@ String _addLanguageSelect(const String &key, const String &value) {
   return input;
 }
 
-String _escapeString (const String &value) {
+static String _escapeString (const String &value) {
   String trimmed = value;
   trimmed.trim();
   trimmed.replace(F("'"), F("&#39;"));
   return trimmed;
 }
 
-String _addTextInput(const String &key, const String &value, const String &postfix = "") {
+static String _addTextInput(const String &key, const String &value, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_TEXTIMPUT);
   input.replace(F("{key}"), key);
   input.replace(F("{value}"), _escapeString(value));
@@ -533,7 +535,7 @@ String _addTextInput(const String &key, const String &value, const String &postf
   return input;
 }
 
-String _addMQTTTextInput(const String &key, const String &value, const String &postfix = "") {
+static String _addMQTTTextInput(const String &key, const String &value, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_MQTT_TEXTIMPUT);
   input.replace(F("{key}"), key);
   input.replace(F("{value}"), _escapeString(value));
@@ -541,7 +543,7 @@ String _addMQTTTextInput(const String &key, const String &value, const String &p
   return input;
 }
 
-String _addPasswdInput(const String &key, const String &value, const String &postfix = "") {
+static String _addPasswdInput(const String &key, const String &value, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_PASSWDINPUT);
   input.replace(F("{key}"), key);
   input.replace(F("{value}"), _escapeString(value));
@@ -549,7 +551,7 @@ String _addPasswdInput(const String &key, const String &value, const String &pos
   return input;
 }
 
-String _addIntInput(const String &key, const int &value, const String &postfix = "") {
+static String _addIntInput(const String &key, const int &value, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_INTINPUT);
   input.replace(F("{key}"), key);
   input.replace(F("{value}"), String(value));
@@ -557,7 +559,7 @@ String _addIntInput(const String &key, const int &value, const String &postfix =
   return input;
 }
 
-String _addFloatInput(const String &key, const double &value, const int &precision = 6, const String &postfix = "") {
+static String _addFloatInput(const String &key, const double &value, const int &precision = 6, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_FLOATINPUT);
   input.replace(F("{key}"), key);
   input.replace(F("{value}"), String(value, precision));
@@ -565,43 +567,43 @@ String _addFloatInput(const String &key, const double &value, const int &precisi
   return input;
 }
 
-String _addSubmitDevice() {
+static String _addSubmitDevice() {
   String submitDevice = FPSTR(WEB_CONFIG_PAGE_SUBMIT_DEVICE_BUTTON);
   submitDevice.replace(F("{TEXT_SAVE}"), (TEXT_SAVE));
   return submitDevice;
 }
 
-String _addSubmitServices() {
+static String _addSubmitServices() {
   String submitServices = FPSTR(WEB_CONFIG_PAGE_SUBMIT_SERVICES_BUTTON);
   submitServices.replace(F("{TEXT_SAVE}"), (TEXT_SAVE));
   return submitServices;
 }
 
-String _addSubmitAdvMQTT() {
+static String _addSubmitAdvMQTT() {
   String submitAdvMQTT = FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_SUBMIT_SERVICES_BUTTON);
   submitAdvMQTT.replace(F("{TEXT_SAVE}"), (TEXT_SAVE));
   return submitAdvMQTT;
 }
 
-String _addWiFiErase() {
+static String _addWiFiErase() {
   String WiFiErase = FPSTR(WEB_CONFIG_PAGE_WIFIERASE);
   WiFiErase.replace(F("{TEXT_ERASEWIFICONFIG}"), (TEXT_ERASEWIFICONFIG));
   return WiFiErase;
 }
 
-String _addRestoreConfig() {
+static String _addRestoreConfig() {
   String RestoreConfig = FPSTR(WEB_CONFIG_PAGE_RESTORECONFIG);
   RestoreConfig.replace(F("{TEXT_RESTORESETTINGS}"), (TEXT_RESTORESETTINGS));
   return RestoreConfig;
 }
 
-String _add_homekit_reset() {
+static String _add_homekit_reset() {
   String homekit_reset = FPSTR(WEB_CONFIG_PAGE_HOMEKIT_RESET);
   homekit_reset.replace(F("{TEXT_PAGE_HOMEKIT_RESET}"), (TEXT_PAGE_HOMEKIT_RESET));
   return homekit_reset;
 }
 
-String handle_config_processor(const String& var)
+static String handle_config_processor(const String& var)
 {
   // Serial.println(F("var: ") + var);
   String message;
@@ -669,7 +671,7 @@ String handle_config_processor(const String& var)
 }
 
 //void handle_config() {
-void handle_config(AsyncWebServerRequest *request) {
+static void handle_config(AsyncWebServerRequest *request) {
   if (DEBUG) {
     Serial.print(F("sizeof(WEB_CONFIG_PAGE_ALL): "));
     Serial.println(sizeof(WEB_CONFIG_PAGE_ALL)); // sizeof(WEB_CONFIG_PAGE_ALL): ~3282
@@ -679,9 +681,9 @@ void handle_config(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", WEB_CONFIG_PAGE_ALL, handle_config_processor);
 }
 
-String handle_config_device_processor(const String& var)
+static String handle_config_device_processor(const String& var)
 {
-  //Serial.println(F("var: ") + var);
+  // Serial.println(F("var: ") + var);
   String message;
   message = "";
 
@@ -820,9 +822,8 @@ String handle_config_device_processor(const String& var)
     message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SCL"), CONFIG_SECOND_THP_SCL));
   }
 
-
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_DUST_PIN")) {
-    if (strcmp(DUST_MODEL, "Non")) {
+	 if (strcmp(DUST_MODEL, "Non")) {
       message += String(WEB_CONFIG_DEVICE_PAGE_DUST_PINS);
     } else {
       message += "";
@@ -969,14 +970,14 @@ String handle_config_device_processor(const String& var)
   if (var == F("{SOFTWAREVERSION}")) {
     message += String(SOFTWAREVERSION);
   }
-
   if (var == F("{TEXT_AUTOUPDATEON}")) {
     message += String(TEXT_AUTOUPDATEON);
   }
+  
   if (var == F("{AUTOUPDATEON}")) {
-    message += (_addBoolSelect(F("AUTOUPDATE_ON"), AUTOUPDATE_ON));
+    message += (_addBoolSelect(F("AUTOUPDATE_ON"), (AUTOUPDATE_ON)));
   }
-
+  
 #ifdef ARDUINO_ARCH_ESP8266
   if (var == F("{WEB_CONFIG_DEVICE_HOMEKIT}")) {
     message += ("");
@@ -1025,7 +1026,7 @@ String handle_config_device_processor(const String& var)
 }
 
 //void _handle_config_device(bool is_success) {
-void handle_config_device(AsyncWebServerRequest *request) {
+static void handle_config_device(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -1040,7 +1041,7 @@ void handle_config_device(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", WEB_CONFIG_DEVICE_PAGE_ALL, handle_config_device_processor);
 }
 
-String handle_config_services_processor(const String& var)
+static String handle_config_services_processor(const String& var)
 {
   //Serial.println(F("var: ") + var);
   String message;
@@ -1133,7 +1134,7 @@ String handle_config_services_processor(const String& var)
 #ifdef ARDUINO_ARCH_ESP8266
     message += (F("smogomierz-") + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
-    message += (F("smogomierz-") + String((uint32_t)(ESP.getEfuseMac())));
+    message += (("smogomierz-") + String((uint32_t)(ESP.getEfuseMac())));
 #endif
   }
 
@@ -1252,10 +1253,10 @@ String handle_config_services_processor(const String& var)
     message += (String(ESP.getChipId()));
   }
 #elif defined ARDUINO_ARCH_ESP32
-  if (var == F("{ESP_MODEL}")) {
-    message += F("ESP32");
+  if (var == ("{ESP_MODEL}")) {
+    message += ("ESP32");
   }
-  if (var == F("{AQI_ECO_ChipID}")) {
+  if (var == ("{AQI_ECO_ChipID}")) {
     message += (String((uint32_t)(ESP.getEfuseMac())));
   }
 #endif
@@ -1500,7 +1501,7 @@ String handle_config_services_processor(const String& var)
 }
 
 //void _handle_config_services(bool is_success) {
-void handle_config_services(AsyncWebServerRequest *request) {
+static void handle_config_services(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -1515,9 +1516,9 @@ void handle_config_services(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", WEB_CONFIG_SERVICES_PAGE_ALL, handle_config_services_processor);
 }
 
-String handle_adv_mqtt_config_processor(const String& var)
+static String handle_adv_mqtt_config_processor(const String& var)
 {
-  //Serial.println(F("var: ") + var);
+  // Serial.println(F("var: ") + var);
   String message;
   message = "";
 
@@ -1614,17 +1615,21 @@ String handle_adv_mqtt_config_processor(const String& var)
     message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_END"), MQTT_SLASH_AT_THE_END));
   }
 
-  if (var == F("{WEB_CONFIG_ADV_MQTT_PAGE_CONFIG")) {
-    if (!MQTT_SLASH_AT_THE_BEGINNING and MQTT_SLASH_AT_THE_END) {
+ if(MQTT_ON){
+  if (var == F("{WEB_CONFIG_ADV_MQTT_PAGE_CONFIG}%")) {
+	  /*
+    if (!MQTT_SLASH_AT_THE_BEGINNING && MQTT_SLASH_AT_THE_END) {
       message += String(WEB_CONFIG_ADV_MQTT_PAGE_CONFIG1);
-    } else if (!MQTT_SLASH_AT_THE_END and MQTT_SLASH_AT_THE_BEGINNING) {
+    } else if (!MQTT_SLASH_AT_THE_END && MQTT_SLASH_AT_THE_BEGINNING) {
       message += String(WEB_CONFIG_ADV_MQTT_PAGE_CONFIG2);
-    } else if (!MQTT_SLASH_AT_THE_END and !MQTT_SLASH_AT_THE_BEGINNING) {
+    } else if (!MQTT_SLASH_AT_THE_END && !MQTT_SLASH_AT_THE_BEGINNING) {
       message += String(WEB_CONFIG_ADV_MQTT_PAGE_CONFIG3);
     } else {
       message += String(WEB_CONFIG_ADV_MQTT_PAGE_CONFIG);
     }
+	  */
   }
+}
 
   if (strcmp(THP_MODEL, "Non")) {
     // takeTHPMeasurements();
@@ -1740,8 +1745,7 @@ String handle_adv_mqtt_config_processor(const String& var)
   message = "";
 }
 
-//#ifdef ARDUINO_ARCH_ESP32
-void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
+static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -1752,17 +1756,10 @@ void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     Serial.println(sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL)); // sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL): 2998
     Serial.print(F("\n"));
   }
-
+  /*
   request->send_P(200, "text/html", WEB_CONFIG_ADV_MQTT_PAGE_ALL, handle_adv_mqtt_config_processor);
 }
-//#endif
-/*
-  #ifdef ARDUINO_ARCH_ESP8266
-  void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
-      return request->requestAuthentication();
-  }
+*/
   String message;
   message = "";
 
@@ -2115,14 +2112,13 @@ void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   }
   request->send(200, "text/html", message);
   }
-  #endif
-*/
+ 
 
-bool _parseAsBool(String value) {
+static bool _parseAsBool(String value) {
   return value == "yes";
 }
 
-void _set_language() {
+static void _set_language() {
   if (!strcmp(LANGUAGE, "english")) {
     SELECTED_LANGUAGE = 1;
   } else if (!strcmp(LANGUAGE, "polish")) {
@@ -2132,22 +2128,22 @@ void _set_language() {
   }
 }
 
-void _parseAsCString(char* dest, String value, int CStringSize = 255) {
+static void _parseAsCString(char* dest, String value, int CStringSize = 255) {
   strncpy(dest, value.c_str(), CStringSize);
 }
 
 /*
-  void handle_config_device() {
+  static void handle_config_device() {
   _handle_config_device(false);
   }
 
-  void handle_config_services() {
+  static void handle_config_services() {
   _handle_config_services(false);
   }
 */
 
 //void handle_config_device_post() {
-void handle_config_device_save(AsyncWebServerRequest *request) {
+static void handle_config_device_save(AsyncWebServerRequest *request) {
   unsigned char need_update = 0;
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
   /*
@@ -2181,14 +2177,14 @@ void handle_config_device_save(AsyncWebServerRequest *request) {
   }
 
   if (request->hasParam("LANGUAGE")) {
-    _parseAsCString(LANGUAGE, request->getParam("LANGUAGE")->value(), 32);
+    _parseAsCString(LANGUAGE, request->getParam("LANGUAGE")->value(), 12);
     _set_language();
   }
 
   char oldTHP_MODEL[32];
   strcpy(oldTHP_MODEL, THP_MODEL);
   if (request->hasParam("THP_MODEL")) {
-    _parseAsCString(THP_MODEL, request->getParam("THP_MODEL")->value(), 32);
+    _parseAsCString(THP_MODEL, request->getParam("THP_MODEL")->value(), 12);
   }
   if (strcmp(THP_MODEL, oldTHP_MODEL) and !strcmp(THP_MODEL, "BME280-SparkFun")) {
     need_update = 1;
@@ -2197,7 +2193,7 @@ void handle_config_device_save(AsyncWebServerRequest *request) {
   char oldDUST_MODEL[32];
   strcpy(oldDUST_MODEL, DUST_MODEL);
   if (request->hasParam("DUST_MODEL")) {
-    _parseAsCString(DUST_MODEL, request->getParam("DUST_MODEL")->value(), 32);
+    _parseAsCString(DUST_MODEL, request->getParam("DUST_MODEL")->value(), 12);
   }
 
   // DUST Sensor config - START
@@ -2285,7 +2281,7 @@ void handle_config_device_save(AsyncWebServerRequest *request) {
   }
 
   if (request->hasParam("CONFIG_PASSWORD")) {
-    _parseAsCString(CONFIG_PASSWORD, request->getParam("CONFIG_PASSWORD")->value(), 256);
+    _parseAsCString(CONFIG_PASSWORD, request->getParam("CONFIG_PASSWORD")->value(), 128);
   }
 
   if (request->hasParam("DEBUG")) {
@@ -2293,7 +2289,7 @@ void handle_config_device_save(AsyncWebServerRequest *request) {
   }
 
   if (request->hasParam("MODEL")) {
-    _parseAsCString(MODEL, request->getParam("MODEL")->value(), 32);
+    _parseAsCString(MODEL, request->getParam("MODEL")->value(), 12);
   }
 
   if (request->hasParam("AUTOUPDATE_ON")) {
@@ -2351,7 +2347,7 @@ void handle_config_device_save(AsyncWebServerRequest *request) {
 }
 
 //void handle_config_services_post() {
-void handle_config_services_save(AsyncWebServerRequest *request) {
+static void handle_config_services_save(AsyncWebServerRequest *request) {
   /*
     if (DEBUG) {
     Serial.println(F("POST CONFIG START!!"));
@@ -2524,11 +2520,11 @@ static void handle_update_progress_cb(AsyncWebServerRequest *request, String fil
   }
 }
 
-void handle_update_done(AsyncWebServerRequest *request) {
+static void handle_update_done(AsyncWebServerRequest *request) {
   request->send(200);
 }
 
-String handle_update_processor(const String& var)
+static String handle_update_processor(const String& var)
 {
   //Serial.println(F("var: ") + var);
   String message;
@@ -2681,7 +2677,7 @@ String handle_update_processor(const String& var)
 }
 
 //void handle_update() {            //Handler for the handle_update
-void handle_update(AsyncWebServerRequest *request) {
+static void handle_update(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -2697,7 +2693,7 @@ void handle_update(AsyncWebServerRequest *request) {
 }
 
 //void erase_wifi() {
-void erase_wifi(AsyncWebServerRequest *request) {
+static void erase_wifi(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -2716,7 +2712,7 @@ void erase_wifi(AsyncWebServerRequest *request) {
 }
 
 //void restore_config() {
-void restore_config(AsyncWebServerRequest *request) {
+static void restore_config(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -2731,7 +2727,7 @@ void restore_config(AsyncWebServerRequest *request) {
 }
 
 //void fwupdate() {
-void fwupdate(AsyncWebServerRequest *request) {
+static void fwupdate(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -2744,7 +2740,7 @@ void fwupdate(AsyncWebServerRequest *request) {
   delay(1000);
 }
 
-void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
+static void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
   if (DEBUG) {
     Serial.println(F("handle_adv_mqtt_config_save!"));
   }
@@ -2830,7 +2826,7 @@ void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
 }
 
 //void autoupdate_on() {
-void autoupdate_on(AsyncWebServerRequest *request) {
+static void autoupdate_on(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -2845,7 +2841,7 @@ void autoupdate_on(AsyncWebServerRequest *request) {
 }
 
 //void handle_api() {
-void handle_api(AsyncWebServerRequest *request) {
+static void handle_api(AsyncWebServerRequest *request) {
   String message;
   StaticJsonDocument<800> jsonBuffer;
   JsonObject json = jsonBuffer.to<JsonObject>();
@@ -2903,7 +2899,7 @@ void handle_api(AsyncWebServerRequest *request) {
   request->send(200, "text/json", message);
 }
 
-void homekit_reset(AsyncWebServerRequest *request) {
+static void homekit_reset(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -2921,7 +2917,7 @@ void homekit_reset(AsyncWebServerRequest *request) {
   //ESP.restart();
 }
 
-void homekit_on(AsyncWebServerRequest *request) {
+static void homekit_on(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -2938,7 +2934,7 @@ void homekit_on(AsyncWebServerRequest *request) {
   ESP.restart();
 }
 
-void homekit_off(AsyncWebServerRequest *request) {
+static void homekit_off(AsyncWebServerRequest *request) {
   if (CONFIG_AUTH == true) {
     if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
       return request->requestAuthentication();
@@ -2955,7 +2951,7 @@ void homekit_off(AsyncWebServerRequest *request) {
   ESP.restart();
 }
 /*
-  void logout(AsyncWebServerRequest *request) {
+ static void logout(AsyncWebServerRequest *request) {
     if (CONFIG_AUTH == true) {
         if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
             return request->requestAuthentication();

@@ -37,9 +37,7 @@ const char WEB_CONFIG_ADV_MQTT_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{L
 								<b>%{TEXT_MQTT_DEVICENAME_IN_TOPIC}%: </b>%{MQTT_DEVICENAME_IN_TOPIC}%
 								<b>%{TEXT_MQTT_SLASH_AT_THE_BEGINNING}%: </b>%{MQTT_SLASH_AT_THE_BEGINNING}%
 								<b>%{TEXT_MQTT_SLASH_AT_THE_END}%: </b>%{MQTT_SLASH_AT_THE_END}%
-								<br>
-								%{WEB_CONFIG_ADV_MQTT_PAGE_CONFIG}%			
-								<br>
+								<br>%{WEB_CONFIG_ADV_MQTT_PAGE_CONFIG}%<br>
 								<hr><center><br>
 								%{RestoreConfigButton}%
 								<br><br></center><hr><br><center>

@@ -5,9 +5,9 @@
 		%{SMOGLY_LOGO_URL}%
 
 */
-const char WEB_UPDATE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
+static const char WEB_UPDATE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15&#37;'>
-	<a class='navbar-brand' href='/'>Smogly</a>
+	%{SMOGLY_LOGO_URL}%
 	  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarColor02' aria-controls='navbarColor02' aria-expanded='false' aria-label='Toggle navigation'>
 	  <span class='navbar-toggler-icon'></span>
 	  </button>
@@ -52,11 +52,11 @@ const char WEB_UPDATE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%
 					</body></html>)rawliteral";
 
 					
-const char WEB_UPDATE_INFO_WARNING[] = R"rawliteral(<center><h2><b>%{TEXT_FWUPDATEAVALIBLE}%</b></h2>%{MANUALUPDATEBUTTON}%	%{FWUPDATEBUTTON}%	%{AUTOUPDATEONBUTTON}%<br><br>%{TEXT_AUTOUPDATEWARNING}%<br></center>)rawliteral";
+static const char WEB_UPDATE_INFO_WARNING[] = R"rawliteral(<center><h2><b>%{TEXT_FWUPDATEAVALIBLE}%</b></h2>%{MANUALUPDATEBUTTON}%	%{FWUPDATEBUTTON}%	%{AUTOUPDATEONBUTTON}%<br><br>%{TEXT_AUTOUPDATEWARNING}%<br></center>)rawliteral";
 
-const char WEB_UPDATE_BUTTON_FWUPDATE[] = R"rawliteral(<a href='/fwupdate' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_FWUPDATEBUTTON}%</a>)rawliteral";
+static const char WEB_UPDATE_BUTTON_FWUPDATE[] = R"rawliteral(<a href='/fwupdate' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_FWUPDATEBUTTON}%</a>)rawliteral";
 
-const char WEB_UPDATE_BUTTON_AUTOUPDATEON[] = R"rawliteral(<a href='/autoupdateon' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_AUTOUPDATEONBUTTON}%</a>)rawliteral";
+static const char WEB_UPDATE_BUTTON_AUTOUPDATEON[] = R"rawliteral(<a href='/autoupdateon' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_AUTOUPDATEONBUTTON}%</a>)rawliteral";
 
 	
 	

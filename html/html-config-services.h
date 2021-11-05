@@ -5,9 +5,9 @@
 		%{SMOGLY_LOGO_URL}%
 
 */
-const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
+static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15&#37;'>
-	<a class='navbar-brand' href='/'>Smogly</a>
+	%{SMOGLY_LOGO_URL}%
 	  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarColor02' aria-controls='navbarColor02' aria-expanded='false' aria-label='Toggle navigation'>
 	  <span class='navbar-toggler-icon'></span>
 	  </button>
@@ -79,14 +79,14 @@ const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{L
 			</body></html>
 	)rawliteral";
 
-const char WEB_CONFIG_SERVICES_THP_SENSOR_PIN[] = R"rawliteral(<br><b>%{THPSENSOR}%</b> Sensor PIN: <b>%{THPXPIN}%</b>)rawliteral";
-const char WEB_CONFIG_SERVICES_DUST_MODEL_SENSOR_PIN[] = R"rawliteral(<br><b>%{DUSTSENSOR}%</b> Sensor PIN: <b>%{DUSTXPIN}%</b>)rawliteral";
+static const char WEB_CONFIG_SERVICES_THP_SENSOR_PIN[] = R"rawliteral(<br><b>%{THPSENSOR}%</b> Sensor PIN: <b>%{THPXPIN}%</b>)rawliteral";
+static const char WEB_CONFIG_SERVICES_DUST_MODEL_SENSOR_PIN[] = R"rawliteral(<br><b>%{DUSTSENSOR}%</b> Sensor PIN: <b>%{DUSTXPIN}%</b>)rawliteral";
 
-const char WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2[] = R"rawliteral(<b>{TEXT_INFLUXDBORG}: </b>{INFLUXDB_ORG}
+static const char WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2[] = R"rawliteral(<b>{TEXT_INFLUXDBORG}: </b>{INFLUXDB_ORG}
 	<b>{TEXT_INFLUXDBBUCKET}: </b>{INFLUXDB_BUCKET}
 	<b>{TEXT_INFLUXDBTOKEN}: </b>{INFLUXDB_TOKEN})rawliteral";
 
-const char ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON[]  = "<a href='/config_adv_mqtt' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_CONFIG_ADV_MQTT}</a>";
+static const char ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON[]  = "<a href='/config_adv_mqtt' class='btn btn-outline-primary btn-sm' role='button'>{TEXT_CONFIG_ADV_MQTT}</a>";
 
 /*
 	

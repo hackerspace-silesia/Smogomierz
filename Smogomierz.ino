@@ -86,11 +86,11 @@
 
   ASYNC_WEBSERVER_ON + INTL_OLD
 
-  Szkic używa 671413 bajtów (64%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 46772 bajtów (57%) pamięci dynamicznej, pozostawiając 35148 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 695697 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46872 bajtów (57%) pamięci dynamicznej, pozostawiając 35048 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 696337 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 46864 bajtów (57%) pamięci dynamicznej, pozostawiając 35056 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 
   ASYNC_WEBSERVER_ON + INTL_PL
@@ -332,42 +332,42 @@ PMS::DATA data;
 
 // DUST Sensor config - END
 
-char device_name[20];
+static char device_name[20];
 
-unsigned int DUST_interval = 60 * 1000; // 1 minute
+static unsigned int DUST_interval = 60 * 1000; // 1 minute
 unsigned int previous_DUST_Millis = 0;
 
-unsigned int SENDING_FREQUENCY_interval = 60 * 1000; // 1 minute
+static unsigned int SENDING_FREQUENCY_interval = 60 * 1000; // 1 minute
 unsigned int previous_SENDING_FREQUENCY_Millis = 0;
 
-unsigned int SENDING_FREQUENCY_AIRMONITOR_interval = 60 * 1000; // 1 minute
+static unsigned int SENDING_FREQUENCY_AIRMONITOR_interval = 60 * 1000; // 1 minute
 unsigned int previous_SENDING_FREQUENCY_AIRMONITOR_Millis = 0;
 
-unsigned int SENDING_DB_FREQUENCY_interval = 60 * 1000; // 1 minute
+static unsigned int SENDING_DB_FREQUENCY_interval = 60 * 1000; // 1 minute
 unsigned int previous_SENDING_DB_FREQUENCY_Millis = 0;
 
-unsigned short TwoSec_interval = 2 * 1000; // 2 second
+static unsigned short TwoSec_interval = 2 * 1000; // 2 second
 unsigned int previous_2sec_Millis = 0;
 
-unsigned int REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
+static unsigned int REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned int previous_REBOOT_Millis = 0;
 
 // unsigned long time_now_temp = 0;
 
 #ifdef DUSTSENSOR_SPS30
-unsigned short pmMeasurements[10][4];
+static unsigned short pmMeasurements[10][4];
 #else
-unsigned short pmMeasurements[10][3];
+static unsigned short pmMeasurements[10][3];
 #endif
 
-unsigned char iPM = 0;
-unsigned short averagePM1, averagePM25, averagePM4, averagePM10 = 0;
-float currentTemperature, currentHumidity, currentPressure = 0;
+static unsigned char iPM = 0;
+static unsigned short averagePM1, averagePM25, averagePM4, averagePM10 = 0;
+static float currentTemperature, currentHumidity, currentPressure = 0;
 // float currentTemperature_THP1, currentHumidity_THP1, currentPressure_THP1 = 0;
 // float currentTemperature_THP2, currentHumidity_THP2, currentPressure_THP2 = 0;
-float calib = 1;
+static float calib = 1;
 
-bool need_update = false;
+static bool need_update = false;
 char SERVERSOFTWAREVERSION[32] = "";
 char CURRENTSOFTWAREVERSION[32] = "";
 
@@ -1224,7 +1224,7 @@ void setup() {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
       if (AIRMONITOR_ON) {
         if (SENDING_FREQUENCY < 30) {
-          SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * 30;
+          SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * 1; // * 30 ???
         } else {
           SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * SENDING_FREQUENCY;
         }
@@ -1234,7 +1234,14 @@ void setup() {
       SENDING_DB_FREQUENCY_interval = SENDING_DB_FREQUENCY_interval * SENDING_DB_FREQUENCY;
     }
   }
-
+  /*
+    Serial.println("SENDING_FREQUENCY: " + String(SENDING_FREQUENCY));
+    Serial.println("SENDING_FREQUENCY_AIRMONITOR_interval: " + String(SENDING_FREQUENCY_AIRMONITOR_interval));
+    Serial.println("SENDING_FREQUENCY_interval: " + String(SENDING_FREQUENCY_interval));
+    Serial.println("DUST_TIME: " + String(DUST_TIME));
+    Serial.println("SENDING_DB_FREQUENCY: " + String(SENDING_DB_FREQUENCY));
+    Serial.println("");
+  */
   yield();
 
   // TEMP/HUMI/PRESS Sensor seturp - START
@@ -1668,10 +1675,15 @@ void loop() {
   }
 
   if (AIRMONITOR_ON) {
+    // Serial.println("SENDING_FREQUENCY_AIRMONITOR_interval: " + String(SENDING_FREQUENCY_AIRMONITOR_interval));
+    // Serial.println("previous_SENDING_FREQUENCY_AIRMONITOR_Millis: " + String(previous_SENDING_FREQUENCY_AIRMONITOR_Millis));
+
     unsigned int current_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
+    // Serial.println("current_SENDING_FREQUENCY_AIRMONITOR_Millis: " + String(current_SENDING_FREQUENCY_AIRMONITOR_Millis));
+
     if (current_SENDING_FREQUENCY_AIRMONITOR_Millis - previous_SENDING_FREQUENCY_AIRMONITOR_Millis >= SENDING_FREQUENCY_AIRMONITOR_interval) {
       takeTHPMeasurements();
-      Serial.println("SEND DATA TO AIRMONITOR");
+      // Serial.println("SEND DATA TO AIRMONITOR");
       sendDataToExternalServices();
       previous_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
     }

@@ -1,3 +1,5 @@
+#ifdef ARDUINO_ARCH_ESP8266
+
 #include "SdsDustSensorResults.h"
 
 String Result::statusToString() {
@@ -11,3 +13,5 @@ String Result::statusToString() {
     default: return "undefined status";
   }
 }
+
+#endif

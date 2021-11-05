@@ -5,9 +5,9 @@
 		%{SMOGLY_LOGO_URL}%
 
 */
-const char WEB_CONFIG_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
+static const char WEB_CONFIG_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15&#37;'>
-	<a class='navbar-brand' href='/'>Smogly</a>
+	%{SMOGLY_LOGO_URL}%
 	  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarColor02' aria-controls='navbarColor02' aria-expanded='false' aria-label='Toggle navigation'>
 	  <span class='navbar-toggler-icon'></span>
 	  </button>
@@ -62,6 +62,6 @@ const char WEB_CONFIG_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%
 					</body></html>)rawliteral";
 
 					
-const char WEB_CONFIG_DEVICE_PAGE_BUTTON[] = R"rawliteral(<a href='/config_device' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_CONFIG_DEVICE_PAGE}%</a>)rawliteral";
+static const char WEB_CONFIG_DEVICE_PAGE_BUTTON[] = R"rawliteral(<a href='/config_device' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_CONFIG_DEVICE_PAGE}%</a>)rawliteral";
 
-const char WEB_CONFIG_SERVICES_PAGE_BUTTON[] = R"rawliteral(<a href='/config_services' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_CONFIG_SERVICES_PAGE}%</a>)rawliteral";
+static const char WEB_CONFIG_SERVICES_PAGE_BUTTON[] = R"rawliteral(<a href='/config_services' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_CONFIG_SERVICES_PAGE}%</a>)rawliteral";

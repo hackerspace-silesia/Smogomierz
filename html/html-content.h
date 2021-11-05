@@ -2,7 +2,7 @@
 #include <avr/pgmspace.h>
 #endif
 
-const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githack.com/hackerspace-silesia/Smogomierz/master/src/css/smogly.css'>";
+static const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githack.com/hackerspace-silesia/Smogomierz/master/src/css/smogly.css'>";
 // https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/dev/src/css/smogly.css
 // based on bootstrap.min.css - 4.4.1 and Bootswatch v4.4.1
 // https://raw.githack.com
@@ -31,10 +31,10 @@ const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><hea
 </div></nav>
 		)rawliteral";
 
-const char SMOGLY_LOGO_URL[] PROGMEM = "<a class='navbar-brand' href='/'>Smogly</a>";
+static const char SMOGLY_LOGO_URL[] PROGMEM = "<a class='navbar-brand' href='/'>Smogly</a>";
 
 #elif defined ARDUINO_ARCH_ESP32
-const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>
+static const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - {CurrentPageTitle}</title>
 {WEB_PAGE_CSS}
 </head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15%'>
@@ -57,11 +57,12 @@ const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language}'><hea
 </div></nav>
 		)rawliteral";
 
-const char SMOGLY_LOGO_URL[] PROGMEM = "<a class='navbar-brand' href='/'>Smogly</a>";
+static const char SMOGLY_LOGO_URL[] PROGMEM = "<a class='navbar-brand' href='/'><img border='0' width='165' height='40' alt='SmoglyLogo' src='https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/dev/Smogly_Logo/SmoglyLogoTopMenu.png'></a>";
+//"
 #endif
 
 #ifdef ARDUINO_ARCH_ESP8266
-const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+static const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>
@@ -72,7 +73,7 @@ const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='htt
 			</body></html>
 	)rawliteral";
 #elif defined ARDUINO_ARCH_ESP32
-const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+static const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>

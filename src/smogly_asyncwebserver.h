@@ -1138,7 +1138,7 @@ static String handle_config_services_processor(const String& var)
       message += _addIntInput(F("SENDING_FREQUENCY"), SENDING_FREQUENCY, F("{TEXT_SECONDS}"));
       message.replace(F("{TEXT_SECONDS}"), String(TEXT_SECONDS));
     } else {
-      message += _addIntInput(F("SENDING_DB_FREQUENCY"), SENDING_DB_FREQUENCY, F("{TEXT_MINUTES}"));
+      message += _addIntInput(F("SENDING_FREQUENCY"), SENDING_FREQUENCY, F("{TEXT_MINUTES}"));
       message.replace(F("{TEXT_MINUTES}"), String(TEXT_MINUTES));
     }
   }
@@ -2438,7 +2438,7 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
     }
 	*/
 
-	if (request->hasParam("SENDING_FREQUENCY")) {
+  if (request->hasParam("SENDING_FREQUENCY")) {
     SENDING_FREQUENCY = (request->getParam("SENDING_FREQUENCY")->value()).toInt();
   }
 
@@ -2556,7 +2556,7 @@ Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
   
   if (DEBUG) {
     Serial.println(F("POST SERVICES CONFIG END!!"));
-  }
+  }  
     
   saveConfig();
   //delay(250);

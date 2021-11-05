@@ -5,9 +5,9 @@
 		%{SMOGLY_LOGO_URL}%
 
 */
-const char WEB_CONFIG_ADV_MQTT_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
+static const char WEB_CONFIG_ADV_MQTT_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15&#37;'>
-	<a class='navbar-brand' href='/'>Smogly</a>
+	%{SMOGLY_LOGO_URL}%
 	  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarColor02' aria-controls='navbarColor02' aria-expanded='false' aria-label='Toggle navigation'>
 	  <span class='navbar-toggler-icon'></span>
 	  </button>
@@ -54,7 +54,7 @@ const char WEB_CONFIG_ADV_MQTT_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{L
 			</body></html>)rawliteral";
 
 
-const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>%{TEXT_TEMP_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%/%{MQTT_TEMP}%<br />
+static const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>%{TEXT_TEMP_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%/%{MQTT_TEMP}%<br />
 											<b>%{TEXT_HUMI_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_HUMI}%/%{MQTT_HUMI}%<br />
 											<b>%{TEXT_PRESS_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PRESS}%/%{MQTT_PRESS}%<br />
 											<b>%{TEXT_PM1_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM1}%/%{MQTT_PM1}%<br />
@@ -62,7 +62,7 @@ const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG[] PROGMEM = R"rawliteral(<b>%{TEXT_TE
 											<b>%{TEXT_PM10_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM10}%/%{MQTT_PM10}%<br />
 											<b>%{TEXT_AIRQUALITY_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_AIRQUALITY}%/%{MQTT_AIRQUALITY}%<br />)rawliteral";
 				
-const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG1[] PROGMEM = R"rawliteral(<b>%{TEXT_TEMP_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%/%{MQTT_TEMP}%<br />
+static const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG1[] PROGMEM = R"rawliteral(<b>%{TEXT_TEMP_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%/%{MQTT_TEMP}%<br />
 								<b>%{TEXT_HUMI_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_HUMI}%/%{MQTT_HUMI}%<br />
 								<b>%{TEXT_PRESS_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PRESS}%/%{MQTT_PRESS}%<br />
 								<b>%{TEXT_PM1_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM1}%/%{MQTT_PM1}%<br />
@@ -70,7 +70,7 @@ const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG1[] PROGMEM = R"rawliteral(<b>%{TEXT_T
 								<b>%{TEXT_PM10_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM10}%/%{MQTT_PM10}%<br />
 								<b>%{TEXT_AIRQUALITY_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_AIRQUALITY}%/%{MQTT_AIRQUALITY}%<br />)rawliteral";
 	
-const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG2[] PROGMEM = R"rawliteral(<b>%{TEXT_TEMP_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%=%{MQTT_TEMP}%<br />
+static const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG2[] PROGMEM = R"rawliteral(<b>%{TEXT_TEMP_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%=%{MQTT_TEMP}%<br />
 								<b>%{TEXT_HUMI_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_HUMI}%=%{MQTT_HUMI}%<br />
 								<b>%{TEXT_PRESS_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PRESS}%=%{MQTT_PRESS}%<br />
 								<b>%{TEXT_PM1_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM1}%=%{MQTT_PM1}%<br />
@@ -78,7 +78,7 @@ const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG2[] PROGMEM = R"rawliteral(<b>%{TEXT_T
 								<b>%{TEXT_PM10_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM10}%=%{MQTT_PM10}%<br />
 								<b>%{TEXT_AIRQUALITY_TOPIC}%: </b>/%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_AIRQUALITY}%=%{MQTT_AIRQUALITY}%<br />)rawliteral";
 
-const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG3[] PROGMEM = R"rawliteral(<b>%{TEXT_TEMP_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%=%{MQTT_TEMP}%<br />
+static const char WEB_CONFIG_ADV_MQTT_PAGE_CONFIG3[] PROGMEM = R"rawliteral(<b>%{TEXT_TEMP_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_TEMP}%=%{MQTT_TEMP}%<br />
 								<b>%{TEXT_HUMI_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_HUMI}%=%{MQTT_HUMI}%<br />
 								<b>%{TEXT_PRESS_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PRESS}%=%{MQTT_PRESS}%<br />
 								<b>%{TEXT_PM1_TOPIC}%: </b>%{MQTT_IP}%%{MQTT_DEVICENAME}%%{MQTT_TOPIC_PM1}%=%{MQTT_PM1}%<br />

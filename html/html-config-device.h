@@ -5,9 +5,9 @@
 		%{SMOGLY_LOGO_URL}%
 
 */
-const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
+static const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15&#37;'>
-	<a class='navbar-brand' href='/'>Smogly</a>
+	%{SMOGLY_LOGO_URL}%
 	  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarColor02' aria-controls='navbarColor02' aria-expanded='false' aria-label='Toggle navigation'>
 	  <span class='navbar-toggler-icon'></span>
 	  </button>
@@ -81,25 +81,25 @@ const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Lan
 
 
 
-const char WEB_CONFIG_DEVICE_PAGE_FIRST_THP_PINS[] = R"rawliteral(%{TEXT_FIRST_THP_SDA_SCL}% - %{THP_MODEL}%<br>
+static const char WEB_CONFIG_DEVICE_PAGE_FIRST_THP_PINS[] = R"rawliteral(%{TEXT_FIRST_THP_SDA_SCL}% - %{THP_MODEL}%<br>
 					<b>%{TEXT_FIRST_THP_SDA}%: </b>%{FIRST_THP_SDA}%
 					<b>%{TEXT_FIRST_THP_SCL}%: </b>%{FIRST_THP_SCL}%)rawliteral";
 
-const char WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS[] = R"rawliteral(<br><b>%{TEXT_SECOND_THP}%: </b>%{SECOND_THP}% %{SECOND_THP_PINS_CONFIG}%)rawliteral";
+static const char WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS[] = R"rawliteral(<br><b>%{TEXT_SECOND_THP}%: </b>%{SECOND_THP}% %{SECOND_THP_PINS_CONFIG}%)rawliteral";
 
-const char WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS_CONFIG[] = R"rawliteral(<br><b>%{TEXT_SECOND_THP_SDA}%: </b>%{SECOND_THP_SDA}%
+static const char WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS_CONFIG[] = R"rawliteral(<br><b>%{TEXT_SECOND_THP_SDA}%: </b>%{SECOND_THP_SDA}%
 	<b>%{TEXT_SECOND_THP_SCL}%: </b>%{SECOND_THP_SCL}%)rawliteral";
 
-const char WEB_CONFIG_DEVICE_PAGE_DUST_PINS[] = R"rawliteral(<br>%{TEXT_DUST_TX_RX}% - %{DUST_MODEL}%<br>
+static const char WEB_CONFIG_DEVICE_PAGE_DUST_PINS[] = R"rawliteral(<br>%{TEXT_DUST_TX_RX}% - %{DUST_MODEL}%<br>
 <b>%{TEXT_DUST_TX}%: </b>%{DUST_TX}%
 <b>%{TEXT_DUST_RX}%: </b>%{DUST_RX}%)rawliteral";
 
-const char WEB_CONFIG_DEVICE_SHOWING_PM1[] = R"rawliteral(<b>%{TEXT_DISPLAYPM1}%: </b> %{DISPLAY_PM1}%)rawliteral";
+static const char WEB_CONFIG_DEVICE_SHOWING_PM1[] = R"rawliteral(<b>%{TEXT_DISPLAYPM1}%: </b> %{DISPLAY_PM1}%)rawliteral";
 
-const char WEB_CONFIG_DEVICE_HOMEKIT[] = R"rawliteral(<br><b>%{TEXT_HOMEKIT_SUPPORT}%: </b>%{HOMEKIT_SUPPORT_ON}%
+static const char WEB_CONFIG_DEVICE_HOMEKIT[] = R"rawliteral(<br><b>%{TEXT_HOMEKIT_SUPPORT}%: </b>%{HOMEKIT_SUPPORT_ON}%
 %{WEB_CONFIG_DEVICE_HOMEKIT_RESET_PAIR}%)rawliteral";
 
-const char WEB_CONFIG_DEVICE_HOMEKIT_RESET_PAIR[] = "<b>%{TEXT_HOMEKIT_IS_PAIRED}%: </b>%{HOMEKIT_PAIRED_RESET}%";
+static const char WEB_CONFIG_DEVICE_HOMEKIT_RESET_PAIR[] = "<b>%{TEXT_HOMEKIT_IS_PAIRED}%: </b>%{HOMEKIT_PAIRED_RESET}%";
 
 /*
 	

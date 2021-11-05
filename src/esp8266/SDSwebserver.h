@@ -1,3 +1,4 @@
+#ifdef ARDUINO_ARCH_ESP8266
 #include "ArduinoJson.h" // 6.5.0 beta or later !!!
 #include "smogly_spiffs.h"
 
@@ -997,3 +998,4 @@ void handle_api() {
   serializeJsonPretty(json, message);
   WebServer.send(200, "text/json", message);
 }
+#endif

@@ -105,3 +105,5 @@ ENV/
 .DS_Store
 .vscode/arduino.json
 .vscode/c_cpp_properties.json
+ .pio/
+ .vscode/

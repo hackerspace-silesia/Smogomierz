@@ -23,8 +23,8 @@
 
 #include "Adafruit_Sensor.h"
 #include "Arduino.h"
-#include <SPI.h>
-#include <Wire.h>
+#include <Adafruit_I2CDevice.h>
+#include <Adafruit_SPIDevice.h>
 
 /*!
  *  I2C ADDRESS/BITS/SETTINGS
@@ -190,6 +190,7 @@ public:
   bool begin(uint8_t addr = BMP280_ADDRESS, uint8_t chipid = BMP280_CHIPID);
   void reset(void);
   uint8_t getStatus(void);
+  uint8_t sensorID(void);
 
   float readTemperature();
   float readPressure(void);
@@ -208,14 +209,17 @@ public:
                    standby_duration duration = STANDBY_MS_1);
 
 private:
-  TwoWire *_wire; /**< Wire object */
-  SPIClass *_spi; /**< SPI object */
+  TwoWire *_wire;                     /**< Wire object */
+  Adafruit_I2CDevice *i2c_dev = NULL; ///< Pointer to I2C bus interface
+  Adafruit_SPIDevice *spi_dev = NULL; ///< Pointer to SPI bus interface
 
   Adafruit_BMP280_Temp *temp_sensor = NULL;
   Adafruit_BMP280_Pressure *pressure_sensor = NULL;
 
   /** Encapsulates the config register */
   struct config {
+    /** Initialize to power-on-reset state */
+    config() : t_sb(STANDBY_MS_1), filter(FILTER_OFF), none(0), spi3w_en(0) {}
     /** Inactive duration (standby time) in normal mode */
     unsigned int t_sb : 3;
     /** Filter settings */
@@ -230,6 +234,9 @@ private:
 
   /** Encapsulates trhe ctrl_meas register */
   struct ctrl_meas {
+    /** Initialize to power-on-reset state */
+    ctrl_meas()
+        : osrs_t(SAMPLING_NONE), osrs_p(SAMPLING_NONE), mode(MODE_SLEEP) {}
     /** Temperature oversampling. */
     unsigned int osrs_t : 3;
     /** Pressure oversampling. */
@@ -254,7 +261,7 @@ private:
 
   int32_t _sensorID;
   int32_t t_fine;
-  int8_t _cs, _mosi, _miso, _sck;
+  // int8_t _cs, _mosi, _miso, _sck;
   bmp280_calib_data _bmp280_calib;
   config _configReg;
   ctrl_meas _measReg;

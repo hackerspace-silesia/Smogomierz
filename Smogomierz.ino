@@ -86,14 +86,11 @@
 
   ASYNC_WEBSERVER_ON + INTL_OLD
 
-  Szkic używa 689537 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 55132 bajtów (67%) pamięci dynamicznej, pozostawiając 26788 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 671413 bajtów (64%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46772 bajtów (57%) pamięci dynamicznej, pozostawiając 35148 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 693753 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 47000 bajtów (57%) pamięci dynamicznej, pozostawiając 34920 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+  Szkic używa 695697 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 46872 bajtów (57%) pamięci dynamicznej, pozostawiając 35048 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
 
   ASYNC_WEBSERVER_ON + INTL_PL
@@ -119,11 +116,11 @@
 
   ASYNC_WEBSERVER_ON
 
-  Szkic używa 1494914 bajtów (76%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 61416 bajtów (18%) pamięci dynamicznej, pozostawiając 266264 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1494958 bajtów (76%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 61512 bajtów (18%) pamięci dynamicznej, pozostawiając 266168 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1473638 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 59040 bajtów (18%) pamięci dynamicznej, pozostawiając 268640 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -131,44 +128,40 @@
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
 #ifdef ASYNC_WEBSERVER_ON
-#include "src/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 19.07.2021
+#include "src/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 5.11.2021
 #else
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 4.01.2021 DEV
+#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 5.11.2021 DEV
 #endif
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
-#include "src/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 4.01.2021
+#include "src/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
 #else
-#include "src/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 4.01.2021
+#include "src/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
 #endif
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 4.01.2021
+#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 5.11.2021
 #endif
 
-#include "src/HTU21D.h" // https://github.com/enjoyneering/HTU21D // 4.01.2021
-#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 4.01.2021
-#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 4.01.2021
-#include "src/DHT.h" // https://github.com/adafruit/DHT-sensor-library // CUSTOMIZED! 4.01.2021
+#include "src/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 5.11.2021
+#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 5.11.2021
+#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 5.11.2021
+#include "src/DHT.h" // https://github.com/adafruit/DHT-sensor-library // 5.11.2021
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 4.01.2021
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 5.11.2021
 #elif defined DUSTSENSOR_SDS011_21
-
-
 #ifdef ARDUINO_ARCH_ESP8266
-#include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 4.01.2021
+#include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 5.11.2021
 #elif defined ARDUINO_ARCH_ESP32
-// #include "esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 4.01.2021
-#include "src/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 4.01.2021
+// #include "esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 5.11.2021
+#include "src/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 5.11.2021
 #endif
-
-
 #elif defined DUSTSENSOR_HPMA115S0
-#include "src/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 4.01.2021
+#include "src/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 5.11.2021
 #elif defined DUSTSENSOR_SPS30
-#include "src/sps30.h" // https://github.com/paulvha/sps30 // 4.01.2021
+#include "src/sps30.h" // https://github.com/paulvha/sps30 // CUSTOMIZED! 5.11.2021
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 4.01.2021
+#include "src/pms.h" // https://github.com/fu-hsi/PMS // 5.11.2021
 #endif
 
 #include "src/smogly_spiffs.h"
@@ -182,7 +175,10 @@
 #include "src/airmonitor.h"
 #include "src/thing_speak.h"
 #include "src/aqieco.h"
-#include "src/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 4.01.2021
+#include "src/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 5.11.2021
+
+//        it would be nice to update the InfluxDB library to
+// #include "src/InfluxDB/InfluxDbClient.h" // https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino
 
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
 #ifdef ASYNC_WEBSERVER_ON
@@ -235,12 +231,13 @@ Adafruit_BME280 bme(FIRST_THP_SDA, FIRST_THP_SCL); // I2C
 Adafruit_BMP280 bmp; //I2C
 
 // Serial for SHT21/HTU21D config
-HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
+// HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
+HTU2xD_SHT2x_SI70xx ht2x(HTU2xD_SENSOR, HUMD_12BIT_TEMP_14BIT); //sensor type, resolution
 
 // DHT22 config
 //#define DHTPIN 13 // D7 on NodeMCU/WeMos board
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
-DHT dht(DHTTYPE);
+DHT dht(FIRST_THP_SDA, DHTTYPE);
 
 // SHT1x – Config
 //#define dataPin 14 //D5
@@ -441,8 +438,8 @@ WiFiManager wifiManager;
 
 // check TEMP/HUMI/PRESS Sensor - START
 bool checkHTU21DStatus() {
-  int temperature_HTU21D_Int = int(myHTU21D.readTemperature());
-  int humidity_HTU21D_Int = int(myHTU21D.readHumidity());
+  int temperature_HTU21D_Int = int(ht2x.readTemperature());
+  int humidity_HTU21D_Int = int(ht2x.readHumidity());
   if ((temperature_HTU21D_Int == 0 && humidity_HTU21D_Int == 0) || (temperature_HTU21D_Int == 255 && humidity_HTU21D_Int == 255)) {
     if (DEBUG) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -982,16 +979,18 @@ void setup() {
         }
 #endif
       }
+    }
 
-      if (SP30_COMMS == I2C_COMMS) {
-        if (sps30.I2C_expect() == 4) {
+    if (SP30_COMMS == I2C_COMMS) {
+      if (sps30.I2C_expect() == 4) {
 #ifdef ARDUINO_ARCH_ESP8266
-          Serial.println(F(" !!! Due to I2C buffersize only the SPS30 MASS concentration is available !!! \n"));
+        Serial.println(F(" !!! Due to I2C buffersize only the SPS30 MASS concentration is available !!! \n"));
 #elif defined ARDUINO_ARCH_ESP32
-          Serial.println((" !!! Due to I2C buffersize only the SPS30 MASS concentration is available !!! \n"));
+        Serial.println((" !!! Due to I2C buffersize only the SPS30 MASS concentration is available !!! \n"));
 #endif
-        }
       }
+    }
+  }
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   if (!strcmp(DUST_MODEL, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1088,7 +1087,7 @@ void setup() {
     Wire.begin(FIRST_THP_SDA, FIRST_THP_SCL);
     bmp.begin();
   } else if (!strcmp(THP_MODEL, "HTU21")) {
-    myHTU21D.begin();
+    ht2x.begin();
   } else if (!strcmp(THP_MODEL, "DHT22")) {
     dht.begin(FIRST_THP_SDA);
   } else if (!strcmp(THP_MODEL, "SHT1x")) {
@@ -2032,8 +2031,8 @@ void takeTHPMeasurements() {
         Serial.println(("Measurements from HTU21!\n"));
 #endif
       }
-      currentTemperature_THP1 = myHTU21D.readTemperature();
-      currentHumidity_THP1 = myHTU21D.readHumidity();
+      currentTemperature_THP1 = ht2x.readTemperature();
+      currentHumidity_THP1 = ht2x.readHumidity();
     } else {
       if (DEBUG) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2165,8 +2164,8 @@ void takeTHPMeasurements() {
           Serial.println(("Measurements from HTU21!\n"));
 #endif
         }
-        currentTemperature_THP2 = myHTU21D.readTemperature();
-        currentHumidity_THP2 = myHTU21D.readHumidity();
+        currentTemperature_THP2 = ht2x.readTemperature();
+        currentHumidity_THP2 = ht2x.readHumidity();
       } else {
         if (DEBUG) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2690,8 +2689,8 @@ void pm_calibration() {
       }
 #endif
     } else if (!strcmp(THP_MODEL, "HTU21")) {
-      if (int(myHTU21D.readTemperature()) < 5 or int(myHTU21D.readCompensatedHumidity()) > 60) {
-        calib1 = float((200 - (myHTU21D.readCompensatedHumidity())) / 150);
+      if (int(ht2x.readTemperature()) < 5 or int(ht2x.getCompensatedHumidity(int(ht2x.readTemperature()))) > 60) {
+        calib1 = float((200 - (ht2x.getCompensatedHumidity(int(ht2x.readTemperature())))) / 150);
         calib2 = calib1 / 2;
         calib = calib2;
       } else {

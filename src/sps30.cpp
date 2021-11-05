@@ -111,6 +111,12 @@
  *  - added support for Artemis / Apollo3
  *  - added setClock() for I2C as the Artemis/Apollo3 is standard 400K. SPS30 can handle up to 100K
  *  - added flushing in case of chk_zero() (handling a problem in Artemis library 2.0.1)
+ *
+ * version 1.4.10 / February 2021
+ *  - Fixed typos in autodetection for Nano BLE 33 / Apollo3 for SoftwareSerial detection
+ *
+ * version 1.4.11 / July 2021
+ *  - fixed error handling in Getvalues()
  *********************************************************************
  */
 
@@ -133,7 +139,7 @@ struct Description ERR_desc[11] =
   {ERR_PARAMETER, "Illegal command parameter or parameter out of allowed range"},
   {ERR_OUTOFRANGE, "Internal function argument out of range"},
   {ERR_CMDSTATE, "Command not allowed in current state"},
-  {SPS30_ERR_TIMEOUT, "No response received within timeout period"},
+  {ERR_TIMEOUT, "No response received within timeout period"},
   {ERR_PROTOCOL, "Protocol error"},
   {ERR_FIRMWARE, "Not supported on this SPS30 firmware level"},
   {0xff, "Unknown Error"}
@@ -579,7 +585,6 @@ bool SPS30::Instruct(uint8_t type)
 
         else if (type == SER_RESET){
             _started = false;
-			
 #if defined INCLUDE_I2C
             if (_Sensor_Comms == I2C_COMMS) {
                 _i2cPort->begin();       // some I2C channels need a reset
@@ -927,6 +932,9 @@ uint8_t SPS30::GetValues(struct sps_values *v)
                 // the I2C read_buffer.
 
                 ret = I2C_SetPointer_Read(_I2C_Max_bytes);
+
+                if (ret != SPS30_ERR_OK) return (ret);        // bug 1.4.11
+
                 break;
             }
             else
@@ -935,7 +943,7 @@ uint8_t SPS30::GetValues(struct sps_values *v)
             }
         } while(loop++ < 3);
 
-        if (loop == 3) return(SPS30_ERR_TIMEOUT);
+        if (loop == 3) return(ERR_TIMEOUT);
     }
     else
 #endif // INCLUDE_I2C
@@ -1374,7 +1382,7 @@ uint8_t SPS30::SerialToBuffer()
         {
             level = 1;
             DebugPrintf("TimeOut during reading byte %d\n", i);
-            return(SPS30_ERR_TIMEOUT);
+            return(ERR_TIMEOUT);
         }
 
         if (_serial->available())

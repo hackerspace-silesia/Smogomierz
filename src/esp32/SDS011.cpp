@@ -10,26 +10,17 @@
 
 #include "SDS011.h"
 
-static const byte SLEEPCMD[19] = {
-	0xAA,	// head
-	0xB4,	// command id
-	0x06,	// data byte 1
-	0x01,	// data byte 2 (set mode)
-	0x00,	// data byte 3 (sleep)
-	0x00,	// data byte 4
-	0x00,	// data byte 5
-	0x00,	// data byte 6
-	0x00,	// data byte 7
-	0x00,	// data byte 8
-	0x00,	// data byte 9
-	0x00,	// data byte 10
-	0x00,	// data byte 11
-	0x00,	// data byte 12
-	0x00,	// data byte 13
-	0xFF,	// data byte 14 (device id byte 1)
-	0xFF,	// data byte 15 (device id byte 2)
-	0x05,	// checksum
-	0xAB	// tail
+static constexpr uint8_t SLEEPCMD[19] = {
+	0xAA, 0xB4, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0xFF,	0xFF, 0x05, 0xAB
+};
+static constexpr uint8_t WAKEUPCMD[19] = {
+	0xAA, 0xB4, 0x06, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x06, 0xAB
+};
+static constexpr uint8_t VERSION_CMD[] PROGMEM = {
+	0xAA, 0xB4, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x05, 0xAB
+};
+static constexpr uint8_t CONTINUOUS_MODE_CMD[] PROGMEM = {
+	0xAA, 0xB4, 0x08, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x07, 0xAB
 };
 
 SDS011::SDS011(void) {
@@ -92,25 +83,47 @@ void SDS011::sleep() {
 // SDS011:wakeup
 // --------------------------------------------------------
 void SDS011::wakeup() {
-	sds_data->write(0x01);
+	for (uint8_t i = 0; i < 19; i++) {
+		sds_data->write(WAKEUPCMD[i]);
+	}
 	sds_data->flush();
+	while (sds_data->available() > 0) {
+		sds_data->read();
+	}
 }
 
-#ifdef ARDUINO_ARCH_ESP8266
+// --------------------------------------------------------
+// SDS011:continuous_mode
+// --------------------------------------------------------
+void SDS011::continuous_mode() {
+	for (uint8_t i = 0; i < 19; i++) {
+		sds_data->write(CONTINUOUS_MODE_CMD[i]);
+	}
+	sds_data->flush();
+	while (sds_data->available() > 0) {
+		sds_data->read();
+	}
+}
+
+#ifndef ESP32
+void SDS011::begin(uint8_t pin_rx, uint8_t pin_tx) {
+	_pin_rx = pin_rx;
+	_pin_tx = pin_tx;
+
+	SoftwareSerial *softSerial = new SoftwareSerial(_pin_rx, _pin_tx);
+
+	softSerial->begin(9600);
+
+	sds_data = softSerial;
+}
+
 void SDS011::begin(SoftwareSerial* serial) {
 	serial->begin(9600);
 	sds_data = serial;
 }
+#endif
 
-void SDS011::begin(uint8_t pin_rx, uint8_t pin_tx) {
-	_pin_rx = pin_rx;
-	_pin_tx = pin_tx;
-	
-	SoftwareSerial *softSerial = new SoftwareSerial(_pin_rx, _pin_tx);
-	softSerial->begin(9600);
-	sds_data = softSerial;
-}
-#elif defined ARDUINO_ARCH_ESP32
+#ifdef ESP32
 void SDS011::begin(HardwareSerial* serial) {
 	serial->begin(9600);
 	sds_data = serial;
@@ -121,4 +134,3 @@ void SDS011::begin(HardwareSerial* serial, int8_t rxPin, int8_t txPin) {
 	sds_data = serial;
 }
 #endif
-		

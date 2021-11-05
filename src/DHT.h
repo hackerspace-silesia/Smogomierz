@@ -41,20 +41,29 @@
 #endif
 
 /* Define types of sensors. */
-#define DHT11 11  /**< DHT TYPE 11 */
-#define DHT12 12  /**< DHY TYPE 12 */
-#define DHT22 22  /**< DHT TYPE 22 */
-#define DHT21 21  /**< DHT TYPE 21 */
-#define AM2301 21 /**< AM2301 */
+static const uint8_t DHT11{11};  /**< DHT TYPE 11 */
+static const uint8_t DHT12{12};  /**< DHY TYPE 12 */
+static const uint8_t DHT21{21};  /**< DHT TYPE 21 */
+static const uint8_t DHT22{22};  /**< DHT TYPE 22 */
+static const uint8_t AM2301{21}; /**< AM2301 */
+
+#if defined(TARGET_NAME) && (TARGET_NAME == ARDUINO_NANO33BLE)
+#ifndef microsecondsToClockCycles
+/*!
+ * As of 7 Sep 2020 the Arduino Nano 33 BLE boards do not have
+ * microsecondsToClockCycles defined.
+ */
+#define microsecondsToClockCycles(a) ((a) * (SystemCoreClock / 1000000L))
+#endif
+#endif
 
 /*!
  *  @brief  Class that stores state and functions for DHT
  */
 class DHT {
 public:
-  //DHT(uint8_t pin, uint8_t type, uint8_t count = 6);
-  DHT(uint8_t type, uint8_t count = 6);
-  void begin(uint8_t pin, uint8_t usec = 55);
+  DHT(uint8_t pin, uint8_t type, uint8_t count = 6);
+  void begin(uint8_t usec = 55);
   float readTemperature(bool S = false, bool force = false);
   float convertCtoF(float);
   float convertFtoC(float);

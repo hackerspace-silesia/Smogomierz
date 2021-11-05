@@ -26,7 +26,9 @@
 #include "DHT.h"
 
 #define MIN_INTERVAL 2000 /**< min interval value */
-#define TIMEOUT -1        /**< timeout on */
+#define TIMEOUT                                                                \
+  UINT32_MAX /**< Used programmatically for timeout.                           \
+                   Not a timeout duration. Type: uint32_t. */
 
 /*!
  *  @brief  Instantiates a new DHT class
@@ -37,16 +39,14 @@
  *  @param  count
  *          number of sensors
  */
-//DHT::DHT(uint8_t pin, uint8_t type, uint8_t count) {
-DHT::DHT(uint8_t type, uint8_t count) {
-	//_pin = pin;
+DHT::DHT(uint8_t pin, uint8_t type, uint8_t count) {
+  (void)count; // Workaround to avoid compiler warning.
+  _pin = pin;
   _type = type;
-  /*
 #ifdef __AVR
   _bit = digitalPinToBitMask(pin);
   _port = digitalPinToPort(pin);
 #endif
-  */
   _maxcycles =
       microsecondsToClockCycles(1000); // 1 millisecond timeout for
                                        // reading pulses from DHT sensor.
@@ -60,12 +60,7 @@ DHT::DHT(uint8_t type, uint8_t count) {
  *          Optionally pass pull-up time (in microseconds) before DHT reading
  *starts. Default is 55 (see function declaration in DHT.h).
  */
-void DHT::begin(uint8_t pin, uint8_t usec) {
-	_pin = pin;
-#ifdef __AVR
-  _bit = digitalPinToBitMask(pin);
-  _port = digitalPinToPort(pin);
-#endif
+void DHT::begin(uint8_t usec) {
   // set up the pins!
   pinMode(_pin, INPUT_PULLUP);
   // Using this value makes sure that millis() - lastreadtime will be

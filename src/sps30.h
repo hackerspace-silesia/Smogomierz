@@ -110,6 +110,16 @@
  *  - added check on return code in GetStatusReg()
  *  - added setClock() for I2C as the Artemis/Apollo3 is standard 400K
  *  - added flushing in case of Checkzero() (problem in Artemis)
+ *
+ * version 1.4.9 / December 2020
+ *  - autodetection for Nano BLE 33 to undef softwareSerial
+ *
+ * version 1.4.10 / February 2021
+ *  - Fixed typos in autodetection for Nano BLE 33 / Apollo3 for SoftwareSerial detection
+ *
+ * version 1.4.11 / July 2021
+ *  - fixed error handling in Getvalues()
+ *
  *********************************************************************
 */
 #ifndef SPS30_H
@@ -246,7 +256,7 @@ enum debug_serial {
     /* version 1.4.8 autodetection for Apollo3 */
 
     // Depending on definition in wire.h (RingBufferN<256> rxBuffer;)
-    #if defined ARDUINO_ARCH_SAMD || defined ARDUINO_ARCH_SAM21D || ARDUINO_ARCH_APOLLO3
+    #if defined ARDUINO_ARCH_SAMD || defined ARDUINO_ARCH_SAM21D || defined ARDUINO_ARCH_APOLLO3
         #undef  I2C_LENGTH
         #define I2C_LENGTH  256
     #endif
@@ -261,8 +271,9 @@ enum debug_serial {
       /* version 1.3.9 autodetection for SAMD SERCOM and ESP32 to undef softwareSerial */
       /* version 1.4.4 autodetection for Arduino DUE to undef softwareSerial */
       /* version 1.4.8 autodetection for Apollo3 to undef softwareSerial */
+      /* version 1.4.9 autodetection for Nano BLE 33 to undef softwareSerial */
 
-      #if defined ARDUINO_ARCH_SAMD || defined ARDUINO_ARCH_SAM21D || defined ARDUINO_ARCH_ESP32 || defined ARDUINO_SAM_DUE || ARDUINO_ARCH_APOLLO3
+      #if defined ARDUINO_ARCH_SAMD || defined ARDUINO_ARCH_SAM21D || defined ARDUINO_ARCH_ESP32 || defined ARDUINO_SAM_DUE || defined ARDUINO_ARCH_APOLLO3 ||defined ARDUINO_ARCH_NRF52840
         #undef  INCLUDE_SOFTWARE_SERIAL
       #else
          #include <SoftwareSerial.h>        // softserial
@@ -336,14 +347,14 @@ typedef union {
 
 /*************************************************************/
 /* error codes */
-#define SPS30_ERR_OK          0x00
+#define SPS30_ERR_OK    0x00
 #define ERR_DATALENGTH  0X01
 #define ERR_UNKNOWNCMD  0x02
 #define ERR_ACCESSRIGHT 0x03
 #define ERR_PARAMETER   0x04
 #define ERR_OUTOFRANGE  0x28
 #define ERR_CMDSTATE    0x43
-#define SPS30_ERR_TIMEOUT     0x50
+#define ERR_TIMEOUT     0x50
 #define ERR_PROTOCOL    0x51
 #define ERR_FIRMWARE    0x88        // added version 1.4
 
@@ -563,7 +574,7 @@ class SPS30
      *   STATUS_FAN_ERROR = 4
      *
      * @return
-     *  SPS30_ERR_OK = ok, no isues found
+     *  ERR_OK = ok, no isues found
      *  else ERR_OUTOFRANGE, issues found
      */
     uint8_t GetStatusReg(uint8_t *status);

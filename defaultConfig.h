@@ -19,21 +19,35 @@ char CONFIG_FIRST_THP_SCL[4] = "D4";
 unsigned char FIRST_THP_SDA = 0; // D3
 unsigned char FIRST_THP_SCL = 2; // D4
 #elif defined ARDUINO_ARCH_ESP32
-char CONFIG_FIRST_THP_SDA[4] = "D16";
-char CONFIG_FIRST_THP_SCL[4] = "D17";
-unsigned char FIRST_THP_SDA = 16; // D16
-unsigned char FIRST_THP_SCL = 17; // D17
+char CONFIG_FIRST_THP_SDA[4] = "D4";
+char CONFIG_FIRST_THP_SCL[4] = "D5";
+unsigned char FIRST_THP_SDA = 4; // D16
+unsigned char FIRST_THP_SCL = 5; // D17
 #endif
 
+#ifdef ARDUINO_ARCH_ESP8266
 char CONFIG_SECOND_THP_SDA[4] = "D5";
 char CONFIG_SECOND_THP_SCL[4] = "D6";
 unsigned char SECOND_THP_SDA = 14; // D5
 unsigned char SECOND_THP_SCL = 12; // D6
+#elif defined ARDUINO_ARCH_ESP32
+char CONFIG_SECOND_THP_SDA[4] = "D22";
+char CONFIG_SECOND_THP_SCL[4] = "D23";
+unsigned char SECOND_THP_SDA = 22; // D5
+unsigned char SECOND_THP_SCL = 23; // D6
+#endif
 
+#ifdef ARDUINO_ARCH_ESP8266
 char CONFIG_DUST_TX[4] = "D1";
 char CONFIG_DUST_RX[4] = "D2";
 unsigned char DUST_TX = 5; // D1
 unsigned char DUST_RX = 4; // D2
+#elif defined ARDUINO_ARCH_ESP32
+char CONFIG_DUST_TX[4] = "D18";
+char CONFIG_DUST_RX[4] = "D19";
+unsigned char DUST_TX = 18; // D1
+unsigned char DUST_RX = 19; // D2
+#endif
 
 /*
    ESP8266

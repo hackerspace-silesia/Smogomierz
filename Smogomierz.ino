@@ -224,7 +224,7 @@ BME280<> BMESensor_2;
 #elif defined ARDUINO_ARCH_ESP32 // VIN - 3V; GND - G; SCL - D17; SDA - D16
 //#define I2C_SDA = FIRST_THP_SDA
 //#define I2C_SCL = FIRST_THP_SCL
-Adafruit_BME280 bme(FIRST_THP_SDA, FIRST_THP_SCL); // I2C
+Adafruit_BME280 bme((uint8_t)FIRST_THP_SDA, (uint8_t)FIRST_THP_SCL); // I2C -- ONLY THE DEFAULT VALUES WORK
 #endif
 
 // BMP280 config
@@ -597,6 +597,7 @@ void MQTTreconnect() {
 }
 
 void set_I2C_PINS(String THP_PIN, int i) {
+#ifdef ARDUINO_ARCH_ESP8266
   if (i == 1) {
     if (THP_PIN == "D1") {
       FIRST_THP_SDA = 5;
@@ -686,10 +687,117 @@ void set_I2C_PINS(String THP_PIN, int i) {
       SECOND_THP_SCL = 17;
     }
   }
-
+#elif defined ARDUINO_ARCH_ESP32
+  if (i == 1) {
+    if (THP_PIN == "D1") {
+      FIRST_THP_SDA = 8;
+    } else if (THP_PIN == "D2") {
+      FIRST_THP_SDA = 9;
+    } else if (THP_PIN == "D4") {
+      FIRST_THP_SDA = 4;
+    } else if (THP_PIN == "D5") {
+      FIRST_THP_SDA = 5;
+    } else if (THP_PIN == "D15") {
+      FIRST_THP_SDA = 15;
+    } else if (THP_PIN == "D16") {
+      FIRST_THP_SDA = 16;
+    } else if (THP_PIN == "D17") {
+      FIRST_THP_SDA = 17;
+    } else if (THP_PIN == "D18") {
+      FIRST_THP_SDA = 18;
+    } else if (THP_PIN == "D19") {
+      FIRST_THP_SDA = 19;
+    } else if (THP_PIN == "D21") {
+      FIRST_THP_SDA = 21;
+    } else if (THP_PIN == "D22") {
+      FIRST_THP_SDA = 22;
+    } else if (THP_PIN == "D23") {
+      FIRST_THP_SDA = 23;
+    }
+  } else if (i == 2) {
+    if (THP_PIN == "D1") {
+      FIRST_THP_SCL = 8;
+    } else if (THP_PIN == "D2") {
+      FIRST_THP_SCL = 9;
+    } else if (THP_PIN == "D4") {
+      FIRST_THP_SCL = 4;
+    } else if (THP_PIN == "D5") {
+      FIRST_THP_SCL = 5;
+    } else if (THP_PIN == "D15") {
+      FIRST_THP_SCL = 15;
+    } else if (THP_PIN == "D16") {
+      FIRST_THP_SCL = 16;
+    } else if (THP_PIN == "D17") {
+      FIRST_THP_SCL = 17;
+    } else if (THP_PIN == "D18") {
+      FIRST_THP_SCL = 18;
+    } else if (THP_PIN == "D19") {
+      FIRST_THP_SCL = 19;
+    } else if (THP_PIN == "D21") {
+      FIRST_THP_SCL = 21;
+    } else if (THP_PIN == "D22") {
+      FIRST_THP_SCL = 22;
+    } else if (THP_PIN == "D23") {
+      FIRST_THP_SCL = 23;
+    }
+  } else if (i == 3) {
+    if (THP_PIN == "D1") {
+      SECOND_THP_SDA = 8;
+    } else if (THP_PIN == "D2") {
+      SECOND_THP_SDA = 9;
+    } else if (THP_PIN == "D4") {
+      SECOND_THP_SDA = 4;
+    } else if (THP_PIN == "D5") {
+      SECOND_THP_SDA = 5;
+    } else if (THP_PIN == "D15") {
+      SECOND_THP_SDA = 15;
+    } else if (THP_PIN == "D16") {
+      SECOND_THP_SDA = 16;
+    } else if (THP_PIN == "D17") {
+      SECOND_THP_SDA = 17;
+    } else if (THP_PIN == "D18") {
+      SECOND_THP_SDA = 18;
+    } else if (THP_PIN == "D19") {
+      SECOND_THP_SDA = 19;
+    } else if (THP_PIN == "D21") {
+      SECOND_THP_SDA = 21;
+    } else if (THP_PIN == "D22") {
+      SECOND_THP_SDA = 22;
+    } else if (THP_PIN == "D23") {
+      SECOND_THP_SDA = 23;
+    }
+  } else if (i == 4) {
+    if (THP_PIN == "D1") {
+      SECOND_THP_SCL = 8;
+    } else if (THP_PIN == "D2") {
+      SECOND_THP_SCL = 9;
+    } else if (THP_PIN == "D4") {
+      SECOND_THP_SCL = 4;
+    } else if (THP_PIN == "D5") {
+      SECOND_THP_SCL = 5;
+    } else if (THP_PIN == "D15") {
+      SECOND_THP_SCL = 15;
+    } else if (THP_PIN == "D16") {
+      SECOND_THP_SCL = 16;
+    } else if (THP_PIN == "D17") {
+      SECOND_THP_SCL = 17;
+    } else if (THP_PIN == "D18") {
+      SECOND_THP_SCL = 18;
+    } else if (THP_PIN == "D19") {
+      SECOND_THP_SCL = 19;
+    } else if (THP_PIN == "D21") {
+      SECOND_THP_SCL = 21;
+    } else if (THP_PIN == "D22") {
+      SECOND_THP_SCL = 22;
+    } else if (THP_PIN == "D23") {
+      SECOND_THP_SCL = 23;
+    }
+  }
+#endif
 }
 
 void set_SERIAL_PINS(String DUST_PIN, int i) {
+#ifdef ARDUINO_ARCH_ESP8266
   if (i == 1) {
     if (DUST_PIN == "D1") {
       DUST_TX = 5;
@@ -735,6 +843,61 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
       DUST_RX = 17;
     }
   }
+#elif defined ARDUINO_ARCH_ESP32
+  if (i == 1) {
+    if (DUST_PIN == "D1") {
+      DUST_TX = 8;
+    } else if (DUST_PIN == "D2") {
+      DUST_TX = 9;
+    } else if (DUST_PIN == "D4") {
+      DUST_TX = 4;
+    } else if (DUST_PIN == "D5") {
+      DUST_TX = 5;
+    } else if (DUST_PIN == "D15") {
+      DUST_TX = 15;
+    } else if (DUST_PIN == "D16") {
+      DUST_TX = 16;
+    } else if (DUST_PIN == "D17") {
+      DUST_TX = 17;
+    } else if (DUST_PIN == "D18") {
+      DUST_TX = 18;
+    } else if (DUST_PIN == "D19") {
+      DUST_TX = 19;
+    } else if (DUST_PIN == "D21") {
+      DUST_TX = 21;
+    } else if (DUST_PIN == "D22") {
+      DUST_TX = 22;
+    } else if (DUST_PIN == "D23") {
+      DUST_TX = 23;
+    }
+  } else if (i == 2) {
+    if (DUST_PIN == "D1") {
+      DUST_RX = 8;
+    } else if (DUST_PIN == "D2") {
+      DUST_RX = 9;
+    } else if (DUST_PIN == "D4") {
+      DUST_RX = 4;
+    } else if (DUST_PIN == "D5") {
+      DUST_RX = 5;
+    } else if (DUST_PIN == "D15") {
+      DUST_RX = 15;
+    } else if (DUST_PIN == "D16") {
+      DUST_RX = 16;
+    } else if (DUST_PIN == "D17") {
+      DUST_RX = 17;
+    } else if (DUST_PIN == "D18") {
+      DUST_RX = 18;
+    } else if (DUST_PIN == "D19") {
+      DUST_RX = 19;
+    } else if (DUST_PIN == "D21") {
+      DUST_RX = 21;
+    } else if (DUST_PIN == "D22") {
+      DUST_RX = 22;
+    } else if (DUST_PIN == "D23") {
+      DUST_RX = 23;
+    }
+  }
+#endif
 }
 
 // default translation - english
@@ -769,12 +932,16 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 #include "src/smogly_webserver.h"
 #endif
 
+
 void setup() {
   Serial.begin(115200);
   yield();
 
   fs_setup();
   yield();
+
+  // deleteConfig();
+  // yield();
 
   //temporary solution!
   if (SECOND_THP) {
@@ -1080,7 +1247,13 @@ void setup() {
       BMESensor_2.begin(SECOND_THP_SDA, SECOND_THP_SCL);
     }
 #elif defined ARDUINO_ARCH_ESP32
-    bme.begin();
+    // #define BME280_ADD 0x76
+    // bme.begin(BME280_ADD);
+    // bme.begin();
+    bool bmeStatus = bme.begin();
+    if (!bmeStatus) {
+      Serial.println("\nCould not find a valid BME280 sensor, check wiring!\n");
+    }
 #endif
   } else if (!strcmp(THP_MODEL, "BMP280")) {
     //Wire.begin(0, 2);
@@ -1100,10 +1273,13 @@ void setup() {
 
   // get ESP id
   if (DEVICENAME_AUTO) {
+    String ESPmacAddress = WiFi.macAddress();
+    ESPmacAddress.replace(":", "");
+    ESPmacAddress.toLowerCase();
 #ifdef ARDUINO_ARCH_ESP8266
-    sprintf(device_name, "Smogly-%06X", ESP.getChipId());
+    sprintf(device_name, "Smogly-%06X", ESPmacAddress.c_str());
 #elif defined ARDUINO_ARCH_ESP32
-    sprintf(device_name, "Smogly-%06X", ESP.getEfuseMac());
+    sprintf(device_name, "Smogly-%06X", ESPmacAddress.c_str());
 #endif
   } else {
     strncpy(device_name, DEVICENAME, 20);
@@ -1495,6 +1671,7 @@ void loop() {
     unsigned int current_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
     if (current_SENDING_FREQUENCY_AIRMONITOR_Millis - previous_SENDING_FREQUENCY_AIRMONITOR_Millis >= SENDING_FREQUENCY_AIRMONITOR_interval) {
       takeTHPMeasurements();
+      Serial.println("SEND DATA TO AIRMONITOR");
       sendDataToExternalServices();
       previous_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
     }

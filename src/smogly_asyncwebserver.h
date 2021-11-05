@@ -287,7 +287,7 @@ static String _addOption(const String &value, const String &label, const String 
 static String _add_FIRST_THP_Option(const String &value, const String &label, const String &srslyValue) {
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
-
+    
   if (strcmp(DUST_MODEL, "Non")) {
     if (String(CONFIG_DUST_TX) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
@@ -304,13 +304,14 @@ static String _add_FIRST_THP_Option(const String &value, const String &label, co
       }
     }
   }
-
+  
   if (value == srslyValue) {
     option.replace(F("{srslyValue}"), F(" selected>"));
   } else {
     option.replace(F("{srslyValue}"), F(">"));
   }
   option.replace(F("{label}"), label);
+   
   return option;
 }
 
@@ -440,8 +441,13 @@ static String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &val
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   if (!strcmp(THP_MODEL, "DS18B20")) {
+#ifdef ARDUINO_ARCH_ESP8266
     input += _add_FIRST_THP_Option(F("D5"), F("D5/GPIO14"), value);
+#elif defined ARDUINO_ARCH_ESP32
+    input += _add_FIRST_THP_Option(F("D5"), F("D5/GPIO5"), value);
+#endif
   } else {
+#ifdef ARDUINO_ARCH_ESP8266
     input += _add_FIRST_THP_Option(F("D1"), F("D1/GPIO05"), value);
     input += _add_FIRST_THP_Option(F("D2"), F("D2/GPIO04"), value);
     input += _add_FIRST_THP_Option(F("D3"), F("D3/GPIO00"), value);
@@ -450,9 +456,20 @@ static String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &val
     input += _add_FIRST_THP_Option(F("D6"), F("D6/GPIO12"), value);
     input += _add_FIRST_THP_Option(F("D7"), F("D7/GPIO13"), value);
     //input += _addOption(F("D8"), F("D8/GPIO15"), value);
-#ifdef ARDUINO_ARCH_ESP32
+#elif defined ARDUINO_ARCH_ESP32
+    input += _add_FIRST_THP_Option(F("D1"), F("D1/GPIO08"), value);
+    input += _add_FIRST_THP_Option(F("D2"), F("D2/GPIO02"), value);
+    input += _add_FIRST_THP_Option(F("D4"), F("D4/GPIO04"), value);
+    input += _add_FIRST_THP_Option(F("D5"), F("D5/GPIO05"), value);
+	
+    input += _add_FIRST_THP_Option(F("D15"), F("D15/GPIO15"), value);
     input += _add_FIRST_THP_Option(F("D16"), F("D16/GPIO16"), value);
     input += _add_FIRST_THP_Option(F("D17"), F("D17/GPIO17"), value);
+    input += _add_FIRST_THP_Option(F("D18"), F("D18/GPIO18"), value);
+    input += _add_FIRST_THP_Option(F("D19"), F("D19/GPIO19"), value);
+    input += _add_FIRST_THP_Option(F("D21"), F("D21/GPIO21"), value);
+    input += _add_FIRST_THP_Option(F("D22"), F("D22/GPIO22"), value);
+    input += _add_FIRST_THP_Option(F("D23"), F("D23/GPIO23"), value);
 #endif
   }
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
@@ -462,6 +479,7 @@ static String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &val
 static String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
+#ifdef ARDUINO_ARCH_ESP8266
   input += _add_SECOND_THP_Option(F("D1"), F("D1/GPIO05"), value);
   input += _add_SECOND_THP_Option(F("D2"), F("D2/GPIO04"), value);
   input += _add_SECOND_THP_Option(F("D3"), F("D3/GPIO00"), value);
@@ -470,9 +488,20 @@ static String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &va
   input += _add_SECOND_THP_Option(F("D6"), F("D6/GPIO12"), value);
   input += _add_SECOND_THP_Option(F("D7"), F("D7/GPIO13"), value);
   //input += _addOption(F("D8"), F("D8/GPIO15"), value);
-#ifdef ARDUINO_ARCH_ESP32
+#elif defined ARDUINO_ARCH_ESP32
+  input += _add_SECOND_THP_Option(F("D1"), F("D1/GPIO08"), value);
+  input += _add_SECOND_THP_Option(F("D2"), F("D2/GPIO02"), value);
+  input += _add_SECOND_THP_Option(F("D4"), F("D4/GPIO04"), value);
+  input += _add_SECOND_THP_Option(F("D5"), F("D5/GPIO05"), value);
+
+  input += _add_SECOND_THP_Option(F("D15"), F("D15/GPIO15"), value);
   input += _add_SECOND_THP_Option(F("D16"), F("D16/GPIO16"), value);
   input += _add_SECOND_THP_Option(F("D17"), F("D17/GPIO17"), value);
+  input += _add_SECOND_THP_Option(F("D18"), F("D18/GPIO18"), value);
+  input += _add_SECOND_THP_Option(F("D19"), F("D19/GPIO19"), value);
+  input += _add_SECOND_THP_Option(F("D21"), F("D21/GPIO21"), value);
+  input += _add_SECOND_THP_Option(F("D22"), F("D22/GPIO22"), value);
+  input += _add_SECOND_THP_Option(F("D23"), F("D23/GPIO23"), value);
 #endif
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
   return input;
@@ -482,9 +511,12 @@ static String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   if (!strcmp(DUST_MODEL, "SPS30")) {
+	  
     input += _add_DUST_Option(F("D1"), F("D1/GPIO05"), value);
     input += _add_DUST_Option(F("D2"), F("D2/GPIO04"), value);
+	
   } else {
+#ifdef ARDUINO_ARCH_ESP8266
     input += _add_DUST_Option(F("D1"), F("D1/GPIO05"), value);
     input += _add_DUST_Option(F("D2"), F("D2/GPIO04"), value);
     input += _add_DUST_Option(F("D3"), F("D3/GPIO00"), value);
@@ -493,9 +525,20 @@ static String _add_DUST_TX_RX_Select(const String &key, const String &value) {
     input += _add_DUST_Option(F("D6"), F("D6/GPIO12"), value);
     input += _add_DUST_Option(F("D7"), F("D7/GPIO13"), value);
     //input += _addOption(F("D8"), F("D8/GPIO15"), value);
-#ifdef ARDUINO_ARCH_ESP32
+#elif defined ARDUINO_ARCH_ESP32
+    input += _add_DUST_Option(F("D1"), F("D1/GPIO08"), value);
+    input += _add_DUST_Option(F("D2"), F("D2/GPIO02"), value);
+    input += _add_DUST_Option(F("D4"), F("D4/GPIO04"), value);
+    input += _add_DUST_Option(F("D5"), F("D5/GPIO05"), value);
+	
+    input += _add_DUST_Option(F("D15"), F("D15/GPIO15"), value);
     input += _add_DUST_Option(F("D16"), F("D16/GPIO16"), value);
     input += _add_DUST_Option(F("D17"), F("D17/GPIO17"), value);
+    input += _add_DUST_Option(F("D18"), F("D18/GPIO18"), value);
+    input += _add_DUST_Option(F("D19"), F("D19/GPIO19"), value);
+    input += _add_DUST_Option(F("D21"), F("D21/GPIO21"), value);
+    input += _add_DUST_Option(F("D22"), F("D22/GPIO22"), value);
+    input += _add_DUST_Option(F("D23"), F("D23/GPIO23"), value);
 #endif
   }
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
@@ -683,7 +726,8 @@ static void handle_config(AsyncWebServerRequest *request) {
 
 static String handle_config_device_processor(const String& var)
 {
-  // Serial.println(F("var: ") + var);
+// Serial.println(("var: ") + var);
+  
   String message;
   message = "";
 
@@ -806,6 +850,11 @@ static String handle_config_device_processor(const String& var)
   if (var == F("{SECOND_THP}")) {
     message += (_addBoolSelect("SECOND_THP", SECOND_THP));
   }
+  
+  if (SECOND_THP) {	
+   if (var == F("{SECOND_THP_PINS_CONFIG}")) {
+      message += String(WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS_CONFIG);
+    }
   if (var == F("{TEXT_SECOND_THP_SDA_SCL}")) {
     message += String(TEXT_SECOND_THP_SDA_SCL);
   }
@@ -820,7 +869,8 @@ static String handle_config_device_processor(const String& var)
   }
   if (var == F("{SECOND_THP_SCL}")) {
     message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SCL"), CONFIG_SECOND_THP_SCL));
-  }
+  }	
+}
 
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_DUST_PIN")) {
 	 if (strcmp(DUST_MODEL, "Non")) {
@@ -986,29 +1036,27 @@ static String handle_config_device_processor(const String& var)
   if (var == F("{WEB_CONFIG_DEVICE_HOMEKIT}")) {
     message += String(WEB_CONFIG_DEVICE_HOMEKIT);
   }
-
   if (var == F("{TEXT_HOMEKIT_SUPPORT}")) {
     message += String(TEXT_HOMEKIT_SUPPORT);
   }
   if (var == F("{HOMEKIT_SUPPORT_ON}")) {
     message += (_addBoolSelect(F("HOMEKIT_SUPPORT"), HOMEKIT_SUPPORT));
   }
+  
+  if (HOMEKIT_SUPPORT == true and String(homekit_is_paired()) == "1") {
+  if (var == F("{WEB_CONFIG_DEVICE_HOMEKIT_RESET")) {
+    message += String(WEB_CONFIG_DEVICE_HOMEKIT_RESET_PAIR);
+  }
   if (var == F("{TEXT_HOMEKIT_IS_PAIRED}")) {
-    if (HOMEKIT_SUPPORT == true) {
       // Serial.println(F("homekit_is_paired: ") + String(homekit_is_paired()));
-      if (String(homekit_is_paired()) == "1") {
         message += String(TEXT_HOMEKIT_IS_PAIRED);
-      }
-    }
   }
   if (var == F("{HOMEKIT_PAIRED_RESET}")) {
-    if (HOMEKIT_SUPPORT == true) {
       // Serial.println(F("homekit_is_paired: ") + String(homekit_is_paired()));
-      if (String(homekit_is_paired()) == "1") {
         message += (_add_homekit_reset());
-      }
-    }
   }
+  
+}
 #endif
 
   if (var == F("{WiFiEraseButton}")) {
@@ -2153,16 +2201,16 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
 
      AsyncWebParameter* p = request->getParam(i);
 
-     Serial.print(F("Param name: "));
+     Serial.print(("Param name: "));
      Serial.println(p->name());
 
-     Serial.print(F("Param value: "));
+     Serial.print(("Param value: "));
      Serial.println(p->value());
 
-     Serial.println(F("------"));
+     Serial.println(("------"));
     }
     }
-  */
+	*/
 
   if (request->hasParam("DEVICENAME_AUTO")) {
     DEVICENAME_AUTO = _parseAsBool(request->getParam("DEVICENAME_AUTO")->value());
@@ -2250,6 +2298,25 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   }
   // DUST Sensor config - END
 
+  if (request->hasParam("CONFIG_FIRST_THP_SDA")) {
+    _parseAsCString(CONFIG_FIRST_THP_SDA, request->getParam("CONFIG_FIRST_THP_SDA")->value(), 4);
+	
+  }
+  if (request->hasParam("CONFIG_FIRST_THP_SCL")) {
+      _parseAsCString(CONFIG_FIRST_THP_SCL, request->getParam("CONFIG_FIRST_THP_SCL")->value(), 4);
+  }
+  
+  if (request->hasParam("SECOND_THP")) {
+    SECOND_THP = _parseAsBool(request->getParam("SECOND_THP")->value());
+  }
+  
+  if (request->hasParam("CONFIG_SECOND_THP_SDA")) {
+      _parseAsCString(CONFIG_SECOND_THP_SDA, request->getParam("CONFIG_SECOND_THP_SDA")->value(), 4);
+  }
+  if (request->hasParam("CONFIG_SECOND_THP_SCL")) {
+      _parseAsCString(CONFIG_SECOND_THP_SCL, request->getParam("CONFIG_SECOND_THP_SCL")->value(), 4);
+  }
+
   if (request->hasParam("FREQUENTMEASUREMENT")) {
     FREQUENTMEASUREMENT = _parseAsBool(request->getParam("FREQUENTMEASUREMENT")->value());
   }
@@ -2294,6 +2361,10 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
 
   if (request->hasParam("AUTOUPDATE_ON")) {
     AUTOUPDATE_ON = _parseAsBool(request->getParam("AUTOUPDATE_ON")->value());
+  }
+
+  if (request->hasParam("HOMEKIT_SUPPORT")) {
+    HOMEKIT_SUPPORT = _parseAsBool(request->getParam("HOMEKIT_SUPPORT")->value());
   }
 
   if (need_update != 0) {
@@ -2348,31 +2419,33 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
 
 //void handle_config_services_post() {
 static void handle_config_services_save(AsyncWebServerRequest *request) {
-  /*
+  // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
+	/*
+    int paramsNr = request->params();
     if (DEBUG) {
-    Serial.println(F("POST CONFIG START!!"));
-    int argsLen = WebServer.args();
-    for (int i = 0; i < argsLen; i++) {
-      String argName = WebServer.argName(i);
-      String arg = WebServer.arg(i);
-      String ss = "** ";
-      ss += argName;
-      ss += " = ";
-      ss += arg;
-      Serial.println(ss);
-    }
-    }
+    for(int i=0;i<paramsNr;i++){
 
-    // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
-  */
-  if (request->hasParam("SENDING_FREQUENCY")) {
+     AsyncWebParameter* p = request->getParam(i);
+
+     Serial.print(("Param name: "));
+     Serial.println(p->name());
+
+     Serial.print(("Param value: "));
+     Serial.println(p->value());
+
+     Serial.println(("------"));
+    }
+    }
+	*/
+
+	if (request->hasParam("SENDING_FREQUENCY")) {
     SENDING_FREQUENCY = (request->getParam("SENDING_FREQUENCY")->value()).toInt();
   }
 
   if (request->hasParam("SENDING_DB_FREQUENCY")) {
     SENDING_DB_FREQUENCY = (request->getParam("SENDING_DB_FREQUENCY")->value()).toInt();
   }
-
+  
   if (request->hasParam("SMOGLIST_ON")) {
     SMOGLIST_ON = _parseAsBool(request->getParam("SMOGLIST_ON")->value());
   }
@@ -2392,15 +2465,17 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
   if (request->hasParam("AQI_ECO_PATH")) {
     _parseAsCString(AQI_ECO_PATH, request->getParam("AQI_ECO_PATH")->value(), 64);
   }
-
-  if (request->hasParam("AIRMONITOR_ON")) {
+  /*
+  if (request->hasParam("AIRMONITOR_ON")) {	  
     AIRMONITOR_ON = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
+    Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
   }
+Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
 
   if (request->hasParam("AIRMONITOR_GRAPH_ON")) {
     AIRMONITOR_GRAPH_ON = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
   }
-
+*/
   if (request->hasParam("AIRMONITOR_API_KEY")) {
     _parseAsCString(AIRMONITOR_API_KEY, request->getParam("AIRMONITOR_API_KEY")->value(), 64);
   }
@@ -2471,10 +2546,18 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
     _parseAsCString(INFLUXDB_TOKEN, request->getParam("INFLUXDB_TOKEN")->value(), 128);
   }
 
+  if (request->hasParam("AIRMONITOR_ON")) {
+    AIRMONITOR_ON = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
+  }
+  if (request->hasParam("AIRMONITOR_GRAPH_ON")) {
+    AIRMONITOR_GRAPH_ON = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
+  }
+  
+  
   if (DEBUG) {
     Serial.println(F("POST SERVICES CONFIG END!!"));
   }
-
+    
   saveConfig();
   //delay(250);
   //_handle_config_services(true);
@@ -2490,18 +2573,19 @@ static void handle_update_progress_cb(AsyncWebServerRequest *request, String fil
 #ifdef ARDUINO_ARCH_ESP8266
   uint32_t free_space = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
 #elif defined ARDUINO_ARCH_ESP32
-
+  uint32_t free_space = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
 #endif
   if (!index) {
-    Serial.println(F("Update"));
+    Serial.println(F("Start Updating..."));
 #ifdef ARDUINO_ARCH_ESP8266
     Update.runAsync(true);
+	#endif
     if (!Update.begin(free_space)) {
       Update.printError(Serial);
     }
-#elif defined ARDUINO_ARCH_ESP32
+	//#elif defined ARDUINO_ARCH_ESP32
 
-#endif
+	//#endif
   }
 
   if (Update.write(data, len) != len) {

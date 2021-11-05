@@ -7,7 +7,8 @@
 
 #elif defined ARDUINO_ARCH_ESP32
 #include <WiFi.h>
-#include <WiFiClient.h>
+// #include <WiFiClient.h>
+#include <WiFiClientSecure.h>
 #endif
 
 #ifdef ARDUINO_ARCH_ESP32
@@ -25,16 +26,19 @@ String F(String f_input)
 
 const char *airMonitorServerName PROGMEM = "airmonitor.pl";
 
+#ifdef ARDUINO_ARCH_ESP8266
 const int airMonitorPort PROGMEM = 80; // HTTP
-// const int airMonitorPort PROGMEM = 443; // HTTPS!
-
+#elif defined ARDUINO_ARCH_ESP32
+const int airMonitorPort PROGMEM = 443; // HTTPS!
+#endif
 /*
    This is lets-encrypt-x3-cross-signed.pem
     Certificate - airmonitor.pl at https://certlogik.com/ssl-checker/
     UPDATED: 12.07.2021
 */
 
-/*
+#ifdef ARDUINO_ARCH_ESP8266
+#elif defined ARDUINO_ARCH_ESP32
   static const char trustRoot_airmonitor[] PROGMEM = R"EOF(
   -----BEGIN CERTIFICATE-----
   MIIF4TCCBMmgAwIBAgIQAVJECA+oWVpzSn+X60jTPzANBgkqhkiG9w0BAQsFADBG
@@ -72,10 +76,15 @@ const int airMonitorPort PROGMEM = 80; // HTTP
   -----END CERTIFICATE-----
   )EOF";
 
-  X509List cert(trustRoot_airmonitor);
-*/
+  // X509List cert(trustRoot_airmonitor);
+#endif
+
 // Last update: 13.07.2021 - https://www.grc.com/fingerprints.htm
+#ifdef ARDUINO_ARCH_ESP8266
 const char fingerprint_airMonitor[] PROGMEM = "EC 15 73 25 AF 1C DD 01 10 24 03 3D A6 46 C8 40 51 12 5C 13"; // https://airmonitor.pl/prod/measurements
+#elif defined ARDUINO_ARCH_ESP32
+
+#endif
 
 // Set time via NTP, as required for x.509 validation
 /*
@@ -277,36 +286,34 @@ void sendTHPData(float & currentTemperature, float & currentPressure, float & cu
 
 #elif defined ARDUINO_ARCH_ESP32
 void sendJson(JsonObject& json) {
-	/*
+	
   Serial.print("\nconnecting to ");
   Serial.println(airMonitorServerName);
   
   String JSONoutput = "";
   serializeJson(json, JSONoutput);
-  
+  /*
   if (DEBUG) {
 	Serial.print("========================================\n");
     Serial.println("\nFree Heap: " + String(ESP.getFreeHeap()));
     Serial.print("========================================\n");
   }
 
-  
-
+ 
     // Current Free Heap: 28504
-
     // NEED at least Free Heap: ~31000 - BTW in theory: 17 kB + 5 kB - for clientSecure
-
   
-  
-  // setUpdateClock_airmonitor();
+  */
+	// setUpdateClock_airmonitor();
   WiFiClientSecure client;
-  *//*
+  /*
   if (DEBUG) {
     Serial.print("\nUsing fingerprint: '%s'\n", fingerprint_airMonitor);
   }
-  *//*
-  //client.setInsecure();
-  client.setFingerprint(fingerprint_airMonitor);
+  */
+  client.setInsecure();
+  //client.setCACert(trustRoot_airmonitor);
+  //client.setFingerprint(fingerprint_airMonitor);
   client.setTimeout(15000); // 15 Seconds
   delay(1000);
 
@@ -333,7 +340,7 @@ void sendJson(JsonObject& json) {
                "X-Api-Key: " + String(AIRMONITOR_API_KEY) + "\r\n\r\n" +
                String(JSONoutput) + "\r\n\r\n");
   
-  */
+  
   /*
   if (DEBUG) {
     Serial.print("\n\n\t\t====================\n");
@@ -345,12 +352,12 @@ void sendJson(JsonObject& json) {
                  String(JSONoutput) + "\r\n\r\n");
     Serial.print("\n\t\t====================\n\n");
   }
-*//*
+*/
   Serial.println("request sent");
   Serial.println("closing connection");
   
   client.stop();
-  */
+  /*
  
     WiFiClient client;
 
@@ -382,7 +389,7 @@ void sendJson(JsonObject& json) {
         Serial.println(line);
     }
     client.stop();
-
+	*/
 }
 
 void sendDUSTData(unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM10) {

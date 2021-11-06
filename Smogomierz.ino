@@ -1223,8 +1223,8 @@ void setup() {
     if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
       SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * SENDING_FREQUENCY;
       if (AIRMONITOR_ON) {
-        if (SENDING_FREQUENCY < 30) {
-          SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * 1; // * 30 ???
+        if (SENDING_FREQUENCY < 3) {
+          SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * 3; // * 3 -- API restriction - <28 requests per hour
         } else {
           SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * SENDING_FREQUENCY;
         }
@@ -1726,9 +1726,7 @@ void loop() {
     delay(5000);
   }
 
-
   /*
-
     unsigned int current_SENDING_FREQUENCY_Millis = millis();
     if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
     #ifdef ARDUINO_ARCH_ESP32
@@ -1742,10 +1740,7 @@ void loop() {
     #endif
       previous_SENDING_FREQUENCY_Millis = millis();
     }
-
   */
-
-
 
 } // loop() - END
 

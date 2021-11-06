@@ -1,9 +1,6 @@
 // UPDATE PAGE HTML
 /*
 % -> &#37;
-
-		%{SMOGLY_LOGO_URL}%
-
 */
 static const char WEB_UPDATE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15&#37;'>
@@ -57,6 +54,3 @@ static const char WEB_UPDATE_INFO_WARNING[] = R"rawliteral(<center><h2><b>%{TEXT
 static const char WEB_UPDATE_BUTTON_FWUPDATE[] = R"rawliteral(<a href='/fwupdate' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_FWUPDATEBUTTON}%</a>)rawliteral";
 
 static const char WEB_UPDATE_BUTTON_AUTOUPDATEON[] = R"rawliteral(<a href='/autoupdateon' class='btn btn-outline-primary btn-sm' role='button'>%{TEXT_AUTOUPDATEONBUTTON}%</a>)rawliteral";
-
-	
-	

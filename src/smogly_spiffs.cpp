@@ -7,15 +7,6 @@
 #include "config.h"
 #define FORMAT_SPIFFS_IF_FAILED true
 
-//const int capacity = JSON_OBJECT_SIZE(70);
-/*
-  #ifdef ARDUINO_ARCH_ESP8266
-  const int capacity = 6144;
-  #elif defined ARDUINO_ARCH_ESP32
-  const int capacity = 4608;
-  #endif
-*/
-
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {
   const char* val = obj.as<const char*>();
   if (val) {

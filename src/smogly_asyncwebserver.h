@@ -12,9 +12,6 @@
 #include "smogly_spiffs.h"
 #include <FS.h>
 
-// const char* www_realm = "Custom Auth Realm";
-// String authFailResponse = "<meta http-equiv='refresh' content='0; url=/' /> Authentication Failed! <p><a href='/'>Redirect</a></p>";
-
 static String handle_root_processor(const String& var)
 {
   // Serial.println(F("var: ") + var);
@@ -837,6 +834,8 @@ static String handle_config_device_processor(const String& var)
     }
   }
 
+  // SECOND_THP CONFIG
+  /*
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_SECOND_T")) {
     if (strcmp(THP_MODEL, "Non")) {
       message += String(WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS);
@@ -871,6 +870,7 @@ static String handle_config_device_processor(const String& var)
     message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SCL"), CONFIG_SECOND_THP_SCL));
   }	
 }
+*/
 
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_DUST_PIN")) {
 	 if (strcmp(DUST_MODEL, "Non")) {
@@ -2405,6 +2405,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   //ESP.reset();
   delay(300);
   request->redirect("/");
+  
   /*
     int redirect_interval = 3 * 1000; // 3 seconds
     unsigned long current_redirect_Millis = millis();

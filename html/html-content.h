@@ -84,43 +84,6 @@ static const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a hr
 			</body></html>
 	)rawliteral";
 #endif
-
-// MEASUREMENTS PAGE - START
-			/*
-const char WEB_ROOT_PAGE_MEASUREMENTS[] PROGMEM = R"rawliteral(<h2>{TEXT_WEATHER}:</h2>
-	<h3>{TEXT_TEMPERATURE}: {Temperature} °C</h3>
-	<h3>{TEXT_HUMIDITY}: {Humidity} %</h3>
-	<h3>{TEXT_PRESSURE}: {Pressure} hPa</h3>
-	<h3>{TEXT_DEWPOINT}: {Dewpoint} °C</h3><p>
-	<h2>{TEXT_AIRPOLLUTION}:</h2>
-	<h3>PM1: {averagePM1} µg/m³</h3>
-	<h3>PM2.5: {colorAveragePM25} {averagePM25} µg/m³</h3>
-	<h3>PM10: {colorAveragePM10} {averagePM10} µg/m³</h3>
-	)rawliteral";
-
-const char WEB_ROOT_PAGE_MEASUREMENTS_THP2[] PROGMEM = R"rawliteral(
-		<br><br>
-		<h3>{TEXT_TEMPERATURE}: {Temperature} °C</h3>
-		<h3>{TEXT_HUMIDITY}: {Humidity} %</h3>
-		<h3>{TEXT_PRESSURE}: {Pressure} hPa</h3>
-		<h3>{TEXT_DEWPOINT}: {Dewpoint} °C</h3><p>
-		)rawliteral";
-		
-const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = R"rawliteral(<hr>
-	<iframe src='http://metrics.airmonitor.pl/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>
-	<iframe src='http://metrics.airmonitor.pl/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100%; width: 100%; max-height: 510; max-width: 450;' ></iframe>
-	)rawliteral";
-
-const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>
-	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM2.5&type=line&yaxis=ug%2Fm3&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
-    <iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=PM10&type=line&yaxis=ug%2Fm3&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
-	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Temperatura&type=line&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
-	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/5?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Ci%C5%9Bnienie&type=line&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
-	<iframe width='450' height='260' style='border: 1px solid #cccccc;' src='https://thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/charts/6?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Wilgotno%C5%9B%C4%87&type=line&update=15&api_key={THINGSPEAK_READ_API_KEY}'></iframe>
-	)rawliteral";
-*/
-// MEASUREMENTS PAGE - END
-	
 	
 // CONFIG PAGE - Start
 	const char WEB_CONFIG_PAGE_TOP[] PROGMEM = R"rawliteral(<main role='main' class='container'><div class='jumbotron'>

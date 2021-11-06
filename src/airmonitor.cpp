@@ -7,18 +7,7 @@
 
 #elif defined ARDUINO_ARCH_ESP32
 #include <WiFi.h>
-// #include <WiFiClient.h>
 #include <WiFiClientSecure.h>
-#endif
-
-#ifdef ARDUINO_ARCH_ESP32
-/*
-#undef F
-String F(String f_input)
-{
-	return f_input;
-}
-*/
 #endif
 
 #include <ArduinoJson.h>
@@ -115,81 +104,6 @@ const char fingerprint_airMonitor[] PROGMEM = "EC 15 73 25 AF 1C DD 01 10 24 03 
 
 #ifdef ARDUINO_ARCH_ESP8266
 void sendJson(JsonObject& json) {
-	/*
-  Serial.print(F("\nconnecting to "));
-  Serial.println(airMonitorServerName);
-  
-  String JSONoutput = "";
-  serializeJson(json, JSONoutput);
-  
-  if (DEBUG) {
-	Serial.print(F("========================================\n"));
-    Serial.println(F("\nFree Heap: ") + String(ESP.getFreeHeap()));
-    Serial.print(F("========================================\n"));
-  }
-
-  
-
-    // Current Free Heap: 28504
-
-    // NEED at least Free Heap: ~31000 - BTW in theory: 17 kB + 5 kB - for clientSecure
-
-  
-  
-  // setUpdateClock_airmonitor();
-  WiFiClientSecure client;
-  *//*
-  if (DEBUG) {
-    Serial.printf("\nUsing fingerprint: '%s'\n", fingerprint_airMonitor);
-  }
-  *//*
-  //client.setInsecure();
-  client.setFingerprint(fingerprint_airMonitor);
-  client.setTimeout(15000); // 15 Seconds
-  delay(1000);
-
-
-  Serial.print(F("\nHTTPS Connecting"));
-
-  if (!client.connect(airMonitorServerName, airMonitorPort)) {
-    Serial.println(F("connection failed"));
-    Serial.println(F("wait 1 sec...\n"));
-    delay(1000);
-    return;
-  }
-  delay(100);
-
-  //POST Data
-  //Serial.print("JSONoutput: " + JSONoutput);
-
-
-  String Link = F("/prod/measurements");  
-  client.print(String(F("POST ")) + Link + F(" HTTP/1.1\r\n") +
-               F("Host: ") + String(airMonitorServerName) + F("\r\n") +
-               F("Content-Type: application/json\r\n") +
-               F("Content-Length: ") + String(measureJson(json)) + F("\r\n") +
-               F("X-Api-Key: ") + String(AIRMONITOR_API_KEY) + F("\r\n\r\n") +
-               String(JSONoutput) + F("\r\n\r\n"));
-  
-  */
-  /*
-  if (DEBUG) {
-    Serial.print(F("\n\n\t\t====================\n"));
-    Serial.print(String(F("POST ")) + Link + F(" HTTP/1.1\r\n") +
-                 F("Host: ") + String(airMonitorServerName) + F("\r\n") +
-                 F("Content-Type: application/json\r\n") +
-                 F("Content-Length: ") + String(measureJson(json)) + F("\r\n") +
-                 F("X-Api-Key: ") + String(AIRMONITOR_API_KEY) + F("\r\n\r\n") +
-                 String(JSONoutput) + F("\r\n\r\n"));
-    Serial.print(F("\n\t\t====================\n\n"));
-  }
-*//*
-  Serial.println(F("request sent"));
-  Serial.println(F("closing connection"));
-  
-  client.stop();
-  */
- 
     WiFiClient client;
 
     if (!client.connect(airMonitorServerName, airMonitorPort)) {
@@ -283,7 +197,6 @@ void sendTHPData(float & currentTemperature, float & currentPressure, float & cu
   }
 }
 
-
 #elif defined ARDUINO_ARCH_ESP32
 void sendJson(JsonObject& json) {
 	
@@ -292,18 +205,7 @@ void sendJson(JsonObject& json) {
   
   String JSONoutput = "";
   serializeJson(json, JSONoutput);
-  /*
-  if (DEBUG) {
-	Serial.print("========================================\n");
-    Serial.println("\nFree Heap: " + String(ESP.getFreeHeap()));
-    Serial.print("========================================\n");
-  }
 
- 
-    // Current Free Heap: 28504
-    // NEED at least Free Heap: ~31000 - BTW in theory: 17 kB + 5 kB - for clientSecure
-  
-  */
 	// setUpdateClock_airmonitor();
   WiFiClientSecure client;
   /*
@@ -317,9 +219,7 @@ void sendJson(JsonObject& json) {
   client.setTimeout(15000); // 15 Seconds
   delay(1000);
 
-
-  Serial.print("\nHTTPS Connecting");
-
+  // Serial.print("\nHTTPS Connecting...");
   if (!client.connect(airMonitorServerName, airMonitorPort)) {
     Serial.println("connection failed");
     Serial.println("wait 1 sec...\n");
@@ -327,11 +227,7 @@ void sendJson(JsonObject& json) {
     return;
   }
   delay(100);
-
-  //POST Data
-  //Serial.print("JSONoutput: " + JSONoutput);
-
-
+  
   String Link = "/prod/measurements";  
   client.print(String("POST ") + Link + " HTTP/1.1\r\n" +
                "Host: " + String(airMonitorServerName) + "\r\n" +
@@ -339,11 +235,10 @@ void sendJson(JsonObject& json) {
                "Content-Length: " + String(measureJson(json)) + "\r\n" +
                "X-Api-Key: " + String(AIRMONITOR_API_KEY) + "\r\n\r\n" +
                String(JSONoutput) + "\r\n\r\n");
-  
-  
+    
   /*
   if (DEBUG) {
-    Serial.print("\n\n\t\t====================\n");
+    Serial.print("\n\n\t\t====================\n\n");
     Serial.print(String("POST ") + Link + " HTTP/1.1\r\n" +
                  "Host: " + String(airMonitorServerName) + "\r\n" +
                  "Content-Type: application/json\r\n" +
@@ -352,44 +247,18 @@ void sendJson(JsonObject& json) {
                  String(JSONoutput) + "\r\n\r\n");
     Serial.print("\n\t\t====================\n\n");
   }
-*/
-  Serial.println("request sent");
-  Serial.println("closing connection");
+  */
+  
+  String line = client.readStringUntil('\r');
+  
+  if (DEBUG) {
+      Serial.print("Length:");
+  	  Serial.println(measureJson(json));
+  	  serializeJsonPretty(json, Serial);
+      Serial.println(line);
+  }
   
   client.stop();
-  /*
- 
-    WiFiClient client;
-
-    if (!client.connect(airMonitorServerName, airMonitorPort)) {
-        Serial.println("connection failed");
-        Serial.println("wait 1 sec...\n");
-        delay(1000);
-        return;
-    }
-    delay(100);
-
-    client.println("POST /prod/measurements HTTP/1.1");
-    client.print("Host: ");
-    client.println(airMonitorServerName);
-    client.println("Content-Type: application/json");
-    client.print("Content-Length: ");
-    client.println(measureJson(json));
-    client.println("X-Api-Key: " + String(AIRMONITOR_API_KEY));
-    client.println();
-    serializeJson(json, client);
-
-    String line = client.readStringUntil('\r');
-    // TODO: Support wrong error (!= 200)
-
-    if (DEBUG) {
-        Serial.print("Length:");
-    Serial.println(measureJson(json));
-    serializeJsonPretty(json, Serial);
-        Serial.println(line);
-    }
-    client.stop();
-	*/
 }
 
 void sendDUSTData(unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM10) {

@@ -1091,7 +1091,7 @@ static void handle_config_device(AsyncWebServerRequest *request) {
 
 static String handle_config_services_processor(const String& var)
 {
-  //Serial.println(F("var: ") + var);
+  // Serial.println(F("var: ") + var);
   String message;
   message = "";
 
@@ -2450,11 +2450,11 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
   if (request->hasParam("SMOGLIST_ON")) {
     SMOGLIST_ON = _parseAsBool(request->getParam("SMOGLIST_ON")->value());
   }
-
+  /*
   if (request->hasParam("LUFTDATEN_ON")) {
-    LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
+      LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
   }
-
+*/
   if (request->hasParam("AQI_ECO_ON")) {
     AQI_ECO_ON = _parseAsBool(request->getParam("AQI_ECO_ON")->value());
   }
@@ -2555,10 +2555,20 @@ Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
   }
   
   
+  if (request->hasParam("LUFTDATEN_ON")) {
+      LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
+  }
+  
   if (DEBUG) {
     Serial.println(F("POST SERVICES CONFIG END!!"));
-  }  
-    
+	
+    // Serial.println("\n\t\t\t LUFTDATEN_ON: " + String(LUFTDATEN_ON) + "\n\n");
+	
+  }    
+  
+  // request->redirect("/");
+  delay(100);
+  
   saveConfig();
   //delay(250);
   //_handle_config_services(true);

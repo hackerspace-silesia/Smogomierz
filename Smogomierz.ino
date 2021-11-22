@@ -92,6 +92,8 @@
   Szkic używa 694529 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46688 bajtów (56%) pamięci dynamicznej, pozostawiając 35232 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
+  Szkic używa 695897 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 46800 bajtów (57%) pamięci dynamicznej, pozostawiając 35120 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ASYNC_WEBSERVER_ON + INTL_PL
 
@@ -1450,6 +1452,12 @@ void setup() {
 
   // Check if config.h exist in ESP data folder
 #ifdef ASYNC_WEBSERVER_ON
+
+  // https://github.com/me-no-dev/ESPAsyncWebServer/issues/1080#issuecomment-954891157
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+
   server.begin();
 #else
   WebServer.begin();

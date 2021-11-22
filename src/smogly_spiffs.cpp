@@ -543,8 +543,9 @@ bool loadConfig() {
   }
 
 bool saveConfig() {
-	/*
+	
   if (DEBUG) {
+	  /*
     Serial.print(F("Saved DEVICENAME_AUTO: "));
     Serial.println(DEVICENAME_AUTO);
     Serial.print(F("Saved DEVICENAME: "));
@@ -602,12 +603,14 @@ bool saveConfig() {
     Serial.println(DUST_TIME);
     Serial.print(F("Saved NUMBEROFMEASUREMENTS: "));
     Serial.println(NUMBEROFMEASUREMENTS);
-
+*/
+	  /*
     Serial.print(F("Saved LUFTDATEN_ON: "));
     Serial.println(LUFTDATEN_ON);
     Serial.print(F("Saved SMOGLIST_ON: "));
     Serial.println(SMOGLIST_ON);
-	
+*/
+/*	
     Serial.print(F("Saved AIRMONITOR_ON: "));
     Serial.println(AIRMONITOR_ON);
     Serial.print(F("Saved AIRMONITOR_GRAPH_ON: "));
@@ -729,8 +732,9 @@ bool saveConfig() {
     Serial.println(SOFTWAREVERSION);
 
     Serial.println(F("\n"));
-  }
 */
+  }
+
 
 #ifdef ARDUINO_ARCH_ESP8266
   const short capacity = 6144;

@@ -6,7 +6,7 @@
 #endif
 
 #include <ArduinoJson.h>
-#include "config.h"
+#include "../../config.h"
 
 const char *SmoglistServerName PROGMEM = "api.smoglist.pl"; // api.smoglist.pl:8090/postjson
 const uint16_t SmoglistPort = 8090;

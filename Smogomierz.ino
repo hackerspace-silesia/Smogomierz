@@ -118,10 +118,10 @@
 
   ASYNC_WEBSERVER_ON
 
-  Szkic używa 1473638 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 59040 bajtów (18%) pamięci dynamicznej, pozostawiając 268640 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1472826 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 58928 bajtów (17%) pamięci dynamicznej, pozostawiając 268752 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1475234 bajtów (75%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 58928 bajtów (17%) pamięci dynamicznej, pozostawiając 268752 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
@@ -130,57 +130,57 @@
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
 #ifdef ASYNC_WEBSERVER_ON
-#include "src/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 5.11.2021
+#include "src/WiFiManager/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 5.11.2021
 #else
-#include "src/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 5.11.2021 DEV
+#include "src/WiFiManager/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 5.11.2021 DEV
 #endif
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
-#include "src/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
+#include "src/libs/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
 #else
-#include "src/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
+#include "src/libs/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
 #endif
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 5.11.2021
+#include "src/libs/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 5.11.2021
 #endif
 
-#include "src/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 5.11.2021
-#include "src/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 5.11.2021
-#include "src/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 5.11.2021
-#include "src/DHT.h" // https://github.com/adafruit/DHT-sensor-library // 5.11.2021
+#include "src/libs/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 5.11.2021
+#include "src/libs/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 5.11.2021
+#include "src/libs/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 5.11.2021
+#include "src/libs/DHT.h" // https://github.com/adafruit/DHT-sensor-library // 5.11.2021
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 5.11.2021
+#include "src/libs/pms.h" // https://github.com/fu-hsi/PMS // 5.11.2021
 #elif defined DUSTSENSOR_SDS011_21
 #ifdef ARDUINO_ARCH_ESP8266
-#include "src/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 5.11.2021
+#include "src/libs/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 5.11.2021
 #elif defined ARDUINO_ARCH_ESP32
-// #include "esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 5.11.2021
-#include "src/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 5.11.2021
+// #include "src/libs/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 5.11.2021
+#include "src/libs/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 5.11.2021
 #endif
 #elif defined DUSTSENSOR_HPMA115S0
-#include "src/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 5.11.2021
+#include "src/libs/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 5.11.2021
 #elif defined DUSTSENSOR_SPS30
-#include "src/sps30.h" // https://github.com/paulvha/sps30 // CUSTOMIZED! 5.11.2021
+#include "src/libs/sps30.h" // https://github.com/paulvha/sps30 // CUSTOMIZED! 5.11.2021
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
-#include "src/pms.h" // https://github.com/fu-hsi/PMS // 5.11.2021
+#include "src/libs/pms.h" // https://github.com/fu-hsi/PMS // 5.11.2021
 #endif
 
 #include "src/smogly_spiffs.h"
-#include "src/config.h"
+#include "config.h"
 #include "defaultConfig.h"
 
 #include "src/autoupdate.h"
-#include "src/smoglist.h"
 
-#include "src/luftdaten.h"
-#include "src/airmonitor.h"
-#include "src/thing_speak.h"
-#include "src/aqieco.h"
-#include "src/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 5.11.2021
+#include "src/services/smoglist.h"
+#include "src/services/luftdaten.h"
+#include "src/services/airmonitor.h"
+#include "src/services/thing_speak.h"
+#include "src/services/aqieco.h"
+#include "src/services/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 5.11.2021
 
 //        it would be nice to update the InfluxDB library to
-// #include "src/InfluxDB/InfluxDbClient.h" // https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino
+// #include "src/services/InfluxDB/InfluxDbClient.h" // https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino
 
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
 #ifdef ASYNC_WEBSERVER_ON

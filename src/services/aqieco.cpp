@@ -6,7 +6,7 @@
 #endif
 
 #include <ArduinoJson.h>
-#include "config.h"
+#include "../../config.h"
 
 #ifdef ARDUINO_ARCH_ESP8266	
 void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {

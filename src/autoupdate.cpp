@@ -14,7 +14,7 @@
 
 
 #include <ArduinoJson.h>
-#include "config.h"
+#include "../config.h"
 
 // ********************** Config **********************
 

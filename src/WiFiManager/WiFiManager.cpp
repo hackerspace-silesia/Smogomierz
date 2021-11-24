@@ -2827,7 +2827,7 @@ void WiFiManager::setMenu(const char * menu[], uint8_t size){
  * eg.
  * std::vector<const char *> menu = {"wifi","setup","sep","info","exit"};
  * WiFiManager.setMenu(menu);
- * tokens can be found in _menutokens array in strings_en.h
+ * tokens can be found in _menutokens array in WiFiManager_strings_en.h
  * @shiftIncrement $dev
  * @param {[type]} std::vector<const char *>& menu [description]
  */

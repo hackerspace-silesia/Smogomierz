@@ -4,7 +4,7 @@
 #include <SPIFFS.h>
 #endif
 
-#include "config.h"
+#include "../config.h"
 #define FORMAT_SPIFFS_IF_FAILED true
 
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {

@@ -241,8 +241,19 @@ static String handle_root_processor(const String& var)
       message += "";
     }
   }
+  
+  if (LUFTDATEN_GRAPH_ON) {
+      if (var == F("{WEB_ROOT_PAGE_LUFTDATEN_GRAPH}")) {
+          message += String(WEB_ROOT_PAGE_LUFTDATEN_GRAPH);
+          message.replace(F("{NODE_LUFTDATEN_ID}"), String(LUFTDATEN_APIID));
+      }
+  } else {
+    if (var == F("{WEB_ROOT_PAGE_LUFTDATEN_GRAPH}")) {
+      message += "";
+    }
+  }
 
-  if (AIRMONITOR_GRAPH_ON) {
+  if (THINGSPEAK_GRAPH_ON) {
     if (var == F("{WEB_ROOT_PAGE_THINGSPEAK_GRAPH}")) {
       message += String(WEB_ROOT_PAGE_THINGSPEAK_GRAPH);
       message.replace(F("{THINGSPEAK_CHANNEL_ID}"), String(THINGSPEAK_CHANNEL_ID));
@@ -723,7 +734,7 @@ static void handle_config(AsyncWebServerRequest *request) {
 
 static String handle_config_device_processor(const String& var)
 {
-// Serial.println(("var: ") + var);
+	// Serial.println(("var: ") + var);
   
   String message;
   message = "";
@@ -1059,6 +1070,14 @@ static String handle_config_device_processor(const String& var)
 }
 #endif
 
+if (var == F("{TEXT_UPDATEWARNING}")) {
+    message += "";
+	/*
+  message += (String(TEXT_AUTOUPDATEWARNING));
+  message.replace(F("{TEXT_FWUPDATEBUTTON}"), String(TEXT_FWUPDATEBUTTON));
+	*/
+}
+
   if (var == F("{WiFiEraseButton}")) {
     message += (_addWiFiErase());
   }
@@ -1293,6 +1312,13 @@ static String handle_config_services_processor(const String& var)
     }
   }
 
+  if (var == F("{TEXT_LUFTDATEN_GRAPH_ON}")) {
+    message += String(TEXT_LUFTDATEN_GRAPH_ON);
+  }
+  if (var == F("{LUFTDATEN_GRAPH_ON}")) {
+      message += (_addBoolSelect(F("LUFTDATEN_GRAPH_ON"), LUFTDATEN_GRAPH_ON));
+  }
+  
   if (var == F("{TEXT_AQIECOSENDING}")) {
     message += String(TEXT_AQIECOSENDING);
   }
@@ -2608,6 +2634,11 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
       LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
   }
   
+  if (request->hasParam("LUFTDATEN_GRAPH_ON")) {
+    LUFTDATEN_GRAPH_ON = _parseAsBool(request->getParam("LUFTDATEN_GRAPH_ON")->value());
+  }
+  
+  
   if (DEBUG) {
     Serial.println(F("POST SERVICES CONFIG END!!"));
 	
@@ -2733,6 +2764,7 @@ static String handle_update_processor(const String& var)
       if (var == F("{TEXT_AUTOUPDATEWARNING}")) {
         message += String(TEXT_AUTOUPDATEWARNING);
       }
+
       if (var == F("{TEXT_FWUPDATEBUTTON}")) {
         message += String(TEXT_FWUPDATEBUTTON);
       }

@@ -75,6 +75,7 @@ char PL_INTL_SECUREPASSWD[10] PROGMEM = "Hasło";
 char PL_INTL_SECURELOGOUTINFO[48] PROGMEM = "Zrestartuj przeglądarkę w celu wylogowania!";
 
 char PL_INTL_LUFTDATENSENDING[96] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga rejestracji {LUFTDATENFORM_LINK})";
+char PL_INTL_LUFTDATEN_GRAPH_ON[50] = "Wyświetlanie wykresów z serwisu Luftdaten";
 
 char PL_INTL_SMOGLISTSENDING[48] PROGMEM = "Wysyłanie danych do serwisu {SMOGLIST_LINK}";
 char PL_INTL_SMOGLISTINFO[242] PROGMEM = "Smoglist to serwis zbierający statystyki użytkowania Smogly(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";

@@ -52,7 +52,7 @@ static const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang
 					<br>
 					<!-- <b>%{TEXT_CALIB2}%: </b>%{calib2}% -->
 					<b>%{TEXT_SOFTWATEVERSION}%: </b>%{SOFTWAREVERSION}%
-					<br><b>%{TEXT_AUTOUPDATEON}%: </b>%{AUTOUPDATEON}% %{TEXT_UPDATEPAGEAUTOUPDATEWARNING}%
+					<br><b>%{TEXT_AUTOUPDATEON}%: </b>%{AUTOUPDATEON}% %{TEXT_UPDATEWARNING}%
 					%{WEB_CONFIG_DEVICE_HOMEKIT}%
 					<hr><center><br>
 					%{WiFiEraseButton}%  %{RestoreConfigButton}%

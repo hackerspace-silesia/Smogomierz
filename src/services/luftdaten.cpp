@@ -1,8 +1,12 @@
 #ifdef ARDUINO_ARCH_ESP8266
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+#include <WiFiClient.h>
+#include <ESP8266HTTPClient.h>
 #elif defined ARDUINO_ARCH_ESP32
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include <HTTPClient.h>
 #endif
 
 #include <ArduinoJson.h>
@@ -15,6 +19,8 @@ const uint16_t luftdatenAPIPort PROGMEM = 80;
 const char *madavideAPIHOST PROGMEM = "api-rrd.madavi.de";
 const char *madavideAPIURL PROGMEM = "/data.php";
 const uint16_t madavideAPIPort PROGMEM = 80;
+
+String receivedLuftdatenAPIJSON;
 
 #ifdef ARDUINO_ARCH_ESP8266
 // Luftdaten.info - https://luftdaten.info
@@ -443,8 +449,6 @@ void sendTHPDatatoMadavide(float & currentTemperature, float & currentPressure, 
     sendTHPMadavideJson(json);
   }
 }
-
-
 #elif defined ARDUINO_ARCH_ESP32
 // Luftdaten.info - https://luftdaten.info
 void sendDUSTLuftdatenJson(JsonObject& json) {
@@ -874,6 +878,98 @@ void sendTHPDatatoMadavide(float & currentTemperature, float & currentPressure, 
 }
 #endif
 
+bool getLuftdatenJSON(float LATITUDE, float LONGITUDE) {
+	String url_string = ("http://data.sensor.community/airrohr/v1/filter/box=" + String(LATITUDE, 6) + "00000," + String(LONGITUDE, 6) + "00000," + String(LATITUDE, 6) + "00000," + String(LONGITUDE, 6) + "00000");
+		
+    // Check WiFi Status
+    if (WiFi.status() == WL_CONNECTED) {
+      if (DEBUG) {
+		  // Serial.print("\nWaiting for " + String(url_string));
+		  Serial.print("\nWaiting for Luftdaten API data");
+      }
+#ifdef ARDUINO_ARCH_ESP8266
+	  WiFiClient client;
+#endif
+      HTTPClient http;  // Object of class HTTPClient
+      http.setTimeout(12000);
+#ifdef ARDUINO_ARCH_ESP8266
+      http.begin(client, url_string);
+#elif defined ARDUINO_ARCH_ESP32
+      http.begin(url_string);
+#endif
+      int httpCode = http.GET();
+      if (httpCode != 200) {
+        http.end();
+        Serial.println("\nReceived httpCode: " + String(httpCode)); // WiFi - on, internet - off = -1 // // WiFi - on, internet - on, server - off = ???
+        return false;
+      }
+      if (httpCode < 0) {
+        http.end();
+        Serial.println("\n\tConnection failed!\n");
+        return false;
+      }
+      if (httpCode > 0) {
+        receivedLuftdatenAPIJSON = http.getString();
+        // Serial.println(receivedLuftdatenAPIJSON);
+      }
+      http.end();
+      return true;
+    } else {
+    return false;
+  }
+}
+
+void parsingLuftdatenAPIJSON() {
+  DynamicJsonDocument doc(1536);
+  deserializeJson(doc, receivedLuftdatenAPIJSON);
+  JsonArray json = doc.as<JsonArray>();
+
+if (DEBUG) {
+    // serializeJsonPretty(json, Serial);
+	// Serial.println("\n");
+	    }
+//Serial.println("json.size(): " + String(json.size())); 
+		
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 || DUSTSENSOR_PMS5003_7003_BME280_0x77
+String temp_DUSTMODEL_Luftdaten = "PMS7003";
+#elif defined DUSTSENSOR_SDS011_21
+String temp_DUSTMODEL_Luftdaten = "SDS021";
+#elif defined DUSTSENSOR_HPMA115S0
+String temp_DUSTMODEL_Luftdaten = "HPM";
+#elif defined DUSTSENSOR_SPS30
+String temp_DUSTMODEL_Luftdaten = "SPS30";
+#else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
+String temp_DUSTMODEL_Luftdaten = "PMS7003";
+#endif
+
+#ifdef ARDUINO_ARCH_ESP8266
+for (int i = 0; i < json.size(); i++) {	
+	if (String(json[i]["sensor"]["id"]) != "null") {
+		if (String(json[i]["sensor"]["sensor_type"]["name"]) == String(temp_DUSTMODEL_Luftdaten)) {
+			// Serial.println("json[" + String(i) + "][\"sensor\"][\"id\"]: " + String(json[i]["sensor"]["id"]));				
+			LUFTDATEN_APIID = int(json[i]["sensor"]["id"]); 
+		}
+	}
+}
+#elif defined ARDUINO_ARCH_ESP32
+ for (int i = 0; i < json.size(); i++) {	
+ 	if (String(json[i]["sensor"]["id"].as<String>()) != "null") {
+ 		if (String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == String(temp_DUSTMODEL_Luftdaten)) {
+ 			// Serial.println("json[" + String(i) + "][\"sensor\"][\"id\"]: " + String(json[i]["sensor"]["id"].as<String>()));				
+ 			LUFTDATEN_APIID = int(json[i]["sensor"]["id"].as<int>()); 
+ 		}
+ 	}
+ }
+#endif
+
+  if (DEBUG) {
+    // Output to serial monitor
+    Serial.print("LUFTDATEN_APIID: ");
+    Serial.println(LUFTDATEN_APIID);
+    Serial.print("\n");
+ }
+}
+
 void sendDataToLuftdaten(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
   if (!(LUFTDATEN_ON)) {
     return;
@@ -883,4 +979,18 @@ void sendDataToLuftdaten(float & currentTemperature, float & currentPressure, fl
   delay(10);
   sendDUSTDatatoMadavide(averagePM1, averagePM25, averagePM10);
   sendTHPDatatoMadavide(currentTemperature, currentPressure, currentHumidity);
+}
+
+void getAPIIDFromLuftdaten() {
+	if (getLuftdatenJSON(atof(LATITUDE), atof(LONGITUDE)) == true) {
+      if (DEBUG) {
+        Serial.println("Luftdaten API data recived!\n");
+      }
+	  parsingLuftdatenAPIJSON();
+      receivedLuftdatenAPIJSON = "";
+    } else {
+      if (DEBUG) {
+        Serial.println("Luftdaten API conection error!\n");
+      }
+    }
 }

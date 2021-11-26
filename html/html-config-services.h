@@ -2,6 +2,7 @@
 /*
 % -> &#37;
 */
+
 static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Language}%'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'><title>Smogly - %{CurrentPageTitle}%</title>%{WEB_PAGE_CSS}%</head><body>
 	<nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding-left:15&#37;'>
 	%{SMOGLY_LOGO_URL}%
@@ -26,8 +27,8 @@ static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html la
 						<b>%{TEXT_SENDINGINTERVAL}%: </b>%{SENDING_FREQUENCY}%
 							<b>%{TEXT_DBSENDINGINTERVAL}%: </b>%{SENDING_DB_FREQUENCY}%
 							<hr>
-							<b>%{TEXT_SMOGLISTSENDING}%: </b>%{SMOGLIST_ON}% %{TEXT_SMOGLISTINFO}%
-							<hr>
+							%{SMOGLIST_COMMENT_BEGIN}%<b>%{TEXT_SMOGLISTSENDING}%: </b>%{SMOGLIST_ON}% %{TEXT_SMOGLISTINFO}%
+							<hr>%{SMOGLIST_COMMENT_END}%
 							<b>%{TEXT_LUFTDATENSENDING}%: </b>%{LUFTDATEN_ON}%
 							<b>ChipID: </b>%{LUFTDATEN_ChipID}%
 								%{Sensors_Pins_html}%				
@@ -37,9 +38,9 @@ static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html la
 							<b>%{TEXT_AQIECOPATH}%: </b>%{AQI_ECO_PATH}%
 							<b>%{ESP_MODEL}% ID: </b>%{AQI_ECO_ChipID}%
 							<hr>
-							<b>%{TEXT_AIRMONITORSENDING}%: </b>%{AIRMONITOR_ON}%
+							%{AIRMONITOR_COMMENT_BEGIN}%<b>%{TEXT_AIRMONITORSENDING}%: </b>%{AIRMONITOR_ON}%
 							<b>%{TEXT_AIRMONITORCHARTS}%: </b>%{AIRMONITOR_GRAPH_ON}%
-							<b>%{TEXT_AIRMONITOR_API_KEY}%: </b>%{AIRMONITOR_API_KEY}%
+							<b>%{TEXT_AIRMONITOR_API_KEY}%: </b>%{AIRMONITOR_API_KEY}%%{AIRMONITOR_COMMENT_END}%
 							<b>%{TEXT_AIRMONITORCOORDINATESINFO}%:
 							<br>%{TEXT_AIRMONITORLATITUDE}%: </b>%{LATITUDE}%
 							<b>%{TEXT_AIRMONITORLONGITUDE}%: </b>%{LONGITUDE}%
@@ -57,11 +58,11 @@ static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html la
 							<b>%{TEXT_INFLUXDBNAME}%: </b>%{INFLUXDB_DATABASE}%
 							<b>%{TEXT_INFLUXDBUSER}%: </b>%{INFLUXDB_USER}%
 							<b>%{TEXT_INFLUXDBPASSWD}%: </b>%{INFLUXDB_PASSWORD}%
-							%{WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2}%
+							%{INFLUXDB_V2}%
 							<hr>
 							<br><center>%{AdvancedMQTTConfigButton}%</center><br>
 							<hr><center><br>
-							%{WiFiEraseButton}%  %{RestoreConfigButton}%
+							%{WiFiEraseButton}% %{RestoreConfigButton}%
 							<br><br></center><hr><br><center>
 							%{SubmitButton}%
 							</form></center>
@@ -75,7 +76,9 @@ static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html la
 			<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous'></script>
 			</body></html>
 	)rawliteral";
-
+			
+			// %{WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2}% %
+			
 static const char WEB_CONFIG_SERVICES_THP_SENSOR_PIN[] = R"rawliteral(<br><b>%{THPSENSOR}%</b> Sensor PIN: <b>%{THPXPIN}%</b>)rawliteral";
 static const char WEB_CONFIG_SERVICES_DUST_MODEL_SENSOR_PIN[] = R"rawliteral(<br><b>%{DUSTSENSOR}%</b> Sensor PIN: <b>%{DUSTXPIN}%</b>)rawliteral";
 

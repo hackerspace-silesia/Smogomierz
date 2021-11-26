@@ -1156,6 +1156,7 @@ static String handle_config_services_processor(const String& var)
     }
   }
 
+#ifndef DISABLE_SMOGLIST
   if (var == F("{TEXT_SMOGLISTSENDING}")) {
     message += String(TEXT_SMOGLISTSENDING);
     message.replace(F("{SMOGLIST_LINK}"), String(SMOGLIST_LINK));
@@ -1168,6 +1169,24 @@ static String handle_config_services_processor(const String& var)
   if (var == F("{TEXT_SMOGLISTINFO}")) {
     message += String(TEXT_SMOGLISTINFO);
   }
+  
+  if (var == F("{SMOGLIST_COMMENT_BEGIN}")) {
+    message += ("");
+  }
+  
+  if (var == F("{SMOGLIST_COMMENT_END}")) {
+    message += ("");
+  }
+#else
+  // SMOGLIST_ON = false;
+  if (var == F("{SMOGLIST_COMMENT_BEGIN}")) {
+    message += ("<!--");
+  }
+  
+  if (var == F("{SMOGLIST_COMMENT_END}")) {
+    message += ("-->");
+  }
+#endif
 
   if (var == F("{TEXT_LUFTDATENSENDING}")) {
     message += String(TEXT_LUFTDATENSENDING);
@@ -1309,6 +1328,7 @@ static String handle_config_services_processor(const String& var)
   }
 #endif
 
+#ifdef ARDUINO_ARCH_ESP32
   if (var == F("{TEXT_AIRMONITORSENDING}")) {
     message += String(TEXT_AIRMONITORSENDING);
     char PMSENSORMODEL[16];
@@ -1342,6 +1362,28 @@ static String handle_config_services_processor(const String& var)
   if (var == F("{AIRMONITOR_API_KEY}")) {
     message += (_addTextInput(F("AIRMONITOR_API_KEY"), AIRMONITOR_API_KEY));
   }
+  
+  if (var == F("{AIRMONITOR_COMMENT_BEGIN}")) {
+    message += ("");
+  }
+  
+  if (var == F("{AIRMONITOR_COMMENT_END}")) {
+    message += ("");
+  }
+#else
+  AIRMONITOR_ON = false;
+  AIRMONITOR_GRAPH_ON = false;
+  // AIRMONITOR_API_KEY = "";
+  memset(AIRMONITOR_API_KEY, 0, sizeof(AIRMONITOR_API_KEY));
+  if (var == F("{AIRMONITOR_COMMENT_BEGIN}")) {
+    message += ("<!--");
+  }
+  
+  if (var == F("{AIRMONITOR_COMMENT_END}")) {
+    message += ("-->");
+  }
+#endif
+  
   if (var == F("{TEXT_AIRMONITORCOORDINATESINFO}")) {
     message += String(TEXT_AIRMONITORCOORDINATESINFO);
     message.replace(F("{LATLONG_LINK}"), String(LATLONG_LINK));
@@ -1434,9 +1476,30 @@ static String handle_config_services_processor(const String& var)
   if (var == F("{INFLUXDB_PASSWORD}")) {
     message += (_addPasswdInput(F("INFLUXDB_PASSWORD"), INFLUXDB_PASSWORD));
   }
-  if (var == F("{WEB_CONFIG_SERVICES_INFLUXDB_VE}")) {
+  
+  // SAVE / RESET / RESTORE SECTION - START
+  if (var == F("{AdvancedMQTTConfigButton}")) {
+    message += String(ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON);
+    message.replace(F("{TEXT_CONFIG_ADV_MQTT}"), String(TEXT_CONFIG_ADV_MQTT));
+  }
+ 
+  if (var == F("{WiFiEraseButton}")) {
+    message += (_addWiFiErase());
+  }
+
+  if (var == F("{RestoreConfigButton}")) {
+    message += (_addRestoreConfig());
+  }
+
+  if (var == F("{SubmitButton}")) {
+    message += F("<input type='submit' name='submit2' class='btn btn-outline-danger' value='{TEXT_SAVE}' />");
+    message.replace(F("{TEXT_SAVE}"), String(TEXT_SAVE));
+  }
+  // SAVE / RESET / RESTORE SECTION - END
+  
+  if (var == F("{INFLUXDB_V2}")) {	  
     if (!strcmp(INFLUXDB_VERSION, "2")) {
-      message += String(WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2);
+	  message += String(WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2);
       message.replace(F("{TEXT_INFLUXDBORG}"), String(TEXT_INFLUXDBORG));
       message.replace(F("{INFLUXDB_ORG}"), _addTextInput(F("INFLUXDB_ORG"), INFLUXDB_ORG));
       message.replace(F("{TEXT_INFLUXDBBUCKET}"), String(TEXT_INFLUXDBBUCKET));
@@ -1444,9 +1507,10 @@ static String handle_config_services_processor(const String& var)
       message.replace(F("{TEXT_INFLUXDBTOKEN}"), String(TEXT_INFLUXDBTOKEN));
       message.replace(F("{INFLUXDB_TOKEN}"), _addTextInput(F("INFLUXDB_TOKEN"), INFLUXDB_TOKEN));
     } else {
-      message += "";
-    }
+	  message += "";
+    }	
   }
+    
   /*
     if (var == F("{TEXT_MQTTSENDING}")) {
      message += (TEXT_MQTTSENDING);
@@ -1525,24 +1589,6 @@ static String handle_config_services_processor(const String& var)
     message += (String(int(currentTemperature)));
     }
   */
-
-  if (var == F("{AdvancedMQTTConfigButton}")) {
-    message += String(ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON);
-    message.replace(F("{TEXT_CONFIG_ADV_MQTT}"), String(TEXT_CONFIG_ADV_MQTT));
-  }
-
-  if (var == F("{WiFiEraseButton}")) {
-    message += (_addWiFiErase());
-  }
-
-  if (var == F("{RestoreConfigButton}")) {
-    message += (_addRestoreConfig());
-  }
-
-  if (var == F("{SubmitButton}")) {
-    message += F("<input type='submit' name='submit2' class='btn btn-outline-danger' value='{TEXT_SAVE}' />");
-    message.replace(F("{TEXT_SAVE}"), String(TEXT_SAVE));
-  }
 
   return message;
   message = "";
@@ -2447,9 +2493,11 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
     SENDING_DB_FREQUENCY = (request->getParam("SENDING_DB_FREQUENCY")->value()).toInt();
   }
   
+#ifndef DISABLE_SMOGLIST
   if (request->hasParam("SMOGLIST_ON")) {
     SMOGLIST_ON = _parseAsBool(request->getParam("SMOGLIST_ON")->value());
   }
+#endif
   /*
   if (request->hasParam("LUFTDATEN_ON")) {
       LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
@@ -2466,21 +2514,22 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
   if (request->hasParam("AQI_ECO_PATH")) {
     _parseAsCString(AQI_ECO_PATH, request->getParam("AQI_ECO_PATH")->value(), 64);
   }
+#ifdef ARDUINO_ARCH_ESP32
   /*
   if (request->hasParam("AIRMONITOR_ON")) {	  
     AIRMONITOR_ON = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
     Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
   }
-Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
+  // Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
 
   if (request->hasParam("AIRMONITOR_GRAPH_ON")) {
     AIRMONITOR_GRAPH_ON = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
   }
-*/
+  */
   if (request->hasParam("AIRMONITOR_API_KEY")) {
     _parseAsCString(AIRMONITOR_API_KEY, request->getParam("AIRMONITOR_API_KEY")->value(), 64);
   }
-
+#endif
   if (request->hasParam("LATITUDE")) {
     _parseAsCString(LATITUDE, request->getParam("LATITUDE")->value(), 16);
   }
@@ -2546,14 +2595,14 @@ Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
   if (request->hasParam("INFLUXDB_TOKEN")) {
     _parseAsCString(INFLUXDB_TOKEN, request->getParam("INFLUXDB_TOKEN")->value(), 128);
   }
-
+#ifdef ARDUINO_ARCH_ESP32
   if (request->hasParam("AIRMONITOR_ON")) {
     AIRMONITOR_ON = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
   }
   if (request->hasParam("AIRMONITOR_GRAPH_ON")) {
     AIRMONITOR_GRAPH_ON = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
   }
-  
+#endif
   
   if (request->hasParam("LUFTDATEN_ON")) {
       LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());

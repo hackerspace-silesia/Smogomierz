@@ -25,6 +25,7 @@
 // *******************************************
 
 #define ASYNC_WEBSERVER_ON
+#define DISABLE_SMOGLIST
 
 /*
 
@@ -86,14 +87,14 @@
 
   ASYNC_WEBSERVER_ON + INTL_OLD
 
-  Szkic używa 696337 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 46864 bajtów (57%) pamięci dynamicznej, pozostawiając 35056 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 694529 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46688 bajtów (56%) pamięci dynamicznej, pozostawiając 35232 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   Szkic używa 695897 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46800 bajtów (57%) pamięci dynamicznej, pozostawiając 35120 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
+
+  Szkic używa 686905 bajtów (65%) pamięci programu. Maksimum to 1044464 bajtów.
+  Zmienne globalne używają 46460 bajtów (56%) pamięci dynamicznej, pozostawiając 35460 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ASYNC_WEBSERVER_ON + INTL_PL
 
@@ -118,11 +119,11 @@
 
   ASYNC_WEBSERVER_ON
 
-  Szkic używa 1472826 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 58928 bajtów (17%) pamięci dynamicznej, pozostawiając 268752 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1475234 bajtów (75%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 58928 bajtów (17%) pamięci dynamicznej, pozostawiając 268752 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+
+  Szkic używa 1471674 bajtów (74%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 58848 bajtów (17%) pamięci dynamicznej, pozostawiając 268832 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -172,9 +173,13 @@
 
 #include "src/autoupdate.h"
 
+#ifndef DISABLE_SMOGLIST
 #include "src/services/smoglist.h"
+#endif
 #include "src/services/luftdaten.h"
+#ifdef ARDUINO_ARCH_ESP32
 #include "src/services/airmonitor.h"
+#endif
 #include "src/services/thing_speak.h"
 #include "src/services/aqieco.h"
 #include "src/services/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 5.11.2021
@@ -1765,6 +1770,7 @@ void sendDataToExternalServices() {
     }
   }
 
+#ifdef ARDUINO_ARCH_ESP32
   if (AIRMONITOR_ON) {
     sendDataToAirMonitor(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
@@ -1775,7 +1781,9 @@ void sendDataToExternalServices() {
 #endif
     }
   }
+#endif
 
+#ifndef DISABLE_SMOGLIST
   if (SMOGLIST_ON) {
     sendDataToSmoglist(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
@@ -1786,6 +1794,7 @@ void sendDataToExternalServices() {
 #endif
     }
   }
+#endif
 
   if (AQI_ECO_ON) {
     sendDataToAqiEco(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);

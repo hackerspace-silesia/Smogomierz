@@ -2,7 +2,9 @@
 #include <avr/pgmspace.h>
 #endif
 
-static const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githack.com/hackerspace-silesia/Smogomierz/master/src/css/smogly.css'>";
+static const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://rawcdn.githack.com/hackerspace-silesia/Smogomierz/b1e4dd9a2b6fddb63da88c46ef934509ab1def44/css/smogly.css'>";
+// via http://raw.githack.com 
+//static const char WEB_PAGE_HEADER_CSS[] PROGMEM = "<link rel='stylesheet' href='https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/css/smogly.css'>";
 // https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/dev/src/css/smogly.css
 // based on bootstrap.min.css - 4.4.1 and Bootswatch v4.4.1
 // https://raw.githack.com

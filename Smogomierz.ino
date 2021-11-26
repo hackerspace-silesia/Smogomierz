@@ -31,7 +31,7 @@
 
    ESP8266
 
-  Podłączenie czujnikow dla ES§P8266 NodeMCU:
+  Podłączenie czujnikow dla ESP8266 NodeMCU:
   BME280/BMP280: VIN - 3V; GND - G; SCL - D4; SDA - D3
   SHT1x: VIN - 3V; GND - G; SCL - D5; DATA/SDA - D6 wymaga rezystora 10k podłaczonego do VCC
   SHT21/HTU21D: VIN - 3V; GND - G; SCL - D5; SDA - D6

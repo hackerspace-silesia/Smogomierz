@@ -1,11 +1,12 @@
 #pragma once
 
-#include "intl/intl_en.h"
-#include "intl/intl_pl.h"
+// #include "../intl/intl_en.h"
+#include "../intl/intl_pl.h"
 
 void loadtranslation(int SELECTED_LANGUAGE) {
 	if (SELECTED_LANGUAGE == 1) { //english translataion
 		Serial.println(F("English Translation!\n"));
+		
 		// there is no need to translate the default translation(default_intl.h) into English - it is in English
 		/*
 		strcpy(TEXT_LANG, EN_INTL_LANG);
@@ -158,9 +159,14 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 		strcpy(TEXT_WIFIRSSI, EN_INTL_WIFIRSSI);
 		strcpy(TEXT_WIFIQUALITY, EN_INTL_WIFIQUALITY);
 		
+		strcpy(TEXT_HOMEKIT_SUPPORT, EN_INTL_HOMEKIT_SUPPORT);
+		strcpy(TEXT_HOMEKIT_IS_PAIRED, EN_INTL_HOMEKIT_IS_PAIRED);	
+		strcpy(TEXT_PAGE_HOMEKIT_RESET, EN_INTL_PAGE_HOMEKIT_RESET);	
+		
 		*/
 	} else if (SELECTED_LANGUAGE == 2) { //polish translation
 		Serial.println(F("Polish Translation!\n"));
+		
 		strcpy(TEXT_LANG, PL_INTL_LANG);
 
 		strcpy(TEXT_INDEX_PAGE, PL_INTL_INDEX_PAGE);
@@ -311,7 +317,11 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 		strcpy(TEXT_CONNECTEDWIFI, PL_INTL_CONNECTEDWIFI);
 		strcpy(TEXT_WIFIRSSI, PL_INTL_WIFIRSSI);
 		strcpy(TEXT_WIFIQUALITY, PL_INTL_WIFIQUALITY);
-
+		
+		strcpy(TEXT_HOMEKIT_SUPPORT, PL_INTL_HOMEKIT_SUPPORT);	
+		strcpy(TEXT_HOMEKIT_IS_PAIRED, PL_INTL_HOMEKIT_IS_PAIRED);	
+		strcpy(TEXT_PAGE_HOMEKIT_RESET, PL_INTL_PAGE_HOMEKIT_RESET);	
+		
 	} else { //others future translations
 		Serial.println(F("Other Translation!\n"));
 		

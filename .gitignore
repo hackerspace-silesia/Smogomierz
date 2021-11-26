@@ -102,3 +102,12 @@ ENV/
 
 # mypy
 .mypy_cache/
+.DS_Store
+.vscode/arduino.json
+.vscode/c_cpp_properties.json
+ .pio/
+ .vscode/
+.pio/libdeps/esp32/Adafruit Unified Sensor/.github/workflows/githubci.yml
+.pio/libdeps/esp32/Adafruit Unified Sensor/.piopm
+.pio/libdeps/esp32/Adafruit_Sensor/.github/workflows/githubci.yml
+.pio/libdeps/esp32/Adafruit_Sensor/.piopm

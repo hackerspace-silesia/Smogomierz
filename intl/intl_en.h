@@ -75,6 +75,7 @@ char EN_INTL_SECUREPASSWD[10] PROGMEM = "Password";
 char EN_INTL_SECURELOGOUTINFO[48] PROGMEM = "Restart your web browser to log out!";
 
 char EN_INTL_LUFTDATENSENDING[96] PROGMEM = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})"; 
+char EN_INTL_LUFTDATEN_GRAPH_ON[50] = "Displaying charts from the Luftdaten";
 
 char EN_INTL_SMOGLISTSENDING[48] PROGMEM = "Sending data to the {SMOGLIST_LINK} service";
 char EN_INTL_SMOGLISTINFO[242] = "Smoglist is a service that collects Smogly usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";

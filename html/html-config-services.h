@@ -31,7 +31,8 @@ static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html la
 							<hr>%{SMOGLIST_COMMENT_END}%
 							<b>%{TEXT_LUFTDATENSENDING}%: </b>%{LUFTDATEN_ON}%
 							<b>ChipID: </b>%{LUFTDATEN_ChipID}%
-								%{Sensors_Pins_html}%				
+								%{Sensors_Pins_html}%	
+							<br><b>%{TEXT_LUFTDATEN_GRAPH_ON}%: </b>%{LUFTDATEN_GRAPH_ON}%			
 							<hr>
 							<b>%{TEXT_AQIECOSENDING}%: </b>%{AQI_ECO_ON}%
 							<b>%{TEXT_AQIECOSERVER}%: </b>%{AQI_ECO_HOST}%

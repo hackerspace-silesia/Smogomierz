@@ -59,6 +59,8 @@ unsigned char DUST_TIME = 1;
 unsigned char NUMBEROFMEASUREMENTS = 10;
 
 bool LUFTDATEN_ON = false;
+bool LUFTDATEN_GRAPH_ON = false;
+int LUFTDATEN_APIID = 0;
 bool SMOGLIST_ON = true;
 
 bool AIRMONITOR_ON = false;

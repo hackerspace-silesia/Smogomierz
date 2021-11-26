@@ -32,6 +32,8 @@ extern unsigned char DUST_TIME;
 extern unsigned char NUMBEROFMEASUREMENTS;
 
 extern bool LUFTDATEN_ON;
+extern bool LUFTDATEN_GRAPH_ON;
+extern int LUFTDATEN_APIID;
 extern bool SMOGLIST_ON;
 
 extern bool AIRMONITOR_ON;

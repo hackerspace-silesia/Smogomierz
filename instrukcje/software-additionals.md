@@ -38,6 +38,10 @@ Na koniec zostało nam tylko włączenie możliwości wysyłania danych pomiarow
 
 Smogomierz pozwala na wysyłanie pomiarów do własnej bazy danych [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/). Jeśli chcesz to zrobić, to w zakładce Konfiguracja w panelu Smogomierza, musisz włączyć wysyłanie danych do InfluxDB oraz wpisać adres swojej bazy danych, podać port na którym działa, nazwę bazy danych oraz użytkownika i hasło. InfluxDB jest świetnym źródłem danych dla Grafany, czyli darmowego środowiska do wizualizacji danych. [Grafana](https://grafana.com) pozwala na łatwe tworzenie wykresów ze zgromadzonych danych. 
 
+## HomeKit
+
+Jeśli jesteś użytkownikiem sprzętu Apple i Twoje urządzenie używa ESP32, to w ustawieniach możesz włączyć obsługę HomeKit. Dzięki temu będizesz mógł dodać swój miernik do aplikacji Dom na iPhonie/iPadzie/Macu. Domyślny kod dodawania nowych urządzeń to 111-11-111.
+
 ## Homebridge
 
 Jeśli jesteś użytkownikiem sprzętu Apple, to możesz również skorzystać z wtyczki dla [Homebridge](https://github.com/nfarina/homebridge), aby mieć dostęp do danych pomiarowych w aplikacji Dom na swoim iPhonie, iPadzie lub na Macu. Wtyczka Homebridge-Smogomierz dostępna jest [tutaj](https://github.com/bfaliszek/homebridge-smogomierz).

@@ -930,11 +930,7 @@ if (DEBUG) {
 	    }
 //Serial.println("json.size(): " + String(json.size())); 
 		
-#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 || DUSTSENSOR_PMS5003_7003_BME280_0x77
-String temp_DUSTMODEL_Luftdaten = "PMS7003";
-#elif defined DUSTSENSOR_SDS011_21
-String temp_DUSTMODEL_Luftdaten = "SDS021";
-#elif defined DUSTSENSOR_HPMA115S0
+#ifdef DUSTSENSOR_HPMA115S0
 String temp_DUSTMODEL_Luftdaten = "HPM";
 #elif defined DUSTSENSOR_SPS30
 String temp_DUSTMODEL_Luftdaten = "SPS30";
@@ -942,25 +938,20 @@ String temp_DUSTMODEL_Luftdaten = "SPS30";
 String temp_DUSTMODEL_Luftdaten = "PMS7003";
 #endif
 
-#ifdef ARDUINO_ARCH_ESP8266
-for (int i = 0; i < json.size(); i++) {	
-	if (String(json[i]["sensor"]["id"]) != "null") {
-		if (String(json[i]["sensor"]["sensor_type"]["name"]) == String(temp_DUSTMODEL_Luftdaten)) {
-			// Serial.println("json[" + String(i) + "][\"sensor\"][\"id\"]: " + String(json[i]["sensor"]["id"]));				
-			LUFTDATEN_APIID = int(json[i]["sensor"]["id"]); 
-		}
-	}
-}
-#elif defined ARDUINO_ARCH_ESP32
  for (int i = 0; i < json.size(); i++) {	
  	if (String(json[i]["sensor"]["id"].as<String>()) != "null") {
- 		if (String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == String(temp_DUSTMODEL_Luftdaten)) {
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 || DUSTSENSOR_PMS5003_7003_BME280_0x77
+		if (String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == "PMS7003" or String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == "PMS5003") {
+#elif defined DUSTSENSOR_SDS011_21
+			if (String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == "SDS021" or String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == "SDS011") {
+#else
+			if (String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == String(temp_DUSTMODEL_Luftdaten)) {
+#endif
  			// Serial.println("json[" + String(i) + "][\"sensor\"][\"id\"]: " + String(json[i]["sensor"]["id"].as<String>()));				
  			LUFTDATEN_APIID = int(json[i]["sensor"]["id"].as<int>()); 
  		}
  	}
  }
-#endif
 
   if (DEBUG) {
     // Output to serial monitor

@@ -59,7 +59,7 @@ static const char WEB_PAGE_HEADER[] PROGMEM = R"rawliteral(<html lang='{Language
 </div></nav>
 		)rawliteral";
 
-static const char SMOGLY_LOGO_URL[] PROGMEM = "<a class='navbar-brand' href='/'><img border='0' width='165' height='40' alt='SmoglyLogo' src='https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/dev/Smogly_Logo/SmoglyLogoTopMenu.png'></a>";
+static const char SMOGLY_LOGO_URL[] PROGMEM = "<a class='navbar-brand' href='/'><img border='0' width='165' height='40' alt='SmoglyLogo' src='https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/Smogly_Logo/SmoglyLogoTopMenu.png'></a>";
 //"
 #endif
 
@@ -333,12 +333,11 @@ const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = R"rawliteral(<main role='main' cla
 // UPDATE PAGE - END
 
 
-
 #ifdef ARDUINO_ARCH_ESP8266
 static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
 static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
-static char LUFTDATEN_LINK[] = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
-static char LUFTDATENFORM_LINK[] = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
+static char LUFTDATEN_LINK[] = "<a title='Sensor.Community' href='https://maps.sensor.community/#7/52.000/19.000' target='_blank'>Sensor.Community</a>";
+static char LUFTDATENFORM_LINK[] = "<a title='devices.sensor.community' href='https://devices.sensor.community' target='_blank'>devices.sensor.community</a>";
 static char SMOGLIST_LINK[] = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
 static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='https://airmonitor.pl/prod/mapa' target='_blank'>AirMonitor</a>";
 static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://airmonitor.pl/prod/station_registration' target='_blank'>{TEXT_THEFORM}</a>";
@@ -349,8 +348,8 @@ static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/se
 #elif defined ARDUINO_ARCH_ESP32
 static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
 static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
-static char LUFTDATEN_LINK[] = "<a title='LuftDaten.info' href='https://luftdaten.info/en/home-en/' target='_blank'>LuftDaten.info</a>";
-static char LUFTDATENFORM_LINK[] = "<a title='meine.luftdaten.info' href='https://meine.luftdaten.info' target='_blank'>meine.luftdaten.info</a>";
+static char LUFTDATEN_LINK[] = "<a title='Sensor.Community' href='https://maps.sensor.community/#7/52.000/19.000' target='_blank'>Sensor.Community</a>";
+static char LUFTDATENFORM_LINK[] = "<a title='devices.sensor.community' href='https://devices.sensor.community' target='_blank'>devices.sensor.community</a>";
 static char SMOGLIST_LINK[] = "<a title='smoglist.pl' href='http://smoglist.pl' target='_blank'>Smoglist</a>";
 static char AIRMONITOR_LINK[] = "<a title='AirMonitor' href='https://airmonitor.pl/prod/mapa' target='_blank'>AirMonitor</a>";
 static char AIRMONITORFORM_LINK[] = "<a title='AirMonitor Form' href='https://airmonitor.pl/prod/station_registration' target='_blank'>{TEXT_THEFORM}</a>";

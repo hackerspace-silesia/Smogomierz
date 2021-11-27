@@ -65,7 +65,8 @@ static const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = R"rawliteral(<hr>
 						)rawliteral";
 
 static const char WEB_ROOT_PAGE_LUFTDATEN_GRAPH[] PROGMEM = R"rawliteral(<hr>
-												<iframe src='https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&panelId=2&var-node={NODE_LUFTDATEN_ID}' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>		
+												<iframe src='https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&panelId=2&var-node={NODE_LUFTDATEN_ID}' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>	
+<iframe src='https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&panelId=1&var-node={NODE_LUFTDATEN_ID}' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>
 												)rawliteral";	
 												
 static const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>

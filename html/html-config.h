@@ -48,7 +48,7 @@ static const char WEB_CONFIG_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Lan
 											<hr><center><br>
 											%{WiFiEraseButton}%    %{RestoreConfigButton}%
 											<br></center>
-		<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+		<br><hr><center><a href='http://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 			<script type='text/javascript'>
 		  		document.write(new Date().getFullYear());
 			</script>

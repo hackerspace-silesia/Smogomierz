@@ -9,8 +9,8 @@
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
 
 #define INTL_OLD  // old translataion system
-// #define INTL_PL  // polish translataion
-// #define INTL_EN  // english translataion
+// #define INTL_PL  // polish translataion // EXPERIMENTAL!
+// #define INTL_EN  // english translataion // EXPERIMENTAL!
 
 // *******************************************
 
@@ -93,7 +93,7 @@
   Szkic używa 695897 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46800 bajtów (57%) pamięci dynamicznej, pozostawiając 35120 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
-  Szkic używa 691409 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
+  Szkic używa 691393 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46876 bajtów (57%) pamięci dynamicznej, pozostawiając 35044 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 
   ASYNC_WEBSERVER_ON + INTL_PL

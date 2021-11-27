@@ -29,7 +29,7 @@ static const char WEB_ROOT_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Langu
 						%{WEB_ROOT_PAGE_AIRMONITOR_GRAPH}%	
 						%{WEB_ROOT_PAGE_LUFTDATEN_GRAPH}%	
 						%{WEB_ROOT_PAGE_THINGSPEAK_GRAPH}%	
-			<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+			<br><hr><center><a href='http://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 											<script type='text/javascript'>
 										  		document.write(new Date().getFullYear());
 											</script>

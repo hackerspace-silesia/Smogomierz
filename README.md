@@ -24,7 +24,7 @@ Projekt Smogly jest rozwijany od 2017 roku. Wszystko w ramach projektu Smogly ro
 
 3. [Instrukcja instalacji/aktualizacji oprogramowania z pliku .bin](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software-bin.md)
 
-4. [Konfiguracja i ustawienia obsługi zewnętrznych serwisów(AirMonitor, InfluxDB itd.)](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software-additionals.md)
+4. [Konfiguracja i ustawienia obsługi zewnętrznych serwisów(Sensor.Community, InfluxDB itd.)](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software-additionals.md)
 
 ## Parts / Potrzebne części
 

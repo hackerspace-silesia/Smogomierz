@@ -1,6 +1,6 @@
 # Smogomierz - Components / Podzespoły
 
-Wszystkie potrzebne części możesz zamówić w sklepie internetowym **Botland**. Oferuje on gotowe zestawy – https://botland.com.pl/pl/czujniki-czystosci-powietrza/13434-zestaw-diy-do-budowy-miernika-smogu-czujnik-czystosci-powietrza-pm25-i-pm10.html
+Wszystkie potrzebne części możesz zamówić w sklepie internetowym **Botland**. Oferuje on gotowe zestawy z ESP8266(zalecam jednak wybrać mocniejsze ESP32) – https://botland.com.pl/pl/czujniki-czystosci-powietrza/13434-zestaw-diy-do-budowy-miernika-smogu-czujnik-czystosci-powietrza-pm25-i-pm10.html
 
 Jeśli jednak wolisz kupić wszystkie części samodzielnie, to poniżej znajdziesz listę potrzebnych elementów. Podane linki to przykładowe miejsca, w których można kupić dany produkt. Każdą z wymienionych części można kupić w dowolnym sklepie. Zastosowane elementy to łatwo dostępne podzespoły, które znajdziesz w większości sklepów z elektroniką. 
 
@@ -15,11 +15,11 @@ Główny układ sterujący Smogomierzem to ESP32 lub ESP8266 w wersji ESP-12. Za
 
 Oprogramowanie Smogomierza wspiera obecnie kilka różnych modeli mierników pyłu zawieszonego w powietrzu. Zalecamy użycie miernika ***Sensrion SPS30*** lub **PMS7003**. Lista obsługiwanych modeli znajduje się poniżej:
 
-+ **Sensirion SPS30** – Laserowy miernik pyłu PM1, PM2.5, PM4 i PM10 – https://www.tme.eu/pl/details/sps30/czujniki-gazu/sensirion/1-101638-10/ Warto zamiętać o zakupue specjalnego kabla dla SPS30 - JST ZH 1.5. Wtyczka posiada 5 pinów i raster 1,5mm - https://allegro.pl/oferta/jst-zh-1-50mm-5pin-wtyczka-z-kablami-8129839140
-
 + **PMS5003/PMS7003** – Laserowy miernik pyłu PM1, PM2.5 i PM10. Polecam zamówić wersję z kablem, bo bezpośrednio do PMS7003 praktycznie nie da się przylutować/podłaczyć przewodów. Przykładowy model z kablem – https://www.aliexpress.com/item/1-set-Laser-PM2-5-PMS7003-G7-High-precision-laser-dust-concentration-sensor-digital-dust-particles/32826370928.html 
 
 + **Honeywell HPMA115S0** – Laserowy miernik pyłu PM1, PM2.5 i PM10 – https://www.tme.eu/pl/details/hpma115s0-xxx/czujniki-gazu/honeywell/
+
++ **Sensirion SPS30** – Laserowy miernik pyłu PM1, PM2.5, PM4 i PM10 – https://www.tme.eu/pl/details/sps30/czujniki-gazu/sensirion/1-101638-10/ Warto zamiętać o zakupue specjalnego kabla dla SPS30 - JST ZH 1.5. Wtyczka posiada 5 pinów i raster 1,5mm - https://allegro.pl/oferta/jst-zh-1-50mm-5pin-wtyczka-z-kablami-8129839140
 
 + **SDS011** – Laserowy miernik pyłu PM2.5 i PM10 – https://www.aliexpress.com/item/Nova-PM-sensor-SDS011-High-precision-laser-pm2-5-air-quality-detection-sensor-module-Super-dust/32606349048.html
 

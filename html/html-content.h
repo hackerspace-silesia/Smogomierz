@@ -64,7 +64,7 @@ static const char SMOGLY_LOGO_URL[] PROGMEM = "<a class='navbar-brand' href='/'>
 #endif
 
 #ifdef ARDUINO_ARCH_ESP8266
-static const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+static const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='http://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>
@@ -75,7 +75,7 @@ static const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a hr
 			</body></html>
 	)rawliteral";
 #elif defined ARDUINO_ARCH_ESP32
-static const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+static const char WEB_PAGE_FOOTER[] PROGMEM = R"rawliteral(<br><hr><center><a href='http://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>

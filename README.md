@@ -1,6 +1,6 @@
 # Smogly [![Build Status](https://travis-ci.org/hackerspace-silesia/Smogomierz.svg?branch=master)](https://travis-ci.org/hackerspace-silesia/Smogomierz)
 
-![Smogly1](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Smogomierz1.jpg)
+![Smogly2](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/ui/SmoglyUI_Root.png)
 
 Smogly to niekomercyjny projekt łatwego w budowie i taniego miernika zanieczyszczeń powietrza. Projekt jest w pełni otwarty i łatwy w modyfikowaniu. 
 
@@ -9,6 +9,8 @@ Smogly nie wysyła Twoich danych do żadnego serwisu, jeśli nie wyrazisz na to 
 Smogly po pierwszym uruchomieniu tworzy własną sieć WiFi o nazwie "Smogly-deviceName"(np. "Smogly-328017"). Po podłączeniu się z nią, będziesz miał możliwość skonfigurowania połączenia WiFi z własną siecią domową. Z listy dostępnych sieci wybierz swoją własną i podaj do niej hasło. Smogly zapisze dane w swojej pamięci wewnętrznej i ponownie się uruchomienie. Dalszą konfigurację wykonasz już przez przeglądarkę internetową wchodząc pod adres Smogly-deviceName.local lub IP_Smogly(do sprawdzenia na routerze). 
 
 Stworzyliśmy również aplikację dla systemów Windows, macOS oraz Linux), która umożliwia w łatwy sposób wgranie oprogramowania oraz znajdowanie adresu IP Twojego miernika! Możesz ją pobrać ze strony [github.com/hackerspace-silesia/Smogomierz-Flashing-Tool](https://github.com/hackerspace-silesia/Smogomierz-Flashing-Tool/releases).
+
+![Smogly1](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/photos/Smogomierz1.jpg)
 
 ## Darowizny
 

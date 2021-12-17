@@ -29,7 +29,7 @@ static const char WEB_ROOT_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang='%{Langu
 						%{WEB_ROOT_PAGE_AIRMONITOR_GRAPH}%	
 						%{WEB_ROOT_PAGE_LUFTDATEN_GRAPH}%	
 						%{WEB_ROOT_PAGE_THINGSPEAK_GRAPH}%	
-			<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+			<br><hr><center><a href='http://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 											<script type='text/javascript'>
 										  		document.write(new Date().getFullYear());
 											</script>
@@ -65,7 +65,8 @@ static const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = R"rawliteral(<hr>
 						)rawliteral";
 
 static const char WEB_ROOT_PAGE_LUFTDATEN_GRAPH[] PROGMEM = R"rawliteral(<hr>
-												<iframe src='https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&panelId=2&var-node={NODE_LUFTDATEN_ID}' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>		
+												<iframe src='https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&panelId=2&var-node={NODE_LUFTDATEN_ID}' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>	
+<iframe src='https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&panelId=1&var-node={NODE_LUFTDATEN_ID}' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>
 												)rawliteral";	
 												
 static const char WEB_ROOT_PAGE_THINGSPEAK_GRAPH[] PROGMEM = R"rawliteral(<hr>

@@ -17,7 +17,7 @@ char PL_INTL_CONFIG_PAGE[14] PROGMEM = "Ustawienia";
 char PL_INTL_CONFIG_DEVICE_PAGE[24] PROGMEM = "Ustawienia Urządzenia";
 char PL_INTL_CONFIG_INFO_DEVICE_PAGE[144] PROGMEM = "Wybór czujników podłączonych do Smogly, częstotliwość wykonywania pomiarów, czy język interfejsu można zmienić w sekcji";
 char PL_INTL_CONFIG_SERVICES_PAGE[24] PROGMEM = "Ustawienia Serwisów";
-char PL_INTL_CONFIG_INFO_SERVICES_PAGE[144] PROGMEM = "Ustawienia takich serwisów jak Luftdaten, aqi.eco, Smoglist, AirMonitor, ThingSpeak czy usług InfluxDB lub MQTT można zmienić w sekcji";
+char PL_INTL_CONFIG_INFO_SERVICES_PAGE[144] PROGMEM = "Ustawienia takich serwisów jak Sensor.Community, aqi.eco, ThingSpeak, AirMonitor czy usług InfluxDB lub MQTT można zmienić w sekcji";
 
 char PL_INTL_UPDATE_PAGE[14] PROGMEM = "Aktualizacje";
 
@@ -58,7 +58,7 @@ char PL_INTL_MEASUREMENTFREQUENCY[30] PROGMEM = "Wykonywanie pomiarów PM co";
 char PL_INTL_AVERAGELASTRESULT[30] PROGMEM = "Uśredniaj wynik z ostatnich";
 char PL_INTL_PMMEASUREMENTS[18] PROGMEM = "pomiarów PM";
 char PL_INTL_SENDINGINTERVAL[50] PROGMEM = "Wysyłanie danych do serwisów zewnętrznych co";
-char PL_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do AirMonitor/Luftdaten/Smoglist/aqi.eco co";
+char PL_INTL_SERVICESSENDINGINTERVAL[64] PROGMEM = "Wysyłanie danych do Sensor.Community/aqi.eco/AirMonitor co";
 char PL_INTL_DBSENDINGINTERVAL[50] PROGMEM = "Wysyłanie danych do ThingSpeak/InfluxDB/MQTT co";
 char PL_INTL_SECONDS[10] PROGMEM = "sekund";
 char PL_INTL_MINUTES[10] PROGMEM = "minut";
@@ -75,16 +75,17 @@ char PL_INTL_SECUREPASSWD[10] PROGMEM = "Hasło";
 char PL_INTL_SECURELOGOUTINFO[48] PROGMEM = "Zrestartuj przeglądarkę w celu wylogowania!";
 
 char PL_INTL_LUFTDATENSENDING[96] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga rejestracji {LUFTDATENFORM_LINK})";
-char PL_INTL_LUFTDATEN_GRAPH_ON[50] = "Wyświetlanie wykresów z serwisu Luftdaten";
+char PL_INTL_LUFTDATEN_GRAPH_ON[64] = "Wyświetlanie wykresów z serwisu Sensor.Community";
 
 char PL_INTL_SMOGLISTSENDING[48] PROGMEM = "Wysyłanie danych do serwisu {SMOGLIST_LINK}";
 char PL_INTL_SMOGLISTINFO[242] PROGMEM = "Smoglist to serwis zbierający statystyki użytkowania Smogly(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";
 
 char PL_INTL_AIRMONITORSENDING[128] PROGMEM = "Wysyłanie danych do serwisu {AIRMONITOR_LINK} (wymaga wypełnienia {AIRMONITORFORM_LINK}; Sensor: np. {PMSENSORMODEL})";
 char PL_INTL_AIRMONITORCHARTS[48] PROGMEM = "Wyświetlanie wykresów z serwisu AirMonitor";
-char PL_INTL_AIRMONITORCOORDINATESINFO[74] PROGMEM = "Współrzędne geograficzne miernika(można sprawdzić {LATLONG_LINK})";
-char PL_INTL_AIRMONITORLATITUDE[24] PROGMEM = "Szerokość(latitude)";
-char PL_INTL_AIRMONITORLONGITUDE[24] PROGMEM = "Długość(longitude)";
+
+char PL_INTL_MY_COORDINATESINFO[74] PROGMEM = "Współrzędne geograficzne miernika(można sprawdzić {LATLONG_LINK})";
+char PL_INTL_MY_LATITUDE[24] PROGMEM = "Szerokość(latitude)";
+char PL_INTL_MY_LONGITUDE[24] PROGMEM = "Długość(longitude)";
 
 char PL_INTL_THINGSPEAKSENDING[50] PROGMEM = "Wysyłanie danych do serwisu {THINGSPEAK_LINK}";
 char PL_INTL_THINGSPEAKCHARTS[48] PROGMEM = "Wyświetlanie wykresów z serwisu ThingSpeak";

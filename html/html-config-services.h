@@ -41,11 +41,7 @@ static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html la
 							<hr>
 							%{AIRMONITOR_COMMENT_BEGIN}%<b>%{TEXT_AIRMONITORSENDING}%: </b>%{AIRMONITOR_ON}%
 							<b>%{TEXT_AIRMONITORCHARTS}%: </b>%{AIRMONITOR_GRAPH_ON}%
-							<b>%{TEXT_AIRMONITOR_API_KEY}%: </b>%{AIRMONITOR_API_KEY}%%{AIRMONITOR_COMMENT_END}%
-							<b>%{TEXT_AIRMONITORCOORDINATESINFO}%:
-							<br>%{TEXT_AIRMONITORLATITUDE}%: </b>%{LATITUDE}%
-							<b>%{TEXT_AIRMONITORLONGITUDE}%: </b>%{LONGITUDE}%
-							<hr>
+							<b>%{TEXT_AIRMONITOR_API_KEY}%: </b>%{AIRMONITOR_API_KEY}%<hr>%{AIRMONITOR_COMMENT_END}%
 							<b>%{TEXT_THINGSPEAKSENDING}%: </b>%{THINGSPEAK_ON}%
 							<b>%{TEXT_THINGSPEAKCHARTS}%: </b>%{THINGSPEAK_GRAPH_ON}%
 							<b>%{TEXT_THINGSPEAK_WRITE_API_KEY}%: </b>%{THINGSPEAK_API_KEY}%
@@ -67,7 +63,7 @@ static const char WEB_CONFIG_SERVICES_PAGE_ALL[] PROGMEM = R"rawliteral(<html la
 							<br><br></center><hr><br><center>
 							%{SubmitButton}%
 							</form></center>
-								<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+								<br><hr><center><a href='http://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 	<script type='text/javascript'>
   		document.write(new Date().getFullYear());
 	</script>

@@ -27,6 +27,11 @@ static const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang
 					<b>%{TEXT_DEVICENAMEAUTO}%: </b>%{DEVICENAME_AUTO}%
 					<b>%{TEXT_SELECTEDLANGUAGE}%: </b>%{LanguageSelect}%
 					<hr>
+					<b>%{TEXT_MY_COORDINATESINFO}%:
+					<br>%{TEXT_MY_LATITUDE}%: </b>%{LATITUDE}%
+					<b>%{TEXT_MY_LONGITUDE}%: </b>%{LONGITUDE}%
+					<b>%{TEXT_ALTITUDEINFO}%: </b>%{MYALTITUDE}%
+					<hr>
 					<b>%{TEXT_TEMPHUMIPRESSSENSOR}%: </b>%{THP_MODELSelect}%
 					<b>%{TEXT_PMSENSOR}%: </b>%{DUST_MODELSelect}%
 					<hr>%{WEB_CONFIG_DEVICE_PAGE_FIRST_THP_PINS}%
@@ -39,7 +44,6 @@ static const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang
 					<hr><b>DeepSleep: </b>%{DEEPSLEEP_ON}% %{TEXT_DEEPSLEEPINFO}%
 					<hr>
 					%{WEB_CONFIG_DEVICE_SHOWING_PM1}%
-					<b>%{TEXT_ALTITUDEINFO}%: </b>%{MYALTITUDE}%
 					<hr>
 					<b>%{TEXT_SECURECONFIGUPDATEPAGE}%: </b>%{CONFIG_AUTH}%
 					<b>%{TEXT_SECURELOGIN}%: </b>%{CONFIG_USERNAME}%
@@ -59,7 +63,7 @@ static const char WEB_CONFIG_DEVICE_PAGE_ALL[] PROGMEM = R"rawliteral(<html lang
 					<br><br></center><hr><br><center>
 					%{SubmitButton}%
 	</center>
-		<br><hr><center><a href='https://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
+		<br><hr><center><a href='http://smogly.org/' target='_blank'>Smogly</a> &#9830; <a href='https://hs-silesia.pl' target='_blank'>Hackerspace Silesia</a> &#9830;
 			<script type='text/javascript'>
 		  		document.write(new Date().getFullYear());
 			</script>

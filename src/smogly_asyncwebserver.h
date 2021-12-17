@@ -797,6 +797,35 @@ static String handle_config_device_processor(const String& var)
   if (var == F("{LanguageSelect}")) {
     message += (_addLanguageSelect(F("LANGUAGE"), LANGUAGE));
   }
+  
+  
+  if (var == F("{TEXT_MY_COORDINATESINFO}")) {
+    message += String(TEXT_MY_COORDINATESINFO);
+    message.replace(F("{LATLONG_LINK}"), String(LATLONG_LINK));
+    message.replace(F("{TEXT_HERE}"), String(TEXT_HERE));
+  }
+  if (var == F("{TEXT_MY_LATITUDE}")) {
+    message += String(TEXT_MY_LATITUDE);
+  }
+  if (var == F("{LATITUDE}")) {
+    message += (_addFloatInput(F("LATITUDE"), atof(LATITUDE), 6, F("°")));
+  }
+  if (var == F("{TEXT_MY_LONGITUDE}")) {
+    message += String(TEXT_MY_LONGITUDE);
+  }
+  if (var == F("{LONGITUDE}")) {
+    message += (_addFloatInput(F("LONGITUDE"), atof(LONGITUDE), 6, F("°")));
+  }
+  
+  if (var == F("{TEXT_ALTITUDEINFO}")) {
+    message += String(TEXT_ALTITUDEINFO);
+    message.replace(F("{WSPOLRZEDNE_GPS_LINK}"), String(WSPOLRZEDNE_GPS_LINK));
+    message.replace(F("{TEXT_HERE}"), String(TEXT_HERE));
+  }
+  if (var == F("{MYALTITUDE}")) {
+    message += (_addIntInput(F("MYALTITUDE"), MYALTITUDE, F("m.n.p.m")));
+  }
+  
   if (var == F("{TEXT_TEMPHUMIPRESSSENSOR}")) {
     message += String(TEXT_TEMPHUMIPRESSSENSOR);
   }
@@ -966,14 +995,6 @@ static String handle_config_device_processor(const String& var)
   if (var == F("{DISPLAY_PM1}")) {
     message += (_addBoolSelect(F("DISPLAY_PM1"), DISPLAY_PM1));
     message.replace(F("{TEXT_DISPLAYPM1}"), String(TEXT_DISPLAYPM1));
-  }
-  if (var == F("{TEXT_ALTITUDEINFO}")) {
-    message += String(TEXT_ALTITUDEINFO);
-    message.replace(F("{WSPOLRZEDNE_GPS_LINK}"), String(WSPOLRZEDNE_GPS_LINK));
-    message.replace(F("{TEXT_HERE}"), String(TEXT_HERE));
-  }
-  if (var == F("{MYALTITUDE}")) {
-    message += (_addIntInput(F("MYALTITUDE"), MYALTITUDE, F("m.n.p.m")));
   }
 
   if (var == F("{TEXT_SECURECONFIGUPDATEPAGE}")) {
@@ -1408,26 +1429,26 @@ static String handle_config_services_processor(const String& var)
   if (var == F("{AIRMONITOR_COMMENT_END}")) {
     message += ("-->");
   }
-#endif
-  
-  if (var == F("{TEXT_AIRMONITORCOORDINATESINFO}")) {
-    message += String(TEXT_AIRMONITORCOORDINATESINFO);
+#endif 
+  /*
+  if (var == F("{TEXT_MY_COORDINATESINFO}")) {
+    message += String(TEXT_MY_COORDINATESINFO);
     message.replace(F("{LATLONG_LINK}"), String(LATLONG_LINK));
     message.replace(F("{TEXT_HERE}"), String(TEXT_HERE));
   }
-  if (var == F("{TEXT_AIRMONITORLATITUDE}")) {
-    message += String(TEXT_AIRMONITORLATITUDE);
+  if (var == F("{TEXT_MY_LATITUDE}")) {
+    message += String(TEXT_MY_LATITUDE);
   }
   if (var == F("{LATITUDE}")) {
     message += (_addFloatInput(F("LATITUDE"), atof(LATITUDE), 6, F("°")));
   }
-  if (var == F("{TEXT_AIRMONITORLONGITUDE}")) {
-    message += String(TEXT_AIRMONITORLONGITUDE);
+  if (var == F("{TEXT_MY_LONGITUDE}")) {
+    message += String(TEXT_MY_LONGITUDE);
   }
   if (var == F("{LONGITUDE}")) {
     message += (_addFloatInput(F("LONGITUDE"), atof(LONGITUDE), 6, F("°")));
   }
-
+*/
   if (var == F("{TEXT_THINGSPEAKSENDING}")) {
     message += String(TEXT_THINGSPEAKSENDING);
     message.replace(F("{THINGSPEAK_LINK}"), String(THINGSPEAK_LINK));
@@ -2300,6 +2321,18 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
     _parseAsCString(LANGUAGE, request->getParam("LANGUAGE")->value(), 12);
     _set_language();
   }
+  
+  if (request->hasParam("LATITUDE")) {
+    _parseAsCString(LATITUDE, request->getParam("LATITUDE")->value(), 16);
+  }
+
+  if (request->hasParam("LONGITUDE")) {
+    _parseAsCString(LONGITUDE, request->getParam("LONGITUDE")->value(), 16);
+  }
+  
+  if (request->hasParam("MYALTITUDE")) {
+    MYALTITUDE = (request->getParam("MYALTITUDE")->value()).toInt();
+  }
 
   char oldTHP_MODEL[32];
   strcpy(oldTHP_MODEL, THP_MODEL);
@@ -2405,10 +2438,6 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
     if (FREQUENTMEASUREMENT == false) {
       DEEPSLEEP_ON = _parseAsBool(request->getParam("DEEPSLEEP_ON")->value());
     }
-  }
-
-  if (request->hasParam("MYALTITUDE")) {
-    MYALTITUDE = (request->getParam("MYALTITUDE")->value()).toInt();
   }
 
   if (request->hasParam("CONFIG_AUTH")) {
@@ -2556,6 +2585,7 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
     _parseAsCString(AIRMONITOR_API_KEY, request->getParam("AIRMONITOR_API_KEY")->value(), 64);
   }
 #endif
+  /*
   if (request->hasParam("LATITUDE")) {
     _parseAsCString(LATITUDE, request->getParam("LATITUDE")->value(), 16);
   }
@@ -2563,7 +2593,7 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
   if (request->hasParam("LONGITUDE")) {
     _parseAsCString(LONGITUDE, request->getParam("LONGITUDE")->value(), 16);
   }
-
+  */
   if (request->hasParam("THINGSPEAK_ON")) {
     THINGSPEAK_ON = _parseAsBool(request->getParam("THINGSPEAK_ON")->value());
   }

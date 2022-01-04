@@ -805,9 +805,9 @@ void set_I2C_PINS(String THP_PIN, int i) {
   }
 #endif
 }
-
-void set_SERIAL_PINS(String DUST_PIN, int i) {
-#ifdef ARDUINO_ARCH_ESP8266
+/*
+  void set_SERIAL_PINS(String DUST_PIN, int i) {
+  #ifdef ARDUINO_ARCH_ESP8266
   if (i == 1) {
     if (DUST_PIN == "D1") {
       DUST_TX = 5;
@@ -853,7 +853,7 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
       DUST_RX = 17;
     }
   }
-#elif defined ARDUINO_ARCH_ESP32
+  #elif defined ARDUINO_ARCH_ESP32
   if (i == 1) {
     if (DUST_PIN == "D1") {
       DUST_TX = 8;
@@ -907,9 +907,9 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
       DUST_RX = 23;
     }
   }
-#endif
-}
-
+  #endif
+  }
+*/
 // default translation - english
 #ifdef INTL_OLD
 #include "intl/default_intl.h"
@@ -949,10 +949,10 @@ void setup() {
 
   fs_setup();
   yield();
-
-  // deleteConfig();
-  // yield();
-
+  /*
+    deleteConfig();
+    yield();
+  */
   //temporary solution!
   if (SECOND_THP) {
     strcpy(SECOND_THP_MODEL, THP_MODEL);
@@ -975,8 +975,15 @@ void setup() {
   set_I2C_PINS(CONFIG_SECOND_THP_SDA, 3);
   set_I2C_PINS(CONFIG_SECOND_THP_SCL, 4);
 
-  set_SERIAL_PINS(CONFIG_DUST_TX, 1);
-  set_SERIAL_PINS(CONFIG_DUST_RX, 2);
+  // set_SERIAL_PINS(CONFIG_DUST_TX, 1);
+  // set_SERIAL_PINS(CONFIG_DUST_RX, 2);
+
+#ifdef ARDUINO_ARCH_ESP32
+  if (DUST_TX == 8 or DUST_RX == 9) {
+    DUST_TX = 22;
+    DUST_RX = 23;
+  }
+#endif
 
   // DUST SENSOR setup - START
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
@@ -1264,13 +1271,7 @@ void setup() {
       BMESensor_2.begin(SECOND_THP_SDA, SECOND_THP_SCL);
     }
 #elif defined ARDUINO_ARCH_ESP32
-    // #define BME280_ADD 0x76
-    // bme.begin(BME280_ADD);
-    // bme.begin();
     Wire1.begin(FIRST_THP_SDA, FIRST_THP_SCL, 400000);
-    // default settings
-    // status = bme.begin();
-    // You can also pass in a Wire library object like &Wire2
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76
     bool bmeStatus = bme.begin(0x76, &Wire1);
 #elif defined DUSTSENSOR_PMS5003_7003_BME280_0x77
@@ -1546,6 +1547,7 @@ void setup() {
 #endif
   // HomeKit -- END
 
+  // takeTHPMeasurements();
 }
 
 void loop() {

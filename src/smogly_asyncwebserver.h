@@ -93,7 +93,7 @@ static String handle_root_processor(const String& var)
     }
   } else {
     if (var == F("{WEB_ROOT_PAGE_MEASUREMENTS_THP1")) {
-      takeTHPMeasurements();
+		takeTHPMeasurements();
       message += String(WEB_ROOT_PAGE_MEASUREMENTS_THP1);
       message.replace(F("{TEXT_WEATHER}"), String(TEXT_WEATHER));
 
@@ -534,8 +534,8 @@ static String _add_DUST_TX_RX_Select(const String &key, const String &value) {
     input += _add_DUST_Option(F("D7"), F("D7/GPIO13"), value);
     //input += _addOption(F("D8"), F("D8/GPIO15"), value);
 #elif defined ARDUINO_ARCH_ESP32
-    input += _add_DUST_Option(F("D1"), F("D1/GPIO08"), value);
-    input += _add_DUST_Option(F("D2"), F("D2/GPIO02"), value);
+    // input += _add_DUST_Option(F("D1"), F("D1/GPIO08"), value);
+    // input += _add_DUST_Option(F("D2"), F("D2/GPIO02"), value);
     input += _add_DUST_Option(F("D4"), F("D4/GPIO04"), value);
     input += _add_DUST_Option(F("D5"), F("D5/GPIO05"), value);
 	
@@ -2283,6 +2283,113 @@ static void _parseAsCString(char* dest, String value, int CStringSize = 255) {
   }
 */
 
+
+
+void set_SERIAL_PINS(String DUST_PIN, int i) {
+#ifdef ARDUINO_ARCH_ESP8266
+  if (i == 1) {
+    if (DUST_PIN == "D1") {
+      DUST_TX = 5;
+    } else if (DUST_PIN == "D2") {
+      DUST_TX = 4;
+    } else if (DUST_PIN == "D3") {
+      DUST_TX = 0;
+    } else if (DUST_PIN == "D4") {
+      DUST_TX = 2;
+    } else if (DUST_PIN == "D5") {
+      DUST_TX = 14;
+    } else if (DUST_PIN == "D6") {
+      DUST_TX = 12;
+    } else if (DUST_PIN == "D7") {
+      DUST_TX = 13;
+    } else if (DUST_PIN == "D8") {
+      DUST_TX = 15;
+    } else if (DUST_PIN == "D16") {
+      DUST_TX = 16;
+    } else if (DUST_PIN == "D17") {
+      DUST_TX = 17;
+    }
+  } else if (i == 2) {
+    if (DUST_PIN == "D1") {
+      DUST_RX = 5;
+    } else if (DUST_PIN == "D2") {
+      DUST_RX = 4;
+    } else if (DUST_PIN == "D3") {
+      DUST_RX = 0;
+    } else if (DUST_PIN == "D4") {
+      DUST_RX = 2;
+    } else if (DUST_PIN == "D5") {
+      DUST_RX = 14;
+    } else if (DUST_PIN == "D6") {
+      DUST_RX = 12;
+    } else if (DUST_PIN == "D7") {
+      DUST_RX = 13;
+    } else if (DUST_PIN == "D8") {
+      DUST_RX = 15;
+    } else if (DUST_PIN == "D16") {
+      DUST_RX = 16;
+    } else if (DUST_PIN == "D17") {
+      DUST_RX = 17;
+    }
+  }
+#elif defined ARDUINO_ARCH_ESP32
+  if (i == 1) {
+    if (DUST_PIN == "D1") {
+      DUST_TX = 8;
+    } else if (DUST_PIN == "D2") {
+      DUST_TX = 9;
+    } else if (DUST_PIN == "D4") {
+      DUST_TX = 4;
+    } else if (DUST_PIN == "D5") {
+      DUST_TX = 5;
+    } else if (DUST_PIN == "D15") {
+      DUST_TX = 15;
+    } else if (DUST_PIN == "D16") {
+      DUST_TX = 16;
+    } else if (DUST_PIN == "D17") {
+      DUST_TX = 17;
+    } else if (DUST_PIN == "D18") {
+      DUST_TX = 18;
+    } else if (DUST_PIN == "D19") {
+      DUST_TX = 19;
+    } else if (DUST_PIN == "D21") {
+      DUST_TX = 21;
+    } else if (DUST_PIN == "D22") {
+      DUST_TX = 22;
+    } else if (DUST_PIN == "D23") {
+      DUST_TX = 23;
+    }
+  } else if (i == 2) {
+    if (DUST_PIN == "D1") {
+      DUST_RX = 8;
+    } else if (DUST_PIN == "D2") {
+      DUST_RX = 9;
+    } else if (DUST_PIN == "D4") {
+      DUST_RX = 4;
+    } else if (DUST_PIN == "D5") {
+      DUST_RX = 5;
+    } else if (DUST_PIN == "D15") {
+      DUST_RX = 15;
+    } else if (DUST_PIN == "D16") {
+      DUST_RX = 16;
+    } else if (DUST_PIN == "D17") {
+      DUST_RX = 17;
+    } else if (DUST_PIN == "D18") {
+      DUST_RX = 18;
+    } else if (DUST_PIN == "D19") {
+      DUST_RX = 19;
+    } else if (DUST_PIN == "D21") {
+      DUST_RX = 21;
+    } else if (DUST_PIN == "D22") {
+      DUST_RX = 22;
+    } else if (DUST_PIN == "D23") {
+      DUST_RX = 23;
+    }
+  }
+#endif
+}
+
+
 //void handle_config_device_post() {
 static void handle_config_device_save(AsyncWebServerRequest *request) {
   unsigned char need_update = 0;
@@ -2420,6 +2527,22 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   }
   if (request->hasParam("CONFIG_SECOND_THP_SCL")) {
       _parseAsCString(CONFIG_SECOND_THP_SCL, request->getParam("CONFIG_SECOND_THP_SCL")->value(), 4);
+  }
+
+  if (request->hasParam("CONFIG_DUST_TX")) {
+      _parseAsCString(CONFIG_DUST_TX, request->getParam("CONFIG_DUST_TX")->value(), 4);
+	  set_SERIAL_PINS(CONFIG_DUST_TX, 1);
+      Serial.println(("CONFIG_DUST_TX: " + String(CONFIG_DUST_TX)));
+      Serial.println(("DUST_TX: " + String(DUST_TX)));
+	  
+  }
+  
+  if (request->hasParam("CONFIG_DUST_RX")) {
+      _parseAsCString(CONFIG_DUST_RX, request->getParam("CONFIG_DUST_RX")->value(), 4);
+	  set_SERIAL_PINS(CONFIG_DUST_RX, 2);
+      Serial.println(("Data from SDS011!\n"));
+      Serial.println(("CONFIG_DUST_RX: " + String(CONFIG_DUST_RX)));
+      Serial.println(("DUST_RX: " + String(DUST_RX)));
   }
 
   if (request->hasParam("FREQUENTMEASUREMENT")) {

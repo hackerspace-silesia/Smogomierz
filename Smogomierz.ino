@@ -142,7 +142,7 @@
 #include "src/libs/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
 #endif
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/libs/esp32/Adafruit_BME280.h" // https://github.com/Takatsuki0204/BME280-I2C-ESP32 // 5.11.2021
+#include "src/libs/esp32/Adafruit_BME280.h" // https://github.com/adafruit/Adafruit_BME280_Library // 4.01.2022
 #endif
 
 #include "src/libs/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 5.11.2021
@@ -231,7 +231,10 @@ BME280<> BMESensor_2;
 #elif defined ARDUINO_ARCH_ESP32 // VIN - 3V; GND - G; SCL - D17; SDA - D16
 //#define I2C_SDA = FIRST_THP_SDA
 //#define I2C_SCL = FIRST_THP_SCL
-Adafruit_BME280 bme((uint8_t)FIRST_THP_SDA, (uint8_t)FIRST_THP_SCL); // I2C -- ONLY THE DEFAULT VALUES WORK
+// Adafruit_BME280 bme((uint8_t)FIRST_THP_SDA, (uint8_t)FIRST_THP_SCL); // I2C -- ONLY THE DEFAULT VALUES WORK
+// Adafruit_BME280 bme(18, 19); // I2C -- ONLY THE DEFAULT VALUES WORK
+// Adafruit_BME280 bme(4, 5);
+Adafruit_BME280 bme; // I2C
 #endif
 
 // BMP280 config
@@ -1264,7 +1267,16 @@ void setup() {
     // #define BME280_ADD 0x76
     // bme.begin(BME280_ADD);
     // bme.begin();
-    bool bmeStatus = bme.begin();
+    Wire1.begin(FIRST_THP_SDA, FIRST_THP_SCL, 400000);
+    // default settings
+    // status = bme.begin();
+    // You can also pass in a Wire library object like &Wire2
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76
+    bool bmeStatus = bme.begin(0x76, &Wire1);
+#elif defined DUSTSENSOR_PMS5003_7003_BME280_0x77
+    bool bmeStatus = bme.begin(0x77, &Wire1);
+#endif
+    // bool bmeStatus = bme.begin();
     if (!bmeStatus) {
       Serial.println("\nCould not find a valid BME280 sensor, check wiring!\n");
     }

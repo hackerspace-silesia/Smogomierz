@@ -470,6 +470,7 @@ bool checkBmeStatus() {
   int pressure_BME280_Int = (BMESensor.seaLevelForAltitude(MYALTITUDE));
   int humidity_BME280_Int = BMESensor.humidity;
 #elif defined ARDUINO_ARCH_ESP32
+  yield();
   int temperature_BME280_Int = bme.readTemperature();
   int pressure_BME280_Int = (bme.seaLevelForAltitude(MYALTITUDE, (bme.readPressure() / 100.0F)));
   int humidity_BME280_Int = bme.readHumidity();
@@ -2213,6 +2214,13 @@ void takeTHPMeasurements() {
 
 #ifdef ARDUINO_ARCH_ESP8266
     BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
+#elif defined ARDUINO_ARCH_ESP32
+    /*
+      byte i;
+      Wire1.beginTransmission(i);
+      Wire1.endTransmission();
+    */
+    // Serial.println("i: " + String(i));
 #endif
     if (checkBmeStatus() == true) {
       if (DEBUG) {

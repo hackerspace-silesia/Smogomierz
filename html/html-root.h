@@ -60,8 +60,8 @@ static const char WEB_ROOT_PAGE_MEASUREMENTS_AIR[] PROGMEM = R"rawliteral(<h2>{T
 					<h3>PM10: {colorAveragePM10} {averagePM10} µg/m³</h3>)rawliteral";
 		
 static const char WEB_ROOT_PAGE_AIRMONITOR_GRAPH[] PROGMEM = R"rawliteral(<hr>
-						<iframe src='http://metrics.airmonitor.pl/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>
-						<iframe src='http://metrics.airmonitor.pl/dashboard-solo/db/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>
+						<iframe src='https://metrics.airmonitor.pl/d-solo/000000002/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=14' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>
+						<iframe src='https://metrics.airmonitor.pl/d-solo/000000002/airmonitor?orgId=1&var-latitude={LATITUDE}&var-longitude={LONGITUDE}&refresh=1m&panelId=13' frameborder='0' style='overflow: hidden; height: 100&#37;; width: 100&#37;; max-height: 510; max-width: 450;' ></iframe>
 						)rawliteral";
 
 static const char WEB_ROOT_PAGE_LUFTDATEN_GRAPH[] PROGMEM = R"rawliteral(<hr>

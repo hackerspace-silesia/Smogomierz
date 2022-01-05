@@ -73,7 +73,8 @@ extern char TEXT_SECURELOGOUTINFO[48] = "Restart your web browser to log out!";
 
 extern char TEXT_LUFTDATENSENDING[96] = "Sending data to the {LUFTDATEN_LINK} service(requires registration at {LUFTDATENFORM_LINK})";
 extern char TEXT_LUFTDATEN_GRAPH_ON[64] = "Displaying charts from the Sensor.Community";
-
+extern char TEXT_LUFTDATEN_GRAPH_APIID[200] = "Showing charts requires the input of the <b>\"Sensor ID\"</b> of the dust sensor. You can find it {LUFTDATEN_APIID_LINK} after clicking on the <b>\"Data\"</b> button next to your device";	
+	
 extern char TEXT_SMOGLISTSENDING[48] = "Sending data to the {SMOGLIST_LINK} service";
 extern char TEXT_SMOGLISTINFO[242] = "Smoglist is a service that collects Smogly usage statistics(we do not collect logins and passwords). It will allow us to improve the most commonly used functions in the future and generate our own charts.";
 

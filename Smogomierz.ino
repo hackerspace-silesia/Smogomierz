@@ -1495,11 +1495,11 @@ void setup() {
 #else
   delay(300);
 #endif
-
-  if (LUFTDATEN_GRAPH_ON) {
-    getAPIIDFromLuftdaten();
-  }
-
+  /*
+    if (LUFTDATEN_GRAPH_ON) {
+      getAPIIDFromLuftdaten();
+    }
+  */
   // HomeKit -- START
 #ifdef ARDUINO_ARCH_ESP32
   if (HOMEKIT_SUPPORT) {
@@ -1781,9 +1781,9 @@ void sendDataToExternalServices() {
     sendDataToLuftdaten(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (DEBUG) {
 #ifdef ARDUINO_ARCH_ESP8266
-      Serial.println(F("Sending measurement data to the LuftDaten service!\n"));
+      Serial.println(F("Sending measurement data to the Sensor.Community service!\n"));
 #elif defined ARDUINO_ARCH_ESP32
-      Serial.println(("Sending measurement data to the LuftDaten service!\n"));
+      Serial.println(("Sending measurement data to the Sensor.Community service!\n"));
 #endif
     }
   }

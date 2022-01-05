@@ -100,6 +100,7 @@ bool loadConfig() {
 
   LUFTDATEN_ON = json["LUFTDATEN_ON"];
   LUFTDATEN_GRAPH_ON = json["LUFTDATEN_GRAPH_ON"];
+  LUFTDATEN_APIID = json["LUFTDATEN_APIID"];	  
   SMOGLIST_ON = json["SMOGLIST_ON"];
 
   AIRMONITOR_ON = json["AIRMONITOR_ON"];
@@ -231,7 +232,9 @@ bool loadConfig() {
       Serial.println(LUFTDATEN_ON);
       Serial.print(F("Loaded LUFTDATEN_GRAPH_ON: "));
       Serial.println(LUFTDATEN_GRAPH_ON);
-	  
+      Serial.print(F("Loaded LUFTDATEN_APIID: "));
+      Serial.println(LUFTDATEN_APIID);
+	  	  
       Serial.print(F("Loaded SMOGLIST_ON: "));
       Serial.println(SMOGLIST_ON);
 
@@ -419,7 +422,9 @@ bool loadConfig() {
       Serial.println(LUFTDATEN_ON);
       Serial.print("Loaded LUFTDATEN_GRAPH_ON: ");
       Serial.println(LUFTDATEN_GRAPH_ON);
-	  
+      Serial.print("Loaded LUFTDATEN_APIID: ");
+      Serial.println(LUFTDATEN_APIID);
+	  	  
       Serial.print("Loaded SMOGLIST_ON: ");
       Serial.println(SMOGLIST_ON);
 
@@ -792,6 +797,7 @@ bool saveConfig() {
 
   json["LUFTDATEN_ON"] = bool(LUFTDATEN_ON);
   json["LUFTDATEN_GRAPH_ON"] = bool(LUFTDATEN_GRAPH_ON);
+  json["LUFTDATEN_APIID"] = int(LUFTDATEN_APIID);
   
   json["SMOGLIST_ON"] = bool(SMOGLIST_ON);
 

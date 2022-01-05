@@ -1339,7 +1339,15 @@ static String handle_config_services_processor(const String& var)
   if (var == F("{LUFTDATEN_GRAPH_ON}")) {
       message += (_addBoolSelect(F("LUFTDATEN_GRAPH_ON"), LUFTDATEN_GRAPH_ON));
   }
-  
+  if (var == F("{TEXT_LUFTDATEN_GRAPH_APIID}")) {
+    message += String(TEXT_LUFTDATEN_GRAPH_APIID);
+    message.replace(F("{LUFTDATEN_APIID_LINK}"), String(LUFTDATEN_APIID_LINK));
+    message.replace(F("{TEXT_HERE}"), String(TEXT_HERE));
+  } 
+  if (var == F("{LUFTDATEN_APIID}")) {
+      message += (_addIntInput(F("LUFTDATEN_APIID"), LUFTDATEN_APIID));
+  }
+   
   if (var == F("{TEXT_AQIECOSENDING}")) {
     message += String(TEXT_AQIECOSENDING);
   }
@@ -2791,6 +2799,9 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
     LUFTDATEN_GRAPH_ON = _parseAsBool(request->getParam("LUFTDATEN_GRAPH_ON")->value());
   }
   
+  if (request->hasParam("LUFTDATEN_APIID")) {
+    LUFTDATEN_APIID = (request->getParam("LUFTDATEN_APIID")->value()).toInt();
+  }
   
   if (DEBUG) {
     Serial.println(F("POST SERVICES CONFIG END!!"));

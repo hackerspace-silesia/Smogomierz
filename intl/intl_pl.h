@@ -76,6 +76,7 @@ char PL_INTL_SECURELOGOUTINFO[48] PROGMEM = "Zrestartuj przeglądarkę w celu wy
 
 char PL_INTL_LUFTDATENSENDING[96] PROGMEM = "Wysyłanie danych do serwisu {LUFTDATEN_LINK} (wymaga rejestracji {LUFTDATENFORM_LINK})";
 char PL_INTL_LUFTDATEN_GRAPH_ON[64] = "Wyświetlanie wykresów z serwisu Sensor.Community";
+char PL_INTL_LUFTDATEN_GRAPH_APIID[200] = "Wyświetlanie wykresów wymaga podania <b>\"Sensor ID\"</b> miernika pyłu. Znajdziesz go {LUFTDATEN_APIID_LINK} po kliknięciu w przycisk <b>\"Dane\"</b> przy swoim urządzeniu";	
 
 char PL_INTL_SMOGLISTSENDING[48] PROGMEM = "Wysyłanie danych do serwisu {SMOGLIST_LINK}";
 char PL_INTL_SMOGLISTINFO[242] PROGMEM = "Smoglist to serwis zbierający statystyki użytkowania Smogly(nie zbieramy loginów i haseł). Smoglist pozwoli nam w przyszłości ulepszyć najcześciej używane funkcje i generować własne wykresy.";

@@ -332,7 +332,6 @@ const char WEB_UPDATE_PAGE_UPDATE[] PROGMEM = R"rawliteral(<main role='main' cla
 #endif
 // UPDATE PAGE - END
 
-
 #ifdef ARDUINO_ARCH_ESP8266
 static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
 static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
@@ -345,6 +344,7 @@ static char LATLONG_LINK[] = "<a title='latlong.net' href='https://www.latlong.n
 static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
 static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
+static char LUFTDATEN_APIID_LINK[] = "<a title='devices.sensor.community/sensors' href='https://devices.sensor.community/sensors' target='_blank'>{TEXT_HERE}</a>";
 #elif defined ARDUINO_ARCH_ESP32
 static char GITHUB_LINK[] = "<a title='Instructions' href='https://github.com/hackerspace-silesia/Smogomierz#instrukcje' target='_blank'>{TEXT_HERE}</a>";
 static char WSPOLRZEDNE_GPS_LINK[] = "<a title='wspolrzedne-gps.pl' href='https://www.wspolrzedne-gps.pl' target='_blank'>{TEXT_HERE}</a>";
@@ -357,4 +357,5 @@ static char LATLONG_LINK[] = "<a title='latlong.net' href='https://www.latlong.n
 static char THINGSPEAK_LINK[] = "<a title='ThingSpeak' href='https://thingspeak.com' target='_blank'>ThingSpeak</a>";
 static char SMOGOMIERZRELEASES_LINK[] = "<b><a target='_blank' href='https://github.com/hackerspace-silesia/Smogomierz/releases'>{TEXT_HERE}</a></b>";
 static char MADAVI_LINK[] = "<a title='madavi.de' href='https://www.madavi.de/sensor/graph.php' target='_blank'>{TEXT_HERE}</a>";
+static char LUFTDATEN_APIID_LINK[] = "<a title='devices.sensor.community/sensors' href='https://devices.sensor.community/sensors' target='_blank'>{TEXT_HERE}</a>";
 #endif

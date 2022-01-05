@@ -36,6 +36,10 @@ Do zbudowania własnego Smogly wymagana jest lutownica(wraz z cyną) oraz pistol
 
 Gotowe zestawy części potrzebnych do zbudowania własnego Smogly, dostępne są również w sklepie Botland: [Zestaw DIY do budowy miernika smogu](https://botland.com.pl/pl/czujniki-czystosci-powietrza/13434-zestaw-diy-do-budowy-miernika-smogu-czujnik-czystosci-powietrza-pm25-i-pm10.html)
 
+## Smogly PCB
+
+Jeśli ktoś nie lubi podpinać wszystkiego kabelkami, może skorzystać z gotowych projektów płytek PCB. Pozwalają one na połączenie wszystkich elementów. Dostępne są wersja dla [ESP8266](https://github.com/bfaliszek/Smogly-PCB) oraz [ESP32](https://github.com/bfaliszek/Smogly-PCB/tree/esp32). Projekt taki(.zip z plikami gerber [ESP8266](https://github.com/bfaliszek/Smogly-PCB/tree/esp8266/gerber/zip)/[ESP32](https://github.com/bfaliszek/Smogly-PCB/tree/esp32/gerber/zip)) wysyłamy do producenta PCB(np. [JLCPCB](https://jlcpcb.com)) i po kilkunastu dniach otrzymujemy gotowe PCB, do którego przylutowujemy piny lub poszczególne elemeny Smogly.
+
 ## Zaawansowane
 
 [Instrukcja instalacji oprogramowania wymaganego do kompilacji oprogramowania z repozytorium](https://github.com/hackerspace-silesia/Smogomierz/blob/master/instrukcje/software.md)

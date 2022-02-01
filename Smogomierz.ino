@@ -333,7 +333,8 @@ SoftwareSerial PMS_Serial(DUST_TX, DUST_RX); // Change TX - D1 and RX - D2 pins 
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
-HardwareSerial PMS_Serial(1); // Change TX - D5 and RX - D4 pins
+// HardwareSerial PMS_Serial(1); // Change TX - D5 and RX - D4 pins
+HardwareSerial PMS_Serial(DUST_TX, DUST_RX); // Change TX - D5 and RX - D4 pins
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #endif

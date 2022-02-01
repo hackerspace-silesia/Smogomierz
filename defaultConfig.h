@@ -74,7 +74,7 @@ short MYALTITUDE = 271;
 bool THINGSPEAK_ON = false;
 bool THINGSPEAK_GRAPH_ON = false;
 char THINGSPEAK_API_KEY[32] = "WRITE_API_KEY";
-unsigned short THINGSPEAK_CHANNEL_ID = 0;
+unsigned int THINGSPEAK_CHANNEL_ID = 0;
 char THINGSPEAK_READ_API_KEY[32] = "READ_API_KEY";
 
 bool INFLUXDB_ON = false;

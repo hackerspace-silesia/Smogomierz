@@ -47,7 +47,7 @@ extern short MYALTITUDE;
 extern bool THINGSPEAK_ON;
 extern bool THINGSPEAK_GRAPH_ON;
 extern char THINGSPEAK_API_KEY[32];
-extern unsigned short THINGSPEAK_CHANNEL_ID;
+extern unsigned int THINGSPEAK_CHANNEL_ID;
 extern char THINGSPEAK_READ_API_KEY[32];
 
 extern bool INFLUXDB_ON;

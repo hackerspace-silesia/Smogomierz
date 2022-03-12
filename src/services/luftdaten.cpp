@@ -940,7 +940,7 @@ String temp_DUSTMODEL_Luftdaten = "PMS7003";
 
  for (int i = 0; i < json.size(); i++) {	
  	if (String(json[i]["sensor"]["id"].as<String>()) != "null") {
-#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 || DUSTSENSOR_PMS5003_7003_BME280_0x77
+#ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
 		if (String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == "PMS7003" or String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == "PMS5003") {
 #elif defined DUSTSENSOR_SDS011_21
 			if (String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == "SDS021" or String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == "SDS011") {

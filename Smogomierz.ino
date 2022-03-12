@@ -1,6 +1,6 @@
 /*
   ESP8266 core for Arduino - 3.0.2 // NodeMCU 1.0; Flash Size: 4MB (FS:1MB OTA:~1019KB)
-  Arduino core for the ESP32 - 1.0.6!! // 2.0.0 NOT SUPPORTED!
+  Arduino core for the ESP32 - 2.0.x
 
   Adafruit Unified Sensor - 1.1.4
   DallasTemperature - 3.8.0
@@ -132,8 +132,6 @@
 #include <ArduinoJson.h> // 6.9.0 or later
 #ifdef ASYNC_WEBSERVER_ON
 #include "src/WiFiManager/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 5.11.2021
-#else
-#include "src/WiFiManager/WiFiManager.h" // https://github.com/tzapu/WiFiManager/tree/development // 5.11.2021 DEV
 #endif
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
@@ -191,13 +189,8 @@
 #ifdef ASYNC_WEBSERVER_ON
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#else
-#include <ESP8266WebServer.h>
 #endif
 #include <ESP8266mDNS.h>
-#ifndef ASYNC_WEBSERVER_ON
-#include <ESP8266HTTPUpdateServer.h>
-#endif
 #include <SoftwareSerial.h>
 #elif defined ARDUINO_ARCH_ESP32 // Arduino core for the ESP32 - 1.0.4-rc1 or later // at 1.0.3 autoupdate doesn't work !!!
 #include <WiFi.h>
@@ -206,8 +199,6 @@
 #ifdef ASYNC_WEBSERVER_ON
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#else
-#include <WebServer.h>
 #endif
 #include <Update.h>
 #include <HTTPClient.h>
@@ -384,13 +375,6 @@ char CURRENTSOFTWAREVERSION[32] = "";
 
 #ifdef ASYNC_WEBSERVER_ON
 AsyncWebServer server(80);
-#else
-#ifdef ARDUINO_ARCH_ESP8266
-ESP8266WebServer WebServer(80);
-ESP8266HTTPUpdateServer httpUpdater;
-#elif defined ARDUINO_ARCH_ESP32
-WebServer WebServer(80);
-#endif
 #endif
 
 WiFiClient espClient;
@@ -440,12 +424,6 @@ device_data_t homekit_DeviceData;
 #endif
 // HomeKit -- END
 
-
-
-
-#ifndef ASYNC_WEBSERVER_ON
-WiFiManager wifiManager;
-#endif
 
 // check TEMP/HUMI/PRESS Sensor - START
 bool checkHTU21DStatus() {
@@ -940,8 +918,6 @@ void set_I2C_PINS(String THP_PIN, int i) {
 // library doesnt support arguments :/
 #ifdef ASYNC_WEBSERVER_ON
 #include "src/smogly_asyncwebserver.h"
-#else
-#include "src/smogly_webserver.h"
 #endif
 
 
@@ -1004,16 +980,12 @@ void setup() {
 #ifdef ASYNC_WEBSERVER_ON
       yield();
       delay(500);
-#else
-      delay(500);
 #endif
       pms.activeMode();
     } else {
       pms.passiveMode();
 #ifdef ASYNC_WEBSERVER_ON
       yield();
-      delay(500);
-#else
       delay(500);
 #endif
       pms.sleep();
@@ -1053,8 +1025,6 @@ void setup() {
 
 #ifdef ASYNC_WEBSERVER_ON
   yield();
-#else
-  delay(10);
 #endif
 
 #elif defined DUSTSENSOR_HPMA115S0
@@ -1066,37 +1036,27 @@ void setup() {
 #endif
 #ifdef ASYNC_WEBSERVER_ON
     yield();
-#else
-    delay(100);
 #endif
     if (FREQUENTMEASUREMENT == true) {
       hpma115S0.Init();
 #ifdef ASYNC_WEBSERVER_ON
       yield();
-#else
-      delay(100);
 #endif
       hpma115S0.EnableAutoSend();
 #ifdef ASYNC_WEBSERVER_ON
       yield();
-#else
-      delay(100);
 #endif
       hpma115S0.StartParticleMeasurement();
     } else {
       hpma115S0.Init();
 #ifdef ASYNC_WEBSERVER_ON
       yield();
-#else
-      delay(100);
 #endif
       hpma115S0.StopParticleMeasurement();
     }
   }
 #ifdef ASYNC_WEBSERVER_ON
   yield();
-#else
-  delay(10);
 #endif
 #elif defined DUSTSENSOR_SPS30
   if (!strcmp(DUST_MODEL, "SPS30")) {
@@ -1193,16 +1153,12 @@ void setup() {
 #ifdef ASYNC_WEBSERVER_ON
       yield();
       delay(500);
-#else
-      delay(500);
 #endif
       pms.activeMode();
     } else {
       pms.passiveMode();
 #ifdef ASYNC_WEBSERVER_ON
       yield();
-#else
-      delay(500);
 #endif
       pms.sleep();
     }
@@ -1326,10 +1282,6 @@ void setup() {
   AsyncWiFiManager wifiManager(&server, &dns);
 #endif
 
-#ifndef ASYNC_WEBSERVER_ON
-  wifiManager.setCountry("US");
-#endif
-
 #ifdef ARDUINO_ARCH_ESP8266
   WiFi.hostname(device_name);
 #elif defined ARDUINO_ARCH_ESP32
@@ -1355,14 +1307,10 @@ void setup() {
 #endif
 #ifdef ASYNC_WEBSERVER_ON
     wifiManager.startConfigPortal(device_name);
-#else
-    wifiManager.setConfigPortalBlocking(false);
 #endif
   }
 #ifdef ASYNC_WEBSERVER_ON
   yield();
-#else
-  delay(250);
 #endif
 
 #ifdef ASYNC_WEBSERVER_ON
@@ -1413,74 +1361,15 @@ void setup() {
   server.on("/homekit_off", HTTP_GET, homekit_off);
   //server.on("/logout", HTTP_GET, logout);
   server.onNotFound(handle_root);
-#else
-  //  WebServer config - Start
-  WebServer.on("/", HTTP_GET,  handle_root);
-  WebServer.on("/config", HTTP_GET, handle_config);
-  WebServer.on("/config_device", HTTP_POST, handle_config_device_post);
-  WebServer.on("/config_device", HTTP_GET, handle_config_device);
-  WebServer.on("/config_services", HTTP_POST, handle_config_services_post);
-  WebServer.on("/config_services", HTTP_GET, handle_config_services);
-  WebServer.on("/config_adv_mqtt", HTTP_POST, handle_adv_mqtt_config_post);
-  WebServer.on("/config_adv_mqtt", HTTP_GET, handle_adv_mqtt_config);
-  WebServer.on("/update", HTTP_GET, handle_update);
-  WebServer.on("/api", HTTP_GET, handle_api);
-  WebServer.on("/erase_wifi", HTTP_GET, erase_wifi);
-  WebServer.on("/restore_config", HTTP_GET, restore_config);
-  WebServer.on("/fwupdate", HTTP_GET, fwupdate);
-  WebServer.on("/autoupdate_on", HTTP_GET, autoupdate_on);
-
-  WebServer.on("/homekit_reset", HTTP_GET, homekit_reset);
-  WebServer.on("/homekit_on", HTTP_GET, homekit_on);
-  WebServer.on("/homekit_off", HTTP_GET, homekit_off);
-
-  WebServer.onNotFound(handle_root);
-
-#ifdef ARDUINO_ARCH_ESP8266
-  httpUpdater.setup(&WebServer, "/update");
-#elif defined ARDUINO_ARCH_ESP32
-  /*handling uploading firmware file */
-  WebServer.on("/update", HTTP_POST, []() {
-    WebServer.sendHeader("Connection", "close");
-    WebServer.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    ESP.restart();
-  }, []() {
-    HTTPUpload& upload = WebServer.upload();
-    if (upload.status == UPLOAD_FILE_START) {
-      //Serial.printf("Update: %s\n", upload.filename.c_str());
-      Serial.print(F("Update: ") + String(upload.filename.c_str()) + F("\n"));
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) { //start with max available size
-        Update.printError(Serial);
-      }
-    } else if (upload.status == UPLOAD_FILE_WRITE) {
-      /* flashing firmware to ESP*/
-      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
-        Update.printError(Serial);
-      }
-    } else if (upload.status == UPLOAD_FILE_END) {
-      if (Update.end(true)) { //true to set the size to the current progress
-        //Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
-        Serial.print(F("Update Success: ") + String(upload.totalSize) + F("\nRebooting...\n"));
-      } else {
-        Update.printError(Serial);
-      }
-    }
-  });
-#endif
-  //  WebServer Config - End
 #endif
 
   // Check if config.h exist in ESP data folder
 #ifdef ASYNC_WEBSERVER_ON
-
   // https://github.com/me-no-dev/ESPAsyncWebServer/issues/1080#issuecomment-954891157
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
-
   server.begin();
-#else
-  WebServer.begin();
 #endif
 
   MDNS.begin(device_name);
@@ -1494,8 +1383,6 @@ void setup() {
 
 #ifdef ASYNC_WEBSERVER_ON
   yield();
-#else
-  delay(300);
 #endif
   /*
     if (LUFTDATEN_GRAPH_ON) {
@@ -1567,9 +1454,6 @@ void loop() {
 #ifdef ASYNC_WEBSERVER_ON
       yield();
       delay(1000);
-
-#else
-      delay(1000);
 #endif
 
     }
@@ -1597,10 +1481,6 @@ void loop() {
   }
 #endif
   // DUST SENSOR refresh data - END
-
-#ifndef ASYNC_WEBSERVER_ON
-  WebServer.handleClient();
-#endif
 
 #ifdef ARDUINO_ARCH_ESP8266
   MDNS.update();
@@ -1677,9 +1557,6 @@ void loop() {
       unsigned int current_2sec_Millis = millis();
       previous_2sec_Millis = millis();
       while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
-#ifndef ASYNC_WEBSERVER_ON
-        WebServer.handleClient();
-#endif
         previous_2sec_Millis = millis();
       }
       if (LUFTDATEN_ON or AQI_ECO_ON or AIRMONITOR_ON or SMOGLIST_ON) {
@@ -2517,9 +2394,6 @@ void takeNormalnPMMeasurements() {
 #elif defined DUSTSENSOR_SDS011_21
 #ifdef ARDUINO_ARCH_ESP8266
   PmResult SDSdata = sds.queryPm();
-#ifndef ASYNC_WEBSERVER_ON
-  delay(1000);
-#endif
   if (SDSdata.isOk()) {
     pmMeasurements[iPM][0] = (calib * 0);
     pmMeasurements[iPM][1] = (calib * SDSdata.pm25);
@@ -2548,9 +2422,6 @@ void takeNormalnPMMeasurements() {
 #elif defined DUSTSENSOR_HPMA115S0
   if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
     if (hpma115S0_pm25 == 0 and hpma115S0_pm10 == 0) {
-#ifndef ASYNC_WEBSERVER_ON
-      delay(100);
-#endif
       hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10);
       pmMeasurements[iPM][0] = (calib * 0);
       pmMeasurements[iPM][1] = (calib * hpma115S0_pm25);
@@ -2624,15 +2495,6 @@ void takeSleepPMMeasurements() {
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMSx003
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.wakeUp();
-#ifndef ASYNC_WEBSERVER_ON
-    unsigned int current_2sec_Millis = millis();
-    previous_2sec_Millis = millis();
-    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
-      WebServer.handleClient();
-      previous_2sec_Millis = millis();
-    }
-    previous_2sec_Millis = 0;
-#endif
     pms.requestRead();
   }
 
@@ -2643,18 +2505,6 @@ void takeSleepPMMeasurements() {
       takeNormalnPMMeasurements();
       counterNM1++;
     }
-#else
-    unsigned int current_2sec_Millis = millis();
-    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
-
-      if (pms.readUntil(data)) {
-        takeNormalnPMMeasurements();
-        counterNM1++;
-      }
-
-      previous_2sec_Millis = millis();
-    }
-    WebServer.handleClient();
 #endif
   }
   if (DEBUG) {
@@ -2677,16 +2527,6 @@ void takeSleepPMMeasurements() {
 #elif defined ARDUINO_ARCH_ESP32
 
 #endif
-
-#ifndef ASYNC_WEBSERVER_ON
-    unsigned int current_2sec_Millis = millis();
-    previous_2sec_Millis = millis();
-    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
-      WebServer.handleClient();
-      previous_2sec_Millis = millis();
-    }
-    previous_2sec_Millis = 0;
-#endif
   }
 
   int counterNM1 = 0;
@@ -2697,20 +2537,6 @@ void takeSleepPMMeasurements() {
 #endif
     takeNormalnPMMeasurements();
     counterNM1++;
-#else
-    unsigned int current_2sec_Millis = millis();
-    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
-#ifdef ARDUINO_ARCH_ESP8266
-      PmResult SDSdata = sds.queryPm();
-#elif defined ARDUINO_ARCH_ESP32
-#endif
-      delay(1000);
-      takeNormalnPMMeasurements();
-      counterNM1++;
-      previous_2sec_Millis = millis();
-    }
-    WebServer.handleClient();
-    delay(10);
 #endif
   }
   if (DEBUG) {
@@ -2732,25 +2558,8 @@ void takeSleepPMMeasurements() {
 #elif defined DUSTSENSOR_HPMA115S0
   if (!strcmp(DUST_MODEL, "HPMA115S0")) {
     hpma115S0.Init();
-#ifndef ASYNC_WEBSERVER_ON
-    delay(10);
-#endif
     hpma115S0.EnableAutoSend();
-#ifndef ASYNC_WEBSERVER_ON
-    delay(10);
-#endif
     hpma115S0.StartParticleMeasurement();
-
-#ifndef ASYNC_WEBSERVER_ON
-    unsigned int current_2sec_Millis = millis();
-    previous_2sec_Millis = millis();
-    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
-      WebServer.handleClient();
-      delay(10);
-      previous_2sec_Millis = millis();
-    }
-    previous_2sec_Millis = 0;
-#endif
   }
   int counterNM1 = 0;
   while (counterNM1 < NUMBEROFMEASUREMENTS) {
@@ -2759,17 +2568,6 @@ void takeSleepPMMeasurements() {
       takeNormalnPMMeasurements();
       counterNM1++;
     }
-#else
-    unsigned int current_2sec_Millis = millis();
-    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
-      if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
-        takeNormalnPMMeasurements();
-        counterNM1++;
-      }
-      previous_2sec_Millis = millis();
-    }
-    WebServer.handleClient();
-    delay(10);
 #endif
   }
   if (DEBUG) {
@@ -2782,9 +2580,6 @@ void takeSleepPMMeasurements() {
 
   if (!strcmp(DUST_MODEL, "HPMA115S0")) {
     hpma115S0.DisableAutoSend();
-#ifndef ASYNC_WEBSERVER_ON
-    delay(10);
-#endif
     hpma115S0.StopParticleMeasurement();
   }
 #elif defined DUSTSENSOR_SPS30
@@ -2792,42 +2587,17 @@ void takeSleepPMMeasurements() {
 
     // WAKE UP SPS30!!
     sps30.wakeup();
-#ifndef ASYNC_WEBSERVER_ON
-    delay(100);
-#endif
     // reset SPS30 connection
 
     if (sps30.reset() == false) {
       Errorloop((char *) "could not reset.", 0);
     }
-
-#ifndef ASYNC_WEBSERVER_ON
-    unsigned int current_2sec_Millis = millis();
-    previous_2sec_Millis = millis();
-    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 8) {
-      WebServer.handleClient();
-      delay(10);
-      previous_2sec_Millis = millis();
-    }
-    previous_2sec_Millis = 0;
-#endif
   }
   int counterNM1 = 0;
   while (counterNM1 < NUMBEROFMEASUREMENTS) {
 #ifdef ASYNC_WEBSERVER_ON
     takeNormalnPMMeasurements();
     counterNM1++;
-#else
-    unsigned int current_2sec_Millis = millis();
-    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
-
-      takeNormalnPMMeasurements();
-      counterNM1++;
-
-      previous_2sec_Millis = millis();
-    }
-    WebServer.handleClient();
-    delay(10);
 #endif
   }
   if (DEBUG) {
@@ -2845,15 +2615,6 @@ void takeSleepPMMeasurements() {
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   if (!strcmp(DUST_MODEL, "PMS7003")) {
     pms.wakeUp();
-#ifndef ASYNC_WEBSERVER_ON
-    unsigned int current_2sec_Millis = millis();
-    previous_2sec_Millis = millis();
-    while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 5) {
-      WebServer.handleClient();
-      previous_2sec_Millis = millis();
-    }
-    previous_2sec_Millis = 0;
-#endif
     pms.requestRead();
   }
 
@@ -2864,18 +2625,6 @@ void takeSleepPMMeasurements() {
       takeNormalnPMMeasurements();
       counterNM1++;
     }
-#else
-    unsigned int current_2sec_Millis = millis();
-    if (current_2sec_Millis - previous_2sec_Millis >= TwoSec_interval) {
-
-      if (pms.readUntil(data)) {
-        takeNormalnPMMeasurements();
-        counterNM1++;
-      }
-
-      previous_2sec_Millis = millis();
-    }
-    WebServer.handleClient();
 #endif
   }
   if (DEBUG) {
@@ -3055,8 +2804,6 @@ bool read_sps30_data()
             }
       */
       yield();
-#else
-      delay(1000);
 #endif
     }
 

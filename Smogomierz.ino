@@ -388,6 +388,7 @@ PubSubClient mqttclient(espClient);
 
 // https://github.com/Yurik72/ESPHap
 // HomeKit -- START
+/*
 #ifdef ARDUINO_ARCH_ESP32
 #include <SPIFFS.h>
 #endif
@@ -428,6 +429,7 @@ struct device_data_t {
 };
 device_data_t homekit_DeviceData;
 #endif
+*/
 // HomeKit -- END
 
 
@@ -1396,6 +1398,7 @@ void setup() {
     }
   */
   // HomeKit -- START
+  /*
 #ifdef ARDUINO_ARCH_ESP32
   if (HOMEKIT_SUPPORT) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1441,7 +1444,7 @@ void setup() {
   }
 #endif
   // HomeKit -- END
-
+*/
   // takeTHPMeasurements();
 }
 
@@ -2376,9 +2379,11 @@ void takeTHPMeasurements() {
 
 #ifdef ARDUINO_ARCH_ESP32
   if (HOMEKIT_SUPPORT) {
+    /*
     homekit_DeviceData.homekit_temperature = currentTemperature;
     homekit_DeviceData.homekit_humidity = currentHumidity;
     notify_hap();
+    */
   }
 #endif
 }
@@ -2775,9 +2780,11 @@ void averagePM() {
 
 #ifdef ARDUINO_ARCH_ESP32
   if (HOMEKIT_SUPPORT) {
+    /*
     homekit_DeviceData.homekit_pm10_level = averagePM10;
     homekit_DeviceData.homekit_pm25_level = averagePM25;
     notify_hap();
+    */
   }
 #endif
 }
@@ -3008,6 +3015,7 @@ void ErrtoMess(char *mess, uint8_t r)
 #endif
 
 // HomeKit -- START
+/*
 #ifdef ARDUINO_ARCH_ESP32
 void init_hap_storage() {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -3070,7 +3078,6 @@ void storage_changed(char * szstorage, int size) {
   fsDAT.close();
 }
 
-// HomeKit -- START
 void notify_hap() {
   if (homekit_temperature) {
     homekit_characteristic_t * ch_temp = homekit_service_characteristic_by_type(homekit_temperature, HOMEKIT_CHARACTERISTIC_CURRENT_TEMPERATURE);
@@ -3129,4 +3136,5 @@ uint8_t pm10_air_quality_level(float input_value, uint8_t min, uint8_t max) {
   return ((int)input_value) / ((PM10_RANGE_POOR_LEVEL - PM10_RANGE_EXCELLENT_LEVEL) / (float)(max - min));
 }
 #endif
+*/
 // HomeKit -- END

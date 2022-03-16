@@ -1066,8 +1066,10 @@ static String handle_config_device_processor(const String& var)
   }
 #elif defined ARDUINO_ARCH_ESP32
   if (var == F("{WEB_CONFIG_DEVICE_HOMEKIT}")) {
-    message += String(WEB_CONFIG_DEVICE_HOMEKIT);
+	  message += ("");
+    //message += String(WEB_CONFIG_DEVICE_HOMEKIT);
   }
+  /*
   if (var == F("{TEXT_HOMEKIT_SUPPORT}")) {
     message += String(TEXT_HOMEKIT_SUPPORT);
   }
@@ -1089,6 +1091,7 @@ static String handle_config_device_processor(const String& var)
   }
   
 }
+*/
 #endif
 
 if (var == F("{TEXT_UPDATEWARNING}")) {

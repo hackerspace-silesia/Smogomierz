@@ -89,8 +89,10 @@ bool Adafruit_BME280::begin(uint8_t addr, TwoWire *theWire) {
     if (i2c_dev)
       delete i2c_dev;
     i2c_dev = new Adafruit_I2CDevice(addr, theWire);
-    if (!i2c_dev->begin())
+    /*
+	if (!i2c_dev->begin())
       return false;
+  */
   } else {
     // SPI mode
     if (!spi_dev->begin())

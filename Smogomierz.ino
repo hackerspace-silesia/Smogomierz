@@ -2,6 +2,12 @@
   ESP8266 core for Arduino - 3.0.2 // NodeMCU 1.0; Flash Size: 4MB (FS:1MB OTA:~1019KB)
   Arduino core for the ESP32 - 2.0.x
 
+@macOS only: 
+to fix "exec: "python": executable file not found in $PATH" error edit 
+/Users/xxxxxxx/Library/Arduino15/packages/esp32/hardware/esp32/x.x.x/platform.txt
+and replace "python" with "python3"
+https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
+
   Adafruit Unified Sensor - 1.1.4
   DallasTemperature - 3.8.0
 */
@@ -140,7 +146,7 @@
 #include "src/libs/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
 #endif
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/libs/esp32/Adafruit_BME280.h" // https://github.com/adafruit/Adafruit_BME280_Library // 4.01.2022
+#include "src/libs/esp32/Adafruit_BME280.h" // https://github.com/adafruit/Adafruit_BME280_Library // CUSTOMIZED! 16.03.2022
 #endif
 
 #include "src/libs/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 5.11.2021

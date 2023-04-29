@@ -89,20 +89,16 @@ void sendTHPLuftdatenJson(JsonObject& json) {
   client.println(F("POST ") + String(luftdatenAPIURL) + F(" HTTP/1.1"));
   client.println(F("Host: ") + String(luftdatenAPIHOST));
   client.println(F("Content-Type: application/json"));
-  if (!strcmp(THP_MODEL, "BME280")) {
-    client.println(F("X-PIN: 11"));
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
-    client.println(F("X-PIN: 3"));
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
-    client.println(F("X-PIN: 7"));
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
-    client.println(F("X-PIN: 7"));
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
-    client.println(F("X-PIN: 12"));
-  } else if (!strcmp(THP_MODEL, "DS18B20")) {
-    client.println(F("X-PIN: 13"));
+  const char* thp_models[] = {"BME280", "BMP280", "HTU21", "DHT22", "SHT1x", "DS18B20"};
+  const char* thp_pins[] = {"11", "3", "7", "7", "12", "13"};
+  int thp_num_models = sizeof(thp_models) / sizeof(thp_models[0]);
+  for (int i = 0; i < thp_num_models; i++) {
+    if (!strcmp(THP_MODEL, thp_models[i])) {
+      client.print(F("X-PIN: "));
+      client.println(thp_pins[i]);
+      break;
+    }
   }
-
 #ifdef ARDUINO_ARCH_ESP8266
   client.println(F("X-Sensor: smogomierz-") + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
@@ -123,18 +119,12 @@ void sendTHPLuftdatenJson(JsonObject& json) {
     Serial.println(F("POST ") + String(luftdatenAPIURL) + F(" HTTP/1.1"));
     Serial.println(F("Host: ") + String(luftdatenAPIHOST));
     Serial.println(F("Content-Type: application/json"));
-    if (!strcmp(THP_MODEL, "BME280")) {
-      Serial.println(F("X-PIN: 11"));
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
-      Serial.println(F("X-PIN: 3"));
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
-      Serial.println(F("X-PIN: 7"));
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
-      Serial.println(F("X-PIN: 7"));
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
-      Serial.println(F("X-PIN: 12"));
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
-      Serial.println(F("X-PIN: 13"));
+    for (int i = 0; i < thp_num_models; i++) {
+      if (!strcmp(THP_MODEL, thp_models[i])) {
+        Serial.print(F("X-PIN: "));
+        Serial.println(thp_pins[i]);
+        break;
+      }
     }
 #ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("X-Sensor: smogomierz-") + String(ESP.getChipId()));
@@ -300,18 +290,15 @@ void sendTHPMadavideJson(JsonObject& json) {
   client.println(F("POST ") + String(madavideAPIURL) + F(" HTTP/1.1"));
   client.println(F("Host: ") + String(madavideAPIHOST));
   client.println(F("Content-Type: application/json"));
-  if (!strcmp(THP_MODEL, "BME280")) {
-    client.println(F("X-PIN: 11"));
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
-    client.println(F("X-PIN: 3"));
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
-    client.println(F("X-PIN: 7"));
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
-    client.println(F("X-PIN: 7"));
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
-    client.println(F("X-PIN: 12"));
-  } else if (!strcmp(THP_MODEL, "DS18B20")) {
-    client.println(F("X-PIN: 13"));
+  const char* thp_models[] = {"BME280", "BMP280", "HTU21", "DHT22", "SHT1x", "DS18B20"};
+  const char* thp_pins[] = {"11", "3", "7", "7", "12", "13"};
+  int thp_num_models = sizeof(thp_models) / sizeof(thp_models[0]);
+  for (int i = 0; i < thp_num_models; i++) {
+    if (!strcmp(THP_MODEL, thp_models[i])) {
+      client.print(F("X-PIN: "));
+      client.println(thp_pins[i]);
+      break;
+    }
   }
 #ifdef ARDUINO_ARCH_ESP8266
   client.println(F("X-Sensor: smogomierz-") + String(ESP.getChipId()));
@@ -333,18 +320,12 @@ void sendTHPMadavideJson(JsonObject& json) {
     Serial.println(F("POST ") + String(madavideAPIURL) + F(" HTTP/1.1"));
     Serial.println(F("Host: ") + String(madavideAPIHOST));
     Serial.println(F("Content-Type: application/json"));
-    if (!strcmp(THP_MODEL, "BME280")) {
-      Serial.println(F("X-PIN: 11"));
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
-      Serial.println(F("X-PIN: 3"));
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
-      Serial.println(F("X-PIN: 7"));
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
-      Serial.println(F("X-PIN: 7"));
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
-      Serial.println(F("X-PIN: 12"));
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
-      Serial.println(F("X-PIN: 13"));
+    for (int i = 0; i < thp_num_models; i++) {
+      if (!strcmp(THP_MODEL, thp_models[i])) {
+        Serial.print(F("X-PIN: "));
+        Serial.println(thp_pins[i]);
+        break;
+      }
     }
 #ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("X-Sensor: smogomierz-") + String(ESP.getChipId()));
@@ -516,20 +497,16 @@ void sendTHPLuftdatenJson(JsonObject& json) {
   client.println("POST " + String(luftdatenAPIURL) + " HTTP/1.1");
   client.println("Host: " + String(luftdatenAPIHOST));
   client.println("Content-Type: application/json");
-  if (!strcmp(THP_MODEL, "BME280")) {
-    client.println("X-PIN: 11");
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
-    client.println("X-PIN: 3");
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
-    client.println("X-PIN: 7");
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
-    client.println("X-PIN: 7");
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
-    client.println("X-PIN: 12");
-  } else if (!strcmp(THP_MODEL, "DS18B20")) {
-    client.println("X-PIN: 13");
+  const char* thp_models[] = {"BME280", "BMP280", "HTU21", "DHT22", "SHT1x", "DS18B20"};
+  const char* thp_pins[] = {"11", "3", "7", "7", "12", "13"};
+  int thp_num_models = sizeof(thp_models) / sizeof(thp_models[0]);
+  for (int i = 0; i < thp_num_models; i++) {
+    if (!strcmp(THP_MODEL, thp_models[i])) {
+      client.print(F("X-PIN: "));
+      client.println(thp_pins[i]);
+      break;
+    }
   }
-
 #ifdef ARDUINO_ARCH_ESP8266
   client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
@@ -550,19 +527,13 @@ void sendTHPLuftdatenJson(JsonObject& json) {
     Serial.println("POST " + String(luftdatenAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(luftdatenAPIHOST));
     Serial.println("Content-Type: application/json");
-    if (!strcmp(THP_MODEL, "BME280")) {
-      Serial.println("X-PIN: 11");
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
-      Serial.println("X-PIN: 3");
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
-      Serial.println("X-PIN: 7");
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
-      Serial.println("X-PIN: 7");
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
-      Serial.println("X-PIN: 12");
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
-      Serial.println("X-PIN: 13");
-    }
+    for (int i = 0; i < thp_num_models; i++) {
+        if (!strcmp(THP_MODEL, thp_models[i])) {
+          Serial.print(F("X-PIN: "));
+          Serial.println(thp_pins[i]);
+          break;
+        }
+      }
 #ifdef ARDUINO_ARCH_ESP8266
     Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32
@@ -727,18 +698,15 @@ void sendTHPMadavideJson(JsonObject& json) {
   client.println("POST " + String(madavideAPIURL) + " HTTP/1.1");
   client.println("Host: " + String(madavideAPIHOST));
   client.println("Content-Type: application/json");
-  if (!strcmp(THP_MODEL, "BME280")) {
-    client.println("X-PIN: 11");
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
-    client.println("X-PIN: 3");
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
-    client.println("X-PIN: 7");
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
-    client.println("X-PIN: 7");
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
-    client.println("X-PIN: 12");
-  } else if (!strcmp(THP_MODEL, "DS18B20")) {
-    client.println("X-PIN: 13");
+  const char* thp_models[] = {"BME280", "BMP280", "HTU21", "DHT22", "SHT1x", "DS18B20"};
+  const char* thp_pins[] = {"11", "3", "7", "7", "12", "13"};
+  int thp_num_models = sizeof(thp_models) / sizeof(thp_models[0]);
+  for (int i = 0; i < thp_num_models; i++) {
+    if (!strcmp(THP_MODEL, thp_models[i])) {
+      client.print(F("X-PIN: "));
+      client.println(thp_pins[i]);
+      break;
+    }
   }
 #ifdef ARDUINO_ARCH_ESP8266
   client.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
@@ -760,19 +728,13 @@ void sendTHPMadavideJson(JsonObject& json) {
     Serial.println("POST " + String(madavideAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(madavideAPIHOST));
     Serial.println("Content-Type: application/json");
-    if (!strcmp(THP_MODEL, "BME280")) {
-      Serial.println("X-PIN: 11");
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
-      Serial.println("X-PIN: 3");
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
-      Serial.println("X-PIN: 7");
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
-      Serial.println("X-PIN: 7");
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
-      Serial.println("X-PIN: 12");
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
-      Serial.println("X-PIN: 13");
-    }
+    for (int i = 0; i < thp_num_models; i++) {
+        if (!strcmp(THP_MODEL, thp_models[i])) {
+          Serial.print(F("X-PIN: "));
+          Serial.println(thp_pins[i]);
+          break;
+        }
+      }
 #ifdef ARDUINO_ARCH_ESP8266
     Serial.println("X-Sensor: smogomierz-" + String(ESP.getChipId()));
 #elif defined ARDUINO_ARCH_ESP32

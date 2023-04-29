@@ -86,7 +86,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 */
 
 /*
-  ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 1M SPIFFS --- FS:1MB OTA: ~1019KB
+  ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 4M SPIFFS --- FS:1MB OTA: ~1019KB
 
   Szkic używa 580548 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 45888 bajtów (56%) pamięci dynamicznej, pozostawiając 36032 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
@@ -118,6 +118,11 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
   Szkic używa 1377866 bajtów (70%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
+  REFAKTOR_29.04.2023:
+  Szkic używa 1316750 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 56856 bajtów (17%) pamięci dynamicznej, pozostawiając 270824 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  
+
   *** init homekit support:
 
   Szkic używa 1543130 bajtów (78%) pamięci programu. Maksimum to 1966080 bajtów.
@@ -134,6 +139,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 */
 
 #include <Arduino.h>
+#include <map>
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
 #ifdef ASYNC_WEBSERVER_ON
@@ -594,204 +600,55 @@ void MQTTreconnect() {
 #endif
 }
 
-void set_I2C_PINS(String THP_PIN, int i) {
+void set_I2C_PINS(const std::string& THP_PIN, int i) {
 #ifdef ARDUINO_ARCH_ESP8266
-  if (i == 1) {
-    if (THP_PIN == "D1") {
-      FIRST_THP_SDA = 5;
-    } else if (THP_PIN == "D2") {
-      FIRST_THP_SDA = 4;
-    } else if (THP_PIN == "D3") {
-      FIRST_THP_SDA = 0;
-    } else if (THP_PIN == "D4") {
-      FIRST_THP_SDA = 2;
-    } else if (THP_PIN == "D5") {
-      FIRST_THP_SDA = 14;
-    } else if (THP_PIN == "D6") {
-      FIRST_THP_SDA = 12;
-    } else if (THP_PIN == "D7") {
-      FIRST_THP_SDA = 13;
-    } else if (THP_PIN == "D8") {
-      FIRST_THP_SDA = 15;
-    } else if (THP_PIN == "D16") {
-      FIRST_THP_SDA = 16;
-    } else if (THP_PIN == "D17") {
-      FIRST_THP_SDA = 17;
-    }
-  } else if (i == 2) {
-    if (THP_PIN == "D1") {
-      FIRST_THP_SCL = 5;
-    } else if (THP_PIN == "D2") {
-      FIRST_THP_SCL = 4;
-    } else if (THP_PIN == "D3") {
-      FIRST_THP_SCL = 0;
-    } else if (THP_PIN == "D4") {
-      FIRST_THP_SCL = 2;
-    } else if (THP_PIN == "D5") {
-      FIRST_THP_SCL = 14;
-    } else if (THP_PIN == "D6") {
-      FIRST_THP_SCL = 12;
-    } else if (THP_PIN == "D7") {
-      FIRST_THP_SCL = 13;
-    } else if (THP_PIN == "D8") {
-      FIRST_THP_SCL = 15;
-    } else if (THP_PIN == "D16") {
-      FIRST_THP_SCL = 16;
-    } else if (THP_PIN == "D17") {
-      FIRST_THP_SCL = 17;
-    }
-  } else if (i == 3) {
-    if (THP_PIN == "D1") {
-      SECOND_THP_SDA = 5;
-    } else if (THP_PIN == "D2") {
-      SECOND_THP_SDA = 4;
-    } else if (THP_PIN == "D3") {
-      SECOND_THP_SDA = 0;
-    } else if (THP_PIN == "D4") {
-      SECOND_THP_SDA = 2;
-    } else if (THP_PIN == "D5") {
-      SECOND_THP_SDA = 14;
-    } else if (THP_PIN == "D6") {
-      SECOND_THP_SDA = 12;
-    } else if (THP_PIN == "D7") {
-      SECOND_THP_SDA = 13;
-    } else if (THP_PIN == "D8") {
-      SECOND_THP_SDA = 15;
-    } else if (THP_PIN == "D16") {
-      SECOND_THP_SDA = 16;
-    } else if (THP_PIN == "D17") {
-      SECOND_THP_SDA = 17;
-    }
-  } else if (i == 4) {
-    if (THP_PIN == "D1") {
-      SECOND_THP_SCL = 5;
-    } else if (THP_PIN == "D2") {
-      SECOND_THP_SCL = 4;
-    } else if (THP_PIN == "D3") {
-      SECOND_THP_SCL = 0;
-    } else if (THP_PIN == "D4") {
-      SECOND_THP_SCL = 2;
-    } else if (THP_PIN == "D5") {
-      SECOND_THP_SCL = 14;
-    } else if (THP_PIN == "D6") {
-      SECOND_THP_SCL = 12;
-    } else if (THP_PIN == "D7") {
-      SECOND_THP_SCL = 13;
-    } else if (THP_PIN == "D8") {
-      SECOND_THP_SCL = 15;
-    } else if (THP_PIN == "D16") {
-      SECOND_THP_SCL = 16;
-    } else if (THP_PIN == "D17") {
-      SECOND_THP_SCL = 17;
-    }
-  }
+const std::map<std::string, int> pin_map = {
+    {"D1", 5},
+    {"D2", 4},
+    {"D3", 0},
+    {"D4", 2},
+    {"D5", 14},
+    {"D6", 12},
+    {"D7", 13},
+    {"D8", 15},
+    {"D16", 16},
+    {"D17", 17}
+};
 #elif defined ARDUINO_ARCH_ESP32
-  if (i == 1) {
-    if (THP_PIN == "D1") {
-      FIRST_THP_SDA = 8;
-    } else if (THP_PIN == "D2") {
-      FIRST_THP_SDA = 9;
-    } else if (THP_PIN == "D4") {
-      FIRST_THP_SDA = 4;
-    } else if (THP_PIN == "D5") {
-      FIRST_THP_SDA = 5;
-    } else if (THP_PIN == "D15") {
-      FIRST_THP_SDA = 15;
-    } else if (THP_PIN == "D16") {
-      FIRST_THP_SDA = 16;
-    } else if (THP_PIN == "D17") {
-      FIRST_THP_SDA = 17;
-    } else if (THP_PIN == "D18") {
-      FIRST_THP_SDA = 18;
-    } else if (THP_PIN == "D19") {
-      FIRST_THP_SDA = 19;
-    } else if (THP_PIN == "D21") {
-      FIRST_THP_SDA = 21;
-    } else if (THP_PIN == "D22") {
-      FIRST_THP_SDA = 22;
-    } else if (THP_PIN == "D23") {
-      FIRST_THP_SDA = 23;
-    }
-  } else if (i == 2) {
-    if (THP_PIN == "D1") {
-      FIRST_THP_SCL = 8;
-    } else if (THP_PIN == "D2") {
-      FIRST_THP_SCL = 9;
-    } else if (THP_PIN == "D4") {
-      FIRST_THP_SCL = 4;
-    } else if (THP_PIN == "D5") {
-      FIRST_THP_SCL = 5;
-    } else if (THP_PIN == "D15") {
-      FIRST_THP_SCL = 15;
-    } else if (THP_PIN == "D16") {
-      FIRST_THP_SCL = 16;
-    } else if (THP_PIN == "D17") {
-      FIRST_THP_SCL = 17;
-    } else if (THP_PIN == "D18") {
-      FIRST_THP_SCL = 18;
-    } else if (THP_PIN == "D19") {
-      FIRST_THP_SCL = 19;
-    } else if (THP_PIN == "D21") {
-      FIRST_THP_SCL = 21;
-    } else if (THP_PIN == "D22") {
-      FIRST_THP_SCL = 22;
-    } else if (THP_PIN == "D23") {
-      FIRST_THP_SCL = 23;
-    }
-  } else if (i == 3) {
-    if (THP_PIN == "D1") {
-      SECOND_THP_SDA = 8;
-    } else if (THP_PIN == "D2") {
-      SECOND_THP_SDA = 9;
-    } else if (THP_PIN == "D4") {
-      SECOND_THP_SDA = 4;
-    } else if (THP_PIN == "D5") {
-      SECOND_THP_SDA = 5;
-    } else if (THP_PIN == "D15") {
-      SECOND_THP_SDA = 15;
-    } else if (THP_PIN == "D16") {
-      SECOND_THP_SDA = 16;
-    } else if (THP_PIN == "D17") {
-      SECOND_THP_SDA = 17;
-    } else if (THP_PIN == "D18") {
-      SECOND_THP_SDA = 18;
-    } else if (THP_PIN == "D19") {
-      SECOND_THP_SDA = 19;
-    } else if (THP_PIN == "D21") {
-      SECOND_THP_SDA = 21;
-    } else if (THP_PIN == "D22") {
-      SECOND_THP_SDA = 22;
-    } else if (THP_PIN == "D23") {
-      SECOND_THP_SDA = 23;
-    }
-  } else if (i == 4) {
-    if (THP_PIN == "D1") {
-      SECOND_THP_SCL = 8;
-    } else if (THP_PIN == "D2") {
-      SECOND_THP_SCL = 9;
-    } else if (THP_PIN == "D4") {
-      SECOND_THP_SCL = 4;
-    } else if (THP_PIN == "D5") {
-      SECOND_THP_SCL = 5;
-    } else if (THP_PIN == "D15") {
-      SECOND_THP_SCL = 15;
-    } else if (THP_PIN == "D16") {
-      SECOND_THP_SCL = 16;
-    } else if (THP_PIN == "D17") {
-      SECOND_THP_SCL = 17;
-    } else if (THP_PIN == "D18") {
-      SECOND_THP_SCL = 18;
-    } else if (THP_PIN == "D19") {
-      SECOND_THP_SCL = 19;
-    } else if (THP_PIN == "D21") {
-      SECOND_THP_SCL = 21;
-    } else if (THP_PIN == "D22") {
-      SECOND_THP_SCL = 22;
-    } else if (THP_PIN == "D23") {
-      SECOND_THP_SCL = 23;
-    }
-  }
+const std::map<std::string, int> pin_map = {
+    {"D1", 8},
+    {"D2", 9},
+    {"D4", 4},
+    {"D5", 5},
+    {"D15", 15},
+    {"D16", 16},
+    {"D17", 17},
+    {"D18", 18},
+    {"D19", 19},
+    {"D21", 21},
+    {"D22", 22},
+    {"D23", 23}
+};
 #endif
+
+const auto it = pin_map.find(THP_PIN);
+    if (it != pin_map.end()) {
+        switch (i) {
+            case 1:
+                FIRST_THP_SDA = it->second;
+                break;
+            case 2:
+                FIRST_THP_SCL = it->second;
+                break;
+            case 3:
+                SECOND_THP_SDA = it->second;
+                break;
+            case 4:
+                SECOND_THP_SCL = it->second;
+                break;
+        }
+    }
+
 }
 /*
   void set_SERIAL_PINS(String DUST_PIN, int i) {
@@ -1902,64 +1759,55 @@ void sendDataToExternalDBs() {
   }
 
   if (MQTT_ON) {
-    char MQTT_DEVICE_NAME[20];
-    strcpy(MQTT_DEVICE_NAME, device_name);
-    char MQTT_DEVICE_IPADRESS[32];
-    (WiFi.localIP().toString()).toCharArray(MQTT_DEVICE_IPADRESS, 32);
-    String MQTT_FINAL_TEMP, MQTT_FINAL_HUMI, MQTT_FINAL_PRESS, MQTT_FINAL_PM1, MQTT_FINAL_PM25, MQTT_FINAL_PM10, MQTT_FINAL_AIRQUALITY;
-    if (MQTT_DEVICENAME_IN_TOPIC) {
-      MQTT_FINAL_TEMP = String(MQTT_DEVICE_NAME) + ("/") + String(MQTT_TOPIC_TEMP);
-      MQTT_FINAL_HUMI = String(MQTT_DEVICE_NAME) + ("/") + String(MQTT_TOPIC_HUMI);
-      MQTT_FINAL_PRESS = String(MQTT_DEVICE_NAME) + ("/") + String(MQTT_TOPIC_PRESS);
-      MQTT_FINAL_PM1 = String(MQTT_DEVICE_NAME) + ("/") + String(MQTT_TOPIC_PM1);
-      MQTT_FINAL_PM25 = String(MQTT_DEVICE_NAME) + ("/") + String(MQTT_TOPIC_PM25);
-      MQTT_FINAL_PM10 = String(MQTT_DEVICE_NAME) + ("/") + String(MQTT_TOPIC_PM10);
-      MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_NAME) + ("/") + String(MQTT_TOPIC_AIRQUALITY);
-    } else {
-      MQTT_FINAL_TEMP = String(MQTT_TOPIC_TEMP);
-      MQTT_FINAL_HUMI = String(MQTT_TOPIC_HUMI);
-      MQTT_FINAL_PRESS = String(MQTT_TOPIC_PRESS);
-      MQTT_FINAL_PM1 = String(MQTT_TOPIC_PM1);
-      MQTT_FINAL_PM25 = String(MQTT_TOPIC_PM25);
-      MQTT_FINAL_PM10 = String(MQTT_TOPIC_PM10);
-      MQTT_FINAL_AIRQUALITY = String(MQTT_TOPIC_AIRQUALITY);
-    }
-    if (MQTT_IP_IN_TOPIC) {
-      MQTT_FINAL_TEMP = String(MQTT_DEVICE_IPADRESS) + ("/") + String(MQTT_FINAL_TEMP);
-      MQTT_FINAL_HUMI = String(MQTT_DEVICE_IPADRESS) + ("/") + String(MQTT_FINAL_HUMI);
-      MQTT_FINAL_PRESS = String(MQTT_DEVICE_IPADRESS) + ("/") + String(MQTT_FINAL_PRESS);
-      MQTT_FINAL_PM1 = String(MQTT_DEVICE_IPADRESS) + ("/") + String(MQTT_FINAL_PM1);
-      MQTT_FINAL_PM25 = String(MQTT_DEVICE_IPADRESS) + ("/") + String(MQTT_FINAL_PM25);
-      MQTT_FINAL_PM10 = String(MQTT_DEVICE_IPADRESS) + ("/") + String(MQTT_FINAL_PM10);
-      MQTT_FINAL_AIRQUALITY = String(MQTT_DEVICE_IPADRESS) + ("/") + String(MQTT_FINAL_AIRQUALITY);
-    }
-    if (MQTT_SLASH_AT_THE_BEGINNING) {
-      MQTT_FINAL_TEMP = ("/") + String(MQTT_FINAL_TEMP);
-      MQTT_FINAL_HUMI = ("/") + String(MQTT_FINAL_HUMI);
-      MQTT_FINAL_PRESS = ("/") + String(MQTT_FINAL_PRESS);
-      MQTT_FINAL_PM1 = ("/") + String(MQTT_FINAL_PM1);
-      MQTT_FINAL_PM25 = ("/") + String(MQTT_FINAL_PM25);
-      MQTT_FINAL_PM10 = ("/") + String(MQTT_FINAL_PM10);
-      MQTT_FINAL_AIRQUALITY = ("/") + String(MQTT_FINAL_AIRQUALITY);
-    } else {
-      MQTT_FINAL_TEMP = MQTT_FINAL_TEMP;
-      MQTT_FINAL_HUMI = MQTT_FINAL_HUMI;
-      MQTT_FINAL_PRESS = MQTT_FINAL_PRESS;
-      MQTT_FINAL_PM1 = MQTT_FINAL_PM1;
-      MQTT_FINAL_PM25 = MQTT_FINAL_PM25;
-      MQTT_FINAL_PM10 = MQTT_FINAL_PM10;
-      MQTT_FINAL_AIRQUALITY = MQTT_FINAL_AIRQUALITY;
+    const size_t MAX_DEVICE_NAME_LENGTH = 20;
+    char MQTT_DEVICE_NAME[MAX_DEVICE_NAME_LENGTH + 1];
+    strncpy(MQTT_DEVICE_NAME, device_name, MAX_DEVICE_NAME_LENGTH);
+    MQTT_DEVICE_NAME[MAX_DEVICE_NAME_LENGTH] = '\0';
+
+    const size_t MAX_IP_ADDRESS_LENGTH = 32;
+    char MQTT_DEVICE_IP_ADDRESS[MAX_IP_ADDRESS_LENGTH + 1];
+    strncpy(MQTT_DEVICE_IP_ADDRESS, WiFi.localIP().toString().c_str(), MAX_IP_ADDRESS_LENGTH);
+    MQTT_DEVICE_IP_ADDRESS[MAX_IP_ADDRESS_LENGTH] = '\0';
+
+    const char* MQTT_TOPICS[] = {
+      MQTT_TOPIC_TEMP,
+      MQTT_TOPIC_HUMI,
+      MQTT_TOPIC_PRESS,
+      MQTT_TOPIC_PM1,
+      MQTT_TOPIC_PM25,
+      MQTT_TOPIC_PM10,
+      MQTT_TOPIC_AIRQUALITY
+    };
+
+    const size_t NUM_MQTT_TOPICS = sizeof(MQTT_TOPICS) / sizeof(MQTT_TOPICS[0]);
+
+    String MQTT_FINAL_TOPICS[NUM_MQTT_TOPICS];
+
+    for (size_t i = 0; i < NUM_MQTT_TOPICS; ++i) {
+      String topic = MQTT_TOPICS[i];
+      if (MQTT_DEVICENAME_IN_TOPIC) {
+        topic = String(MQTT_DEVICE_NAME) + ("/") + topic;
+      }
+      if (MQTT_IP_IN_TOPIC) {
+        topic = String(MQTT_DEVICE_IP_ADDRESS) + ("/") + topic;
+      }
+      if (MQTT_SLASH_AT_THE_BEGINNING) {
+        topic = ("/") + topic;
+      }
+      if (MQTT_SLASH_AT_THE_END) {
+        topic += ("/");
+      }
+      MQTT_FINAL_TOPICS[i] = topic;
     }
 
-    if (MQTT_SLASH_AT_THE_END) {
-      MQTT_FINAL_TEMP = String(MQTT_FINAL_TEMP) + ("/");
-      MQTT_FINAL_HUMI = String(MQTT_FINAL_HUMI) + ("/");
-      MQTT_FINAL_PRESS = String(MQTT_FINAL_PRESS) + ("/");
-      MQTT_FINAL_PM1 = String(MQTT_FINAL_PM1) + ("/");
-      MQTT_FINAL_PM25 = String(MQTT_FINAL_PM25) + ("/");
-      MQTT_FINAL_PM10 = String(MQTT_FINAL_PM10) + ("/");
-      MQTT_FINAL_AIRQUALITY = String(MQTT_FINAL_AIRQUALITY) + ("/");
-    }
+    String MQTT_FINAL_TEMP = MQTT_FINAL_TOPICS[0];
+    String MQTT_FINAL_HUMI = MQTT_FINAL_TOPICS[1];
+    String MQTT_FINAL_PRESS = MQTT_FINAL_TOPICS[2];
+    String MQTT_FINAL_PM1 = MQTT_FINAL_TOPICS[3];
+    String MQTT_FINAL_PM25 = MQTT_FINAL_TOPICS[4];
+    String MQTT_FINAL_PM10 = MQTT_FINAL_TOPICS[5];
+    String MQTT_FINAL_AIRQUALITY = MQTT_FINAL_TOPICS[6];
+
     if (strcmp(DUST_MODEL, "Non")) {
 
       mqttclient.publish((MQTT_FINAL_PM1).c_str(), String(averagePM1).c_str(), true);
@@ -2655,9 +2503,9 @@ void takeSleepPMMeasurements() {
 
 void pm_calibration() {
   // Automatic calibration - START
-  if (!strcmp(MODEL, "white")) {
-    if (!strcmp(THP_MODEL, "BME280")) {
-
+  if (strcmp(MODEL, "white") != 0) {
+  // do nothing
+  } else if (strcmp(THP_MODEL, "BME280") == 0) {
 #ifdef ARDUINO_ARCH_ESP8266
       BMESensor.refresh(FIRST_THP_SDA, FIRST_THP_SCL);
       if (int(BMESensor.temperature) < 5 or int(BMESensor.humidity) > 60) {
@@ -2676,7 +2524,7 @@ void pm_calibration() {
         calib = calib1;
       }
 #endif
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
+    } else if (strcmp(THP_MODEL, "HTU21") == 0) {
       if (int(ht2x.readTemperature()) < 5 or int(ht2x.getCompensatedHumidity(int(ht2x.readTemperature()))) > 60) {
         calib1 = float((200 - (ht2x.getCompensatedHumidity(int(ht2x.readTemperature())))) / 150);
         calib2 = calib1 / 2;
@@ -2684,7 +2532,7 @@ void pm_calibration() {
       } else {
         calib = calib1;
       }
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
+    } else if (strcmp(THP_MODEL, "DHT22") == 0) {
       if (int(dht.readTemperature()) < 5 or int(dht.readHumidity()) > 60) {
         calib1 = float((200 - (dht.readHumidity())) / 150);
         calib2 = calib1 / 2;
@@ -2692,7 +2540,7 @@ void pm_calibration() {
       } else {
         calib = calib1;
       }
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    } else if (strcmp(THP_MODEL, "SHT1x") == 0) {
       if (int(sht1x.readTemperatureC()) < 5 or int(sht1x.readHumidity()) > 60) {
         calib1 = float((200 - (sht1x.readHumidity())) / 150);
         calib2 = calib1 / 2;
@@ -2701,22 +2549,16 @@ void pm_calibration() {
         calib = calib1;
       }
     }
-
-  }
   // Automatic calibration - END
 
-  if (!strcmp(THP_MODEL, "BME280")) {
-    calib = calib1;
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
-    calib = calib1;
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
-    calib = calib1;
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
-    calib = calib1;
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
-    calib = calib1;
-  } else if (!strcmp(THP_MODEL, "DS18B20")) {
-    calib = calib1;
+  const char *tph_models[] = {"BME280", "HTU21", "DHT22", "SHT1x", "BMP280", "DS18B20"};
+  const int num_models = sizeof(tph_models)/sizeof(tph_models[0]);
+  int calib = calib1;
+  for (int i=0; i<num_models; i++) {
+      if (!strcmp(THP_MODEL, tph_models[i])) {
+          calib = calib1;
+          break;
+      }
   }
 
 }
@@ -2742,6 +2584,7 @@ void averagePM() {
 #ifdef DUSTSENSOR_SPS30
   averagePM4 = averagePM4 / NUMBEROFMEASUREMENTS;
 #endif
+
   if (DEBUG) {
 #ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\n"));

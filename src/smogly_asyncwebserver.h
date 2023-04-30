@@ -271,7 +271,7 @@ static String handle_root_processor(const String& var)
 
 //void handle_root() {
 static void handle_root(AsyncWebServerRequest *request) {
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_ROOT_PAGE_ALL): "));
     Serial.println(sizeof(WEB_ROOT_PAGE_ALL)); // sizeof(WEB_ROOT_PAGE_ALL): ~2255
     Serial.print(F("\n"));
@@ -723,7 +723,7 @@ static String handle_config_processor(const String& var)
 
 //void handle_config() {
 static void handle_config(AsyncWebServerRequest *request) {
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_CONFIG_PAGE_ALL): "));
     Serial.println(sizeof(WEB_CONFIG_PAGE_ALL)); // sizeof(WEB_CONFIG_PAGE_ALL): ~3282
     Serial.print(F("\n"));
@@ -1025,7 +1025,7 @@ static String handle_config_device_processor(const String& var)
   }
 
   if (var == F("{DEBUG}")) {
-    message += (_addBoolSelect(F("DEBUG"), DEBUG));
+    message += (_addBoolSelect(F("DEBUG"), deviceSettings.debug));
   }
   if (var == F("{TEXT_CALIBMETHOD}")) {
     message += String(TEXT_CALIBMETHOD);
@@ -1123,7 +1123,7 @@ static void handle_config_device(AsyncWebServerRequest *request) {
       return request->requestAuthentication();
   }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): "));
     Serial.println(sizeof(WEB_CONFIG_DEVICE_PAGE_ALL)); // sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): ~3781
     Serial.print(F("\n"));
@@ -1659,7 +1659,7 @@ static void handle_config_services(AsyncWebServerRequest *request) {
       return request->requestAuthentication();
   }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_CONFIG_SERVICES_PAGE_ALL): "));
     Serial.println(sizeof(WEB_CONFIG_SERVICES_PAGE_ALL)); // sizeof(WEB_CONFIG_SERVICES_PAGE_ALL): 4178
     Serial.print(F("\n"));
@@ -1903,7 +1903,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
       return request->requestAuthentication();
   }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL): "));
     Serial.println(sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL)); // sizeof(WEB_CONFIG_ADV_MQTT_PAGE_ALL): 2998
     Serial.print(F("\n"));
@@ -1992,7 +1992,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("{MQTT_PRESS}"), String(int(currentPressure)));
         message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
       } else {
-        if (DEBUG) {
+        if (deviceSettings.debug) {
           Serial.println(F("No measurements from BME280!\n"));
         }
         message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
@@ -2025,7 +2025,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("{MQTT_PRESS}"), String(int(currentPressure)));
         message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
       } else {
-        if (DEBUG) {
+        if (deviceSettings.debug) {
           Serial.println(F("No measurements from BMP280!\n"));
         }
         message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
@@ -2058,7 +2058,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
       } else {
-        if (DEBUG) {
+        if (deviceSettings.debug) {
           Serial.println(F("No measurements from HTU21!\n"));
         }
         message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
@@ -2091,7 +2091,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
       } else {
-        if (DEBUG) {
+        if (deviceSettings.debug) {
           Serial.println(F("No measurements from DHT22!\n"));
         }
         message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
@@ -2124,7 +2124,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
       } else {
-        if (DEBUG) {
+        if (deviceSettings.debug) {
           Serial.println(F("No measurements from SHT1x!\n"));
         }
         message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
@@ -2158,7 +2158,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
       } else {
-        if (DEBUG) {
+        if (deviceSettings.debug) {
           Serial.println(F("No measurements from DS18B20!\n"));
         }
         message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), "");
@@ -2257,7 +2257,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   message.replace(F("{SubmitButton}"), _addSubmitAdvMQTT());
   message += FPSTR(WEB_PAGE_FOOTER);
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print(F("handle_adv_mqtt_config - message.length(): ")); // 18754
     Serial.println(message.length()); // keep it under 20000!
     Serial.print(F("\n"));
@@ -2407,7 +2407,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
   /*
     int paramsNr = request->params();
-    if (DEBUG) {
+    if (deviceSettings.debug) {
     for(int i=0;i<paramsNr;i++){
 
      AsyncWebParameter* p = request->getParam(i);
@@ -2587,7 +2587,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   }
 
   if (request->hasParam("DEBUG")) {
-    DEBUG = _parseAsBool(request->getParam("DEBUG")->value());
+    deviceSettings.debug = _parseAsBool(request->getParam("DEBUG")->value());
   }
 
   if (request->hasParam("MODEL")) {
@@ -2629,7 +2629,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
 	doUpdate(x);
   }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println(F("POST DEVICE CONFIG END!!"));
   }
 
@@ -2658,7 +2658,7 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
 	/*
     int paramsNr = request->params();
-    if (DEBUG) {
+    if (deviceSettings.debug) {
     for(int i=0;i<paramsNr;i++){
 
      AsyncWebParameter* p = request->getParam(i);
@@ -2806,7 +2806,7 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
     LUFTDATEN_APIID = (request->getParam("LUFTDATEN_APIID")->value()).toInt();
   }
   
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println(F("POST SERVICES CONFIG END!!"));
 	
     // Serial.println("\n\t\t\t LUFTDATEN_ON: " + String(LUFTDATEN_ON) + "\n\n");
@@ -3026,7 +3026,7 @@ static void handle_update(AsyncWebServerRequest *request) {
       return request->requestAuthentication();
   }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_UPDATE_PAGE_ALL): "));
     Serial.println(sizeof(WEB_UPDATE_PAGE_ALL)); // sizeof(WEB_UPDATE_PAGE_ALL): 2558
     Serial.print(F("\n"));
@@ -3084,7 +3084,7 @@ static void fwupdate(AsyncWebServerRequest *request) {
 }
 
 static void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println(F("handle_adv_mqtt_config_save!"));
   }
 
@@ -3152,7 +3152,7 @@ static void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
     _parseAsCString(MQTT_TOPIC_AIRQUALITY, request->getParam("MQTT_TOPIC_AIRQUALITY")->value(), 128);
   }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println(F("handle_adv_mqtt_config_save CONFIG END!!"));
   }
 

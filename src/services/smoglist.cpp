@@ -33,7 +33,7 @@ void sendSmoglistJson(JsonObject& json) {
 	client.println(measureJson(json));
     client.println();
 	serializeJson(json, client);
-    if (DEBUG) {
+    if (deviceSettings.debug) {
 		serializeJsonPretty(json, Serial);
 	}
 		unsigned long timeout = millis();
@@ -47,7 +47,7 @@ void sendSmoglistJson(JsonObject& json) {
 		if(client.available()) {
 			String line = client.readStringUntil('\r');
 			line.trim();
-			if (DEBUG) {
+			if (deviceSettings.debug) {
 				Serial.println(F("\n")+ line);
 			}
 		}
@@ -64,53 +64,54 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
 #elif defined ARDUINO_ARCH_ESP32
 	json[F("CHIPID")] = F("Smogly-") + String((uint32_t)(ESP.getEfuseMac()));
 #endif
-	json[F("SOFTWAREVERSION")] = String(SOFTWAREVERSION);
-	json[F("HARDWAREVERSION")] = String(HARDWAREVERSION); // "1.0 - ESP8266" or "2.0 - ESP32"
-	json[F("PMSENSORVERSION")] = String(PMSENSORVERSION); // PMS, SDS, HPMA115S0 ora SPS30
+	json[F("SOFTWAREVERSION")] = String(softwareVersion);
+	json[F("HARDWAREVERSION")] = String(hardwareVersion); // "1.0 - ESP8266" or "2.0 - ESP32"
+	json[F("PMSENSORVERSION")] = String(pmSensorVersion); // PMS, SDS, HPMA115S0 ora SPS30
 	
-	json[F("FREQUENTMEASUREMENT")] = int(FREQUENTMEASUREMENT); // frequent measurements - True or False
-	json[F("DISPLAY_PM1")] = bool(DISPLAY_PM1); // True or False
+	json[F("FREQUENTMEASUREMENT")] = int(sensorsSettings.continuousMeasurement); // frequent measurements - True or False
+	json[F("DISPLAY_PM1")] = bool(deviceSettings.displayPM1); // True or False
 	
-	json[F("DUST_TIME")] = int(DUST_TIME); // frequency of PM measurements;  default - 1
-	json[F("NUMBEROFMEASUREMENTS")] = int(NUMBEROFMEASUREMENTS); //  default - 10
+	json[F("DUST_TIME")] = int(sensorsSettings.dustTime); // frequency of PM measurements;  default - 1
+	json[F("NUMBEROFMEASUREMENTS")] = int(sensorsSettings.numerOfMeasurements); //  default - 10
 	
-	json[F("SENDING_FREQUENCY")] = int(SENDING_FREQUENCY); // default - 2
-	json[F("SENDING_DB_FREQUENCY")] = int(SENDING_DB_FREQUENCY); //  default - 2
+	json[F("SENDING_FREQUENCY")] = int(deviceSettings.sendingServicesFrequency); // default - 2
+	json[F("SENDING_DB_FREQUENCY")] = int(deviceSettings.sendingDBFrequency); //  default - 2
 	
-	json[F("LUFTDATEN_ON")] = bool(LUFTDATEN_ON); // True or False
+	json[F("LUFTDATEN_ON")] = bool(luftdatenSettings.enabled); // True or False
+	json["LUFTDATEN_GRAPH_ON"] = bool(luftdatenSettings.graph); // True or False
 	
-	json[F("AIRMONITOR_ON")] = bool(AIRMONITOR_ON); // True or False
-	json[F("AIRMONITOR_GRAPH_ON")] = bool(AIRMONITOR_GRAPH_ON); // True or False
+	json[F("AIRMONITOR_ON")] = bool(airMonitorSettings.enabled); // True or False
+	json[F("AIRMONITOR_GRAPH_ON")] = bool(airMonitorSettings.graph); // True or False
 	
-	json[F("THINGSPEAK_ON")] = bool(THINGSPEAK_ON); // True or False
-	json[F("THINGSPEAK_GRAPH_ON")] = bool(THINGSPEAK_GRAPH_ON); // True or False
+	json[F("THINGSPEAK_ON")] = bool(thingSpeakSettings.enabled); // True or False
+	json[F("THINGSPEAK_GRAPH_ON")] = bool(thingSpeakSettings.graph); // True or False
 	
-	json[F("INFLUXDB_ON")] = bool(INFLUXDB_ON); // True or False
-	json[F("MQTT_ON")] = bool(MQTT_ON); // True or False
+	json[F("INFLUXDB_ON")] = bool(influxDBSettings.enabled); // True or False
+	json[F("MQTT_ON")] = bool(mqttSettings.enabled); // True or False
 	
-	json[F("DEEPSLEEP_ON")] = bool(DEEPSLEEP_ON); // True or False
-	json[F("AUTOUPDATE_ON")] = bool(AUTOUPDATE_ON); // True or False
-	json[F("MODEL")] = String(MODEL); // default "white" - automatic calibration, "red" - without calibration
+	json[F("DEEPSLEEP_ON")] = bool(deviceSettings.deepSleep); // True or False
+	json[F("AUTOUPDATE_ON")] = bool(deviceSettings.autoUpdate); // True or False
+	json[F("MODEL")] = bool(deviceSettings.autoCalibration); // default "white" - automatic calibration, "red" - without calibration
 	
-	json[F("LATITUDE")] = String(LATITUDE); // default - 50.2639
-    json[F("LONGITUDE")] = String(LONGITUDE); //  default - 18.9957
+	json[F("LATITUDE")] = String(deviceSettings.latitude); // default - 50.2639
+    json[F("LONGITUDE")] = String(deviceSettings.longitude); //  default - 18.9957
 
-	json[F("MYALTITUDE")] = int(MYALTITUDE); // int;  default - 271.00
+	json[F("MYALTITUDE")] = int(deviceSettings.altitude); // int;  default - 271.00
 	
 	//PM data
-	if (!strcmp(DUST_MODEL, "PMS7003")) {
+	if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
 		json[F("DUST_MODEL")] = F("PMS5003/7003");
 	}
-	if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+	if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
 		json[F("DUST_MODEL")] = F("HPMA115S0");
 	}
-	if (!strcmp(DUST_MODEL, "SDS011/21")) {
+	if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
 		json[F("DUST_MODEL")] = F("SDS011/21");
 	}
-	if (!strcmp(DUST_MODEL, "SPS30")) {
+	if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
 		json[F("DUST_MODEL")] = F("SPS30");
 	}
-	if (!strcmp(DUST_MODEL, "Non")) {
+	if (!strcmp(sensorsSettings.dustModel, "Non")) {
 		json[F("DUST_MODEL")] = F("Non");
 	}
 	json[F("PM1")] = int(averagePM1);
@@ -119,18 +120,18 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
     json[F("PM10")] = int(averagePM10);
 	
 	// Temp/Humi/Pressure data
-	if (strcmp(THP_MODEL, "Non")) {
-		if (!strcmp(THP_MODEL, "BME280")) {
+	if (strcmp(sensorsSettings.thpModel, "Non")) {
+		if (!strcmp(sensorsSettings.thpModel, "BME280")) {
 			json[F("THP_MODEL")] = F("BME280");
-		} else if (!strcmp(THP_MODEL, "BMP280")) {
+		} else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
 			json[F("THP_MODEL")] = F("BMP280");
-  		} else if (!strcmp(THP_MODEL, "HTU21")) {
+  		} else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
 			json[F("THP_MODEL")] = F("HTU21");
-  		} else if (!strcmp(THP_MODEL, "DHT22")) {
+  		} else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
 			json[F("THP_MODEL")] = F("DHT22");
-  		} else if (!strcmp(THP_MODEL, "SHT1x")) {
+  		} else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
   			json[F("THP_MODEL")] = F("SHT1x");
-  		} else if (!strcmp(THP_MODEL, "DS18B20")) {
+  		} else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
   			json[F("THP_MODEL")] = F("DS18B20");
   		}
 		json[F("Temperature")] = float(currentTemperature);
@@ -168,7 +169,7 @@ void sendSmoglistJson(JsonObject& json) {
 	client.println(measureJson(json));
     client.println();
 	serializeJson(json, client);
-    if (DEBUG) {
+    if (deviceSettings.debug) {
 		serializeJsonPretty(json, Serial);
 	}
 		unsigned long timeout = millis();
@@ -182,7 +183,7 @@ void sendSmoglistJson(JsonObject& json) {
 		if(client.available()) {
 			String line = client.readStringUntil('\r');
 			line.trim();
-			if (DEBUG) {
+			if (deviceSettings.debug) {
 				Serial.println("\n"+ line);
 			}
 		}
@@ -199,53 +200,54 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
 #elif defined ARDUINO_ARCH_ESP32
 	json["CHIPID"] = "Smogly-" + String((uint32_t)(ESP.getEfuseMac()));
 #endif
-	json["SOFTWAREVERSION"] = String(SOFTWAREVERSION);
-	json["HARDWAREVERSION"] = String(HARDWAREVERSION); // "1.0 - ESP8266" or "2.0 - ESP32"
-	json["PMSENSORVERSION"] = String(PMSENSORVERSION); // PMS, SDS, HPMA115S0 ora SPS30
+	json["SOFTWAREVERSION"] = String(softwareVersion);
+	json["HARDWAREVERSION"] = String(hardwareVersion); // "1.0 - ESP8266" or "2.0 - ESP32"
+	json["PMSENSORVERSION"] = String(pmSensorVersion); // PMS, SDS, HPMA115S0 ora SPS30
 	
-	json["FREQUENTMEASUREMENT"] = int(FREQUENTMEASUREMENT); // frequent measurements - True or False
-	json["DISPLAY_PM1"] = bool(DISPLAY_PM1); // True or False
+	json["FREQUENTMEASUREMENT"] = int(sensorsSettings.continuousMeasurement); // frequent measurements - True or False
+	json["DISPLAY_PM1"] = bool(deviceSettings.displayPM1); // True or False
 	
-	json["DUST_TIME"] = int(DUST_TIME); // frequency of PM measurements;  default - 1
-	json["NUMBEROFMEASUREMENTS"] = int(NUMBEROFMEASUREMENTS); //  default - 10
+	json["DUST_TIME"] = int(sensorsSettings.dustTime); // frequency of PM measurements;  default - 1
+	json["NUMBEROFMEASUREMENTS"] = int(sensorsSettings.numerOfMeasurements); //  default - 10
 	
-	json["SENDING_FREQUENCY"] = int(SENDING_FREQUENCY); // default - 2
-	json["SENDING_DB_FREQUENCY"] = int(SENDING_DB_FREQUENCY); //  default - 2
+	json["SENDING_FREQUENCY"] = int(deviceSettings.sendingServicesFrequency); // default - 2
+	json["SENDING_DB_FREQUENCY"] = int(deviceSettings.sendingDBFrequency); //  default - 2
 	
-	json["LUFTDATEN_ON"] = bool(LUFTDATEN_ON); // True or False
-	
-	json["AIRMONITOR_ON"] = bool(AIRMONITOR_ON); // True or False
-	json["AIRMONITOR_GRAPH_ON"] = bool(AIRMONITOR_GRAPH_ON); // True or False
-	
-	json["THINGSPEAK_ON"] = bool(THINGSPEAK_ON); // True or False
-	json["THINGSPEAK_GRAPH_ON"] = bool(THINGSPEAK_GRAPH_ON); // True or False
-	
-	json["INFLUXDB_ON"] = bool(INFLUXDB_ON); // True or False
-	json["MQTT_ON"] = bool(MQTT_ON); // True or False
-	
-	json["DEEPSLEEP_ON"] = bool(DEEPSLEEP_ON); // True or False
-	json["AUTOUPDATE_ON"] = bool(AUTOUPDATE_ON); // True or False
-	json["MODEL"] = String(MODEL); // default "white" - automatic calibration, "red" - without calibration
-	
-	json["LATITUDE"] = String(LATITUDE); // default - 50.2639
-    json["LONGITUDE"] = String(LONGITUDE); //  default - 18.9957
+	json["LUFTDATEN_ON"] = bool(luftdatenSettings.enabled); // True or False
+	json["LUFTDATEN_GRAPH_ON"] = bool(luftdatenSettings.graph); // True or False
 
-	json["MYALTITUDE"] = int(MYALTITUDE); // int;  default - 271.00
+	json["AIRMONITOR_ON"] = bool(airMonitorSettings.enabled); // True or False
+	json["AIRMONITOR_GRAPH_ON"] = bool(airMonitorSettings.graph); // True or False
+	
+	json["THINGSPEAK_ON"] = bool(thingSpeakSettings.enabled); // True or False
+	json["THINGSPEAK_GRAPH_ON"] = bool(thingSpeakSettings.graph); // True or False
+	
+	json["INFLUXDB_ON"] = bool(influxDBSettings.enabled); // True or False
+	json["MQTT_ON"] = bool(mqttSettings.enabled); // True or False
+	
+	json["DEEPSLEEP_ON"] = bool(deviceSettings.deepSleep); // True or False
+	json["AUTOUPDATE_ON"] = bool(deviceSettings.autoUpdate); // True or False
+	json["MODEL"] = bool(deviceSettings.autoCalibration); // default "white" - automatic calibration, "red" - without calibration
+	
+	json["LATITUDE"] = String(deviceSettings.latitude); // default - 50.2639
+    json["LONGITUDE"] = String(deviceSettings.longitude); //  default - 18.9957
+
+	json["MYALTITUDE"] = int(deviceSettings.altitude); // int;  default - 271.00
 	
 	//PM data
-	if (!strcmp(DUST_MODEL, "PMS7003")) {
+	if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
 		json["DUST_MODEL"] = "PMS5003/7003";
 	}
-	if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+	if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
 		json["DUST_MODEL"] = "HPMA115S0";
 	}
-	if (!strcmp(DUST_MODEL, "SDS011/21")) {
+	if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
 		json["DUST_MODEL"] = "SDS011/21";
 	}
-	if (!strcmp(DUST_MODEL, "SPS30")) {
+	if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
 		json["DUST_MODEL"] = "SPS30";
 	}
-	if (!strcmp(DUST_MODEL, "Non")) {
+	if (!strcmp(sensorsSettings.dustModel, "Non")) {
 		json["DUST_MODEL"] = "Non";
 	}
 	json["PM1"] = int(averagePM1);
@@ -254,18 +256,18 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
     json["PM10"] = int(averagePM10);
 	
 	// Temp/Humi/Pressure data
-	if (strcmp(THP_MODEL, "Non")) {
-		if (!strcmp(THP_MODEL, "BME280")) {
+	if (strcmp(sensorsSettings.thpModel, "Non")) {
+		if (!strcmp(sensorsSettings.thpModel, "BME280")) {
 			json["THP_MODEL"] = "BME280";
-		} else if (!strcmp(THP_MODEL, "BMP280")) {
+		} else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
 			json["THP_MODEL"] = "BMP280";
-  		} else if (!strcmp(THP_MODEL, "HTU21")) {
+  		} else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
 			json["THP_MODEL"] = "HTU21";
-  		} else if (!strcmp(THP_MODEL, "DHT22")) {
+  		} else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
 			json["THP_MODEL"] = "DHT22";
-  		} else if (!strcmp(THP_MODEL, "SHT1x")) {
+  		} else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
   			json["THP_MODEL"] = "SHT1x";
-  		} else if (!strcmp(THP_MODEL, "DS18B20")) {
+  		} else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
   			json["THP_MODEL"] = "DS18B20";
   		}
 		json["Temperature"] = float(currentTemperature);
@@ -283,7 +285,7 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
 
 
 void sendDataToSmoglist(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
-    if (!(SMOGLIST_ON)) {
+    if (!(smoglistSettings.enabled)) {
         return;
     }
     sendSmoglistData(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);

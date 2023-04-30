@@ -53,7 +53,7 @@ void sendDUSTLuftdatenJson(JsonObject& json) {
   String line = client.readStringUntil('\r');
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.println(F("POST ") + String(luftdatenAPIURL) + F(" HTTP/1.1"));
     Serial.println(F("Host: ") + String(luftdatenAPIHOST));
@@ -93,7 +93,7 @@ void sendTHPLuftdatenJson(JsonObject& json) {
   const char* thp_pins[] = {"11", "3", "7", "7", "12", "13"};
   int thp_num_models = sizeof(thp_models) / sizeof(thp_models[0]);
   for (int i = 0; i < thp_num_models; i++) {
-    if (!strcmp(THP_MODEL, thp_models[i])) {
+    if (!strcmp(sensorsSettings.thpModel, thp_models[i])) {
       client.print(F("X-PIN: "));
       client.println(thp_pins[i]);
       break;
@@ -114,13 +114,13 @@ void sendTHPLuftdatenJson(JsonObject& json) {
   String line = client.readStringUntil('\r');
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.println(F("POST ") + String(luftdatenAPIURL) + F(" HTTP/1.1"));
     Serial.println(F("Host: ") + String(luftdatenAPIHOST));
     Serial.println(F("Content-Type: application/json"));
     for (int i = 0; i < thp_num_models; i++) {
-      if (!strcmp(THP_MODEL, thp_models[i])) {
+      if (!strcmp(sensorsSettings.thpModel, thp_models[i])) {
         Serial.print(F("X-PIN: "));
         Serial.println(thp_pins[i]);
         break;
@@ -143,12 +143,12 @@ void sendTHPLuftdatenJson(JsonObject& json) {
 }
 
 void sendDUSTDatatoLuftdaten(unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM10) {
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json[F("software_version")] = F("Smogomierz_") + String(SOFTWAREVERSION);
+    json[F("software_version")] = F("Smogomierz_") + String(softwareVersion);
     JsonArray sensordatavalues = json.createNestedArray(F("sensordatavalues"));
-    if (!strcmp(DUST_MODEL, "PMS7003")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
       JsonObject P0 = sensordatavalues.createNestedObject();
       P0[F("value_type")] = F("P0");
       P0[F("value")] = averagePM1;
@@ -171,12 +171,12 @@ void sendDUSTDatatoLuftdaten(unsigned short & averagePM1, unsigned short & avera
 }
 
 void sendTHPDatatoLuftdaten(float & currentTemperature, float & currentPressure, float & currentHumidity) {
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json[F("software_version")] = F("Smogomierz_") + String(SOFTWAREVERSION);
+    json[F("software_version")] = F("Smogomierz_") + String(softwareVersion);
     JsonArray sensordatavalues = json.createNestedArray(F("sensordatavalues"));
-    if (!strcmp(THP_MODEL, "BME280")) {
+    if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
@@ -186,35 +186,35 @@ void sendTHPDatatoLuftdaten(float & currentTemperature, float & currentPressure,
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure[F("value_type")] = F("pressure");
       pressure[F("value")] = String(currentPressure * 100); //hPa -> Pa
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure[F("value_type")] = F("pressure");
       pressure[F("value")] = String(currentPressure * 100); //hPa -> Pa
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity[F("value_type")] = F("humidity");
       humidity[F("value")] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity[F("value_type")] = F("humidity");
       humidity[F("value")] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity[F("value_type")] = F("humidity");
       humidity[F("value")] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
@@ -254,7 +254,7 @@ void sendDUSTMadavideJson(JsonObject& json) {
   String line = client.readStringUntil('\r');
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.println(F("POST ") + String(madavideAPIURL) + F(" HTTP/1.1"));
     Serial.println(F("Host: ") + String(madavideAPIHOST));
@@ -294,7 +294,7 @@ void sendTHPMadavideJson(JsonObject& json) {
   const char* thp_pins[] = {"11", "3", "7", "7", "12", "13"};
   int thp_num_models = sizeof(thp_models) / sizeof(thp_models[0]);
   for (int i = 0; i < thp_num_models; i++) {
-    if (!strcmp(THP_MODEL, thp_models[i])) {
+    if (!strcmp(sensorsSettings.thpModel, thp_models[i])) {
       client.print(F("X-PIN: "));
       client.println(thp_pins[i]);
       break;
@@ -315,13 +315,13 @@ void sendTHPMadavideJson(JsonObject& json) {
   String line = client.readStringUntil('\r');
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.println(F("POST ") + String(madavideAPIURL) + F(" HTTP/1.1"));
     Serial.println(F("Host: ") + String(madavideAPIHOST));
     Serial.println(F("Content-Type: application/json"));
     for (int i = 0; i < thp_num_models; i++) {
-      if (!strcmp(THP_MODEL, thp_models[i])) {
+      if (!strcmp(sensorsSettings.thpModel, thp_models[i])) {
         Serial.print(F("X-PIN: "));
         Serial.println(thp_pins[i]);
         break;
@@ -344,12 +344,12 @@ void sendTHPMadavideJson(JsonObject& json) {
 }
 
 void sendDUSTDatatoMadavide(unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM10) {
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json[F("software_version")] = F("Smogomierz_") + String(SOFTWAREVERSION);
+    json[F("software_version")] = F("Smogomierz_") + String(softwareVersion);
     JsonArray sensordatavalues = json.createNestedArray(F("sensordatavalues"));
-    if (!strcmp(DUST_MODEL, "PMS7003")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
       JsonObject P0 = sensordatavalues.createNestedObject();
       P0[F("value_type")] = F("PMS_P0");
       P0[F("value")] = averagePM1;
@@ -359,14 +359,14 @@ void sendDUSTDatatoMadavide(unsigned short & averagePM1, unsigned short & averag
       JsonObject P2 = sensordatavalues.createNestedObject();
       P2[F("value_type")] = F("PMS_P2");
       P2[F("value")] = averagePM25;
-    } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+    } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       JsonObject P1 = sensordatavalues.createNestedObject();
       P1[F("value_type")] = F("SDS_P1");
       P1[F("value")] = averagePM10;
       JsonObject P2 = sensordatavalues.createNestedObject();
       P2[F("value_type")] = F("SDS_P2");
       P2[F("value")] = averagePM25;
-    } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+    } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       JsonObject P1 = sensordatavalues.createNestedObject();
       P1[F("value_type")] = F("HPM_P1");
       P1[F("value")] = averagePM10;
@@ -379,12 +379,12 @@ void sendDUSTDatatoMadavide(unsigned short & averagePM1, unsigned short & averag
 }
 
 void sendTHPDatatoMadavide(float & currentTemperature, float & currentPressure, float & currentHumidity) {
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json[F("software_version")] = F("Smogomierz_") + String(SOFTWAREVERSION);
+    json[F("software_version")] = F("Smogomierz_") + String(softwareVersion);
     JsonArray sensordatavalues = json.createNestedArray(F("sensordatavalues"));
-    if (!strcmp(THP_MODEL, "BME280")) {
+    if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
@@ -394,35 +394,35 @@ void sendTHPDatatoMadavide(float & currentTemperature, float & currentPressure, 
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure[F("value_type")] = F("pressure");
       pressure[F("value")] = String(currentPressure * 100); //hPa -> Pa
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure[F("value_type")] = F("pressure");
       pressure[F("value")] = String(currentPressure * 100); //hPa -> Pa
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity[F("value_type")] = F("humidity");
       humidity[F("value")] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity[F("value_type")] = F("humidity");
       humidity[F("value")] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity[F("value_type")] = F("humidity");
       humidity[F("value")] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature[F("value_type")] = F("temperature");
       temperature[F("value")] = String(currentTemperature);
@@ -461,7 +461,7 @@ void sendDUSTLuftdatenJson(JsonObject& json) {
   String line = client.readStringUntil('\r');
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.println("POST " + String(luftdatenAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(luftdatenAPIHOST));
@@ -501,7 +501,7 @@ void sendTHPLuftdatenJson(JsonObject& json) {
   const char* thp_pins[] = {"11", "3", "7", "7", "12", "13"};
   int thp_num_models = sizeof(thp_models) / sizeof(thp_models[0]);
   for (int i = 0; i < thp_num_models; i++) {
-    if (!strcmp(THP_MODEL, thp_models[i])) {
+    if (!strcmp(sensorsSettings.thpModel, thp_models[i])) {
       client.print(F("X-PIN: "));
       client.println(thp_pins[i]);
       break;
@@ -522,13 +522,13 @@ void sendTHPLuftdatenJson(JsonObject& json) {
   String line = client.readStringUntil('\r');
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.println("POST " + String(luftdatenAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(luftdatenAPIHOST));
     Serial.println("Content-Type: application/json");
     for (int i = 0; i < thp_num_models; i++) {
-        if (!strcmp(THP_MODEL, thp_models[i])) {
+        if (!strcmp(sensorsSettings.thpModel, thp_models[i])) {
           Serial.print(F("X-PIN: "));
           Serial.println(thp_pins[i]);
           break;
@@ -551,12 +551,12 @@ void sendTHPLuftdatenJson(JsonObject& json) {
 }
 
 void sendDUSTDatatoLuftdaten(unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM10) {
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json["software_version"] = "Smogomierz_" + String(SOFTWAREVERSION);
+    json["software_version"] = "Smogomierz_" + String(softwareVersion);
     JsonArray sensordatavalues = json.createNestedArray("sensordatavalues");
-    if (!strcmp(DUST_MODEL, "PMS7003")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
       JsonObject P0 = sensordatavalues.createNestedObject();
       P0["value_type"] = "P0";
       P0["value"] = averagePM1;
@@ -579,12 +579,12 @@ void sendDUSTDatatoLuftdaten(unsigned short & averagePM1, unsigned short & avera
 }
 
 void sendTHPDatatoLuftdaten(float & currentTemperature, float & currentPressure, float & currentHumidity) {
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json["software_version"] = "Smogomierz_" + String(SOFTWAREVERSION);
+    json["software_version"] = "Smogomierz_" + String(softwareVersion);
     JsonArray sensordatavalues = json.createNestedArray("sensordatavalues");
-    if (!strcmp(THP_MODEL, "BME280")) {
+    if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
@@ -594,35 +594,35 @@ void sendTHPDatatoLuftdaten(float & currentTemperature, float & currentPressure,
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure["value_type"] = "pressure";
       pressure["value"] = String(currentPressure * 100); //hPa -> Pa
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure["value_type"] = "pressure";
       pressure["value"] = String(currentPressure * 100); //hPa -> Pa
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
@@ -662,7 +662,7 @@ void sendDUSTMadavideJson(JsonObject& json) {
   String line = client.readStringUntil('\r');
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.println("POST " + String(madavideAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(madavideAPIHOST));
@@ -702,7 +702,7 @@ void sendTHPMadavideJson(JsonObject& json) {
   const char* thp_pins[] = {"11", "3", "7", "7", "12", "13"};
   int thp_num_models = sizeof(thp_models) / sizeof(thp_models[0]);
   for (int i = 0; i < thp_num_models; i++) {
-    if (!strcmp(THP_MODEL, thp_models[i])) {
+    if (!strcmp(sensorsSettings.thpModel, thp_models[i])) {
       client.print(F("X-PIN: "));
       client.println(thp_pins[i]);
       break;
@@ -723,13 +723,13 @@ void sendTHPMadavideJson(JsonObject& json) {
   String line = client.readStringUntil('\r');
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.println("POST " + String(madavideAPIURL) + " HTTP/1.1");
     Serial.println("Host: " + String(madavideAPIHOST));
     Serial.println("Content-Type: application/json");
     for (int i = 0; i < thp_num_models; i++) {
-        if (!strcmp(THP_MODEL, thp_models[i])) {
+        if (!strcmp(sensorsSettings.thpModel, thp_models[i])) {
           Serial.print(F("X-PIN: "));
           Serial.println(thp_pins[i]);
           break;
@@ -752,12 +752,12 @@ void sendTHPMadavideJson(JsonObject& json) {
 }
 
 void sendDUSTDatatoMadavide(unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM10) {
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json["software_version"] = "Smogomierz_" + String(SOFTWAREVERSION);
+    json["software_version"] = "Smogomierz_" + String(softwareVersion);
     JsonArray sensordatavalues = json.createNestedArray("sensordatavalues");
-    if (!strcmp(DUST_MODEL, "PMS7003")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
       JsonObject P0 = sensordatavalues.createNestedObject();
       P0["value_type"] = "PMS_P0";
       P0["value"] = averagePM1;
@@ -767,14 +767,14 @@ void sendDUSTDatatoMadavide(unsigned short & averagePM1, unsigned short & averag
       JsonObject P2 = sensordatavalues.createNestedObject();
       P2["value_type"] = "PMS_P2";
       P2["value"] = averagePM25;
-    } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+    } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       JsonObject P1 = sensordatavalues.createNestedObject();
       P1["value_type"] = "SDS_P1";
       P1["value"] = averagePM10;
       JsonObject P2 = sensordatavalues.createNestedObject();
       P2["value_type"] = "SDS_P2";
       P2["value"] = averagePM25;
-    } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+    } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       JsonObject P1 = sensordatavalues.createNestedObject();
       P1["value_type"] = "HPM_P1";
       P1["value"] = averagePM10;
@@ -787,12 +787,12 @@ void sendDUSTDatatoMadavide(unsigned short & averagePM1, unsigned short & averag
 }
 
 void sendTHPDatatoMadavide(float & currentTemperature, float & currentPressure, float & currentHumidity) {
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     StaticJsonDocument<600> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json["software_version"] = "Smogomierz_" + String(SOFTWAREVERSION);
+    json["software_version"] = "Smogomierz_" + String(softwareVersion);
     JsonArray sensordatavalues = json.createNestedArray("sensordatavalues");
-    if (!strcmp(THP_MODEL, "BME280")) {
+    if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
@@ -802,35 +802,35 @@ void sendTHPDatatoMadavide(float & currentTemperature, float & currentPressure, 
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure["value_type"] = "pressure";
       pressure["value"] = String(currentPressure * 100); //hPa -> Pa
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
       JsonObject pressure = sensordatavalues.createNestedObject();
       pressure["value_type"] = "pressure";
       pressure["value"] = String(currentPressure * 100); //hPa -> Pa
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
       JsonObject humidity = sensordatavalues.createNestedObject();
       humidity["value_type"] = "humidity";
       humidity["value"] = String(currentHumidity);
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       JsonObject temperature = sensordatavalues.createNestedObject();
       temperature["value_type"] = "temperature";
       temperature["value"] = String(currentTemperature);
@@ -840,12 +840,12 @@ void sendTHPDatatoMadavide(float & currentTemperature, float & currentPressure, 
 }
 #endif
 
-bool getLuftdatenJSON(float LATITUDE, float LONGITUDE) {
-	String url_string = ("http://data.sensor.community/airrohr/v1/filter/box=" + String(LATITUDE, 6) + "00000," + String(LONGITUDE, 6) + "00000," + String(LATITUDE, 6) + "00000," + String(LONGITUDE, 6) + "00000");
+bool getLuftdatenJSON(float latitude, float longitude) {
+	String url_string = ("http://data.sensor.community/airrohr/v1/filter/box=" + String(latitude, 6) + "00000," + String(longitude, 6) + "00000," + String(latitude, 6) + "00000," + String(longitude, 6) + "00000");
 		
     // Check WiFi Status
     if (WiFi.status() == WL_CONNECTED) {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
 		  // Serial.print("\nWaiting for " + String(url_string));
 		  Serial.print("\nWaiting for Luftdaten API data");
       }
@@ -886,7 +886,7 @@ void parsingLuftdatenAPIJSON() {
   deserializeJson(doc, receivedLuftdatenAPIJSON);
   JsonArray json = doc.as<JsonArray>();
 
-if (DEBUG) {
+if (deviceSettings.debug) {
     // serializeJsonPretty(json, Serial);
 	// Serial.println("\n");
 	    }
@@ -910,21 +910,21 @@ String temp_DUSTMODEL_Luftdaten = "PMS7003";
 			if (String(json[i]["sensor"]["sensor_type"]["name"].as<String>()) == String(temp_DUSTMODEL_Luftdaten)) {
 #endif
  			// Serial.println("json[" + String(i) + "][\"sensor\"][\"id\"]: " + String(json[i]["sensor"]["id"].as<String>()));				
- 			LUFTDATEN_APIID = int(json[i]["sensor"]["id"].as<int>()); 
+ 			luftdatenSettings.apiId = int(json[i]["sensor"]["id"].as<int>()); 
  		}
  	}
  }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     // Output to serial monitor
-    Serial.print("LUFTDATEN_APIID: ");
-    Serial.println(LUFTDATEN_APIID);
+    Serial.print("luftdatenSettings.apiId: ");
+    Serial.println(luftdatenSettings.apiId);
     Serial.print("\n");
  }
 }
 
 void sendDataToLuftdaten(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
-  if (!(LUFTDATEN_ON)) {
+  if (!(luftdatenSettings.enabled)) {
     return;
   }
   sendDUSTDatatoLuftdaten(averagePM1, averagePM25, averagePM10);
@@ -935,14 +935,14 @@ void sendDataToLuftdaten(float & currentTemperature, float & currentPressure, fl
 }
 
 void getAPIIDFromLuftdaten() {
-	if (getLuftdatenJSON(atof(LATITUDE), atof(LONGITUDE)) == true) {
-      if (DEBUG) {
+	if (getLuftdatenJSON(atof(deviceSettings.latitude), atof(deviceSettings.longitude)) == true) {
+      if (deviceSettings.debug) {
         Serial.println("Luftdaten API data recived!\n");
       }
 	  parsingLuftdatenAPIJSON();
       receivedLuftdatenAPIJSON = "";
     } else {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.println("Luftdaten API conection error!\n");
       }
     }

@@ -7,6 +7,9 @@
 #include "../config.h"
 #define FORMAT_SPIFFS_IF_FAILED true
 
+// https://arduinojson.org/v6/faq/automatically-serialize-an-object/
+// https://arduinojson.org/v6/example/config/#source-code
+
 void _safeCpy(char* dest, const JsonVariant &obj, const char* dflt = "", int CharSize = 255) {
   const char* val = obj.as<const char*>();
   if (val) {
@@ -155,7 +158,7 @@ bool loadConfig() {
   SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
   DEEPSLEEP_ON = json["DEEPSLEEP_ON"];
 
-  DEBUG = json["DEBUG"];
+  deviceSettings.debug = json["DEBUG"];
   AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
 
   CONFIG_AUTH = json["CONFIG_AUTH"];
@@ -168,7 +171,7 @@ bool loadConfig() {
 
   // Real world application would store these values in some variables for
   // later use.
-    if (DEBUG) {
+    if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.print(F("Loaded DEVICENAME_AUTO: "));
       Serial.println(DEVICENAME_AUTO);
@@ -335,7 +338,7 @@ bool loadConfig() {
       Serial.println(DEEPSLEEP_ON);
 
       Serial.print(F("Loaded DEBUG: "));
-      Serial.println(DEBUG);
+      Serial.println(deviceSettings.debug);
       Serial.print(F("Loaded AUTOUPDATE_ON: "));
       Serial.println(AUTOUPDATE_ON);
 
@@ -525,7 +528,7 @@ bool loadConfig() {
       Serial.println(DEEPSLEEP_ON);
 
       Serial.print("Loaded DEBUG: ");
-      Serial.println(DEBUG);
+      Serial.println(deviceSettings.debug);
       Serial.print("Loaded AUTOUPDATE_ON: ");
       Serial.println(AUTOUPDATE_ON);
 
@@ -556,7 +559,7 @@ bool loadConfig() {
 
 bool saveConfig() {
 	
-  if (DEBUG) {
+  if (deviceSettings.debug) {
 	  /*
     Serial.print(F("Saved DEVICENAME_AUTO: "));
     Serial.println(DEVICENAME_AUTO);
@@ -720,7 +723,7 @@ bool saveConfig() {
     Serial.println(DEEPSLEEP_ON);
 
     Serial.print(F("Saved DEBUG: "));
-    Serial.println(DEBUG);
+    Serial.println(deviceSettings.debug);
     Serial.print(F("Saved AUTOUPDATE_ON: "));
     Serial.println(AUTOUPDATE_ON);
 
@@ -854,7 +857,7 @@ bool saveConfig() {
   json["SENDING_DB_FREQUENCY"] = int(SENDING_DB_FREQUENCY);
   json["DEEPSLEEP_ON"] = bool(DEEPSLEEP_ON);
 
-  json["DEBUG"] = bool(DEBUG);
+  json["DEBUG"] = bool(deviceSettings.debug);
   json["AUTOUPDATE_ON"] = bool(AUTOUPDATE_ON);
 
   json["CONFIG_AUTH"] = bool(CONFIG_AUTH);
@@ -881,7 +884,7 @@ bool saveConfig() {
   }
 
   serializeJson(json, configFile);
-  if (DEBUG) {
+  if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("config saved"));
 #elif defined ARDUINO_ARCH_ESP32

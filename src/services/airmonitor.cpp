@@ -120,14 +120,14 @@ void sendJson(JsonObject& json) {
     client.println(F("Content-Type: application/json"));
     client.print(F("Content-Length: "));
     client.println(measureJson(json));
-    client.println(F("X-Api-Key: ") + String(AIRMONITOR_API_KEY));
+    client.println(F("X-Api-Key: ") + String(airMonitorSettings.apiKey));
     client.println();
     serializeJson(json, client);
 
     String line = client.readStringUntil('\r');
     // TODO: Support wrong error (!= 200)
 
-    if (DEBUG) {
+    if (deviceSettings.debug) {
         Serial.print(F("Length:"));
     Serial.println(measureJson(json));
     serializeJsonPretty(json, Serial);
@@ -138,24 +138,24 @@ void sendJson(JsonObject& json) {
 }
 
 void sendDUSTData(unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM10) {
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     StaticJsonDocument<400> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json[F("lat")] = String(LATITUDE);
-    json[F("long")] = String(LONGITUDE);
+    json[F("lat")] = String(deviceSettings.latitude);
+    json[F("long")] = String(deviceSettings.longitude);
     json[F("pm1")] = float(averagePM1);
     json[F("pm25")] = float(averagePM25);
     json[F("pm10")] = float(averagePM10);
-    if (!strcmp(DUST_MODEL, "PMS7003")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
       json[F("sensor")] = F("PMS7003");
     }
-    if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+    if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       json[F("sensor")] = F("HPMA115S0");
     }
-    if (!strcmp(DUST_MODEL, "SDS011/21")) {
+    if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       json[F("sensor")] = F("SDS021");
     }
-    if (!strcmp(DUST_MODEL, "SPS30")) {
+    if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
       json[F("sensor")] = F("SPS30");
     }
     sendJson(json);
@@ -163,33 +163,33 @@ void sendDUSTData(unsigned short & averagePM1, unsigned short & averagePM25, uns
 }
 
 void sendTHPData(float & currentTemperature, float & currentPressure, float & currentHumidity) {
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     StaticJsonDocument<400> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json[F("lat")] = String(LATITUDE);
-    json[F("long")] = String(LONGITUDE);
-    if (!strcmp(THP_MODEL, "BME280")) {
+    json[F("lat")] = String(deviceSettings.latitude);
+    json[F("long")] = String(deviceSettings.longitude);
+    if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       json[F("pressure")] = float(currentPressure);
       json[F("temperature")] = float(currentTemperature);
       json[F("humidity")] = float(currentHumidity);
       json[F("sensor")] = F("BME280");
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       json[F("pressure")] = float(currentPressure);
       json[F("temperature")] = float(currentTemperature);
       json[F("sensor")] = F("BMP280");
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       json[F("temperature")] = float(currentTemperature);
       json[F("humidity")] = float(currentHumidity);
       json[F("sensor")] = F("HTU21");
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       json[F("temperature")] = float(currentTemperature);
       json[F("humidity")] = float(currentHumidity);
       json[F("sensor")] = F("DHT22");
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       json[F("temperature")] = float(currentTemperature);
       json[F("humidity")] = float(currentHumidity);
       json[F("sensor")] = F("SHT1x");
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       json[F("temperature")] = float(currentTemperature);
       json[F("sensor")] = F("DS18B20");
     }
@@ -209,7 +209,7 @@ void sendJson(JsonObject& json) {
 	// setUpdateClock_airmonitor();
   WiFiClientSecure client;
   /*
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print("\nUsing fingerprint: '%s'\n", fingerprint_airMonitor);
   }
   */
@@ -233,17 +233,17 @@ void sendJson(JsonObject& json) {
                "Host: " + String(airMonitorServerName) + "\r\n" +
                "Content-Type: application/json\r\n" +
                "Content-Length: " + String(measureJson(json)) + "\r\n" +
-               "X-Api-Key: " + String(AIRMONITOR_API_KEY) + "\r\n\r\n" +
+               "X-Api-Key: " + String(airMonitorSettings.apiKey) + "\r\n\r\n" +
                String(JSONoutput) + "\r\n\r\n");
     
   /*
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.print("\n\n\t\t====================\n\n");
     Serial.print(String("POST ") + Link + " HTTP/1.1\r\n" +
                  "Host: " + String(airMonitorServerName) + "\r\n" +
                  "Content-Type: application/json\r\n" +
                  "Content-Length: " + String(measureJson(json)) + "\r\n" +
-                 "X-Api-Key: " + String(AIRMONITOR_API_KEY) + "\r\n\r\n" +
+                 "X-Api-Key: " + String(airMonitorSettings.apiKey) + "\r\n\r\n" +
                  String(JSONoutput) + "\r\n\r\n");
     Serial.print("\n\t\t====================\n\n");
   }
@@ -251,7 +251,7 @@ void sendJson(JsonObject& json) {
   
   String line = client.readStringUntil('\r');
   
-  if (DEBUG) {
+  if (deviceSettings.debug) {
       Serial.print("Length:");
   	  Serial.println(measureJson(json));
   	  serializeJsonPretty(json, Serial);
@@ -262,24 +262,24 @@ void sendJson(JsonObject& json) {
 }
 
 void sendDUSTData(unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM10) {
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     StaticJsonDocument<400> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json["lat"] = String(LATITUDE);
-    json["long"] = String(LONGITUDE);
+    json["lat"] = String(deviceSettings.latitude);
+    json["long"] = String(deviceSettings.longitude);
     json["pm1"] = float(averagePM1);
     json["pm25"] = float(averagePM25);
     json["pm10"] = float(averagePM10);
-    if (!strcmp(DUST_MODEL, "PMS7003")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
       json["sensor"] = "PMS7003";
     }
-    if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+    if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       json["sensor"] = "HPMA115S0";
     }
-    if (!strcmp(DUST_MODEL, "SDS011/21")) {
+    if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       json["sensor"] = "SDS021";
     }
-    if (!strcmp(DUST_MODEL, "SPS30")) {
+    if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
       json["sensor"] = "SPS30";
     }
     sendJson(json);
@@ -287,33 +287,33 @@ void sendDUSTData(unsigned short & averagePM1, unsigned short & averagePM25, uns
 }
 
 void sendTHPData(float & currentTemperature, float & currentPressure, float & currentHumidity) {
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     StaticJsonDocument<400> jsonBuffer;
     JsonObject json = jsonBuffer.to<JsonObject>();
-    json["lat"] = String(LATITUDE);
-    json["long"] = String(LONGITUDE);
-    if (!strcmp(THP_MODEL, "BME280")) {
+    json["lat"] = String(deviceSettings.latitude);
+    json["long"] = String(deviceSettings.longitude);
+    if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       json["pressure"] = float(currentPressure);
       json["temperature"] = float(currentTemperature);
       json["humidity"] = float(currentHumidity);
       json["sensor"] = "BME280";
-    } else if (!strcmp(THP_MODEL, "BMP280")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       json["pressure"] = float(currentPressure);
       json["temperature"] = float(currentTemperature);
       json["sensor"] = "BMP280";
-    } else if (!strcmp(THP_MODEL, "HTU21")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       json["temperature"] = float(currentTemperature);
       json["humidity"] = float(currentHumidity);
       json["sensor"] = "HTU21";
-    } else if (!strcmp(THP_MODEL, "DHT22")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       json["temperature"] = float(currentTemperature);
       json["humidity"] = float(currentHumidity);
       json["sensor"] = "DHT22";
-    } else if (!strcmp(THP_MODEL, "SHT1x")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       json["temperature"] = float(currentTemperature);
       json["humidity"] = float(currentHumidity);
       json["sensor"] = "SHT1x";
-    } else if (!strcmp(THP_MODEL, "DS18B20")) {
+    } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       json["temperature"] = float(currentTemperature);
       json["sensor"] = "DS18B20";
     }
@@ -323,7 +323,7 @@ void sendTHPData(float & currentTemperature, float & currentPressure, float & cu
 #endif
 
 void sendDataToAirMonitor(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
-  if (!(AIRMONITOR_ON)) {
+  if (!(airMonitorSettings.enabled)) {
     return;
   }
 

@@ -3,8 +3,8 @@
 // #include "../intl/intl_en.h"
 #include "../intl/intl_pl.h"
 
-void loadtranslation(int SELECTED_LANGUAGE) {
-	if (SELECTED_LANGUAGE == 1) { //english translataion
+void loadtranslation(int selectedLanguage) {
+	if (selectedLanguage == 1) { //english translataion
 		Serial.println(F("English Translation!\n"));
 		
 		// there is no need to translate the default translation(default_intl.h) into English - it is in English
@@ -167,7 +167,7 @@ void loadtranslation(int SELECTED_LANGUAGE) {
 		strcpy(TEXT_PAGE_HOMEKIT_RESET, EN_INTL_PAGE_HOMEKIT_RESET);	
 		
 		*/
-	} else if (SELECTED_LANGUAGE == 2) { //polish translation
+	} else if (selectedLanguage == 2) { //polish translation
 		Serial.println(F("Polish Translation!\n"));
 		
 		strcpy(TEXT_LANG, PL_INTL_LANG);

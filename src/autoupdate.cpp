@@ -92,7 +92,7 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
   safeConnection = false;
   String UNSAFE_ServerSW;
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.printf("\n\t\tcheckUpdate_UNSAFE!!!\n\n");
   }
 
@@ -159,13 +159,13 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
 
       return UNSAFE_ServerSW;
     } else {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.printf("GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
       }
       return F("0.0.0");
     }
   } else {
-    if (DEBUG) {
+    if (deviceSettings.debug) {
       Serial.printf("Unable to connect\n");
     }
     return F("0.0.0");
@@ -179,7 +179,7 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
 
 bool checkUpdate(unsigned char & checkUpdateSW) {
   const char* ServerSW = "0.0.0";
-  //ServerSW = (String(SOFTWAREVERSION).substring(0, int(String(SOFTWAREVERSION).indexOf("build")) - 1)).c_str();
+  //ServerSW = (String(softwareVersion).substring(0, int(String(softwareVersion).indexOf("build")) - 1)).c_str();
   // ServerSW = "0.0.0";
   String Data[3];
 
@@ -258,7 +258,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
       }
     } else if (httpCode == -1) {
 
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.printf("\nrootCACertificate error!\n");
       }
       client.flush();
@@ -272,7 +272,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
 #endif
 	
 	} else {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.printf("GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
       }
       ServerSW = "0.0.0";
@@ -280,23 +280,23 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
     }
   } else {
       ServerSW = "0.0.0";
-    if (DEBUG) {
+    if (deviceSettings.debug) {
       Serial.print(F("Unable to connect\n"));
     }
   }
   
   https.end();
   
-  strncpy(SERVERSOFTWAREVERSION, ServerSW, 32);
-  Data[0] = SERVERSOFTWAREVERSION;
+  strncpy(serverSoftwareVersion, ServerSW, 32);
+  Data[0] = serverSoftwareVersion;
 
   if (checkUpdateSW == 0) {
-    int SFbuildIndex = String(SOFTWAREVERSION).indexOf("build");
-    Data[2] = String(SOFTWAREVERSION).substring(0, SFbuildIndex - 1);
-    strncpy(CURRENTSOFTWAREVERSION, (Data[2]).c_str(), 32);
+    int SFbuildIndex = String(softwareVersion).indexOf("build");
+    Data[2] = String(softwareVersion).substring(0, SFbuildIndex - 1);
+    strncpy(currentSoftwareVersion, (Data[2]).c_str(), 32);
   }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println(F("\nSERVER SOFTWARE VERSION: ") + Data[0]);
     if (checkUpdateSW == 0) {
       Serial.println(F("CURRENT SOFTWARE VERSION: ") + Data[2]);
@@ -313,19 +313,19 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
     String CurrentSoftVer = Data[2].substring(0, dotIndexCurrentSoftVer1) + Data[2].substring(dotIndexCurrentSoftVer1 + 1, dotIndexCurrentSoftVer2) + Data[2].substring(dotIndexCurrentSoftVer2 + 1);
 
     if (RepoSoftVer.toInt() > CurrentSoftVer.toInt()) {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.println(F("\nFirmware upgrade required!\n"));
       }
       return true;
     }
     if (RepoSoftVer.toInt() == CurrentSoftVer.toInt()) {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.println(F("\nYou have the current version of the firmware!\n"));
       }
       return false;
     }
     if (RepoSoftVer.toInt() < CurrentSoftVer.toInt()) {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.println(F("\nYou have newer firmware installed than it is available in the official repository!\n"));
       }
       return false;
@@ -348,7 +348,7 @@ void doUpdate(unsigned char & doUpdateSW) {
 #endif
   
   if (checkUpdate(doUpdateSW)) {
-    if (DEBUG) {
+    if (deviceSettings.debug) {
       Serial.println(F("Starting firmware upgrade...\n"));
 #if defined(ARDUINO_ARCH_ESP8266)
       Serial.println(F("Free Heap: ") + String(ESP.getFreeHeap()));
@@ -371,19 +371,19 @@ void doUpdate(unsigned char & doUpdateSW) {
     #endif
 
     if (doUpdateSW == 0) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
     } else if (doUpdateSW == 1) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_PMS-SparkFunBME280_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_PMS-SparkFunBME280_ESP8266.bin");
     } else if (doUpdateSW == 2) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_SDS011_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_SDS011_ESP8266.bin");
     } else if (doUpdateSW == 3) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_HPMA115S0_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_HPMA115S0_ESP8266.bin");
     } else if (doUpdateSW == 4) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_PMS_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_PMS_ESP8266.bin");
     } else if (doUpdateSW == 5) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_SPS30_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_SPS30_ESP8266.bin");
     } else if (doUpdateSW >= 6) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
     }
 
     #if defined(ARDUINO_ARCH_ESP32)
@@ -398,7 +398,7 @@ void doUpdate(unsigned char & doUpdateSW) {
     t_httpUpdate_return ret = httpUpdate.update(client, BinURL);
 #endif
 	
-    if (DEBUG) {
+    if (deviceSettings.debug) {
       switch (ret) {
         case HTTP_UPDATE_FAILED:
 #if defined(ARDUINO_ARCH_ESP8266)
@@ -450,7 +450,7 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
   safeConnection = false;
   String UNSAFE_ServerSW;
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.printf("\n\t\tcheckUpdate_UNSAFE!!!\n\n");
   }
 
@@ -517,13 +517,13 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
 
       return UNSAFE_ServerSW;
     } else {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.printf("GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
       }
       return "0.0.0";
     }
   } else {
-    if (DEBUG) {
+    if (deviceSettings.debug) {
       Serial.printf("Unable to connect\n");
     }
     return "0.0.0";
@@ -537,7 +537,7 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
 
 bool checkUpdate(unsigned char & checkUpdateSW) {
   const char* ServerSW = "0.0.0";
-  //ServerSW = (String(SOFTWAREVERSION).substring(0, int(String(SOFTWAREVERSION).indexOf("build") - 1)).c_str();
+  //ServerSW = (String(softwareVersion).substring(0, int(String(softwareVersion).indexOf("build") - 1)).c_str();
   // ServerSW = "0.0.0";
   String Data[3];
 
@@ -615,7 +615,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
       }
     } else if (httpCode == -1) {
 
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.print("\nrootCACertificate error!\n");
       }
       client.flush();
@@ -629,7 +629,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
 #endif
 	
 	} else {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.printf("GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
       }
       ServerSW = "0.0.0";
@@ -637,23 +637,23 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
     }
   } else {
       ServerSW = "0.0.0";
-    if (DEBUG) {
+    if (deviceSettings.debug) {
       Serial.print("Unable to connect\n");
     }
   }
   
   https.end();
   
-  strncpy(SERVERSOFTWAREVERSION, ServerSW, 32);
-  Data[0] = SERVERSOFTWAREVERSION;
+  strncpy(serverSoftwareVersion, ServerSW, 32);
+  Data[0] = serverSoftwareVersion;
 
   if (checkUpdateSW == 0) {
-    int SFbuildIndex = String(SOFTWAREVERSION).indexOf("build");
-    Data[2] = String(SOFTWAREVERSION).substring(0, SFbuildIndex - 1);
-    strncpy(CURRENTSOFTWAREVERSION, (Data[2]).c_str(), 32);
+    int SFbuildIndex = String(softwareVersion).indexOf("build");
+    Data[2] = String(softwareVersion).substring(0, SFbuildIndex - 1);
+    strncpy(currentSoftwareVersion, (Data[2]).c_str(), 32);
   }
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println("\nSERVER SOFTWARE VERSION: " + Data[0]);
     if (checkUpdateSW == 0) {
       Serial.println("CURRENT SOFTWARE VERSION: " + Data[2]);
@@ -670,17 +670,17 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
     String CurrentSoftVer = Data[2].substring(0, dotIndexCurrentSoftVer1) + Data[2].substring(dotIndexCurrentSoftVer1 + 1, dotIndexCurrentSoftVer2) + Data[2].substring(dotIndexCurrentSoftVer2 + 1);
 
     if (RepoSoftVer.toInt() > CurrentSoftVer.toInt()) {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.println("\nFirmware upgrade required!\n");
       }
       return true;
     } else if (RepoSoftVer.toInt() == CurrentSoftVer.toInt()) {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.println("\nYou have the current version of the firmware!\n");
       }
       return false;
     } else if (RepoSoftVer.toInt() < CurrentSoftVer.toInt()) {
-      if (DEBUG) {
+      if (deviceSettings.debug) {
         Serial.println("\nYou have newer firmware installed than it is available in the official repository!\n");
       }
       return false;
@@ -705,7 +705,7 @@ void doUpdate(unsigned char & doUpdateSW) {
 #endif
   
   if (checkUpdate(doUpdateSW)) {
-    if (DEBUG) {
+    if (deviceSettings.debug) {
       Serial.println("Starting firmware upgrade...\n");
 #if defined(ARDUINO_ARCH_ESP8266)
       Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
@@ -728,19 +728,19 @@ void doUpdate(unsigned char & doUpdateSW) {
     #endif
 
     if (doUpdateSW == 0) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
     } else if (doUpdateSW == 1) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_PMS-SparkFunBME280_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_PMS-SparkFunBME280_ESP8266.bin");
     } else if (doUpdateSW == 2) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_SDS011_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_SDS011_ESP8266.bin");
     } else if (doUpdateSW == 3) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_HPMA115S0_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_HPMA115S0_ESP8266.bin");
     } else if (doUpdateSW == 4) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_PMS_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_PMS_ESP8266.bin");
     } else if (doUpdateSW == 5) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + F("_SPS30_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + F("_SPS30_ESP8266.bin");
     } else if (doUpdateSW >= 6) {
-        BinURL = baseUrl + String(SERVERSOFTWAREVERSION) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
     }
 
     #if defined(ARDUINO_ARCH_ESP32)
@@ -755,7 +755,7 @@ void doUpdate(unsigned char & doUpdateSW) {
     t_httpUpdate_return ret = httpUpdate.update(client, BinURL);
 #endif
 	
-    if (DEBUG) {
+    if (deviceSettings.debug) {
       switch (ret) {
         case HTTP_UPDATE_FAILED:
 #if defined(ARDUINO_ARCH_ESP8266)

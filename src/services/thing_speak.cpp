@@ -9,22 +9,22 @@
 #include "../../config.h"
 
 void sendDataToThingSpeak(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
-    if (!(THINGSPEAK_ON)) {
+    if (!(thingSpeakSettings.enabled)) {
         return;
     }
 
     WiFiClient client;
     ThingSpeak.begin(client);
-	if (strcmp(DUST_MODEL, "Non")) {
+	if (strcmp(sensorsSettings.dustModel, "Non")) {
 		ThingSpeak.setField(1, averagePM1);
     	ThingSpeak.setField(2, averagePM25);
     	ThingSpeak.setField(3, averagePM10);
 	}
-	if (strcmp(THP_MODEL, "Non")) {
+	if (strcmp(sensorsSettings.thpModel, "Non")) {
 	    ThingSpeak.setField(4, currentTemperature);
 	    ThingSpeak.setField(5, currentPressure);
 	    ThingSpeak.setField(6, currentHumidity);
 	}
-    ThingSpeak.writeFields(THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY);
+    ThingSpeak.writeFields(thingSpeakSettings.channelId, thingSpeakSettings.apiKey);
     client.stop();
 }

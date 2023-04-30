@@ -10,7 +10,7 @@
 
 #ifdef ARDUINO_ARCH_ESP8266	
 void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
-  if (!(AQI_ECO_ON)) {
+  if (!(aqiEcoSettings.enabled)) {
     return;
   }
 
@@ -21,10 +21,10 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
 #elif defined ARDUINO_ARCH_ESP32
   json[F("esp8266id")] = String((uint32_t)(ESP.getEfuseMac()));
 #endif
-  json[F("software_version")] = F("Smogly_") + String(SOFTWAREVERSION);
+  json[F("software_version")] = F("Smogly_") + String(serverSoftwareVersion);
   JsonArray sensordatavalues = json.createNestedArray(F("sensordatavalues"));
 
-  if (!strcmp(DUST_MODEL, "PMS7003")) {
+  if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
     JsonObject P0 = sensordatavalues.createNestedObject();
     P0[F("value_type")] = F("PMS_P0");
     P0[F("value")] = averagePM1;
@@ -34,21 +34,21 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
     JsonObject P2 = sensordatavalues.createNestedObject();
     P2[F("value_type")] = F("PMS_P2");
     P2[F("value")] = averagePM25;
-  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
     JsonObject P1 = sensordatavalues.createNestedObject();
     P1[F("value_type")] = F("SDS_P1");
     P1[F("value")] = averagePM10;
     JsonObject P2 = sensordatavalues.createNestedObject();
     P2[F("value_type")] = F("SDS_P2");
     P2[F("value")] = averagePM25;
-  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
     JsonObject P1 = sensordatavalues.createNestedObject();
     P1[F("value_type")] = F("HPM_P1");
     P1[F("value")] = averagePM10;
     JsonObject P2 = sensordatavalues.createNestedObject();
     P2[F("value_type")] = F("HPM_P2");
     P2[F("value")] = averagePM25;
-  } else if (!strcmp(DUST_MODEL, "SPS30")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
     JsonObject P0 = sensordatavalues.createNestedObject();
     P0[F("value_type")] = F("SPS30_P0");
     P0[F("value")] = averagePM1;
@@ -63,7 +63,7 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
     P4[F("value")] = averagePM4;
 }
 
-  if (!strcmp(THP_MODEL, "BME280")) {
+  if (!strcmp(sensorsSettings.thpModel, "BME280")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature[F("value_type")] = F("BME280_temperature");
     temperature[F("value")] = String(currentTemperature);
@@ -73,35 +73,35 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
     JsonObject pressure = sensordatavalues.createNestedObject();
     pressure[F("value_type")] = F("BME280_pressure");
     pressure[F("value")] = String(currentPressure * 100); //hPa -> Pa
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature[F("value_type")] = F("BMP280_temperature");
     temperature[F("value")] = String(currentTemperature);
     JsonObject pressure = sensordatavalues.createNestedObject();
     pressure[F("value_type")] = F("BMP280_pressure");
     pressure[F("value")] = String(currentPressure * 100); //hPa -> Pa
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature[F("value_type")] = F("HTU21_temperature");
     temperature[F("value")] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
     humidity[F("value_type")] = F("HTU21_humidity");
     humidity[F("value")] = String(currentHumidity);
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature[F("value_type")] = F("DHT22_temperature");
     temperature[F("value")] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
     humidity[F("value_type")] = F("DHT22_humidity");
     humidity[F("value")] = String(currentHumidity);
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature[F("value_type")] = F("SHT1x_temperature");
     temperature[F("value")] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
     humidity[F("value_type")] = F("SHT1x_humidity");
     humidity[F("value")] = String(currentHumidity);
-  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature[F("value_type")] = F("DS18B20_temperature");
     temperature[F("value")] = String(currentTemperature);
@@ -110,9 +110,9 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
   WiFiClient client;
 
   Serial.print(F("\nconnecting to "));
-  Serial.println(AQI_ECO_HOST);
+  Serial.println(aqiEcoSettings.host);
 
-  if (!client.connect(AQI_ECO_HOST, 80)) {
+  if (!client.connect(aqiEcoSettings.host, 80)) {
     Serial.println(F("connection failed"));
     delay(1000);
     return;
@@ -120,10 +120,10 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
   delay(100);
 
   client.print(F("POST "));
-  client.print(AQI_ECO_PATH);
+  client.print(aqiEcoSettings.path);
   client.println(F(" HTTP/1.1"));
   client.print(F("Host: "));
-  client.println(AQI_ECO_HOST);
+  client.println(aqiEcoSettings.host);
   client.println(F("Content-Type: application/json"));
   client.println(F("X-PIN: 1"));
   client.print(F("X-Sensor: smogly-"));
@@ -142,13 +142,13 @@ client.println(String((uint32_t)(ESP.getEfuseMac())));
   Serial.println(line);
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.print(F("POST /u/"));
-    Serial.print(AQI_ECO_PATH);
+    Serial.print(aqiEcoSettings.path);
     Serial.println(F(" HTTP/1.1"));
     Serial.print(F("Host: "));
-    Serial.println(AQI_ECO_HOST);
+    Serial.println(aqiEcoSettings.host);
     Serial.println(F("Content-Type: application/json"));
     Serial.println(F("X-PIN: 1"));
     Serial.print(F("X-Sensor: smogly-"));
@@ -171,7 +171,7 @@ Serial.println(String((uint32_t)(ESP.getEfuseMac())));
 
 #elif defined ARDUINO_ARCH_ESP32
 void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
-  if (!(AQI_ECO_ON)) {
+  if (!(aqiEcoSettings.enabled)) {
     return;
   }
 
@@ -182,10 +182,10 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
 #elif defined ARDUINO_ARCH_ESP32
   json["esp8266id"] = String((uint32_t)(ESP.getEfuseMac()));
 #endif
-  json["software_version"] = "Smogly_" + String(SOFTWAREVERSION);
+  json["software_version"] = "Smogly_" + String(serverSoftwareVersion);
   JsonArray sensordatavalues = json.createNestedArray("sensordatavalues");
 
-  if (!strcmp(DUST_MODEL, "PMS7003")) {
+  if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
     JsonObject P0 = sensordatavalues.createNestedObject();
     P0["value_type"] = "PMS_P0";
     P0["value"] = averagePM1;
@@ -195,21 +195,21 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
     JsonObject P2 = sensordatavalues.createNestedObject();
     P2["value_type"] = "PMS_P2";
     P2["value"] = averagePM25;
-  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
     JsonObject P1 = sensordatavalues.createNestedObject();
     P1["value_type"] = "SDS_P1";
     P1["value"] = averagePM10;
     JsonObject P2 = sensordatavalues.createNestedObject();
     P2["value_type"] = "SDS_P2";
     P2["value"] = averagePM25;
-  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
     JsonObject P1 = sensordatavalues.createNestedObject();
     P1["value_type"] = "HPM_P1";
     P1["value"] = averagePM10;
     JsonObject P2 = sensordatavalues.createNestedObject();
     P2["value_type"] = "HPM_P2";
     P2["value"] = averagePM25;
-  } else if (!strcmp(DUST_MODEL, "SPS30")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
     JsonObject P0 = sensordatavalues.createNestedObject();
     P0["value_type"] = "SPS30_P0";
     P0["value"] = averagePM1;
@@ -224,7 +224,7 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
     P4["value"] = averagePM4;
 }
 
-  if (!strcmp(THP_MODEL, "BME280")) {
+  if (!strcmp(sensorsSettings.thpModel, "BME280")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature["value_type"] = "BME280_temperature";
     temperature["value"] = String(currentTemperature);
@@ -234,35 +234,35 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
     JsonObject pressure = sensordatavalues.createNestedObject();
     pressure["value_type"] = "BME280_pressure";
     pressure["value"] = String(currentPressure * 100); //hPa -> Pa
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature["value_type"] = "BMP280_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject pressure = sensordatavalues.createNestedObject();
     pressure["value_type"] = "BMP280_pressure";
     pressure["value"] = String(currentPressure * 100); //hPa -> Pa
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature["value_type"] = "HTU21_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
     humidity["value_type"] = "HTU21_humidity";
     humidity["value"] = String(currentHumidity);
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature["value_type"] = "DHT22_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
     humidity["value_type"] = "DHT22_humidity";
     humidity["value"] = String(currentHumidity);
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature["value_type"] = "SHT1x_temperature";
     temperature["value"] = String(currentTemperature);
     JsonObject humidity = sensordatavalues.createNestedObject();
     humidity["value_type"] = "SHT1x_humidity";
     humidity["value"] = String(currentHumidity);
-  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
     JsonObject temperature = sensordatavalues.createNestedObject();
     temperature["value_type"] = "DS18B20_temperature";
     temperature["value"] = String(currentTemperature);
@@ -271,9 +271,9 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
   WiFiClient client;
 
   Serial.print("\nconnecting to ");
-  Serial.println(AQI_ECO_HOST);
+  Serial.println(aqiEcoSettings.host);
 
-  if (!client.connect(AQI_ECO_HOST, 80)) {
+  if (!client.connect(aqiEcoSettings.host, 80)) {
     Serial.println("connection failed");
     delay(1000);
     return;
@@ -281,10 +281,10 @@ void sendDataToAqiEco(float & currentTemperature, float & currentPressure, float
   delay(100);
 
   client.print("POST ");
-  client.print(AQI_ECO_PATH);
+  client.print(aqiEcoSettings.path);
   client.println(" HTTP/1.1");
   client.print("Host: ");
-  client.println(AQI_ECO_HOST);
+  client.println(aqiEcoSettings.host);
   client.println("Content-Type: application/json");
   client.println("X-PIN: 1");
   client.print("X-Sensor: smogly-");
@@ -303,13 +303,13 @@ client.println(String((uint32_t)(ESP.getEfuseMac())));
   Serial.println(line);
   // TODO: Support wrong error (!= 200)
 
-  if (DEBUG) {
+  if (deviceSettings.debug) {
     Serial.println();
     Serial.print("POST /u/");
-    Serial.print(AQI_ECO_PATH);
+    Serial.print(aqiEcoSettings.path);
     Serial.println(" HTTP/1.1");
     Serial.print("Host: ");
-    Serial.println(AQI_ECO_HOST);
+    Serial.println(aqiEcoSettings.host);
     Serial.println("Content-Type: application/json");
     Serial.println("X-PIN: 1");
     Serial.print("X-Sensor: smogly-");

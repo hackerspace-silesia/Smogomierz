@@ -1,4 +1,4 @@
-# Smogly [![Build Status](https://travis-ci.org/hackerspace-silesia/Smogomierz.svg?branch=master)](https://travis-ci.org/hackerspace-silesia/Smogomierz)
+# Smogly [![Build Status](https://app.travis-ci.com/hackerspace-silesia/Smogomierz.svg?branch=master)](https://app.travis-ci.com/github/hackerspace-silesia/Smogomierz)
 
 ![Smogly2](https://raw.githubusercontent.com/hackerspace-silesia/Smogomierz/master/instrukcje/ui/SmoglyUI_Root.png)
 

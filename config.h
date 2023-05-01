@@ -3,14 +3,14 @@
 
 struct DeviceSettings {
     bool autoName = true;
-    char name[32] = "Smogly1"; // Without Polish letters!!
+    char name[32] = "Smogly"; // Without Polish letters!!
     bool displayPM1 = false;
     char language[12] = "english"; // english or polish
     unsigned short selectedLanguage = 1; // en - 1; pl - 2
     unsigned short sendingServicesFrequency = 3;
     unsigned short sendingDBFrequency = 3;
     bool deepSleep = false;
-    bool debug = false;
+    bool debug = true;
     bool autoUpdate = true;
     bool autoCalibration = false; // char model[12]
     float calib1 = 1.0;
@@ -31,8 +31,8 @@ struct SensorsSettings {
 };
 
 struct I2CSettings {
-    char sda[4] = "sda"; // TX - for dust senros
-    char scl[4] = "scl"; // RX - for dust senros
+    char sda[4] = ""; // TX - for dust senros
+    char scl[4] = ""; // RX - for dust senros
     unsigned short address_sda = 0;
     unsigned short address_scl = 2;
 };
@@ -152,10 +152,7 @@ const char softwareVersion[] PROGMEM = "2.8.3 build " __TIME__ " " __DATE__;
 const char hardwareVersion[] PROGMEM = "2.0 - ESP32";
 #endif
 
-
-
-
-
+/*
 extern bool DEVICENAME_AUTO;
 extern char DEVICENAME[32];
 extern bool DISPLAY_PM1;
@@ -280,3 +277,4 @@ const char HARDWAREVERSION[] PROGMEM = "1.0 - ESP8266";
 const char SOFTWAREVERSION[] PROGMEM = "2.8.3 build " __TIME__ " " __DATE__;
 const char HARDWAREVERSION[] PROGMEM = "2.0 - ESP32";
 #endif
+*/

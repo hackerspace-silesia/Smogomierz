@@ -71,7 +71,7 @@ void InfluxdbV2::begin() {
   // TODO: recreate HttpClient on db change?
 	WiFiClient client_influxDB;
 
-	if (!strcmp(INFLUXDB_VERSION, "2")) {	
+	if (!strcmp(influxDBSettings.version, "2")) {	
 		
 		http.begin(client_influxDB, _host, _port, "/api/v2/write?org=" + _org + "&bucket=" + _bucket);
 		
@@ -117,7 +117,7 @@ boolean InfluxdbV2::write(InfluxDataV2 data) { return write(data.toString()); }
  * for a list of error codes.
  */
 boolean InfluxdbV2::write(String data) {
-	if (!strcmp(INFLUXDB_VERSION, "2")) {	
+	if (!strcmp(influxDBSettings.version, "2")) {	
 		if(_token == 0 || _token.length() < 10){
     		//Serial.println("#####\nInvalid Access Token\n#####");
     	return false;

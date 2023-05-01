@@ -120,7 +120,7 @@ extern char TEXT_AQIECOSENDING[100] = "Sending data to the <a title='aqi.eco' hr
 extern char TEXT_AQIECOSERVER[26] = "aqi.eco server";
 extern char TEXT_AQIECOPATH[20] = "aqi.eco path";
 
-extern char TEXT_CALIBMETHOD[22] = "Calibration method";
+extern char TEXT_CALIBMETHOD[30] = "Auto Calibration";
 extern char TEXT_CALIB1[30] = "calib1";
 extern char TEXT_CALIB2[30] = "calib2";
 extern char TEXT_SOFTWATEVERSION[24] = "Software version";

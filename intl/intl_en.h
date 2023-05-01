@@ -122,7 +122,7 @@ char EN_INTL_AQIECOSENDING[100] PROGMEM = "Sending data to the <a title='aqi.eco
 char EN_INTL_AQIECOSERVER[26] PROGMEM = "aqi.eco server";
 char EN_INTL_AQIECOPATH[20] PROGMEM = "aqi.eco path";
 
-char EN_INTL_CALIBMETHOD[22] PROGMEM = "Calibration method";
+char EN_INTL_CALIBMETHOD[30] PROGMEM = "Auto Calibration";
 char EN_INTL_CALIB1[30] PROGMEM = "calib1";
 char EN_INTL_CALIB2[30] PROGMEM = "calib2";
 char EN_INTL_SOFTWATEVERSION[24] PROGMEM = "Software version";

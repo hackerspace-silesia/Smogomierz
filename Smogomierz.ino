@@ -30,7 +30,6 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 
 // *******************************************
 
-#define ASYNC_WEBSERVER_ON
 #define DISABLE_SMOGLIST
 
 /*
@@ -88,9 +87,6 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 /*
   ESP8266 PMS7003/BME280_0x76 - NodeMCU 1.0 - 4M SPIFFS --- FS:1MB OTA: ~1019KB
 
-  Szkic używa 580548 bajtów (55%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 45888 bajtów (56%) pamięci dynamicznej, pozostawiając 36032 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   ASYNC_WEBSERVER_ON + INTL_OLD
 
   Szkic używa 694529 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
@@ -112,28 +108,17 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 
   ESP32 Dev Module PMS7003/BME280_0x76 - 1.9MB APP with OTA - 190KB SPIFFS
 
-  Szkic używa 1375786 bajtów (69%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 58664 bajtów (17%) pamięci dynamicznej, pozostawiając 269016 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
   Szkic używa 1377866 bajtów (70%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  REFAKTOR_30.04.2023:
-  Szkic używa 1305073 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 68112 bajtów (20%) pamięci dynamicznej, pozostawiając 259568 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  REFAKTOR_1.05.2023:
+  Szkic używa 1303913 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 66480 bajtów (20%) pamięci dynamicznej, pozostawiając 261200 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   *** init homekit support:
 
   Szkic używa 1543130 bajtów (78%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 60808 bajtów (18%) pamięci dynamicznej, pozostawiając 266872 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
-  ASYNC_WEBSERVER_ON
-
-  Szkic używa 1477490 bajtów (75%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 58976 bajtów (17%) pamięci dynamicznej, pozostawiając 268704 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
-
-  Szkic używa 1477750 bajtów (75%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 59024 bajtów (18%) pamięci dynamicznej, pozostawiając 268656 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
 */
 
@@ -141,9 +126,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 #include <map>
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#ifdef ASYNC_WEBSERVER_ON
 #include "src/WiFiManager/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 5.11.2021
-#endif
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
 #include "src/libs/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
@@ -192,7 +175,6 @@ MQTTSettings mqttSettings;
 AQIEcoSettings aqiEcoSettings;
 HomeKitSettings homeKitSettings;
 AuthSettings authSettings;
-#include "defaultConfig.h"
 
 #include "src/autoupdate.h"
 
@@ -211,20 +193,16 @@ AuthSettings authSettings;
 // #include "src/services/InfluxDB/InfluxDbClient.h" // https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino
 
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
-#ifdef ASYNC_WEBSERVER_ON
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#endif
 #include <ESP8266mDNS.h>
 #include <SoftwareSerial.h>
 #elif defined ARDUINO_ARCH_ESP32 // Arduino core for the ESP32 - 1.0.4-rc1 or later // at 1.0.3 autoupdate doesn't work !!!
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <ESPmDNS.h>
-#ifdef ASYNC_WEBSERVER_ON
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#endif
 #include <Update.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
@@ -401,10 +379,7 @@ char currentSoftwareVersion[32] = "";
 char SERVERSOFTWAREVERSION[32] = "";
 char CURRENTSOFTWAREVERSION[32] = "";
 
-#ifdef ASYNC_WEBSERVER_ON
 AsyncWebServer server(80);
-#endif
-
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 
@@ -591,8 +566,8 @@ void MQTTreconnect() {
   if (!mqttclient.connected()) {
     Serial.print(F("Attempting MQTT connection..."));
     // Attempt to connect
-    //if (mqttclient.connect("ESP8266Client", MQTT_USER, MQTT_PASSWORD)) {
-    if (mqttclient.connect(device_name, MQTT_USER, MQTT_PASSWORD)) {
+    //if (mqttclient.connect("ESP8266Client", mqttSettings.user, mqttSettings.password)) {
+    if (mqttclient.connect(device_name, mqttSettings.user, mqttSettings.password)) {
       Serial.println(F("connected"));
     } else {
       Serial.print(F("failed, rc="));
@@ -604,8 +579,8 @@ void MQTTreconnect() {
   if (!mqttclient.connected()) {
     Serial.print(("Attempting MQTT connection..."));
     // Attempt to connect
-    //if (mqttclient.connect("ESP8266Client", MQTT_USER, MQTT_PASSWORD)) {
-    if (mqttclient.connect(device_name, MQTT_USER, MQTT_PASSWORD)) {
+    //if (mqttclient.connect("ESP8266Client", mqttSettings.user, mqttSettings.password)) {
+    if (mqttclient.connect(device_name, mqttSettings.user, mqttSettings.password)) {
       Serial.println(("connected"));
     } else {
       Serial.print(("failed, rc="));
@@ -787,23 +762,20 @@ const auto it = pin_map.find(THP_PIN);
 
 // all HTML content
 #include "html/html-content.h"
-#ifdef ASYNC_WEBSERVER_ON
 #include "html/html-root.h"
 #include "html/html-config.h"
 #include "html/html-config-device.h"
 #include "html/html-config-services.h"
 #include "html/html-config-adv-mqtt.h"
 #include "html/html-update.h"
-#endif
 
 // library doesnt support arguments :/
-#ifdef ASYNC_WEBSERVER_ON
 #include "src/smogly_asyncwebserver.h"
-#endif
 
 
 void setup() {
   // https://forum.arduino.cc/t/struct-xxxx-does-not-name-a-type/606767/4
+  /*
 #ifdef ARDUINO_ARCH_ESP8266
    firstThpSettings.sda[4] = 'D3';
    firstThpSettings.scl[4] = 'D4';
@@ -827,6 +799,7 @@ void setup() {
    secondThpSettings.address_sda = 22; // D5
    secondThpSettings.address_scl = 23; // D6
 #endif
+*/
 
 #ifdef ARDUINO_ARCH_ESP8266
    dustSettings.sda[4] = 'D1';
@@ -896,17 +869,13 @@ void setup() {
 #endif
     if (sensorsSettings.continuousMeasurement == true) {
       pms.wakeUp();
-#ifdef ASYNC_WEBSERVER_ON
       yield();
       delay(500);
-#endif
       pms.activeMode();
     } else {
       pms.passiveMode();
-#ifdef ASYNC_WEBSERVER_ON
       yield();
       delay(500);
-#endif
       pms.sleep();
     }
   }
@@ -941,10 +910,7 @@ void setup() {
 #endif
     }
   }
-
-#ifdef ASYNC_WEBSERVER_ON
   yield();
-#endif
 
 #elif defined DUSTSENSOR_HPMA115S0
   if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
@@ -953,30 +919,20 @@ void setup() {
 #elif defined ARDUINO_ARCH_ESP32
     hpmaSerial.begin(9600, SERIAL_8N1, dustSettings.address_sda, dustSettings.address_scl); //HPMA115S0 serial
 #endif
-#ifdef ASYNC_WEBSERVER_ON
     yield();
-#endif
     if (sensorsSettings.continuousMeasurement == true) {
       hpma115S0.Init();
-#ifdef ASYNC_WEBSERVER_ON
       yield();
-#endif
       hpma115S0.EnableAutoSend();
-#ifdef ASYNC_WEBSERVER_ON
       yield();
-#endif
       hpma115S0.StartParticleMeasurement();
     } else {
       hpma115S0.Init();
-#ifdef ASYNC_WEBSERVER_ON
       yield();
-#endif
       hpma115S0.StopParticleMeasurement();
     }
   }
-#ifdef ASYNC_WEBSERVER_ON
   yield();
-#endif
 #elif defined DUSTSENSOR_SPS30
   if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1069,16 +1025,12 @@ void setup() {
 #endif
     if (sensorsSettings.continuousMeasurement == true) {
       pms.wakeUp();
-#ifdef ASYNC_WEBSERVER_ON
       yield();
       delay(500);
-#endif
       pms.activeMode();
     } else {
       pms.passiveMode();
-#ifdef ASYNC_WEBSERVER_ON
       yield();
-#endif
       pms.sleep();
     }
   }
@@ -1196,10 +1148,8 @@ void setup() {
 #endif
   Serial.println(device_name);
 
-#ifdef ASYNC_WEBSERVER_ON
   DNSServer dns;
   AsyncWiFiManager wifiManager(&server, &dns);
-#endif
 
 #ifdef ARDUINO_ARCH_ESP8266
   WiFi.hostname(device_name);
@@ -1224,22 +1174,16 @@ void setup() {
 #elif defined ARDUINO_ARCH_ESP32
     Serial.println(("Configportal running"));
 #endif
-#ifdef ASYNC_WEBSERVER_ON
     wifiManager.startConfigPortal(device_name);
-#endif
   }
-#ifdef ASYNC_WEBSERVER_ON
   yield();
-#endif
 
-#ifdef ASYNC_WEBSERVER_ON
 #ifdef ARDUINO_ARCH_ESP8266
   Serial.println(F("\nIP Address: ") + String(WiFi.localIP().toString()) + F("\n"));
   Serial.print(F("HTTPServer ready! http://") + String(device_name) + F(".local/\n"));
 #elif defined ARDUINO_ARCH_ESP32
   Serial.println(("\nIP Address: ") + String(WiFi.localIP().toString()) + ("\n"));
   Serial.print("HTTPServer ready! http://" + String(device_name) + ".local/\n");
-#endif
 #endif
 
   // check update
@@ -1259,7 +1203,6 @@ void setup() {
   }
 
   //  ASYNC_WebServer config - Start
-#ifdef ASYNC_WEBSERVER_ON
   server.on("/", HTTP_GET, handle_root);
   server.on("/config", HTTP_GET, handle_config);
   server.on("/config_device_save", HTTP_GET, handle_config_device_save);
@@ -1280,29 +1223,23 @@ void setup() {
   server.on("/homekit_off", HTTP_GET, homekit_off);
   //server.on("/logout", HTTP_GET, logout);
   server.onNotFound(handle_root);
-#endif
 
   // Check if config.h exist in ESP data folder
-#ifdef ASYNC_WEBSERVER_ON
   // https://github.com/me-no-dev/ESPAsyncWebServer/issues/1080#issuecomment-954891157
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   server.begin();
-#endif
 
   MDNS.begin(device_name);
-
   MDNS.addService("http", "tcp", 80);
 #ifdef ARDUINO_ARCH_ESP8266
   Serial.print(F("HTTPServer ready! http://") + String(device_name) + F(".local/\n"));
 #elif defined ARDUINO_ARCH_ESP32
   Serial.print("HTTPServer ready! http://" + String(device_name) + ".local/\n");
 #endif
-
-#ifdef ASYNC_WEBSERVER_ON
   yield();
-#endif
+
   /*
     if (luftdatenSettings.enabled) {
       getAPIIDFromLuftdaten();
@@ -1370,12 +1307,8 @@ void loop() {
     for (int i = 0; i < 5 ; i++) {
       unsigned char x = 0;
       doUpdate(x);
-
-#ifdef ASYNC_WEBSERVER_ON
       yield();
       delay(1000);
-#endif
-
     }
   }
 
@@ -1504,7 +1437,7 @@ void loop() {
     }
   }
 
-  if (AIRMONITOR_ON) {
+  if (airMonitorSettings.enabled) {
     // Serial.println("SENDING_FREQUENCY_AIRMONITOR_interval: " + String(SENDING_FREQUENCY_AIRMONITOR_interval));
     // Serial.println("previous_SENDING_FREQUENCY_AIRMONITOR_Millis: " + String(previous_SENDING_FREQUENCY_AIRMONITOR_Millis));
 
@@ -1588,7 +1521,7 @@ void sendDataToExternalServices() {
   }
 
 #ifdef ARDUINO_ARCH_ESP32
-  if (AIRMONITOR_ON) {
+  if (airMonitorSettings.enabled) {
     sendDataToAirMonitor(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
     if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2413,12 +2346,10 @@ void takeSleepPMMeasurements() {
 
   int counterNM1 = 0;
   while (counterNM1 < sensorsSettings.numerOfMeasurements) {
-#ifdef ASYNC_WEBSERVER_ON
     if (pms.readUntil(data)) {
       takeNormalnPMMeasurements();
       counterNM1++;
     }
-#endif
   }
   if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2444,13 +2375,11 @@ void takeSleepPMMeasurements() {
 
   int counterNM1 = 0;
   while (counterNM1 < sensorsSettings.numerOfMeasurements) {
-#ifdef ASYNC_WEBSERVER_ON
 #ifdef ARDUINO_ARCH_ESP8266
     PmResult SDSdata = sds.queryPm();
 #endif
     takeNormalnPMMeasurements();
     counterNM1++;
-#endif
   }
   if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2476,12 +2405,10 @@ void takeSleepPMMeasurements() {
   }
   int counterNM1 = 0;
   while (counterNM1 < sensorsSettings.numerOfMeasurements) {
-#ifdef ASYNC_WEBSERVER_ON
     if (hpma115S0.ReadParticleMeasurement(&hpma115S0_pm25, &hpma115S0_pm10)) {
       takeNormalnPMMeasurements();
       counterNM1++;
     }
-#endif
   }
   if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2508,10 +2435,8 @@ void takeSleepPMMeasurements() {
   }
   int counterNM1 = 0;
   while (counterNM1 < sensorsSettings.numerOfMeasurements) {
-#ifdef ASYNC_WEBSERVER_ON
     takeNormalnPMMeasurements();
     counterNM1++;
-#endif
   }
   if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2533,12 +2458,10 @@ void takeSleepPMMeasurements() {
 
   int counterNM1 = 0;
   while (counterNM1 < sensorsSettings.numerOfMeasurements) {
-#ifdef ASYNC_WEBSERVER_ON
     if (pms.readUntil(data)) {
       takeNormalnPMMeasurements();
       counterNM1++;
     }
-#endif
   }
   if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2557,7 +2480,7 @@ void takeSleepPMMeasurements() {
 
 void pm_calibration() {
   // Automatic calibration - START
-  if (deviceSettings.autoCalibration == false) {
+  if (!(deviceSettings.autoCalibration)) {
     if (deviceSettings.debug) {
       #ifdef ARDUINO_ARCH_ESP8266
         // Serial.print(F("\nautoCalibration - OFF\n"));
@@ -2712,7 +2635,6 @@ bool read_sps30_data()
         ErrtoMess("Error during reading values: ", ret);
         return (false);
       }
-#ifdef ASYNC_WEBSERVER_ON
       /*
             time_now_temp = millis();
             while (millis() < time_now_temp + 1000) {
@@ -2720,7 +2642,6 @@ bool read_sps30_data()
             }
       */
       yield();
-#endif
     }
 
     // if other error

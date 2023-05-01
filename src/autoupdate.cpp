@@ -133,7 +133,7 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
 
         switch (checkUpdateSW) {
           case 0:
-            UNSAFE_ServerSW = UNSAFE_json[String(PMSENSORVERSION)].as<String>();
+            UNSAFE_ServerSW = UNSAFE_json[String(pmSensorVersion)].as<String>();
             break;
           case 1:
             UNSAFE_ServerSW = UNSAFE_json["PMS-SparkFunBME280"].as<String>();
@@ -151,7 +151,7 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
             UNSAFE_ServerSW = UNSAFE_json["SPS30"].as<String>();
             break;
           default:
-            UNSAFE_ServerSW = UNSAFE_json[String(PMSENSORVERSION)].as<String>();
+            UNSAFE_ServerSW = UNSAFE_json[String(pmSensorVersion)].as<String>();
             break;
         }
 
@@ -223,7 +223,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
 		
         /* 
 		Serial.println(payload);
-		Serial.println(PMSENSORVERSION);
+		Serial.println(pmSensorVersion);
 		Serial.println(checkUpdateSW);
 		*/
 		
@@ -233,7 +233,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
 		
         switch (checkUpdateSW) {
           case 0:
-            ServerSW = json[String(PMSENSORVERSION)];
+            ServerSW = json[String(pmSensorVersion)];
             break;
           case 1:
             ServerSW = json["PMS-SparkFunBME280"];
@@ -251,7 +251,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
             ServerSW = json["SPS30"];
             break;
           default:
-            ServerSW = json[String(PMSENSORVERSION)];
+            ServerSW = json[String(pmSensorVersion)];
             break;
         }
 
@@ -371,7 +371,7 @@ void doUpdate(unsigned char & doUpdateSW) {
     #endif
 
     if (doUpdateSW == 0) {
-        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(pmSensorVersion) + F("_ESP8266.bin");
     } else if (doUpdateSW == 1) {
         BinURL = baseUrl + String(serverSoftwareVersion) + F("_PMS-SparkFunBME280_ESP8266.bin");
     } else if (doUpdateSW == 2) {
@@ -383,7 +383,7 @@ void doUpdate(unsigned char & doUpdateSW) {
     } else if (doUpdateSW == 5) {
         BinURL = baseUrl + String(serverSoftwareVersion) + F("_SPS30_ESP8266.bin");
     } else if (doUpdateSW >= 6) {
-        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(pmSensorVersion) + F("_ESP8266.bin");
     }
 
     #if defined(ARDUINO_ARCH_ESP32)
@@ -491,7 +491,7 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
 
         switch (checkUpdateSW) {
           case 0:
-            UNSAFE_ServerSW = UNSAFE_json[String(PMSENSORVERSION)].as<String>();
+            UNSAFE_ServerSW = UNSAFE_json[String(pmSensorVersion)].as<String>();
             break;
           case 1:
             UNSAFE_ServerSW = UNSAFE_json["PMS-SparkFunBME280"].as<String>();
@@ -509,7 +509,7 @@ String checkUpdate_UNSAFE(unsigned char & checkUpdateSW) {
             UNSAFE_ServerSW = UNSAFE_json["SPS30"].as<String>();
             break;
           default:
-            UNSAFE_ServerSW = UNSAFE_json[String(PMSENSORVERSION)].as<String>();
+            UNSAFE_ServerSW = UNSAFE_json[String(pmSensorVersion)].as<String>();
             break;
         }
 
@@ -581,7 +581,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
 		
         /* 
 		Serial.println(payload);
-		Serial.println(PMSENSORVERSION);
+		Serial.println(pmSensorVersion);
 		Serial.println(checkUpdateSW);
 		*/
 		
@@ -591,7 +591,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
 		
         switch (checkUpdateSW) {
           case 0:
-            ServerSW = json[String(PMSENSORVERSION)];
+            ServerSW = json[String(pmSensorVersion)];
             break;
           case 1:
             ServerSW = json["PMS-SparkFunBME280"];
@@ -609,7 +609,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
             ServerSW = json["SPS30"];
             break;
           default:
-            ServerSW = json[String(PMSENSORVERSION)];
+            ServerSW = json[String(pmSensorVersion)];
             break;
         }
       }
@@ -728,7 +728,7 @@ void doUpdate(unsigned char & doUpdateSW) {
     #endif
 
     if (doUpdateSW == 0) {
-        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(pmSensorVersion) + F("_ESP8266.bin");
     } else if (doUpdateSW == 1) {
         BinURL = baseUrl + String(serverSoftwareVersion) + F("_PMS-SparkFunBME280_ESP8266.bin");
     } else if (doUpdateSW == 2) {
@@ -740,7 +740,7 @@ void doUpdate(unsigned char & doUpdateSW) {
     } else if (doUpdateSW == 5) {
         BinURL = baseUrl + String(serverSoftwareVersion) + F("_SPS30_ESP8266.bin");
     } else if (doUpdateSW >= 6) {
-        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(PMSENSORVERSION) + F("_ESP8266.bin");
+        BinURL = baseUrl + String(serverSoftwareVersion) + "_" + String(pmSensorVersion) + F("_ESP8266.bin");
     }
 
     #if defined(ARDUINO_ARCH_ESP32)

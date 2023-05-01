@@ -43,7 +43,7 @@ static String handle_root_processor(const String& var)
     message += String(TEXT_UPDATE_PAGE);
   }
 
-  if (!AUTOUPDATE_ON) {
+  if (!(deviceSettings.autoUpdate)) {
     if (need_update) {
       if (var == F("{WEB_UPDATE_INFO_WARNING}")) {
         message += String(WEB_UPDATE_INFO_WARNING);
@@ -87,7 +87,7 @@ static String handle_root_processor(const String& var)
     }
   }
 
-  if (!strcmp(THP_MODEL, "Non")) {
+  if (!strcmp(sensorsSettings.thpModel, "Non")) {
     if (var == F("{WEB_ROOT_PAGE_MEASUREMENTS_THP1")) {
       message += "";
     }
@@ -97,7 +97,7 @@ static String handle_root_processor(const String& var)
       message += String(WEB_ROOT_PAGE_MEASUREMENTS_THP1);
       message.replace(F("{TEXT_WEATHER}"), String(TEXT_WEATHER));
 
-      if (!strcmp(THP_MODEL, "BME280")) {
+      if (!strcmp(sensorsSettings.thpModel, "BME280")) {
         if (checkBmeStatus()) {
             message.replace(F("{TEXT_TEMPERATURE}"), String(TEXT_TEMPERATURE));
             message.replace(F("{TEXT_HUMIDITY}"), String(TEXT_HUMIDITY));
@@ -114,7 +114,7 @@ static String handle_root_processor(const String& var)
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
           message.replace(F("{TEXT_DEWPOINT}: {Dewpoint} °C"), "");
         }
-      } else if (!strcmp(THP_MODEL, "HTU21")) {
+      } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
         if (checkHTU21DStatus()) {
           message.replace(F("{TEXT_TEMPERATURE}"), String(TEXT_TEMPERATURE));
           message.replace(F("{TEXT_HUMIDITY}"), String(TEXT_HUMIDITY));
@@ -130,7 +130,7 @@ static String handle_root_processor(const String& var)
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
           message.replace(F("{TEXT_DEWPOINT}: {Dewpoint} °C"), "");
         }
-      } else if (!strcmp(THP_MODEL, "DHT22")) {
+      } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
         if (checkDHT22Status()) {
           message.replace(F("{TEXT_TEMPERATURE}"), String(TEXT_TEMPERATURE));
           message.replace(F("{TEXT_HUMIDITY}"), String(TEXT_HUMIDITY));
@@ -146,7 +146,7 @@ static String handle_root_processor(const String& var)
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
           message.replace(F("{TEXT_DEWPOINT}: {Dewpoint} °C"), "");
         }
-      } else if (!strcmp(THP_MODEL, "BMP280")) {
+      } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
         if (checkBmpStatus()) {
           message.replace(F("{TEXT_TEMPERATURE}"), String(TEXT_TEMPERATURE));
           message.replace(F("{TEXT_PRESSURE}"), String(TEXT_PRESSURE));
@@ -161,7 +161,7 @@ static String handle_root_processor(const String& var)
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
           message.replace(F("{TEXT_DEWPOINT}: {Dewpoint} °C"), "");
         }
-      } else if (!strcmp(THP_MODEL, "SHT1x")) {
+      } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
         if (checkSHT1xStatus()) {
           message.replace(F("{TEXT_TEMPERATURE}"), String(TEXT_TEMPERATURE));
           message.replace(F("{TEXT_HUMIDITY}"), String(TEXT_HUMIDITY));
@@ -182,12 +182,12 @@ static String handle_root_processor(const String& var)
     }
   }
 
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     if (var == F("{WEB_ROOT_PAGE_MEASUREMENTS_AIR}")) {
       message += String(WEB_ROOT_PAGE_MEASUREMENTS_AIR);
       message.replace(F("{TEXT_AIRPOLLUTION}"), String(TEXT_AIRPOLLUTION));
 
-      if (DISPLAY_PM1) {
+      if (deviceSettings.displayPM1) {
         message.replace(F("{averagePM1}"), String(averagePM1));
       } else {
         message.replace(F("PM1: {averagePM1} µg/m³"), "");
@@ -230,11 +230,11 @@ static String handle_root_processor(const String& var)
     }
   }
 
-  if (AIRMONITOR_GRAPH_ON) {
+  if (airMonitorSettings.graph) {
     if (var == F("{WEB_ROOT_PAGE_AIRMONITOR_GRAPH}")) {
       message += String(WEB_ROOT_PAGE_AIRMONITOR_GRAPH);
-      message.replace(F("{LATITUDE}"), String(LATITUDE));
-      message.replace(F("{LONGITUDE}"), String(LONGITUDE));
+      message.replace(F("{LATITUDE}"), String(deviceSettings.latitude));
+      message.replace(F("{LONGITUDE}"), String(deviceSettings.longitude));
     }
   } else {
     if (var == F("{WEB_ROOT_PAGE_AIRMONITOR_GRAPH}")) {
@@ -242,10 +242,10 @@ static String handle_root_processor(const String& var)
     }
   }
   
-  if (LUFTDATEN_GRAPH_ON) {
+  if (luftdatenSettings.graph) {
       if (var == F("{WEB_ROOT_PAGE_LUFTDATEN_GRAPH}")) {
           message += String(WEB_ROOT_PAGE_LUFTDATEN_GRAPH);
-          message.replace(F("{NODE_LUFTDATEN_ID}"), String(LUFTDATEN_APIID));
+          message.replace(F("{NODE_LUFTDATEN_ID}"), String(luftdatenSettings.apiId));
       }
   } else {
     if (var == F("{WEB_ROOT_PAGE_LUFTDATEN_GRAPH}")) {
@@ -253,11 +253,11 @@ static String handle_root_processor(const String& var)
     }
   }
 
-  if (THINGSPEAK_GRAPH_ON) {
+  if (thingSpeakSettings.graph) {
     if (var == F("{WEB_ROOT_PAGE_THINGSPEAK_GRAPH}")) {
       message += String(WEB_ROOT_PAGE_THINGSPEAK_GRAPH);
-      message.replace(F("{THINGSPEAK_CHANNEL_ID}"), String(THINGSPEAK_CHANNEL_ID));
-      message.replace(F("{THINGSPEAK_READ_API_KEY}"), String(THINGSPEAK_READ_API_KEY));
+      message.replace(F("{THINGSPEAK_CHANNEL_ID}"), String(thingSpeakSettings.channelId));
+      message.replace(F("{THINGSPEAK_READ_API_KEY}"), String(thingSpeakSettings.readApiKey));
     }
   } else {
     if (var == F("{WEB_ROOT_PAGE_THINGSPEAK_GRAPH}")) {
@@ -269,7 +269,7 @@ static String handle_root_processor(const String& var)
   message = "";
 }
 
-//void handle_root() {
+
 static void handle_root(AsyncWebServerRequest *request) {
   if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_ROOT_PAGE_ALL): "));
@@ -296,18 +296,18 @@ static String _add_FIRST_THP_Option(const String &value, const String &label, co
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
     
-  if (strcmp(DUST_MODEL, "Non")) {
-    if (String(CONFIG_DUST_TX) == value) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
+    if (String(dustSettings.sda) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
-    if (String(CONFIG_DUST_RX) == value) {
+    if (String(dustSettings.scl) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
-    if (SECOND_THP) {
-      if (String(CONFIG_SECOND_THP_SDA) == value) {
+    if (sensorsSettings.secondThp) {
+      if (String(secondThpSettings.sda) == value) {
         option.replace(F("{srslyValue}"), F("disabled>"));
       }
-      if (String(CONFIG_SECOND_THP_SCL) == value) {
+      if (String(secondThpSettings.scl) == value) {
         option.replace(F("{srslyValue}"), F("disabled>"));
       }
     }
@@ -327,18 +327,18 @@ static String _add_SECOND_THP_Option(const String &value, const String &label, c
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
 
-  if (strcmp(DUST_MODEL, "Non")) {
-    if (String(CONFIG_DUST_TX) == value) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
+    if (String(dustSettings.sda) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
-    if (String(CONFIG_DUST_RX) == value) {
+    if (String(dustSettings.scl) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
-    if (strcmp(DUST_MODEL, "Non")) {
-      if (String(CONFIG_FIRST_THP_SDA) == value) {
+    if (strcmp(sensorsSettings.dustModel, "Non")) {
+      if (String(firstThpSettings.sda) == value) {
         option.replace(F("{srslyValue}"), F("disabled>"));
       }
-      if (String(CONFIG_FIRST_THP_SCL) == value) {
+      if (String(firstThpSettings.scl) == value) {
         option.replace(F("{srslyValue}"), F("disabled>"));
       }
     }
@@ -357,18 +357,18 @@ static String _add_DUST_Option(const String &value, const String &label, const S
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
 
-  if (strcmp(THP_MODEL, "Non")) {
-    if (String(CONFIG_FIRST_THP_SDA) == value) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
+    if (String(firstThpSettings.sda) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
-    if (String(CONFIG_FIRST_THP_SCL) == value) {
+    if (String(firstThpSettings.scl) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
-    if (SECOND_THP) {
-      if (String(CONFIG_SECOND_THP_SDA) == value) {
+    if (sensorsSettings.secondThp) {
+      if (String(secondThpSettings.sda) == value) {
         option.replace(F("{srslyValue}"), F("disabled>"));
       }
-      if (String(CONFIG_SECOND_THP_SCL) == value) {
+      if (String(secondThpSettings.scl) == value) {
         option.replace(F("{srslyValue}"), F("disabled>"));
       }
     }
@@ -393,32 +393,13 @@ static String _addBoolSelect(const String &key, const bool &value) {
   return input;
 }
 
-static String _addModelSelect(const String &key, const String &value) {
-  String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
-  input.replace(F("{key}"), key);
-  input += _addOption("red", (TEXT_WITHOUTCALIBRATION), value);
-  if (!strcmp(THP_MODEL, "BME280")) {
-    input += _addOption("white", (TEXT_AUTOMATICCALIBRATION), value);
-  }
-  if (!strcmp(THP_MODEL, "HTU21")) {
-    input += _addOption("white", (TEXT_AUTOMATICCALIBRATION), value);
-  }
-  if (!strcmp(THP_MODEL, "DHT22")) {
-    input += _addOption("white", (TEXT_AUTOMATICCALIBRATION), value);
-  }
-  if (!strcmp(THP_MODEL, "SHT1x")) {
-    input += _addOption("white", (TEXT_AUTOMATICCALIBRATION), value);
-  }
-  input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
-  return input;
-}
 
 static String _addTHP_MODELSelect(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   input += _addOption(F("BME280"), F("BME280"), value);
-  if (strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
-    if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(pmSensorVersion, "PMS-SparkFunBME280")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003") or !strcmp(sensorsSettings.dustModel, "Non")) {
       input += _addOption(F("BME280-SparkFun"), F("BME280-SparkFun"), value);
     }
   }
@@ -448,7 +429,7 @@ static String _addDUST_MODELSelect(const String &key, const String &value) {
 static String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
-  if (!strcmp(THP_MODEL, "DS18B20")) {
+  if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
 #ifdef ARDUINO_ARCH_ESP8266
     input += _add_FIRST_THP_Option(F("D5"), F("D5/GPIO14"), value);
 #elif defined ARDUINO_ARCH_ESP32
@@ -518,7 +499,7 @@ static String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &va
 static String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
-  if (!strcmp(DUST_MODEL, "SPS30")) {
+  if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
 	  
     input += _add_DUST_Option(F("D1"), F("D1/GPIO05"), value);
     input += _add_DUST_Option(F("D2"), F("D2/GPIO04"), value);
@@ -721,7 +702,7 @@ static String handle_config_processor(const String& var)
   message = "";
 }
 
-//void handle_config() {
+
 static void handle_config(AsyncWebServerRequest *request) {
   if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_CONFIG_PAGE_ALL): "));
@@ -778,10 +759,10 @@ static String handle_config_device_processor(const String& var)
   }
 
   if (var == F("{device_name}")) {
-    if (DEVICENAME_AUTO) {
+    if (deviceSettings.autoName) {
       message += String(device_name);
     } else {
-      message += (_addTextInput(F("DEVICENAME"), DEVICENAME));
+      message += (_addTextInput(F("DEVICENAME"), deviceSettings.name));
     }
   }
 
@@ -789,13 +770,13 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_DEVICENAMEAUTO);
   }
   if (var == F("{DEVICENAME_AUTO}")) {
-    message += (_addBoolSelect(F("DEVICENAME_AUTO"), DEVICENAME_AUTO));
+    message += (_addBoolSelect(F("DEVICENAME_AUTO"), deviceSettings.autoName));
   }
   if (var == F("{TEXT_SELECTEDLANGUAGE}")) {
     message += String(TEXT_SELECTEDLANGUAGE);
   }
   if (var == F("{LanguageSelect}")) {
-    message += (_addLanguageSelect(F("LANGUAGE"), LANGUAGE));
+    message += (_addLanguageSelect(F("LANGUAGE"), deviceSettings.language));
   }
   
   
@@ -808,13 +789,13 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_MY_LATITUDE);
   }
   if (var == F("{LATITUDE}")) {
-    message += (_addFloatInput(F("LATITUDE"), atof(LATITUDE), 6, F("°")));
+    message += (_addFloatInput(F("LATITUDE"), atof(deviceSettings.latitude), 6, F("°")));
   }
   if (var == F("{TEXT_MY_LONGITUDE}")) {
     message += String(TEXT_MY_LONGITUDE);
   }
   if (var == F("{LONGITUDE}")) {
-    message += (_addFloatInput(F("LONGITUDE"), atof(LONGITUDE), 6, F("°")));
+    message += (_addFloatInput(F("LONGITUDE"), atof(deviceSettings.longitude), 6, F("°")));
   }
   
   if (var == F("{TEXT_ALTITUDEINFO}")) {
@@ -823,24 +804,24 @@ static String handle_config_device_processor(const String& var)
     message.replace(F("{TEXT_HERE}"), String(TEXT_HERE));
   }
   if (var == F("{MYALTITUDE}")) {
-    message += (_addIntInput(F("MYALTITUDE"), MYALTITUDE, F("m.n.p.m")));
+    message += (_addIntInput(F("MYALTITUDE"), deviceSettings.altitude, F("m.n.p.m")));
   }
   
   if (var == F("{TEXT_TEMPHUMIPRESSSENSOR}")) {
     message += String(TEXT_TEMPHUMIPRESSSENSOR);
   }
   if (var == F("{THP_MODELSelect}")) {
-    message += (_addTHP_MODELSelect(F("THP_MODEL"), THP_MODEL));
+    message += (_addTHP_MODELSelect(F("THP_MODEL"), sensorsSettings.thpModel));
   }
   if (var == F("{TEXT_PMSENSOR}")) {
     message += String(TEXT_PMSENSOR);
   }
   if (var == F("{DUST_MODELSelect}")) {
-    message += (_addDUST_MODELSelect(F("DUST_MODEL"), DUST_MODEL));
+    message += (_addDUST_MODELSelect(F("DUST_MODEL"), sensorsSettings.dustModel));
   }
 
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_FIRST_TH")) {
-    if (strcmp(THP_MODEL, "Non")) {
+    if (strcmp(sensorsSettings.thpModel, "Non")) {
       message += String(WEB_CONFIG_DEVICE_PAGE_FIRST_THP_PINS);
     } else {
       message += "";
@@ -848,7 +829,7 @@ static String handle_config_device_processor(const String& var)
   }
 
   if (var == F("{THP_MODEL}")) {
-    message += String(THP_MODEL);
+    message += String(sensorsSettings.thpModel);
   }
   if (var == F("{TEXT_FIRST_THP_SDA_SCL}")) {
     message += String(TEXT_FIRST_THP_SDA_SCL);
@@ -857,27 +838,27 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_FIRST_THP_SDA);
   }
   if (var == F("{FIRST_THP_SDA}")) {
-    message += (_add_FIRST_THP_SDA_SCL_Select(F("CONFIG_FIRST_THP_SDA"), CONFIG_FIRST_THP_SDA));
+    message += (_add_FIRST_THP_SDA_SCL_Select(F("CONFIG_FIRST_THP_SDA"), firstThpSettings.sda));
   }
   if (var == F("{TEXT_FIRST_THP_SCL}")) {
-    if (!strcmp(THP_MODEL, "DHT22") or !strcmp(THP_MODEL, "DS18B20")) {
+    if (!strcmp(sensorsSettings.thpModel, "DHT22") or !strcmp(sensorsSettings.thpModel, "DS18B20")) {
       message += ("");
     } else {
       message += String(TEXT_FIRST_THP_SCL);
     }
   }
   if (var == F("{FIRST_THP_SCL}")) {
-    if (!strcmp(THP_MODEL, "DHT22") or !strcmp(THP_MODEL, "DS18B20")) {
+    if (!strcmp(sensorsSettings.thpModel, "DHT22") or !strcmp(sensorsSettings.thpModel, "DS18B20")) {
       message += ("");
     } else {
-      message += (_add_FIRST_THP_SDA_SCL_Select(F("CONFIG_FIRST_THP_SCL"), CONFIG_FIRST_THP_SCL));
+      message += (_add_FIRST_THP_SDA_SCL_Select(F("CONFIG_FIRST_THP_SCL"), firstThpSettings.scl));
     }
   }
 
   // SECOND_THP CONFIG
   /*
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_SECOND_T")) {
-    if (strcmp(THP_MODEL, "Non")) {
+    if (strcmp(sensorsSettings.thpModel, "Non")) {
       message += String(WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS);
     } else {
       message += ("");
@@ -887,10 +868,10 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_SECOND_THP);
   }
   if (var == F("{SECOND_THP}")) {
-    message += (_addBoolSelect("SECOND_THP", SECOND_THP));
+    message += (_addBoolSelect("SECOND_THP", sensorsSettings.secondThp));
   }
   
-  if (SECOND_THP) {	
+  if (sensorsSettings.secondThp) {	
    if (var == F("{SECOND_THP_PINS_CONFIG}")) {
       message += String(WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS_CONFIG);
     }
@@ -901,19 +882,19 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_SECOND_THP_SDA);
   }
   if (var == F("{SECOND_THP_SDA}")) {
-    message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SDA"), CONFIG_SECOND_THP_SDA));
+    message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SDA"), secondThpSettings.sda));
   }
   if (var == F("{TEXT_SECOND_THP_SCL}")) {
     message += String(TEXT_SECOND_THP_SCL);
   }
   if (var == F("{SECOND_THP_SCL}")) {
-    message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SCL"), CONFIG_SECOND_THP_SCL));
+    message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SCL"), secondThpSettings.scl));
   }	
 }
 */
 
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_DUST_PIN")) {
-	 if (strcmp(DUST_MODEL, "Non")) {
+	 if (strcmp(sensorsSettings.dustModel, "Non")) {
       message += String(WEB_CONFIG_DEVICE_PAGE_DUST_PINS);
     } else {
       message += "";
@@ -921,7 +902,7 @@ static String handle_config_device_processor(const String& var)
   }
 
   if (var == F("{DUST_MODEL}")) {
-    message += String(DUST_MODEL);
+    message += String(sensorsSettings.dustModel);
   }
   if (var == F("{TEXT_DUST_TX_RX}")) {
     message += String(TEXT_DUST_TX_RX);
@@ -930,20 +911,20 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_DUST_TX);
   }
   if (var == F("{DUST_TX}")) {
-    message += (_add_DUST_TX_RX_Select(F("CONFIG_DUST_TX"), CONFIG_DUST_TX));
+    message += (_add_DUST_TX_RX_Select(F("CONFIG_DUST_TX"), dustSettings.sda));
   }
   if (var == F("{TEXT_DUST_RX}")) {
     message += String(TEXT_DUST_RX);
   }
   if (var == F("{DUST_RX}")) {
-    message += (_add_DUST_TX_RX_Select(F("CONFIG_DUST_RX"), CONFIG_DUST_RX));
+    message += (_add_DUST_TX_RX_Select(F("CONFIG_DUST_RX"), dustSettings.scl));
   }
 
   if (var == F("{TEXT_FREQUENTMEASUREMENTONOFF}")) {
     message += String(TEXT_FREQUENTMEASUREMENTONOFF);
   }
   if (var == F("{FREQUENTMEASUREMENT_Select}")) {
-    message += (_addBoolSelect(F("FREQUENTMEASUREMENT"), FREQUENTMEASUREMENT));
+    message += (_addBoolSelect(F("FREQUENTMEASUREMENT"), sensorsSettings.continuousMeasurement));
   }
   if (var == F("{TEXT_FREQUENTMEASUREMENTINFO}")) {
     message += String(TEXT_FREQUENTMEASUREMENTINFO);
@@ -952,11 +933,11 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_MEASUREMENTFREQUENCY);
   }
   if (var == F("{FREQUENTMEASUREMENT_time}")) {
-    if (FREQUENTMEASUREMENT == true) {
-      message += (_addIntInput(F("DUST_TIME"), DUST_TIME, F("{TEXT_SECONDS}")));
+    if (sensorsSettings.continuousMeasurement == true) {
+      message += (_addIntInput(F("DUST_TIME"), sensorsSettings.dustTime, F("{TEXT_SECONDS}")));
       message.replace(F("{TEXT_SECONDS}"), String(TEXT_SECONDS));
     } else {
-      message += (_addIntInput(F("DUST_TIME"), DUST_TIME, F("{TEXT_MINUTES}")));
+      message += (_addIntInput(F("DUST_TIME"), sensorsSettings.dustTime, F("{TEXT_MINUTES}")));
       message.replace(F("{TEXT_MINUTES}"), String(TEXT_MINUTES));
     }
   }
@@ -965,7 +946,7 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_AVERAGELASTRESULT);
   }
   if (var == F("{NUMBEROFMEASUREMENTS}")) {
-    message += (_addIntInput(F("NUMBEROFMEASUREMENTS"), NUMBEROFMEASUREMENTS, F("{TEXT_PMMEASUREMENTS}")));
+    message += (_addIntInput(F("NUMBEROFMEASUREMENTS"), sensorsSettings.numerOfMeasurements, F("{TEXT_PMMEASUREMENTS}")));
     message.replace(F("{TEXT_PMMEASUREMENTS}"), String(TEXT_PMMEASUREMENTS));
   }
 
@@ -975,15 +956,15 @@ static String handle_config_device_processor(const String& var)
 #elif defined ARDUINO_ARCH_ESP32
     message += String(TEXT_DEEPSLEEPINFO_ESP32);
 #endif
-    message.replace(F("{INTERFACEWWWONTIME}"), String(int(NUMBEROFMEASUREMENTS) * 2 + 10 ));
-    message.replace(F("{SENDING_FREQUENCY}"), String(SENDING_FREQUENCY));
+    message.replace(F("{INTERFACEWWWONTIME}"), String(int(sensorsSettings.numerOfMeasurements) * 2 + 10 ));
+    message.replace(F("{SENDING_FREQUENCY}"), String(deviceSettings.sendingServicesFrequency));
   }
   if (var == F("{DEEPSLEEP_ON}")) {
-    message += (_addBoolSelect(F("DEEPSLEEP_ON"), DEEPSLEEP_ON));
+    message += (_addBoolSelect(F("DEEPSLEEP_ON"), deviceSettings.deepSleep));
   }
 
   if (var == F("{WEB_CONFIG_DEVICE_SHOWING_PM1}")) {
-    if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "SPS30")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003") or !strcmp(sensorsSettings.dustModel, "SPS30")) {
       message += String(WEB_CONFIG_DEVICE_SHOWING_PM1);
     } else {
       message += ("");
@@ -993,7 +974,7 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_DISPLAYPM1);
   }
   if (var == F("{DISPLAY_PM1}")) {
-    message += (_addBoolSelect(F("DISPLAY_PM1"), DISPLAY_PM1));
+    message += (_addBoolSelect(F("DISPLAY_PM1"), deviceSettings.displayPM1));
     message.replace(F("{TEXT_DISPLAYPM1}"), String(TEXT_DISPLAYPM1));
   }
 
@@ -1001,23 +982,23 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_SECURECONFIGUPDATEPAGE);
   }
   if (var == F("{CONFIG_AUTH}")) {
-    message += (_addBoolSelect(F("CONFIG_AUTH"), CONFIG_AUTH));
+    message += (_addBoolSelect(F("CONFIG_AUTH"), authSettings.enabled));
   }
   if (var == F("{TEXT_SECURELOGIN}")) {
     message += String(TEXT_SECURELOGIN);
   }
   if (var == F("{CONFIG_USERNAME}")) {
-    message += (_addTextInput(F("CONFIG_USERNAME"), CONFIG_USERNAME));
+    message += (_addTextInput(F("CONFIG_USERNAME"), authSettings.username));
   }
   if (var == F("{TEXT_SECUREPASSWD}")) {
     message += String(TEXT_SECUREPASSWD);
   }
   if (var == F("{CONFIG_PASSWORD}")) {
-    message += (_addPasswdInput(F("CONFIG_PASSWORD"), CONFIG_PASSWORD));
+    message += (_addPasswdInput(F("CONFIG_PASSWORD"), authSettings.password));
   }
 
   if (var == F("{TEXT_SECURELOGOUTINFO}")) {
-    if (!CONFIG_AUTH) {
+    if (!authSettings.enabled) {
       message += ("");
     } else {
       message += String(TEXT_SECURELOGOUTINFO);
@@ -1031,33 +1012,33 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_CALIBMETHOD);
   }
   if (var == F("{CalibrationModelSelect}")) {
-    message += (_addModelSelect(F("MODEL"), MODEL));
+    message += (_addBoolSelect(F("MODEL"), deviceSettings.autoCalibration));
   }
   if (var == F("{TEXT_CALIB1}")) {
     message += String(TEXT_CALIB1);
   }
   if (var == F("{calib1}")) {
-    message += (String(calib1));
+    message += (String(deviceSettings.calib1));
   }
   if (var == F("{TEXT_CALIB2}")) {
     message += String(TEXT_CALIB2);
   }
   if (var == F("{calib2}")) {
-    message += (String(calib2));
+    message += (String(deviceSettings.calib2));
   }
 
   if (var == F("{TEXT_SOFTWATEVERSION}")) {
     message += String(TEXT_SOFTWATEVERSION);
   }
   if (var == F("{SOFTWAREVERSION}")) {
-    message += String(SOFTWAREVERSION);
+    message += String(softwareVersion);
   }
   if (var == F("{TEXT_AUTOUPDATEON}")) {
     message += String(TEXT_AUTOUPDATEON);
   }
   
   if (var == F("{AUTOUPDATEON}")) {
-    message += (_addBoolSelect(F("AUTOUPDATE_ON"), (AUTOUPDATE_ON)));
+    message += (_addBoolSelect(F("AUTOUPDATE_ON"), (deviceSettings.autoUpdate)));
   }
   
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1074,10 +1055,10 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_HOMEKIT_SUPPORT);
   }
   if (var == F("{HOMEKIT_SUPPORT_ON}")) {
-    message += (_addBoolSelect(F("HOMEKIT_SUPPORT"), HOMEKIT_SUPPORT));
+    message += (_addBoolSelect(F("HOMEKIT_SUPPORT"), homeKitSettings.enabled));
   }
   
-  if (HOMEKIT_SUPPORT == true and String(homekit_is_paired()) == "1") {
+  if (homeKitSettings.enabled == true and String(homekit_is_paired()) == "1") {
   if (var == F("{WEB_CONFIG_DEVICE_HOMEKIT_RESET")) {
     message += String(WEB_CONFIG_DEVICE_HOMEKIT_RESET_PAIR);
   }
@@ -1116,10 +1097,10 @@ if (var == F("{TEXT_UPDATEWARNING}")) {
   message = "";
 }
 
-//void _handle_config_device(bool is_success) {
+
 static void handle_config_device(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
 
@@ -1177,11 +1158,11 @@ static String handle_config_services_processor(const String& var)
     message += String(TEXT_SENDINGINTERVAL);
   }
   if (var == F("{SENDING_FREQUENCY}")) {
-    if (FREQUENTMEASUREMENT == true) {
-      message += _addIntInput(F("SENDING_FREQUENCY"), SENDING_FREQUENCY, F("{TEXT_SECONDS}"));
+    if (sensorsSettings.continuousMeasurement == true) {
+      message += _addIntInput(F("SENDING_FREQUENCY"), deviceSettings.sendingServicesFrequency, F("{TEXT_SECONDS}"));
       message.replace(F("{TEXT_SECONDS}"), String(TEXT_SECONDS));
     } else {
-      message += _addIntInput(F("SENDING_FREQUENCY"), SENDING_FREQUENCY, F("{TEXT_MINUTES}"));
+      message += _addIntInput(F("SENDING_FREQUENCY"), deviceSettings.sendingServicesFrequency, F("{TEXT_MINUTES}"));
       message.replace(F("{TEXT_MINUTES}"), String(TEXT_MINUTES));
     }
   }
@@ -1190,11 +1171,11 @@ static String handle_config_services_processor(const String& var)
     message += String(TEXT_DBSENDINGINTERVAL);
   }
   if (var == F("{SENDING_DB_FREQUENCY}")) {
-    if (FREQUENTMEASUREMENT == true) {
-      message += _addIntInput(F("SENDING_DB_FREQUENCY"), SENDING_DB_FREQUENCY, F("{TEXT_SECONDS}"));
+    if (sensorsSettings.continuousMeasurement == true) {
+      message += _addIntInput(F("SENDING_DB_FREQUENCY"), deviceSettings.sendingDBFrequency, F("{TEXT_SECONDS}"));
       message.replace(F("{TEXT_SECONDS}"), String(TEXT_SECONDS));
     } else {
-      message += _addIntInput(F("SENDING_DB_FREQUENCY"), SENDING_DB_FREQUENCY, F("{TEXT_MINUTES}"));
+      message += _addIntInput(F("SENDING_DB_FREQUENCY"), deviceSettings.sendingDBFrequency, F("{TEXT_MINUTES}"));
       message.replace(F("{TEXT_MINUTES}"), String(TEXT_MINUTES));
     }
   }
@@ -1207,7 +1188,7 @@ static String handle_config_services_processor(const String& var)
   }
 
   if (var == F("{SMOGLIST_ON}")) {
-    message += (_addBoolSelect(F("SMOGLIST_ON"), SMOGLIST_ON));
+    message += (_addBoolSelect(F("SMOGLIST_ON"), smoglistSettings.enabled));
   }
   if (var == F("{TEXT_SMOGLISTINFO}")) {
     message += String(TEXT_SMOGLISTINFO);
@@ -1221,7 +1202,7 @@ static String handle_config_services_processor(const String& var)
     message += ("");
   }
 #else
-  // SMOGLIST_ON = false;
+  // smoglistSettings.enabled = false;
   if (var == F("{SMOGLIST_COMMENT_BEGIN}")) {
     message += ("<!--");
   }
@@ -1237,7 +1218,7 @@ static String handle_config_services_processor(const String& var)
     message.replace(F("{LUFTDATENFORM_LINK}"), String(LUFTDATENFORM_LINK));
   }
   if (var == F("{LUFTDATEN_ON}")) {
-    message += (_addBoolSelect(F("LUFTDATEN_ON"), LUFTDATEN_ON));
+    message += (_addBoolSelect(F("LUFTDATEN_ON"), luftdatenSettings.enabled));
   }
 
   if (var == F("{LUFTDATEN_ChipID}")) {
@@ -1249,48 +1230,48 @@ static String handle_config_services_processor(const String& var)
   }
 
   if (var == F("{Sensors_Pins_html}")) {
-    if (strcmp(THP_MODEL, "Non")) {
+    if (strcmp(sensorsSettings.thpModel, "Non")) {
       message += String(WEB_CONFIG_SERVICES_THP_SENSOR_PIN);
     } else {
       message += "";
     }
   }
-  if (!strcmp(THP_MODEL, "BME280")) {
+  if (!strcmp(sensorsSettings.thpModel, "BME280")) {
     if (var == F("{THPSENSOR}")) {
       message += F("BME280");
     }
     if (var == F("{THPXPIN}")) {
       message += F("11");
     }
-  } else if (!strcmp(THP_MODEL, "BMP280")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
     if (var == F("{THPSENSOR}")) {
       message += F("BMP280");
     }
     if (var == F("{THPXPIN}")) {
       message += F("3");
     }
-  } else if (!strcmp(THP_MODEL, "HTU21")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
     if (var == F("{THPSENSOR}")) {
       message += F("HTU21");
     }
     if (var == F("{THPXPIN}")) {
       message += F("7");
     }
-  } else if (!strcmp(THP_MODEL, "DHT22")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
     if (var == F("{THPSENSOR}")) {
       message += F("DHT22");
     }
     if (var == F("{THPXPIN}")) {
       message += F("7");
     }
-  } else if (!strcmp(THP_MODEL, "SHT1x")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
     if (var == F("{THPSENSOR}")) {
       message += F("SHT1x");
     }
     if (var == F("{THPXPIN}")) {
       message += F("12");
     }
-  } else if (!strcmp(THP_MODEL, "DS18B20")) {
+  } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
     if (var == F("{THPSENSOR}")) {
       message += F("DS18B20");
     }
@@ -1300,34 +1281,34 @@ static String handle_config_services_processor(const String& var)
   }
 
   if (var == F("{Sensors_Pins_html}")) {
-    if (strcmp(DUST_MODEL, "Non")) {
+    if (strcmp(sensorsSettings.dustModel, "Non")) {
       message += String(WEB_CONFIG_SERVICES_DUST_MODEL_SENSOR_PIN);
     } else {
       message += "";
     }
   }
-  if (!strcmp(DUST_MODEL, "PMS7003")) {
+  if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
     if (var == F("{DUSTSENSOR}")) {
       message += F("PMS5003/7003");
     }
     if (var == F("{DUSTXPIN}")) {
       message += F("1");
     }
-  } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
     if (var == F("{DUSTSENSOR}")) {
       message += F("SDS011/21");
     }
     if (var == F("{DUSTXPIN}")) {
       message += F("1");
     }
-  } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
     if (var == F("{DUSTSENSOR}")) {
       message += F("HPMA115S0");
     }
     if (var == F("{DUSTXPIN}")) {
       message += F("1");
     }
-  } else if (!strcmp(DUST_MODEL, "SPS30")) {
+  } else if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
     if (var == F("{DUSTSENSOR}")) {
       message += F("SPS30");
     }
@@ -1340,7 +1321,7 @@ static String handle_config_services_processor(const String& var)
     message += String(TEXT_LUFTDATEN_GRAPH_ON);
   }
   if (var == F("{LUFTDATEN_GRAPH_ON}")) {
-      message += (_addBoolSelect(F("LUFTDATEN_GRAPH_ON"), LUFTDATEN_GRAPH_ON));
+      message += (_addBoolSelect(F("LUFTDATEN_GRAPH_ON"), luftdatenSettings.graph));
   }
   if (var == F("{TEXT_LUFTDATEN_GRAPH_APIID}")) {
     message += String(TEXT_LUFTDATEN_GRAPH_APIID);
@@ -1348,26 +1329,26 @@ static String handle_config_services_processor(const String& var)
     message.replace(F("{TEXT_HERE}"), String(TEXT_HERE));
   } 
   if (var == F("{LUFTDATEN_APIID}")) {
-      message += (_addIntInput(F("LUFTDATEN_APIID"), LUFTDATEN_APIID));
+      message += (_addIntInput(F("LUFTDATEN_APIID"), luftdatenSettings.apiId));
   }
    
   if (var == F("{TEXT_AQIECOSENDING}")) {
     message += String(TEXT_AQIECOSENDING);
   }
   if (var == F("{AQI_ECO_ON}")) {
-    message += (_addBoolSelect(F("AQI_ECO_ON"), AQI_ECO_ON));
+    message += (_addBoolSelect(F("AQI_ECO_ON"), aqiEcoSettings.enabled));
   }
   if (var == F("{TEXT_AQIECOSERVER}")) {
     message += String(TEXT_AQIECOSERVER);
   }
   if (var == F("{AQI_ECO_HOST}")) {
-    message += (_addTextInput(F("AQI_ECO_HOST"), AQI_ECO_HOST));
+    message += (_addTextInput(F("AQI_ECO_HOST"), aqiEcoSettings.host));
   }
   if (var == F("{TEXT_AQIECOPATH}")) {
     message += String(TEXT_AQIECOPATH);
   }
   if (var == F("{AQI_ECO_PATH}")) {
-    message += (_addTextInput(F("AQI_ECO_PATH"), AQI_ECO_PATH));
+    message += (_addTextInput(F("AQI_ECO_PATH"), aqiEcoSettings.path));
   }
 
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1390,13 +1371,13 @@ static String handle_config_services_processor(const String& var)
   if (var == F("{TEXT_AIRMONITORSENDING}")) {
     message += String(TEXT_AIRMONITORSENDING);
     char PMSENSORMODEL[16];
-    if (!strcmp(DUST_MODEL, "PMS7003") or !strcmp(DUST_MODEL, "Non")) {
+    if (!strcmp(sensorsSettings.dustModel, "PMS7003") or !strcmp(sensorsSettings.dustModel, "Non")) {
       strcpy(PMSENSORMODEL, "PMS7003");
-    } else if (!strcmp(DUST_MODEL, "SDS011/21")) {
+    } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       strcpy(PMSENSORMODEL, "SDS011");
-    } else if (!strcmp(DUST_MODEL, "HPMA115S0")) {
+    } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       strcpy(PMSENSORMODEL, "HPMA115S0");
-    } else if (!strcmp(DUST_MODEL, "SPS30")) {
+    } else if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
       strcpy(PMSENSORMODEL, "SPS30");
     }
     message.replace(F("{PMSENSORMODEL}"), String(PMSENSORMODEL));
@@ -1406,19 +1387,19 @@ static String handle_config_services_processor(const String& var)
     message.replace(F("{TEXT_AIRMONITORCHARTS}"), String(TEXT_AIRMONITORCHARTS));
   }
   if (var == F("{AIRMONITOR_ON}")) {
-    message += (_addBoolSelect(F("AIRMONITOR_ON"), AIRMONITOR_ON));
+    message += (_addBoolSelect(F("AIRMONITOR_ON"), airMonitorSettings.enabled));
   }
   if (var == F("{TEXT_AIRMONITORCHARTS}")) {
     message += String(TEXT_AIRMONITORCHARTS);
   }
   if (var == F("{AIRMONITOR_GRAPH_ON}")) {
-    message += (_addBoolSelect(F("AIRMONITOR_GRAPH_ON"), AIRMONITOR_GRAPH_ON));
+    message += (_addBoolSelect(F("AIRMONITOR_GRAPH_ON"), airMonitorSettings.graph));
   }
   if (var == F("{TEXT_AIRMONITOR_API_KEY}")) {
     message += String(TEXT_AIRMONITOR_API_KEY);
   }
   if (var == F("{AIRMONITOR_API_KEY}")) {
-    message += (_addTextInput(F("AIRMONITOR_API_KEY"), AIRMONITOR_API_KEY));
+    message += (_addTextInput(F("AIRMONITOR_API_KEY"), airMonitorSettings.apiKey));
   }
   
   if (var == F("{AIRMONITOR_COMMENT_BEGIN}")) {
@@ -1429,10 +1410,10 @@ static String handle_config_services_processor(const String& var)
     message += ("");
   }
 #else
-  AIRMONITOR_ON = false;
-  AIRMONITOR_GRAPH_ON = false;
-  // AIRMONITOR_API_KEY = "";
-  memset(AIRMONITOR_API_KEY, 0, sizeof(AIRMONITOR_API_KEY));
+  airMonitorSettings.enabled = false;
+  airMonitorSettings.graph = false;
+  // airMonitorSettings.apiKey = "";
+  memset(airMonitorSettings.apiKey, 0, sizeof(airMonitorSettings.apiKey));
   if (var == F("{AIRMONITOR_COMMENT_BEGIN}")) {
     message += ("<!--");
   }
@@ -1451,13 +1432,13 @@ static String handle_config_services_processor(const String& var)
     message += String(TEXT_MY_LATITUDE);
   }
   if (var == F("{LATITUDE}")) {
-    message += (_addFloatInput(F("LATITUDE"), atof(LATITUDE), 6, F("°")));
+    message += (_addFloatInput(F("LATITUDE"), atof(deviceSettings.latitude), 6, F("°")));
   }
   if (var == F("{TEXT_MY_LONGITUDE}")) {
     message += String(TEXT_MY_LONGITUDE);
   }
   if (var == F("{LONGITUDE}")) {
-    message += (_addFloatInput(F("LONGITUDE"), atof(LONGITUDE), 6, F("°")));
+    message += (_addFloatInput(F("LONGITUDE"), atof(deviceSettings.longitude), 6, F("°")));
   }
 */
   if (var == F("{TEXT_THINGSPEAKSENDING}")) {
@@ -1465,74 +1446,74 @@ static String handle_config_services_processor(const String& var)
     message.replace(F("{THINGSPEAK_LINK}"), String(THINGSPEAK_LINK));
   }
   if (var == F("{THINGSPEAK_ON}")) {
-    message += (_addBoolSelect(F("THINGSPEAK_ON"), THINGSPEAK_ON));
+    message += (_addBoolSelect(F("THINGSPEAK_ON"), thingSpeakSettings.enabled));
   }
   if (var == F("{TEXT_THINGSPEAKCHARTS}")) {
     message += String(TEXT_THINGSPEAKCHARTS);
   }
   if (var == F("{THINGSPEAK_GRAPH_ON}")) {
-    message += (_addBoolSelect(F("THINGSPEAK_GRAPH_ON"), THINGSPEAK_GRAPH_ON));
+    message += (_addBoolSelect(F("THINGSPEAK_GRAPH_ON"), thingSpeakSettings.graph));
   }
   if (var == F("{TEXT_THINGSPEAK_WRITE_API_KEY}")) {
     message += String(TEXT_THINGSPEAK_WRITE_API_KEY);
   }
   if (var == F("{THINGSPEAK_API_KEY}")) {
-    message += (_addTextInput(F("THINGSPEAK_API_KEY"), THINGSPEAK_API_KEY));
+    message += (_addTextInput(F("THINGSPEAK_API_KEY"), thingSpeakSettings.apiKey));
   }
   if (var == F("{TEXT_THINGSPEAKCHANNELID}")) {
     message += String(TEXT_THINGSPEAKCHANNELID);
   }
   if (var == F("{THINGSPEAK_CHANNEL_ID}")) {
-    message += (_addIntInput(F("THINGSPEAK_CHANNEL_ID"), THINGSPEAK_CHANNEL_ID));
+    message += (_addIntInput(F("THINGSPEAK_CHANNEL_ID"), thingSpeakSettings.channelId));
   }
   if (var == F("{TEXT_THINGSPEAK_READ_API_KEY}")) {
     message += String(TEXT_THINGSPEAK_READ_API_KEY);
   }
   if (var == F("{THINGSPEAK_READ_API_KEY}")) {
-    message += (_addTextInput(F("THINGSPEAK_READ_API_KEY"), THINGSPEAK_READ_API_KEY));
+    message += (_addTextInput(F("THINGSPEAK_READ_API_KEY"), thingSpeakSettings.readApiKey));
   }
 
   if (var == F("{TEXT_INFLUXDBSENDING}")) {
     message += String(TEXT_INFLUXDBSENDING);
   }
   if (var == F("{INFLUXDB_ON}")) {
-    message += (_addBoolSelect(F("INFLUXDB_ON"), INFLUXDB_ON));
+    message += (_addBoolSelect(F("INFLUXDB_ON"), influxDBSettings.enabled));
   }
   if (var == F("{TEXT_INFLUXDBVERSION}")) {
     message += String(TEXT_INFLUXDBVERSION);
   }
   if (var == F("{INFLUXDB_VERSION}")) {
-    message += (_addINFLUXDB_VERSIONSelect(F("INFLUXDB_VERSION"), INFLUXDB_VERSION));
+    message += (_addINFLUXDB_VERSIONSelect(F("INFLUXDB_VERSION"), influxDBSettings.version));
   }
   if (var == F("{TEXT_INFLUXDBSERVER}")) {
     message += String(TEXT_INFLUXDBSERVER);
   }
   if (var == F("{INFLUXDB_HOST}")) {
-    message += (_addTextInput(F("INFLUXDB_HOST"), INFLUXDB_HOST));
+    message += (_addTextInput(F("INFLUXDB_HOST"), influxDBSettings.host));
   }
   if (var == F("{TEXT_INFLUXDBPORT}")) {
     message += String(TEXT_INFLUXDBPORT);
   }
   if (var == F("{INFLUXDB_PORT}")) {
-    message += (_addIntInput(F("INFLUXDB_PORT"), INFLUXDB_PORT));
+    message += (_addIntInput(F("INFLUXDB_PORT"), influxDBSettings.port));
   }
   if (var == F("{TEXT_INFLUXDBNAME}")) {
     message += String(TEXT_INFLUXDBNAME);
   }
   if (var == F("{INFLUXDB_DATABASE}")) {
-    message += ( _addTextInput(F("INFLUXDB_DATABASE"), INFLUXDB_DATABASE));
+    message += ( _addTextInput(F("INFLUXDB_DATABASE"), influxDBSettings.database));
   }
   if (var == F("{TEXT_INFLUXDBUSER}")) {
     message += String(TEXT_INFLUXDBUSER);
   }
   if (var == F("{INFLUXDB_USER}")) {
-    message += (_addTextInput(F("INFLUXDB_USER"), INFLUXDB_USER));
+    message += (_addTextInput(F("INFLUXDB_USER"), influxDBSettings.user));
   }
   if (var == F("{TEXT_INFLUXDBPASSWD}")) {
     message += String(TEXT_INFLUXDBPASSWD);
   }
   if (var == F("{INFLUXDB_PASSWORD}")) {
-    message += (_addPasswdInput(F("INFLUXDB_PASSWORD"), INFLUXDB_PASSWORD));
+    message += (_addPasswdInput(F("INFLUXDB_PASSWORD"), influxDBSettings.password));
   }
   
   // SAVE / RESET / RESTORE SECTION - START
@@ -1556,14 +1537,14 @@ static String handle_config_services_processor(const String& var)
   // SAVE / RESET / RESTORE SECTION - END
   
   if (var == F("{INFLUXDB_V2}")) {	  
-    if (!strcmp(INFLUXDB_VERSION, "2")) {
+    if (!strcmp(influxDBSettings.version, "2")) {
 	  message += String(WEB_CONFIG_SERVICES_INFLUXDB_VERSION_V2);
       message.replace(F("{TEXT_INFLUXDBORG}"), String(TEXT_INFLUXDBORG));
-      message.replace(F("{INFLUXDB_ORG}"), _addTextInput(F("INFLUXDB_ORG"), INFLUXDB_ORG));
+      message.replace(F("{INFLUXDB_ORG}"), _addTextInput(F("INFLUXDB_ORG"), influxDBSettings.org));
       message.replace(F("{TEXT_INFLUXDBBUCKET}"), String(TEXT_INFLUXDBBUCKET));
-      message.replace(F("{INFLUXDB_BUCKET}"), _addTextInput(F("INFLUXDB_BUCKET"), INFLUXDB_BUCKET));
+      message.replace(F("{INFLUXDB_BUCKET}"), _addTextInput(F("INFLUXDB_BUCKET"), influxDBSettings.bucket));
       message.replace(F("{TEXT_INFLUXDBTOKEN}"), String(TEXT_INFLUXDBTOKEN));
-      message.replace(F("{INFLUXDB_TOKEN}"), _addTextInput(F("INFLUXDB_TOKEN"), INFLUXDB_TOKEN));
+      message.replace(F("{INFLUXDB_TOKEN}"), _addTextInput(F("INFLUXDB_TOKEN"), influxDBSettings.token));
     } else {
 	  message += "";
     }	
@@ -1574,31 +1555,31 @@ static String handle_config_services_processor(const String& var)
      message += (TEXT_MQTTSENDING);
     }
     if (var == F("{MQTT_ON}")) {
-     message += (_addBoolSelect(F("MQTT_ON"), MQTT_ON));
+     message += (_addBoolSelect(F("MQTT_ON"), mqttSettings.enabled));
     }
     if (var == F("{TEXT_MQTTSERVER}")) {
     message += (TEXT_MQTTSERVER);
     }
     if (var == F("{MQTT_HOST}")) {
-    message += (_addTextInput(F("MQTT_HOST"), MQTT_HOST));
+    message += (_addTextInput(F("MQTT_HOST"), mqttSettings.host));
     }
     if (var == F("{TEXT_MQTTPORT}")) {
     message += (TEXT_MQTTPORT);
     }
     if (var == F("{MQTT_PORT}")) {
-    message += (_addIntInput(F("MQTT_PORT"), MQTT_PORT));
+    message += (_addIntInput(F("MQTT_PORT"), mqttSettings.port));
     }
     if (var == F("{TEXT_MQTTUSER}")) {
     message += (TEXT_MQTTUSER);
     }
     if (var == F("{MQTT_USER}")) {
-    message += (_addTextInput(F("MQTT_USER"), MQTT_USER));
+    message += (_addTextInput(F("MQTT_USER"), mqttSettings.user));
     }
     if (var == F("{TEXT_MQTTPASSWD}")) {
     message += (TEXT_MQTTPASSWD);
     }
     if (var == F("{MQTT_PASSWORD}")) {
-    message += (_addPasswdInput(F("MQTT_PASSWORD"), MQTT_PASSWORD));
+    message += (_addPasswdInput(F("MQTT_PASSWORD"), mqttSettings.password));
     }
   */
   /*
@@ -1609,25 +1590,25 @@ static String handle_config_services_processor(const String& var)
     message += (TEXT_MQTT_IP_IN_TOPIC);
     }
     if (var == F("{MQTT_IP_IN_TOPIC}")) {
-    message += (_addBoolSelect(F("MQTT_IP_IN_TOPIC"), MQTT_IP_IN_TOPIC));
+    message += (_addBoolSelect(F("MQTT_IP_IN_TOPIC"), mqttSettings.ipInTopic));
     }
     if (var == F("{TEXT_MQTT_DEVICENAME_IN_TOPIC}")) {
     message += (TEXT_MQTT_DEVICENAME_IN_TOPIC);
     }
     if (var == F("{MQTT_DEVICENAME_IN_TOPIC}")) {
-    message += (_addBoolSelect(F("MQTT_DEVICENAME_IN_TOPIC"), MQTT_DEVICENAME_IN_TOPIC));
+    message += (_addBoolSelect(F("MQTT_DEVICENAME_IN_TOPIC"), mqttSettings.deviceNameInTopic));
     }
     if (var == F("{TEXT_MQTT_SLASH_AT_THE_BEGINNIN")) {
     message += (TEXT_MQTT_SLASH_AT_THE_BEGINNING);
     }
     if (var == F("{MQTT_SLASH_AT_THE_BEGINNING}")) {
-    message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_BEGINNING"), MQTT_SLASH_AT_THE_BEGINNING));
+    message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_BEGINNING"), mqttSettings.slashAtBeginning));
     }
     if (var == F("{TEXT_MQTT_SLASH_AT_THE_END}")) {
     message += (TEXT_MQTT_SLASH_AT_THE_END);
     }
     if (var == F("{MQTT_SLASH_AT_THE_END}")) {
-    message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_END"), MQTT_SLASH_AT_THE_END));
+    message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_END"), mqttSettings.slashAtEnd));
     }
   */
   /*
@@ -1641,7 +1622,7 @@ static String handle_config_services_processor(const String& var)
     message += (String(device_name));
     }
     if (var == F("{MQTT_TOPIC_TEMP}")) {
-    message += (_addMQTTTextInput(F("MQTT_TOPIC_TEMP"), MQTT_TOPIC_TEMP));
+    message += (_addMQTTTextInput(F("MQTT_TOPIC_TEMP"), mqttSettings.tempTopic));
     }
     if (var == F("{MQTT_TEMP}")) {
     message += (String(int(currentTemperature)));
@@ -1652,10 +1633,10 @@ static String handle_config_services_processor(const String& var)
   message = "";
 }
 
-//void _handle_config_services(bool is_success) {
+
 static void handle_config_services(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
 
@@ -1712,31 +1693,31 @@ static String handle_adv_mqtt_config_processor(const String& var)
     message += String(TEXT_MQTTSENDING);
   }
   if (var == F("{MQTT_ON}")) {
-    message += (_addBoolSelect(F("MQTT_ON"), MQTT_ON));
+    message += (_addBoolSelect(F("MQTT_ON"), mqttSettings.enabled));
   }
   if (var == F("{TEXT_MQTTSERVER}")) {
     message += String(TEXT_MQTTSERVER);
   }
   if (var == F("{MQTT_HOST}")) {
-    message += (_addTextInput(F("MQTT_HOST"), MQTT_HOST));
+    message += (_addTextInput(F("MQTT_HOST"), mqttSettings.host));
   }
   if (var == F("{TEXT_MQTTPORT}")) {
     message += String(TEXT_MQTTPORT);
   }
   if (var == F("{MQTT_PORT}")) {
-    message += (_addIntInput(F("MQTT_PORT"), MQTT_PORT));
+    message += (_addIntInput(F("MQTT_PORT"), mqttSettings.port));
   }
   if (var == F("{TEXT_MQTTUSER}")) {
     message += String(TEXT_MQTTUSER);
   }
   if (var == F("{MQTT_USER}")) {
-    message += (_addTextInput(F("MQTT_USER"), MQTT_USER));
+    message += (_addTextInput(F("MQTT_USER"), mqttSettings.user));
   }
   if (var == F("{TEXT_MQTTPASSWD}")) {
     message += String(TEXT_MQTTPASSWD);
   }
   if (var == F("{MQTT_PASSWORD}")) {
-    message += (_addPasswdInput(F("MQTT_PASSWORD"), MQTT_PASSWORD));
+    message += (_addPasswdInput(F("MQTT_PASSWORD"), mqttSettings.password));
   }
 
   if (var == F("{TEXT_MQTT_TOPIC_INFO}")) {
@@ -1746,35 +1727,35 @@ static String handle_adv_mqtt_config_processor(const String& var)
     message += String(TEXT_MQTT_IP_IN_TOPIC);
   }
   if (var == F("{MQTT_IP_IN_TOPIC}")) {
-    message += (_addBoolSelect(F("MQTT_IP_IN_TOPIC"), MQTT_IP_IN_TOPIC));
+    message += (_addBoolSelect(F("MQTT_IP_IN_TOPIC"), mqttSettings.ipInTopic));
   }
   if (var == F("{TEXT_MQTT_DEVICENAME_IN_TOPIC}")) {
     message += String(TEXT_MQTT_DEVICENAME_IN_TOPIC);
   }
   if (var == F("{MQTT_DEVICENAME_IN_TOPIC}")) {
-    message += (_addBoolSelect(F("MQTT_DEVICENAME_IN_TOPIC"), MQTT_DEVICENAME_IN_TOPIC));
+    message += (_addBoolSelect(F("MQTT_DEVICENAME_IN_TOPIC"), mqttSettings.deviceNameInTopic));
   }
   if (var == F("{TEXT_MQTT_SLASH_AT_THE_BEGINNIN")) {
     message += String(TEXT_MQTT_SLASH_AT_THE_BEGINNING);
   }
   if (var == F("{MQTT_SLASH_AT_THE_BEGINNING}")) {
-    message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_BEGINNING"), MQTT_SLASH_AT_THE_BEGINNING));
+    message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_BEGINNING"), mqttSettings.slashAtBeginning));
   }
   if (var == F("{TEXT_MQTT_SLASH_AT_THE_END}")) {
     message += String(TEXT_MQTT_SLASH_AT_THE_END);
   }
   if (var == F("{MQTT_SLASH_AT_THE_END}")) {
-    message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_END"), MQTT_SLASH_AT_THE_END));
+    message += (_addBoolSelect(F("MQTT_SLASH_AT_THE_END"), mqttSettings.slashAtEnd));
   }
 
- if(MQTT_ON){
+ if(mqttSettings.enabled){
   if (var == F("{WEB_CONFIG_ADV_MQTT_PAGE_CONFIG}%")) {
 	  /*
-    if (!MQTT_SLASH_AT_THE_BEGINNING && MQTT_SLASH_AT_THE_END) {
+    if (!mqttSettings.slashAtBeginning && mqttSettings.slashAtEnd) {
       message += String(WEB_CONFIG_ADV_MQTT_PAGE_CONFIG1);
-    } else if (!MQTT_SLASH_AT_THE_END && MQTT_SLASH_AT_THE_BEGINNING) {
+    } else if (!mqttSettings.slashAtEnd && mqttSettings.slashAtBeginning) {
       message += String(WEB_CONFIG_ADV_MQTT_PAGE_CONFIG2);
-    } else if (!MQTT_SLASH_AT_THE_END && !MQTT_SLASH_AT_THE_BEGINNING) {
+    } else if (!mqttSettings.slashAtEnd && !mqttSettings.slashAtBeginning) {
       message += String(WEB_CONFIG_ADV_MQTT_PAGE_CONFIG3);
     } else {
       message += String(WEB_CONFIG_ADV_MQTT_PAGE_CONFIG);
@@ -1783,47 +1764,47 @@ static String handle_adv_mqtt_config_processor(const String& var)
   }
 }
 
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     // takeTHPMeasurements();
     if (var == F("{MQTT_TEMP}")) {
       message += (String(int(currentTemperature)));
     }
     if (var == F("{MQTT_TOPIC_TEMP}")) {
-      message += (_addMQTTTextInput(F("MQTT_TOPIC_TEMP"), MQTT_TOPIC_TEMP));
+      message += (_addMQTTTextInput(F("MQTT_TOPIC_TEMP"), mqttSettings.tempTopic));
     }
 
     if (var == F("{MQTT_HUMI}")) {
       message += (String(int(currentHumidity)));
     }
     if (var == F("{MQTT_TOPIC_HUMI}")) {
-      message += (_addMQTTTextInput(F("MQTT_TOPIC_HUMI"), MQTT_TOPIC_HUMI));
+      message += (_addMQTTTextInput(F("MQTT_TOPIC_HUMI"), mqttSettings.humiTopic));
     }
     if (var == F("{MQTT_PRESS}")) {
       message += (String(int(currentPressure)));
     }
     if (var == F("{MQTT_TOPIC_PRESS}")) {
-      message += (_addMQTTTextInput(F("MQTT_TOPIC_PRESS"), MQTT_TOPIC_PRESS));
+      message += (_addMQTTTextInput(F("MQTT_TOPIC_PRESS"), mqttSettings.pressTopic));
     }
   }
 
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     if (var == F("{MQTT_PM1}")) {
       message += (String(int(averagePM1)));
     }
     if (var == F("{MQTT_TOPIC_PM1}")) {
-      message += (_addMQTTTextInput(F("MQTT_TOPIC_PM1"), MQTT_TOPIC_PM1));
+      message += (_addMQTTTextInput(F("MQTT_TOPIC_PM1"), mqttSettings.pm1Topic));
     }
     if (var == F("{MQTT_PM25}")) {
       message += (String(int(averagePM25)));
     }
     if (var == F("{MQTT_TOPIC_PM25}")) {
-      message += (_addMQTTTextInput(F("MQTT_TOPIC_PM25"), MQTT_TOPIC_PM25));
+      message += (_addMQTTTextInput(F("MQTT_TOPIC_PM25"), mqttSettings.pm25Topic));
     }
     if (var == F("{MQTT_PM10}")) {
       message += (String(int(averagePM10)));
     }
     if (var == F("{MQTT_TOPIC_PM10}")) {
-      message += (_addMQTTTextInput(F("MQTT_TOPIC_PM10"), MQTT_TOPIC_PM10));
+      message += (_addMQTTTextInput(F("MQTT_TOPIC_PM10"), mqttSettings.pm10Topic));
     }
 
     if (var == F("{MQTT_AIRQUALITY}")) {
@@ -1842,7 +1823,7 @@ static String handle_adv_mqtt_config_processor(const String& var)
       }
     }
     if (var == F("{MQTT_TOPIC_AIRQUALITY}")) {
-      message += (_addMQTTTextInput(F("MQTT_TOPIC_AIRQUALITY"), MQTT_TOPIC_AIRQUALITY));
+      message += (_addMQTTTextInput(F("MQTT_TOPIC_AIRQUALITY"), mqttSettings.airQualityTopic));
     }
 
   }
@@ -1870,14 +1851,14 @@ static String handle_adv_mqtt_config_processor(const String& var)
   }
 
   if (var == F("{MQTT_DEVICENAME_IN_TOPIC}")) {
-    if (MQTT_DEVICENAME_IN_TOPIC) {
+    if (mqttSettings.deviceNameInTopic) {
       message += ((String(device_name) + F("/")));
     } else {
       message += F("");
     }
   }
   if (var == F("{MQTT_IP_IN_TOPIC}")) {
-    if (MQTT_IP_IN_TOPIC) {
+    if (mqttSettings.ipInTopic) {
       message += ((String(WiFi.localIP().toString()) + "/"));
     } else {
       message += F("");
@@ -1898,8 +1879,8 @@ static String handle_adv_mqtt_config_processor(const String& var)
 }
 
 static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
 
@@ -1935,31 +1916,31 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   message += FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_CONFIG);
 
   message.replace(F("{TEXT_MQTTSENDING}"), (TEXT_MQTTSENDING));
-  message.replace(F("{MQTT_ON}"), _addBoolSelect("MQTT_ON", MQTT_ON));
+  message.replace(F("{MQTT_ON}"), _addBoolSelect("MQTT_ON", mqttSettings.enabled));
   message.replace(F("{TEXT_MQTTSERVER}"), (TEXT_MQTTSERVER));
-  message.replace(F("{MQTT_HOST}"), _addTextInput("MQTT_HOST", MQTT_HOST));
+  message.replace(F("{MQTT_HOST}"), _addTextInput("MQTT_HOST", mqttSettings.host));
   message.replace(F("{TEXT_MQTTPORT}"), (TEXT_MQTTPORT));
-  message.replace(F("{MQTT_PORT}"), _addIntInput("MQTT_PORT", MQTT_PORT));
+  message.replace(F("{MQTT_PORT}"), _addIntInput("MQTT_PORT", mqttSettings.port));
   message.replace(F("{TEXT_MQTTUSER}"), (TEXT_MQTTUSER));
-  message.replace(F("{MQTT_USER}"), _addTextInput("MQTT_USER", MQTT_USER));
+  message.replace(F("{MQTT_USER}"), _addTextInput("MQTT_USER", mqttSettings.user));
   message.replace(F("{TEXT_MQTTPASSWD}"), (TEXT_MQTTPASSWD));
-  message.replace(F("{MQTT_PASSWORD}"), _addPasswdInput("MQTT_PASSWORD", MQTT_PASSWORD));
+  message.replace(F("{MQTT_PASSWORD}"), _addPasswdInput("MQTT_PASSWORD", mqttSettings.password));
 
   message.replace(F("{TEXT_MQTT_TOPIC_INFO}"), (TEXT_MQTT_TOPIC_INFO));
 
   message.replace(F("{TEXT_MQTT_IP_IN_TOPIC}"), (TEXT_MQTT_IP_IN_TOPIC));
-  message.replace(F("{MQTT_IP_IN_TOPIC}"), _addBoolSelect("MQTT_IP_IN_TOPIC", MQTT_IP_IN_TOPIC));
+  message.replace(F("{MQTT_IP_IN_TOPIC}"), _addBoolSelect("MQTT_IP_IN_TOPIC", mqttSettings.ipInTopic));
 
   message.replace(F("{TEXT_MQTT_DEVICENAME_IN_TOPIC}"), (TEXT_MQTT_DEVICENAME_IN_TOPIC));
-  message.replace(F("{MQTT_DEVICENAME_IN_TOPIC}"), _addBoolSelect("MQTT_DEVICENAME_IN_TOPIC", MQTT_DEVICENAME_IN_TOPIC));
+  message.replace(F("{MQTT_DEVICENAME_IN_TOPIC}"), _addBoolSelect("MQTT_DEVICENAME_IN_TOPIC", mqttSettings.deviceNameInTopic));
 
   message.replace(F("{TEXT_MQTT_SLASH_AT_THE_BEGINNING}"), (TEXT_MQTT_SLASH_AT_THE_BEGINNING));
-  message.replace(F("{MQTT_SLASH_AT_THE_BEGINNING}"), _addBoolSelect("MQTT_SLASH_AT_THE_BEGINNING", MQTT_SLASH_AT_THE_BEGINNING));
+  message.replace(F("{MQTT_SLASH_AT_THE_BEGINNING}"), _addBoolSelect("MQTT_SLASH_AT_THE_BEGINNING", mqttSettings.slashAtBeginning));
 
   message.replace(F("{TEXT_MQTT_SLASH_AT_THE_END}"), (TEXT_MQTT_SLASH_AT_THE_END));
-  message.replace(F("{MQTT_SLASH_AT_THE_END}"), _addBoolSelect("MQTT_SLASH_AT_THE_END", MQTT_SLASH_AT_THE_END));
+  message.replace(F("{MQTT_SLASH_AT_THE_END}"), _addBoolSelect("MQTT_SLASH_AT_THE_END", mqttSettings.slashAtEnd));
 
-  if (!MQTT_SLASH_AT_THE_BEGINNING) {
+  if (!mqttSettings.slashAtBeginning) {
     message.replace(F("<b>{TEXT_TEMP_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), F("<b>{TEXT_TEMP_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"));
     message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"));
     message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"));
@@ -1969,7 +1950,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     message.replace(F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), F("<b>{TEXT_AIRQUALITY_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"));
   }
 
-  if (!MQTT_SLASH_AT_THE_END) {
+  if (!mqttSettings.slashAtEnd) {
     message.replace(F("{MQTT_TOPIC_TEMP}/{MQTT_TEMP}<br />"), F("{MQTT_TOPIC_TEMP}={MQTT_TEMP}<br />"));
     message.replace(F("{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), F("{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"));
     message.replace(F("{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), F("{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"));
@@ -1979,18 +1960,18 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     message.replace(F("{MQTT_TOPIC_AIRQUALITY}/{MQTT_AIRQUALITY}<br />"), F("{MQTT_TOPIC_AIRQUALITY}={MQTT_AIRQUALITY}<br />"));
   }
 
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     takeTHPMeasurements();
-    if (!strcmp(THP_MODEL, "BME280")) {
+    if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       if (checkBmeStatus() == true) {
         message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
-        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
         message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
-        message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+        message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", mqttSettings.humiTopic));
 
         message.replace(F("{MQTT_PRESS}"), String(int(currentPressure)));
-        message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
+        message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", mqttSettings.pressTopic));
       } else {
         if (deviceSettings.debug) {
           Serial.println(F("No measurements from BME280!\n"));
@@ -2011,10 +1992,10 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
       }
     }
 
-    if (!strcmp(THP_MODEL, "BMP280")) {
+    if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       if (checkBmpStatus() == true) {
         message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
-        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
@@ -2023,7 +2004,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
 
         message.replace(F("{MQTT_PRESS}"), String(int(currentPressure)));
-        message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", MQTT_TOPIC_PRESS));
+        message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", mqttSettings.pressTopic));
       } else {
         if (deviceSettings.debug) {
           Serial.println(F("No measurements from BMP280!\n"));
@@ -2044,13 +2025,13 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
       }
     }
 
-    if (!strcmp(THP_MODEL, "HTU21")) {
+    if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       if (checkHTU21DStatus() == true) {
         message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
-        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
         message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
-        message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+        message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", mqttSettings.humiTopic));
 
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
@@ -2077,13 +2058,13 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
       }
     }
 
-    if (!strcmp(THP_MODEL, "DHT22")) {
+    if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       if (checkDHT22Status() == true) {
         message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
-        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
         message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
-        message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+        message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", mqttSettings.humiTopic));
 
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
@@ -2110,13 +2091,13 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
       }
     }
 
-    if (!strcmp(THP_MODEL, "SHT1x")) {
+    if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       if (checkDHT22Status() == true) {
         message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
-        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
         message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
-        message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", MQTT_TOPIC_HUMI));
+        message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", mqttSettings.humiTopic));
 
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
@@ -2142,11 +2123,11 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
       }
     }
-    if (!strcmp(THP_MODEL, "DS18B20")) {
+    if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       if (checkDS18B20Status()) {
 
         message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
-        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", MQTT_TOPIC_TEMP));
+        message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
@@ -2192,13 +2173,13 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}={MQTT_PRESS}<br />"), "");
   }
 
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     message.replace(F("{MQTT_PM1}"), String(int(averagePM1)));
-    message.replace(F("{MQTT_TOPIC_PM1}"), _addMQTTTextInput("MQTT_TOPIC_PM1", MQTT_TOPIC_PM1));
+    message.replace(F("{MQTT_TOPIC_PM1}"), _addMQTTTextInput("MQTT_TOPIC_PM1", mqttSettings.pm1Topic));
     message.replace(F("{MQTT_PM25}"), String(int(averagePM25)));
-    message.replace(F("{MQTT_TOPIC_PM25}"), _addMQTTTextInput("MQTT_TOPIC_PM25", MQTT_TOPIC_PM25));
+    message.replace(F("{MQTT_TOPIC_PM25}"), _addMQTTTextInput("MQTT_TOPIC_PM25", mqttSettings.pm25Topic));
     message.replace(F("{MQTT_PM10}"), String(int(averagePM10)));
-    message.replace(F("{MQTT_TOPIC_PM10}"), _addMQTTTextInput("MQTT_TOPIC_PM10", MQTT_TOPIC_PM10));
+    message.replace(F("{MQTT_TOPIC_PM10}"), _addMQTTTextInput("MQTT_TOPIC_PM10", mqttSettings.pm10Topic));
 
     if (averagePM25 <= 10) {
       message.replace(F("{MQTT_AIRQUALITY}"), "EXCELLENT");
@@ -2213,7 +2194,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     } else {
       message.replace(F("{MQTT_AIRQUALITY}"), "UNKNOWN");
     }
-    message.replace(F("{MQTT_TOPIC_AIRQUALITY}"), _addMQTTTextInput("MQTT_TOPIC_AIRQUALITY", MQTT_TOPIC_AIRQUALITY));
+    message.replace(F("{MQTT_TOPIC_AIRQUALITY}"), _addMQTTTextInput("MQTT_TOPIC_AIRQUALITY", mqttSettings.airQualityTopic));
   } else {
     message.replace(F("<b>{TEXT_PM1_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM1}/{MQTT_PM1}<br />"), "");
     message.replace(F("<b>{TEXT_PM25_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PM25}/{MQTT_PM25}<br />"), "");
@@ -2242,12 +2223,12 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   message.replace(F("{TEXT_PM10_TOPIC}"), "PM10");
   message.replace(F("{TEXT_AIRQUALITY_TOPIC}"), (TEXT_AIRQUALITY_TOPIC));
 
-  if (MQTT_DEVICENAME_IN_TOPIC) {
+  if (mqttSettings.deviceNameInTopic) {
     message.replace(F("{MQTT_DEVICENAME}"), (String(device_name) + "/"));
   } else {
     message.replace(F("{MQTT_DEVICENAME}"), "");
   }
-  if (MQTT_IP_IN_TOPIC) {
+  if (mqttSettings.ipInTopic) {
     message.replace(F("{MQTT_IP}"), (String(WiFi.localIP().toString()) + "/"));
   } else {
     message.replace(F("{MQTT_IP}"), "");
@@ -2271,12 +2252,12 @@ static bool _parseAsBool(String value) {
 }
 
 static void _set_language() {
-  if (!strcmp(LANGUAGE, "english")) {
-    SELECTED_LANGUAGE = 1;
-  } else if (!strcmp(LANGUAGE, "polish")) {
-    SELECTED_LANGUAGE = 2;
+  if (!strcmp(deviceSettings.language, "english")) {
+    deviceSettings.selectedLanguage = 1;
+  } else if (!strcmp(deviceSettings.language, "polish")) {
+    deviceSettings.selectedLanguage = 2;
   } else {
-    SELECTED_LANGUAGE = 1;
+    deviceSettings.selectedLanguage = 1;
   }
 }
 
@@ -2284,125 +2265,113 @@ static void _parseAsCString(char* dest, String value, int CStringSize = 255) {
   strncpy(dest, value.c_str(), CStringSize);
 }
 
-/*
-  static void handle_config_device() {
-  _handle_config_device(false);
-  }
-
-  static void handle_config_services() {
-  _handle_config_services(false);
-  }
-*/
-
-
-
 void set_SERIAL_PINS(String DUST_PIN, int i) {
 #ifdef ARDUINO_ARCH_ESP8266
   if (i == 1) {
     if (DUST_PIN == "D1") {
-      DUST_TX = 5;
+      dustSettings.address_sda = 5;
     } else if (DUST_PIN == "D2") {
-      DUST_TX = 4;
+      dustSettings.address_sda = 4;
     } else if (DUST_PIN == "D3") {
-      DUST_TX = 0;
+      dustSettings.address_sda = 0;
     } else if (DUST_PIN == "D4") {
-      DUST_TX = 2;
+      dustSettings.address_sda = 2;
     } else if (DUST_PIN == "D5") {
-      DUST_TX = 14;
+      dustSettings.address_sda = 14;
     } else if (DUST_PIN == "D6") {
-      DUST_TX = 12;
+      dustSettings.address_sda = 12;
     } else if (DUST_PIN == "D7") {
-      DUST_TX = 13;
+      dustSettings.address_sda = 13;
     } else if (DUST_PIN == "D8") {
-      DUST_TX = 15;
+      dustSettings.address_sda = 15;
     } else if (DUST_PIN == "D16") {
-      DUST_TX = 16;
+      dustSettings.address_sda = 16;
     } else if (DUST_PIN == "D17") {
-      DUST_TX = 17;
+      dustSettings.address_sda = 17;
     }
   } else if (i == 2) {
     if (DUST_PIN == "D1") {
-      DUST_RX = 5;
+      dustSettings.address_scl = 5;
     } else if (DUST_PIN == "D2") {
-      DUST_RX = 4;
+      dustSettings.address_scl = 4;
     } else if (DUST_PIN == "D3") {
-      DUST_RX = 0;
+      dustSettings.address_scl = 0;
     } else if (DUST_PIN == "D4") {
-      DUST_RX = 2;
+      dustSettings.address_scl = 2;
     } else if (DUST_PIN == "D5") {
-      DUST_RX = 14;
+      dustSettings.address_scl = 14;
     } else if (DUST_PIN == "D6") {
-      DUST_RX = 12;
+      dustSettings.address_scl = 12;
     } else if (DUST_PIN == "D7") {
-      DUST_RX = 13;
+      dustSettings.address_scl = 13;
     } else if (DUST_PIN == "D8") {
-      DUST_RX = 15;
+      dustSettings.address_scl = 15;
     } else if (DUST_PIN == "D16") {
-      DUST_RX = 16;
+      dustSettings.address_scl = 16;
     } else if (DUST_PIN == "D17") {
-      DUST_RX = 17;
+      dustSettings.address_scl = 17;
     }
   }
 #elif defined ARDUINO_ARCH_ESP32
   if (i == 1) {
     if (DUST_PIN == "D1") {
-      DUST_TX = 8;
+      dustSettings.address_sda = 8;
     } else if (DUST_PIN == "D2") {
-      DUST_TX = 9;
+      dustSettings.address_sda = 9;
     } else if (DUST_PIN == "D4") {
-      DUST_TX = 4;
+      dustSettings.address_sda = 4;
     } else if (DUST_PIN == "D5") {
-      DUST_TX = 5;
+      dustSettings.address_sda = 5;
     } else if (DUST_PIN == "D15") {
-      DUST_TX = 15;
+      dustSettings.address_sda = 15;
     } else if (DUST_PIN == "D16") {
-      DUST_TX = 16;
+      dustSettings.address_sda = 16;
     } else if (DUST_PIN == "D17") {
-      DUST_TX = 17;
+      dustSettings.address_sda = 17;
     } else if (DUST_PIN == "D18") {
-      DUST_TX = 18;
+      dustSettings.address_sda = 18;
     } else if (DUST_PIN == "D19") {
-      DUST_TX = 19;
+      dustSettings.address_sda = 19;
     } else if (DUST_PIN == "D21") {
-      DUST_TX = 21;
+      dustSettings.address_sda = 21;
     } else if (DUST_PIN == "D22") {
-      DUST_TX = 22;
+      dustSettings.address_sda = 22;
     } else if (DUST_PIN == "D23") {
-      DUST_TX = 23;
+      dustSettings.address_sda = 23;
     }
   } else if (i == 2) {
     if (DUST_PIN == "D1") {
-      DUST_RX = 8;
+      dustSettings.address_scl = 8;
     } else if (DUST_PIN == "D2") {
-      DUST_RX = 9;
+      dustSettings.address_scl = 9;
     } else if (DUST_PIN == "D4") {
-      DUST_RX = 4;
+      dustSettings.address_scl = 4;
     } else if (DUST_PIN == "D5") {
-      DUST_RX = 5;
+      dustSettings.address_scl = 5;
     } else if (DUST_PIN == "D15") {
-      DUST_RX = 15;
+      dustSettings.address_scl = 15;
     } else if (DUST_PIN == "D16") {
-      DUST_RX = 16;
+      dustSettings.address_scl = 16;
     } else if (DUST_PIN == "D17") {
-      DUST_RX = 17;
+      dustSettings.address_scl = 17;
     } else if (DUST_PIN == "D18") {
-      DUST_RX = 18;
+      dustSettings.address_scl = 18;
     } else if (DUST_PIN == "D19") {
-      DUST_RX = 19;
+      dustSettings.address_scl = 19;
     } else if (DUST_PIN == "D21") {
-      DUST_RX = 21;
+      dustSettings.address_scl = 21;
     } else if (DUST_PIN == "D22") {
-      DUST_RX = 22;
+      dustSettings.address_scl = 22;
     } else if (DUST_PIN == "D23") {
-      DUST_RX = 23;
+      dustSettings.address_scl = 23;
     }
   }
 #endif
 }
 
 
-//void handle_config_device_post() {
 static void handle_config_device_save(AsyncWebServerRequest *request) {
+  bool reboot_required = false;
   unsigned char need_update = 0;
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
   /*
@@ -2424,166 +2393,195 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
 	*/
 
   if (request->hasParam("DEVICENAME_AUTO")) {
-    DEVICENAME_AUTO = _parseAsBool(request->getParam("DEVICENAME_AUTO")->value());
+    deviceSettings.autoName = _parseAsBool(request->getParam("DEVICENAME_AUTO")->value());
   }
 
   if (request->hasParam("DEVICENAME")) {
-    _parseAsCString(DEVICENAME, request->getParam("DEVICENAME")->value(), 32);
+    _parseAsCString(deviceSettings.name, request->getParam("DEVICENAME")->value(), 32);
   }
 
   if (request->hasParam("DISPLAY_PM1")) {
-    DISPLAY_PM1 = _parseAsBool(request->getParam("DISPLAY_PM1")->value());
+    deviceSettings.displayPM1 = _parseAsBool(request->getParam("DISPLAY_PM1")->value());
   }
 
   if (request->hasParam("LANGUAGE")) {
-    _parseAsCString(LANGUAGE, request->getParam("LANGUAGE")->value(), 12);
+    _parseAsCString(deviceSettings.language, request->getParam("LANGUAGE")->value(), 12);
     _set_language();
   }
   
   if (request->hasParam("LATITUDE")) {
-    _parseAsCString(LATITUDE, request->getParam("LATITUDE")->value(), 16);
+    _parseAsCString(deviceSettings.latitude, request->getParam("LATITUDE")->value(), 16);
   }
 
   if (request->hasParam("LONGITUDE")) {
-    _parseAsCString(LONGITUDE, request->getParam("LONGITUDE")->value(), 16);
+    _parseAsCString(deviceSettings.longitude, request->getParam("LONGITUDE")->value(), 16);
   }
   
   if (request->hasParam("MYALTITUDE")) {
-    MYALTITUDE = (request->getParam("MYALTITUDE")->value()).toInt();
+    deviceSettings.altitude = (request->getParam("MYALTITUDE")->value()).toInt();
   }
 
-  char oldTHP_MODEL[32];
-  strcpy(oldTHP_MODEL, THP_MODEL);
+  char old_thpModel[32];
+  strcpy(old_thpModel, sensorsSettings.thpModel);
   if (request->hasParam("THP_MODEL")) {
-    _parseAsCString(THP_MODEL, request->getParam("THP_MODEL")->value(), 12);
+    _parseAsCString(sensorsSettings.thpModel, request->getParam("THP_MODEL")->value(), 12);
+    if (strcmp(sensorsSettings.thpModel, old_thpModel)) {
+      reboot_required = true;
+    }
   }
-  if (strcmp(THP_MODEL, oldTHP_MODEL) and !strcmp(THP_MODEL, "BME280-SparkFun")) {
+  if (strcmp(sensorsSettings.thpModel, old_thpModel) and !strcmp(sensorsSettings.thpModel, "BME280-SparkFun")) {
     need_update = 1;
   }
 
-  char oldDUST_MODEL[32];
-  strcpy(oldDUST_MODEL, DUST_MODEL);
+  char old_dustModel[32];
+  strcpy(old_dustModel, sensorsSettings.dustModel);
   if (request->hasParam("DUST_MODEL")) {
-    _parseAsCString(DUST_MODEL, request->getParam("DUST_MODEL")->value(), 12);
+    _parseAsCString(sensorsSettings.dustModel, request->getParam("DUST_MODEL")->value(), 12);
+    if (strcmp(sensorsSettings.dustModel, old_dustModel)) {
+      reboot_required = true;
+    }
   }
 
   // DUST Sensor config - START
-  if (!strcmp(PMSENSORVERSION, "PMS")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+  if (!strcmp(pmSensorVersion, "PMS")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       need_update = 2;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       need_update = 3;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "SPS30")) {
       need_update = 5;
     }
-  } else if (!strcmp(PMSENSORVERSION, "SDS")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+  } else if (!strcmp(pmSensorVersion, "SDS")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       need_update = 3;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "PMS7003")) {
       need_update = 4;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "SPS30")) {
       need_update = 5;
     }
-  } else if (!strcmp(PMSENSORVERSION, "HPMA115S0")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+  } else if (!strcmp(pmSensorVersion, "HPMA115S0")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       need_update = 2;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "PMS7003")) {
       need_update = 4;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "SPS30")) {
       need_update = 5;
     }
-  } else if (!strcmp(PMSENSORVERSION, "SPS30")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+  } else if (!strcmp(pmSensorVersion, "SPS30")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       need_update = 2;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       need_update = 3;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "PMS7003")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "PMS7003")) {
       need_update = 4;
     }
-  } else if (!strcmp(PMSENSORVERSION, "PMS-SparkFunBME280")) {
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SDS011/21")) {
+  } else if (!strcmp(pmSensorVersion, "PMS-SparkFunBME280")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       need_update = 2;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "HPMA115S0")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       need_update = 3;
     }
-    if (strcmp(DUST_MODEL, oldDUST_MODEL) and !strcmp(DUST_MODEL, "SPS30")) {
+    if (strcmp(sensorsSettings.dustModel, old_dustModel) and !strcmp(sensorsSettings.dustModel, "SPS30")) {
       need_update = 5;
     }
   }
   // DUST Sensor config - END
-
+  
   if (request->hasParam("CONFIG_FIRST_THP_SDA")) {
-    _parseAsCString(CONFIG_FIRST_THP_SDA, request->getParam("CONFIG_FIRST_THP_SDA")->value(), 4);
-	
+    char old_data[8];
+    strcpy(old_data, firstThpSettings.sda);
+    _parseAsCString(firstThpSettings.sda, request->getParam("CONFIG_FIRST_THP_SDA")->value(), 4);
+    if (strcmp(firstThpSettings.sda, old_data)) {
+      reboot_required = true;
+    }
   }
   if (request->hasParam("CONFIG_FIRST_THP_SCL")) {
-      _parseAsCString(CONFIG_FIRST_THP_SCL, request->getParam("CONFIG_FIRST_THP_SCL")->value(), 4);
+    char old_data[8];
+    strcpy(old_data, firstThpSettings.scl);
+    _parseAsCString(firstThpSettings.scl, request->getParam("CONFIG_FIRST_THP_SCL")->value(), 4);
+    if (strcmp(firstThpSettings.scl, old_data)) {
+      reboot_required = true;
+    }
   }
   
   if (request->hasParam("SECOND_THP")) {
-    SECOND_THP = _parseAsBool(request->getParam("SECOND_THP")->value());
+    sensorsSettings.secondThp = _parseAsBool(request->getParam("SECOND_THP")->value());
   }
   
   if (request->hasParam("CONFIG_SECOND_THP_SDA")) {
-      _parseAsCString(CONFIG_SECOND_THP_SDA, request->getParam("CONFIG_SECOND_THP_SDA")->value(), 4);
+    char old_data[8];
+    strcpy(old_data, secondThpSettings.sda);
+    _parseAsCString(secondThpSettings.sda, request->getParam("CONFIG_SECOND_THP_SDA")->value(), 4);
+    if (strcmp(secondThpSettings.sda, old_data)) {
+      reboot_required = true;
+    }
   }
   if (request->hasParam("CONFIG_SECOND_THP_SCL")) {
-      _parseAsCString(CONFIG_SECOND_THP_SCL, request->getParam("CONFIG_SECOND_THP_SCL")->value(), 4);
+    char old_data[8];
+    strcpy(old_data, secondThpSettings.scl);
+    _parseAsCString(secondThpSettings.scl, request->getParam("CONFIG_SECOND_THP_SCL")->value(), 4);
+    if (strcmp(secondThpSettings.scl, old_data)) {
+      reboot_required = true;
+    }
   }
 
   if (request->hasParam("CONFIG_DUST_TX")) {
-      _parseAsCString(CONFIG_DUST_TX, request->getParam("CONFIG_DUST_TX")->value(), 4);
-	  set_SERIAL_PINS(CONFIG_DUST_TX, 1);
-      Serial.println(("CONFIG_DUST_TX: " + String(CONFIG_DUST_TX)));
-      Serial.println(("DUST_TX: " + String(DUST_TX)));
-	  
+    char old_data[8];
+    strcpy(old_data, dustSettings.sda);
+    _parseAsCString(dustSettings.sda, request->getParam("CONFIG_DUST_TX")->value(), 4);
+	  set_SERIAL_PINS(dustSettings.sda, 1);
+    if (strcmp(dustSettings.sda, old_data)) {
+      reboot_required = true;
+    }
   }
   
   if (request->hasParam("CONFIG_DUST_RX")) {
-      _parseAsCString(CONFIG_DUST_RX, request->getParam("CONFIG_DUST_RX")->value(), 4);
-	  set_SERIAL_PINS(CONFIG_DUST_RX, 2);
-      Serial.println(("Data from SDS011!\n"));
-      Serial.println(("CONFIG_DUST_RX: " + String(CONFIG_DUST_RX)));
-      Serial.println(("DUST_RX: " + String(DUST_RX)));
+    char old_data[8];
+    strcpy(old_data, dustSettings.scl);
+    _parseAsCString(dustSettings.scl, request->getParam("CONFIG_DUST_RX")->value(), 4);
+	  set_SERIAL_PINS(dustSettings.scl, 2);
+    if (strcmp(dustSettings.scl, old_data)) {
+      reboot_required = true;
+    }
   }
 
   if (request->hasParam("FREQUENTMEASUREMENT")) {
-    FREQUENTMEASUREMENT = _parseAsBool(request->getParam("FREQUENTMEASUREMENT")->value());
+    sensorsSettings.continuousMeasurement = _parseAsBool(request->getParam("FREQUENTMEASUREMENT")->value());
   }
 
   if (request->hasParam("DUST_TIME")) {
-    DUST_TIME = (request->getParam("DUST_TIME")->value()).toInt();
+    sensorsSettings.dustTime = (request->getParam("DUST_TIME")->value()).toInt();
   }
 
   if (request->hasParam("NUMBEROFMEASUREMENTS")) {
-    NUMBEROFMEASUREMENTS = (request->getParam("NUMBEROFMEASUREMENTS")->value()).toInt();
+    sensorsSettings.numerOfMeasurements = (request->getParam("NUMBEROFMEASUREMENTS")->value()).toInt();
   }
 
   if (request->hasParam("DEEPSLEEP_ON")) {
-    if (FREQUENTMEASUREMENT == false) {
-      DEEPSLEEP_ON = _parseAsBool(request->getParam("DEEPSLEEP_ON")->value());
+    if (sensorsSettings.continuousMeasurement == false) {
+      deviceSettings.deepSleep = _parseAsBool(request->getParam("DEEPSLEEP_ON")->value());
     }
   }
 
   if (request->hasParam("CONFIG_AUTH")) {
-    CONFIG_AUTH = _parseAsBool(request->getParam("CONFIG_AUTH")->value());
+    authSettings.enabled = _parseAsBool(request->getParam("CONFIG_AUTH")->value());
   }
 
   if (request->hasParam("CONFIG_USERNAME")) {
-    _parseAsCString(CONFIG_USERNAME, request->getParam("CONFIG_USERNAME")->value(), 64);
+    _parseAsCString(authSettings.username, request->getParam("CONFIG_USERNAME")->value(), 64);
   }
 
   if (request->hasParam("CONFIG_PASSWORD")) {
-    _parseAsCString(CONFIG_PASSWORD, request->getParam("CONFIG_PASSWORD")->value(), 128);
+    _parseAsCString(authSettings.password, request->getParam("CONFIG_PASSWORD")->value(), 128);
   }
 
   if (request->hasParam("DEBUG")) {
@@ -2591,20 +2589,20 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   }
 
   if (request->hasParam("MODEL")) {
-    _parseAsCString(MODEL, request->getParam("MODEL")->value(), 12);
+    deviceSettings.autoCalibration = _parseAsBool(request->getParam("MODEL")->value());
   }
 
   if (request->hasParam("AUTOUPDATE_ON")) {
-    AUTOUPDATE_ON = _parseAsBool(request->getParam("AUTOUPDATE_ON")->value());
+    deviceSettings.autoUpdate = _parseAsBool(request->getParam("AUTOUPDATE_ON")->value());
   }
 
   if (request->hasParam("HOMEKIT_SUPPORT")) {
-    HOMEKIT_SUPPORT = _parseAsBool(request->getParam("HOMEKIT_SUPPORT")->value());
+    homeKitSettings.enabled = _parseAsBool(request->getParam("HOMEKIT_SUPPORT")->value());
   }
 
   if (need_update != 0) {
-    strcpy(THP_MODEL, "Non");
-    strcpy(DUST_MODEL, "Non");
+    strcpy(sensorsSettings.thpModel, "Non");
+    strcpy(sensorsSettings.dustModel, "Non");
     saveConfig();
     //_handle_config_device(true);
 	unsigned char x = 0;
@@ -2634,7 +2632,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   }
 
   saveConfig();
-  //delay(250);
+
   //_handle_config_device(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
@@ -2649,11 +2647,12 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
     previous_redirect_Millis = millis();
     }
   */
+ if (reboot_required) {
   delay(1000);
   ESP.restart();
+ }
 }
 
-//void handle_config_services_post() {
 static void handle_config_services_save(AsyncWebServerRequest *request) {
   // REMEMBER TO ADD/EDIT KEYS IN config.h AND spiffs.cpp!!
 	/*
@@ -2675,156 +2674,151 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
 	*/
 
   if (request->hasParam("SENDING_FREQUENCY")) {
-    SENDING_FREQUENCY = (request->getParam("SENDING_FREQUENCY")->value()).toInt();
+    deviceSettings.sendingServicesFrequency = (request->getParam("SENDING_FREQUENCY")->value()).toInt();
   }
 
   if (request->hasParam("SENDING_DB_FREQUENCY")) {
-    SENDING_DB_FREQUENCY = (request->getParam("SENDING_DB_FREQUENCY")->value()).toInt();
+    deviceSettings.sendingDBFrequency = (request->getParam("SENDING_DB_FREQUENCY")->value()).toInt();
   }
   
 #ifndef DISABLE_SMOGLIST
   if (request->hasParam("SMOGLIST_ON")) {
-    SMOGLIST_ON = _parseAsBool(request->getParam("SMOGLIST_ON")->value());
+    smoglistSettings.enabled = _parseAsBool(request->getParam("SMOGLIST_ON")->value());
   }
 #endif
   /*
   if (request->hasParam("LUFTDATEN_ON")) {
-      LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
+      luftdatenSettings.enabled = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
   }
 */
   if (request->hasParam("AQI_ECO_ON")) {
-    AQI_ECO_ON = _parseAsBool(request->getParam("AQI_ECO_ON")->value());
+    aqiEcoSettings.enabled = _parseAsBool(request->getParam("AQI_ECO_ON")->value());
   }
 
   if (request->hasParam("AQI_ECO_HOST")) {
-    _parseAsCString(AQI_ECO_HOST, request->getParam("AQI_ECO_HOST")->value(), 128);
+    _parseAsCString(aqiEcoSettings.host, request->getParam("AQI_ECO_HOST")->value(), 128);
   }
 
   if (request->hasParam("AQI_ECO_PATH")) {
-    _parseAsCString(AQI_ECO_PATH, request->getParam("AQI_ECO_PATH")->value(), 64);
+    _parseAsCString(aqiEcoSettings.path, request->getParam("AQI_ECO_PATH")->value(), 64);
   }
 #ifdef ARDUINO_ARCH_ESP32
   /*
   if (request->hasParam("AIRMONITOR_ON")) {	  
-    AIRMONITOR_ON = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
-    Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
+    airMonitorSettings.enabled = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
+    Serial.println("AIRMONITOR_ON: " + String(airMonitorSettings.enabled));
   }
-  // Serial.println("AIRMONITOR_ON: " + String(AIRMONITOR_ON));
+  // Serial.println("AIRMONITOR_ON: " + String(airMonitorSettings.enabled));
 
   if (request->hasParam("AIRMONITOR_GRAPH_ON")) {
-    AIRMONITOR_GRAPH_ON = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
+    airMonitorSettings.graph = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
   }
   */
   if (request->hasParam("AIRMONITOR_API_KEY")) {
-    _parseAsCString(AIRMONITOR_API_KEY, request->getParam("AIRMONITOR_API_KEY")->value(), 64);
+    _parseAsCString(airMonitorSettings.apiKey, request->getParam("AIRMONITOR_API_KEY")->value(), 64);
   }
 #endif
   /*
   if (request->hasParam("LATITUDE")) {
-    _parseAsCString(LATITUDE, request->getParam("LATITUDE")->value(), 16);
+    _parseAsCString(deviceSettings.latitude, request->getParam("LATITUDE")->value(), 16);
   }
 
   if (request->hasParam("LONGITUDE")) {
-    _parseAsCString(LONGITUDE, request->getParam("LONGITUDE")->value(), 16);
+    _parseAsCString(deviceSettings.longitude, request->getParam("LONGITUDE")->value(), 16);
   }
   */
   if (request->hasParam("THINGSPEAK_ON")) {
-    THINGSPEAK_ON = _parseAsBool(request->getParam("THINGSPEAK_ON")->value());
+    thingSpeakSettings.enabled = _parseAsBool(request->getParam("THINGSPEAK_ON")->value());
   }
 
   if (request->hasParam("THINGSPEAK_GRAPH_ON")) {
-    THINGSPEAK_GRAPH_ON = _parseAsBool(request->getParam("THINGSPEAK_GRAPH_ON")->value());
+    thingSpeakSettings.graph = _parseAsBool(request->getParam("THINGSPEAK_GRAPH_ON")->value());
   }
 
   if (request->hasParam("THINGSPEAK_API_KEY")) {
-    _parseAsCString(THINGSPEAK_API_KEY, request->getParam("THINGSPEAK_API_KEY")->value(), 32);
+    _parseAsCString(thingSpeakSettings.apiKey, request->getParam("THINGSPEAK_API_KEY")->value(), 32);
   }
 
   if (request->hasParam("THINGSPEAK_CHANNEL_ID")) {
-    THINGSPEAK_CHANNEL_ID = (request->getParam("THINGSPEAK_CHANNEL_ID")->value()).toInt();
+    thingSpeakSettings.channelId = (request->getParam("THINGSPEAK_CHANNEL_ID")->value()).toInt();
   }
 
   if (request->hasParam("THINGSPEAK_READ_API_KEY")) {
-    _parseAsCString(THINGSPEAK_READ_API_KEY, request->getParam("THINGSPEAK_READ_API_KEY")->value(), 32);
+    _parseAsCString(thingSpeakSettings.readApiKey, request->getParam("THINGSPEAK_READ_API_KEY")->value(), 32);
   }
 
   if (request->hasParam("INFLUXDB_ON")) {
-    INFLUXDB_ON = _parseAsBool(request->getParam("INFLUXDB_ON")->value());
+    influxDBSettings.enabled = _parseAsBool(request->getParam("INFLUXDB_ON")->value());
   }
 
   if (request->hasParam("INFLUXDB_VERSION")) {
-    _parseAsCString(INFLUXDB_VERSION, request->getParam("INFLUXDB_VERSION")->value(), 16);
+    _parseAsCString(influxDBSettings.version, request->getParam("INFLUXDB_VERSION")->value(), 16);
   }
 
   if (request->hasParam("INFLUXDB_HOST")) {
-    _parseAsCString(INFLUXDB_HOST, request->getParam("INFLUXDB_HOST")->value(), 128);
+    _parseAsCString(influxDBSettings.host, request->getParam("INFLUXDB_HOST")->value(), 128);
   }
 
   if (request->hasParam("INFLUXDB_PORT")) {
-    INFLUXDB_PORT = (request->getParam("INFLUXDB_PORT")->value()).toInt();
+    influxDBSettings.port = (request->getParam("INFLUXDB_PORT")->value()).toInt();
   }
 
   if (request->hasParam("INFLUXDB_DATABASE")) {
-    _parseAsCString(INFLUXDB_DATABASE, request->getParam("INFLUXDB_DATABASE")->value(), 64);
+    _parseAsCString(influxDBSettings.database, request->getParam("INFLUXDB_DATABASE")->value(), 64);
   }
 
   if (request->hasParam("INFLUXDB_USER")) {
-    _parseAsCString(INFLUXDB_USER, request->getParam("INFLUXDB_USER")->value(), 64);
+    _parseAsCString(influxDBSettings.user, request->getParam("INFLUXDB_USER")->value(), 64);
   }
 
   if (request->hasParam("INFLUXDB_PASSWORD")) {
-    _parseAsCString(INFLUXDB_PASSWORD, request->getParam("INFLUXDB_PASSWORD")->value(), 64);
+    _parseAsCString(influxDBSettings.password, request->getParam("INFLUXDB_PASSWORD")->value(), 64);
   }
 
   if (request->hasParam("INFLUXDB_ORG")) {
-    _parseAsCString(INFLUXDB_ORG, request->getParam("INFLUXDB_ORG")->value(), 64);
+    _parseAsCString(influxDBSettings.org, request->getParam("INFLUXDB_ORG")->value(), 64);
   }
   if (request->hasParam("INFLUXDB_BUCKET")) {
-    _parseAsCString(INFLUXDB_BUCKET, request->getParam("INFLUXDB_BUCKET")->value(), 64);
+    _parseAsCString(influxDBSettings.bucket, request->getParam("INFLUXDB_BUCKET")->value(), 64);
   }
   if (request->hasParam("INFLUXDB_TOKEN")) {
-    _parseAsCString(INFLUXDB_TOKEN, request->getParam("INFLUXDB_TOKEN")->value(), 128);
+    _parseAsCString(influxDBSettings.token, request->getParam("INFLUXDB_TOKEN")->value(), 128);
   }
 #ifdef ARDUINO_ARCH_ESP32
   if (request->hasParam("AIRMONITOR_ON")) {
-    AIRMONITOR_ON = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
+    airMonitorSettings.enabled = _parseAsBool(request->getParam("AIRMONITOR_ON")->value());
   }
   if (request->hasParam("AIRMONITOR_GRAPH_ON")) {
-    AIRMONITOR_GRAPH_ON = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
+    airMonitorSettings.graph = _parseAsBool(request->getParam("AIRMONITOR_GRAPH_ON")->value());
   }
 #endif
   
   if (request->hasParam("LUFTDATEN_ON")) {
-      LUFTDATEN_ON = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
+      luftdatenSettings.enabled = _parseAsBool(request->getParam("LUFTDATEN_ON")->value());
   }
   
   if (request->hasParam("LUFTDATEN_GRAPH_ON")) {
-    LUFTDATEN_GRAPH_ON = _parseAsBool(request->getParam("LUFTDATEN_GRAPH_ON")->value());
+    luftdatenSettings.graph = _parseAsBool(request->getParam("LUFTDATEN_GRAPH_ON")->value());
   }
   
   if (request->hasParam("LUFTDATEN_APIID")) {
-    LUFTDATEN_APIID = (request->getParam("LUFTDATEN_APIID")->value()).toInt();
+    luftdatenSettings.apiId = (request->getParam("LUFTDATEN_APIID")->value()).toInt();
   }
   
   if (deviceSettings.debug) {
-    Serial.println(F("POST SERVICES CONFIG END!!"));
-	
-    // Serial.println("\n\t\t\t LUFTDATEN_ON: " + String(LUFTDATEN_ON) + "\n\n");
-	
+    Serial.println(F("POST SERVICES CONFIG END!!"));	
   }    
   
-  // request->redirect("/");
   delay(100);
-  
   saveConfig();
-  //delay(250);
+
   //_handle_config_services(true);
   // https://github.com/esp8266/Arduino/issues/1722
   //ESP.reset();
   delay(300);
   request->redirect("/");
-  delay(1000);
-  ESP.restart();
+  // delay(1000);
+  // ESP.restart();
 }
 
 static void handle_update_progress_cb(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
@@ -2841,9 +2835,6 @@ static void handle_update_progress_cb(AsyncWebServerRequest *request, String fil
     if (!Update.begin(free_space)) {
       Update.printError(Serial);
     }
-	//#elif defined ARDUINO_ARCH_ESP32
-
-	//#endif
   }
 
   if (Update.write(data, len) != len) {
@@ -2868,7 +2859,7 @@ static void handle_update_done(AsyncWebServerRequest *request) {
 
 static String handle_update_processor(const String& var)
 {
-  //Serial.println(F("var: ") + var);
+  // Serial.println(F("var: ") + var);
   String message;
   message = "";
 
@@ -2901,7 +2892,7 @@ static String handle_update_processor(const String& var)
     message += String(TEXT_UPDATE_PAGE);
   }
 
-  if (!AUTOUPDATE_ON) {
+  if (!deviceSettings.autoUpdate) {
     if (need_update) {
       if (var == F("{WEB_UPDATE_INFO_WARNING}")) {
         message += String(WEB_UPDATE_INFO_WARNING);
@@ -2954,7 +2945,7 @@ static String handle_update_processor(const String& var)
     message += String(TEXT_AUTOUPDATEON);
   }
 
-  if (AUTOUPDATE_ON) {
+  if (deviceSettings.autoUpdate) {
     if (var == F("{AUTOUPDATEONSTATUS}")) {
       message += String(TEXT_YES);
     }
@@ -2968,14 +2959,14 @@ static String handle_update_processor(const String& var)
     message += String(TEXT_CURRENTSOFTVERSION);
   }
   if (var == F("{SOFTWAREVERSION}")) {
-    message += String(String(CURRENTSOFTWAREVERSION) + " " + String(PMSENSORVERSION));
+    message += String(String(currentSoftwareVersion) + " " + String(pmSensorVersion));
   }
 
   if (var == F("{TEXT_SERVERSOFTWAREVERSION}")) {
     message += String(TEXT_SERVERSOFTWAREVERSION);
   }
   if (var == F("{SERVERSOFTWAREVERSION}")) {
-    message += String(String(SERVERSOFTWAREVERSION) + " " + String(PMSENSORVERSION));
+    message += String(String(serverSoftwareVersion) + " " + String(pmSensorVersion));
   }
 
   if (var == F("{TEXT_LATESTAVAILABLESOFT}")) {
@@ -3019,10 +3010,9 @@ static String handle_update_processor(const String& var)
   message = "";
 }
 
-//void handle_update() {            //Handler for the handle_update
 static void handle_update(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
 
@@ -3035,10 +3025,9 @@ static void handle_update(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", WEB_UPDATE_PAGE_ALL, handle_update_processor);
 }
 
-//void erase_wifi() {
 static void erase_wifi(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
   Serial.println(F("Erasing Config..."));
@@ -3054,10 +3043,9 @@ static void erase_wifi(AsyncWebServerRequest *request) {
   ESP.restart();
 }
 
-//void restore_config() {
 static void restore_config(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
   Serial.println(F("Restoring default settings..."));
@@ -3069,10 +3057,9 @@ static void restore_config(AsyncWebServerRequest *request) {
   ESP.restart();
 }
 
-//void fwupdate() {
 static void fwupdate(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
   unsigned char x = 0;
@@ -3089,67 +3076,67 @@ static void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
   }
 
   if (request->hasParam("MQTT_ON")) {
-    MQTT_ON = _parseAsBool(request->getParam("MQTT_ON")->value());
+    mqttSettings.enabled = _parseAsBool(request->getParam("MQTT_ON")->value());
   }
 
   if (request->hasParam("MQTT_HOST")) {
-    _parseAsCString(MQTT_HOST, request->getParam("MQTT_HOST")->value(), 128);
+    _parseAsCString(mqttSettings.host, request->getParam("MQTT_HOST")->value(), 128);
   }
 
   if (request->hasParam("MQTT_PORT")) {
-    MQTT_PORT = (request->getParam("MQTT_PORT")->value()).toInt();
+    mqttSettings.port = (request->getParam("MQTT_PORT")->value()).toInt();
   }
 
   if (request->hasParam("MQTT_USER")) {
-    _parseAsCString(MQTT_USER, request->getParam("MQTT_USER")->value(), 64);
+    _parseAsCString(mqttSettings.user, request->getParam("MQTT_USER")->value(), 64);
   }
 
   if (request->hasParam("MQTT_PASSWORD")) {
-    _parseAsCString(MQTT_PASSWORD, request->getParam("MQTT_PASSWORD")->value(), 64);
+    _parseAsCString(mqttSettings.password, request->getParam("MQTT_PASSWORD")->value(), 64);
   }
 
   if (request->hasParam("MQTT_IP_IN_TOPIC")) {
-    MQTT_IP_IN_TOPIC = _parseAsBool(request->getParam("MQTT_IP_IN_TOPIC")->value());
+    mqttSettings.ipInTopic = _parseAsBool(request->getParam("MQTT_IP_IN_TOPIC")->value());
   }
 
   if (request->hasParam("MQTT_DEVICENAME_IN_TOPIC")) {
-    MQTT_DEVICENAME_IN_TOPIC = _parseAsBool(request->getParam("MQTT_DEVICENAME_IN_TOPIC")->value());
+    mqttSettings.deviceNameInTopic = _parseAsBool(request->getParam("MQTT_DEVICENAME_IN_TOPIC")->value());
   }
 
   if (request->hasParam("MQTT_SLASH_AT_THE_BEGINNING")) {
-    MQTT_SLASH_AT_THE_BEGINNING = _parseAsBool(request->getParam("MQTT_SLASH_AT_THE_BEGINNING")->value());
+    mqttSettings.slashAtBeginning = _parseAsBool(request->getParam("MQTT_SLASH_AT_THE_BEGINNING")->value());
   }
 
   if (request->hasParam("MQTT_SLASH_AT_THE_END")) {
-    MQTT_SLASH_AT_THE_END = _parseAsBool(request->getParam("MQTT_SLASH_AT_THE_END")->value());
+    mqttSettings.slashAtEnd = _parseAsBool(request->getParam("MQTT_SLASH_AT_THE_END")->value());
   }
 
   if (request->hasParam("MQTT_TOPIC_TEMP")) {
-    _parseAsCString(MQTT_TOPIC_TEMP, request->getParam("MQTT_TOPIC_TEMP")->value(), 128);
+    _parseAsCString(mqttSettings.tempTopic, request->getParam("MQTT_TOPIC_TEMP")->value(), 128);
   }
 
   if (request->hasParam("MQTT_TOPIC_HUMI")) {
-    _parseAsCString(MQTT_TOPIC_HUMI, request->getParam("MQTT_TOPIC_HUMI")->value(), 128);
+    _parseAsCString(mqttSettings.humiTopic, request->getParam("MQTT_TOPIC_HUMI")->value(), 128);
   }
 
   if (request->hasParam("MQTT_TOPIC_PRESS")) {
-    _parseAsCString(MQTT_TOPIC_PRESS, request->getParam("MQTT_TOPIC_PRESS")->value(), 128);
+    _parseAsCString(mqttSettings.pressTopic, request->getParam("MQTT_TOPIC_PRESS")->value(), 128);
   }
 
   if (request->hasParam("MQTT_TOPIC_PM1")) {
-    _parseAsCString(MQTT_TOPIC_PM1, request->getParam("MQTT_TOPIC_PM1")->value(), 128);
+    _parseAsCString(mqttSettings.pm1Topic, request->getParam("MQTT_TOPIC_PM1")->value(), 128);
   }
 
   if (request->hasParam("MQTT_TOPIC_PM25")) {
-    _parseAsCString(MQTT_TOPIC_PM25, request->getParam("MQTT_TOPIC_PM25")->value(), 128);
+    _parseAsCString(mqttSettings.pm25Topic, request->getParam("MQTT_TOPIC_PM25")->value(), 128);
   }
 
   if (request->hasParam("MQTT_TOPIC_PM10")) {
-    _parseAsCString(MQTT_TOPIC_PM10, request->getParam("MQTT_TOPIC_PM10")->value(), 128);
+    _parseAsCString(mqttSettings.pm10Topic, request->getParam("MQTT_TOPIC_PM10")->value(), 128);
   }
 
   if (request->hasParam("MQTT_TOPIC_AIRQUALITY")) {
-    _parseAsCString(MQTT_TOPIC_AIRQUALITY, request->getParam("MQTT_TOPIC_AIRQUALITY")->value(), 128);
+    _parseAsCString(mqttSettings.airQualityTopic, request->getParam("MQTT_TOPIC_AIRQUALITY")->value(), 128);
   }
 
   if (deviceSettings.debug) {
@@ -3157,24 +3144,23 @@ static void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
   }
 
   saveConfig();
-  //delay(250);
+  // delay(250);
   // https://github.com/esp8266/Arduino/issues/1722
-  //ESP.reset();
-  //yield();
+  // ESP.reset();
+  // yield();
 
   request->redirect("/");
   delay(1000);
-  Serial.println(F("Restart"));
-  ESP.restart();
+  // Serial.println(F("Restart"));
+  // ESP.restart();
 }
 
-//void autoupdate_on() {
 static void autoupdate_on(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
-  AUTOUPDATE_ON = true;
+  deviceSettings.autoUpdate = true;
   saveConfig();
 
   request->redirect("/");
@@ -3183,25 +3169,24 @@ static void autoupdate_on(AsyncWebServerRequest *request) {
   ESP.restart();
 }
 
-//void handle_api() {
 static void handle_api(AsyncWebServerRequest *request) {
   String message;
   StaticJsonDocument<800> jsonBuffer;
   JsonObject json = jsonBuffer.to<JsonObject>();
 
   json[F("device_name")] = device_name;
-  if (strcmp(DUST_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.dustModel, "Non")) {
     json[F("pm1")] = averagePM1;
     json[F("pm25")] = averagePM25;
-    if (!strcmp(DUST_MODEL, "SPS30")) {
+    if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
       json[F("pm4")] = averagePM4;
     }
     json[F("pm10")] = averagePM10;
   }
-  if (strcmp(THP_MODEL, "Non")) {
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
     takeTHPMeasurements();
   }
-  if (!strcmp(THP_MODEL, "BME280")) {
+  if (!strcmp(sensorsSettings.thpModel, "BME280")) {
     if (checkBmeStatus()) {
       json[F("temperature")] = float(currentTemperature);
       json[F("pressure")] = int(currentPressure);
@@ -3209,27 +3194,27 @@ static void handle_api(AsyncWebServerRequest *request) {
       json[F("dewpoint")] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
     }
   }
-  if (!strcmp(THP_MODEL, "BMP280")) {
+  if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
     if (checkBmpStatus()) {
       json[F("temperature")] = float(currentTemperature);
       json[F("pressure")] = int(currentPressure);
     }
   }
-  if (!strcmp(THP_MODEL, "HTU21")) {
+  if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
     if (checkHTU21DStatus()) {
       json[F("temperature")] = float(currentTemperature);
       json[F("humidity")] = int(currentHumidity);
       json[F("dewpoint")] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
     }
   }
-  if (!strcmp(THP_MODEL, "DHT22")) {
+  if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
     if (checkDHT22Status()) {
       json[F("temperature")] = float(currentTemperature);
       json[F("humidity")] = int(currentHumidity);
       json[F("dewpoint")] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
     }
   }
-  if (!strcmp(THP_MODEL, "SHT1x")) {
+  if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
     if (checkSHT1xStatus()) {
       json[F("temperature")] = float(currentTemperature);
       json[F("humidity")] = int(currentHumidity);
@@ -3238,13 +3223,12 @@ static void handle_api(AsyncWebServerRequest *request) {
   }
 
   serializeJsonPretty(json, message);
-  //WebServer.send(200, "text/json", message);
   request->send(200, "text/json", message);
 }
 
 static void homekit_reset(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
   Serial.println(F("reset homekit..."));
@@ -3253,50 +3237,46 @@ static void homekit_reset(AsyncWebServerRequest *request) {
   SPIFFS.remove(pair_file_name);
 
   request->redirect("/");
-
-  //request->redirect("/");
   delay(1000);
-  //Serial.println(F("Restart"));
-  //ESP.restart();
+  Serial.println(F("Restart"));
+  ESP.restart();
 }
 
 static void homekit_on(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
   Serial.println(F("homekit on..."));
 
-  HOMEKIT_SUPPORT = true;
+  homeKitSettings.enabled = true;
   saveConfig();
 
   request->redirect("/");
-
   delay(1000);
   Serial.println(F("Restart"));
   ESP.restart();
 }
 
 static void homekit_off(AsyncWebServerRequest *request) {
-  if (CONFIG_AUTH == true) {
-    if (!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+  if (authSettings.enabled == true) {
+    if (!request->authenticate(authSettings.username, authSettings.password))
       return request->requestAuthentication();
   }
   Serial.println(F("homekit off..."));
 
-  HOMEKIT_SUPPORT = false;
+  homeKitSettings.enabled = false;
   saveConfig();
 
   request->redirect("/");
-
   delay(1000);
   Serial.println(F("Restart"));
   ESP.restart();
 }
 /*
  static void logout(AsyncWebServerRequest *request) {
-    if (CONFIG_AUTH == true) {
-        if(!request->authenticate(CONFIG_USERNAME, CONFIG_PASSWORD))
+    if (authSettings.enabled == true) {
+        if(!request->authenticate(authSettings.username, authSettings.password))
             return request->requestAuthentication();
     }
 

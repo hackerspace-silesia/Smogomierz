@@ -102,10 +102,10 @@ static String handle_root_processor(const String& var)
             message.replace(F("{TEXT_PRESSURE}"), String(TEXT_PRESSURE));
             message.replace(F("{TEXT_DEWPOINT}"), String(TEXT_DEWPOINT));
 
-            message.replace(F("{Temperature}"), String(int(currentTemperature)));
-            message.replace(F("{Pressure}"), String(int(currentPressure)));
-            message.replace(F("{Humidity}"), String(int(currentHumidity)));
-            message.replace(F("{Dewpoint}"), String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+            message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
+            message.replace(F("{Pressure}"), String(int(measurementsData.pressure)));
+            message.replace(F("{Humidity}"), String(int(measurementsData.humidity)));
+            message.replace(F("{Dewpoint}"), String(int(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112)));
         } else {
           message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
@@ -118,10 +118,10 @@ static String handle_root_processor(const String& var)
           message.replace(F("{TEXT_HUMIDITY}"), String(TEXT_HUMIDITY));
           message.replace(F("{TEXT_DEWPOINT}"), String(TEXT_DEWPOINT));
 
-          message.replace(F("{Temperature}"), String(int(currentTemperature)));
+          message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
-          message.replace(F("{Humidity}"), String(int(currentHumidity)));
-          message.replace(F("{Dewpoint}"), String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+          message.replace(F("{Humidity}"), String(int(measurementsData.humidity)));
+          message.replace(F("{Dewpoint}"), String(int(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112)));
         } else {
           message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
@@ -134,10 +134,10 @@ static String handle_root_processor(const String& var)
           message.replace(F("{TEXT_HUMIDITY}"), String(TEXT_HUMIDITY));
           message.replace(F("{TEXT_DEWPOINT}"), String(TEXT_DEWPOINT));
 
-          message.replace(F("{Temperature}"), String(int(currentTemperature)));
+          message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
-          message.replace(F("{Humidity}"), String(int(currentHumidity)));
-          message.replace(F("{Dewpoint}"), String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+          message.replace(F("{Humidity}"), String(int(measurementsData.humidity)));
+          message.replace(F("{Dewpoint}"), String(int(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112)));
         } else {
           message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
@@ -149,8 +149,8 @@ static String handle_root_processor(const String& var)
           message.replace(F("{TEXT_TEMPERATURE}"), String(TEXT_TEMPERATURE));
           message.replace(F("{TEXT_PRESSURE}"), String(TEXT_PRESSURE));
 
-          message.replace(F("{Temperature}"), String(int(currentTemperature)));
-          message.replace(F("{Pressure}"), String(int(currentPressure)));
+          message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
+          message.replace(F("{Pressure}"), String(int(measurementsData.pressure)));
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
           message.replace(F("{TEXT_DEWPOINT}: {Pressure} °C"), "");
         } else {
@@ -165,10 +165,10 @@ static String handle_root_processor(const String& var)
           message.replace(F("{TEXT_HUMIDITY}"), String(TEXT_HUMIDITY));
           message.replace(F("{TEXT_DEWPOINT}"), String(TEXT_DEWPOINT));
 
-          message.replace(F("{Temperature}"), String(int(currentTemperature)));
+          message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
-          message.replace(F("{Humidity}"), String(float(currentHumidity)));
-          message.replace(F("{Dewpoint}"), String(int(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112)));
+          message.replace(F("{Humidity}"), String(float(measurementsData.humidity)));
+          message.replace(F("{Dewpoint}"), String(int(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112)));
         } else {
           message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
@@ -186,41 +186,41 @@ static String handle_root_processor(const String& var)
       message.replace(F("{TEXT_AIRPOLLUTION}"), String(TEXT_AIRPOLLUTION));
 
       if (deviceSettings.displayPM1) {
-        message.replace(F("{averagePM1}"), String(averagePM1));
+        message.replace(F("{averagePM1}"), String(measurementsData.averagePM1));
       } else {
         message.replace(F("PM1: {averagePM1} µg/m³"), "");
       }
 
-      if (averagePM25 <= 10) {
+      if (measurementsData.averagePM25 <= 10) {
         message.replace(F("{colorAveragePM25}"), F("<font color='#61EEE4'>"));
-      } else if (averagePM25 > 10 && averagePM25 <= 20) {
+      } else if (measurementsData.averagePM25 > 10 && measurementsData.averagePM25 <= 20) {
         message.replace(F("{colorAveragePM25}"), F("<font color='#5BCAAA'>"));
-      } else if (averagePM25 > 20 && averagePM25 <= 25) {
+      } else if (measurementsData.averagePM25 > 20 && measurementsData.averagePM25 <= 25) {
         message.replace(F("{colorAveragePM25}"), F("<font color='#EEE25D'>"));
-      } else if (averagePM25 > 25 && averagePM25 <= 50) {
+      } else if (measurementsData.averagePM25 > 25 && measurementsData.averagePM25 <= 50) {
         message.replace(F("{colorAveragePM25}"), F("<font color='#F95459'>"));
-      } else if (averagePM25 > 50) {
+      } else if (measurementsData.averagePM25 > 50) {
         message.replace(F("{colorAveragePM25}"), F("<font color='#920736'>"));
       } else {
         message.replace(F("{colorAveragePM25}"), F("<font>"));
       }
 
-      message.replace(F("{averagePM25}"), String(averagePM25) + F("</font>"));
+      message.replace(F("{averagePM25}"), String(measurementsData.averagePM25) + F("</font>"));
 
-      if (averagePM10 <= 20) {
+      if (measurementsData.averagePM10 <= 20) {
         message.replace(F("{colorAveragePM10}"), F("<font color='#61EEE4'>"));
-      } else if (averagePM10 > 20 && averagePM10 <= 35) {
+      } else if (measurementsData.averagePM10 > 20 && measurementsData.averagePM10 <= 35) {
         message.replace(F("{colorAveragePM10}"), F("<font color='#5BCAAA'>"));
-      } else if (averagePM10 > 35 && averagePM10 <= 50) {
+      } else if (measurementsData.averagePM10 > 35 && measurementsData.averagePM10 <= 50) {
         message.replace(F("{colorAveragePM10}"), F("<font color='#EEE25D'>"));
-      } else if (averagePM10 > 50 && averagePM10 <= 100) {
+      } else if (measurementsData.averagePM10 > 50 && measurementsData.averagePM10 <= 100) {
         message.replace(F("{colorAveragePM10}"), F("<font color='#F95459'>"));
-      } else if (averagePM10 > 100) {
+      } else if (measurementsData.averagePM10 > 100) {
         message.replace(F("{colorAveragePM10}"), F("<font color='#920736'>"));
       } else {
         message.replace(F("{colorAveragePM10}"), F("<font>"));
       }
-      message.replace(F("{averagePM10}"), String(averagePM10) + F("</font>"));
+      message.replace(F("{averagePM10}"), String(measurementsData.averagePM10) + F("</font>"));
     }
   } else {
     if (var == F("{WEB_ROOT_PAGE_MEASUREMENTS_AIR}")) {
@@ -1623,7 +1623,7 @@ static String handle_config_services_processor(const String& var)
     message += (_addMQTTTextInput(F("MQTT_TOPIC_TEMP"), mqttSettings.tempTopic));
     }
     if (var == F("{MQTT_TEMP}")) {
-    message += (String(int(currentTemperature)));
+    message += (String(int(measurementsData.temperature)));
     }
   */
 
@@ -1765,20 +1765,20 @@ static String handle_adv_mqtt_config_processor(const String& var)
   if (strcmp(sensorsSettings.thpModel, "Non")) {
     // takeTHPMeasurements();
     if (var == F("{MQTT_TEMP}")) {
-      message += (String(int(currentTemperature)));
+      message += (String(int(measurementsData.temperature)));
     }
     if (var == F("{MQTT_TOPIC_TEMP}")) {
       message += (_addMQTTTextInput(F("MQTT_TOPIC_TEMP"), mqttSettings.tempTopic));
     }
 
     if (var == F("{MQTT_HUMI}")) {
-      message += (String(int(currentHumidity)));
+      message += (String(int(measurementsData.humidity)));
     }
     if (var == F("{MQTT_TOPIC_HUMI}")) {
       message += (_addMQTTTextInput(F("MQTT_TOPIC_HUMI"), mqttSettings.humiTopic));
     }
     if (var == F("{MQTT_PRESS}")) {
-      message += (String(int(currentPressure)));
+      message += (String(int(measurementsData.pressure)));
     }
     if (var == F("{MQTT_TOPIC_PRESS}")) {
       message += (_addMQTTTextInput(F("MQTT_TOPIC_PRESS"), mqttSettings.pressTopic));
@@ -1787,34 +1787,34 @@ static String handle_adv_mqtt_config_processor(const String& var)
 
   if (strcmp(sensorsSettings.dustModel, "Non")) {
     if (var == F("{MQTT_PM1}")) {
-      message += (String(int(averagePM1)));
+      message += (String(int(measurementsData.averagePM1)));
     }
     if (var == F("{MQTT_TOPIC_PM1}")) {
       message += (_addMQTTTextInput(F("MQTT_TOPIC_PM1"), mqttSettings.pm1Topic));
     }
     if (var == F("{MQTT_PM25}")) {
-      message += (String(int(averagePM25)));
+      message += (String(int(measurementsData.averagePM25)));
     }
     if (var == F("{MQTT_TOPIC_PM25}")) {
       message += (_addMQTTTextInput(F("MQTT_TOPIC_PM25"), mqttSettings.pm25Topic));
     }
     if (var == F("{MQTT_PM10}")) {
-      message += (String(int(averagePM10)));
+      message += (String(int(measurementsData.averagePM10)));
     }
     if (var == F("{MQTT_TOPIC_PM10}")) {
       message += (_addMQTTTextInput(F("MQTT_TOPIC_PM10"), mqttSettings.pm10Topic));
     }
 
     if (var == F("{MQTT_AIRQUALITY}")) {
-      if (averagePM25 <= 10) {
+      if (measurementsData.averagePM25 <= 10) {
         message += F("EXCELLENT");
-      } else if (averagePM25 > 10 && averagePM25 <= 20) {
+      } else if (measurementsData.averagePM25 > 10 && measurementsData.averagePM25 <= 20) {
         message += F("GOOD");
-      } else if (averagePM25 > 20 && averagePM25 <= 25) {
+      } else if (measurementsData.averagePM25 > 20 && measurementsData.averagePM25 <= 25) {
         message += F("FAIR");
-      } else if (averagePM25 > 25 && averagePM25 <= 50) {
+      } else if (measurementsData.averagePM25 > 25 && measurementsData.averagePM25 <= 50) {
         message += F("INFERIOR");
-      } else if (averagePM25 > 50) {
+      } else if (measurementsData.averagePM25 > 50) {
         message += F("POOR");
       } else {
         message += F("UNKNOWN");
@@ -1962,13 +1962,13 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     takeTHPMeasurements();
     if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       if (checkBmeStatus() == true) {
-        message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+        message.replace(F("{MQTT_TEMP}"), String(int(measurementsData.temperature)));
         message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
-        message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
+        message.replace(F("{MQTT_HUMI}"), String(int(measurementsData.humidity)));
         message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", mqttSettings.humiTopic));
 
-        message.replace(F("{MQTT_PRESS}"), String(int(currentPressure)));
+        message.replace(F("{MQTT_PRESS}"), String(int(measurementsData.pressure)));
         message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", mqttSettings.pressTopic));
       } else {
         if (deviceSettings.debug) {
@@ -1992,7 +1992,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
 
     if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       if (checkBmpStatus() == true) {
-        message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+        message.replace(F("{MQTT_TEMP}"), String(int(measurementsData.temperature)));
         message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
@@ -2001,7 +2001,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}={MQTT_HUMI}<br />"), "");
 
-        message.replace(F("{MQTT_PRESS}"), String(int(currentPressure)));
+        message.replace(F("{MQTT_PRESS}"), String(int(measurementsData.pressure)));
         message.replace(F("{MQTT_TOPIC_PRESS}"), _addMQTTTextInput("MQTT_TOPIC_PRESS", mqttSettings.pressTopic));
       } else {
         if (deviceSettings.debug) {
@@ -2025,10 +2025,10 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
 
     if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       if (checkHTU21DStatus() == true) {
-        message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+        message.replace(F("{MQTT_TEMP}"), String(int(measurementsData.temperature)));
         message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
-        message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
+        message.replace(F("{MQTT_HUMI}"), String(int(measurementsData.humidity)));
         message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", mqttSettings.humiTopic));
 
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
@@ -2058,10 +2058,10 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
 
     if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       if (checkDHT22Status() == true) {
-        message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+        message.replace(F("{MQTT_TEMP}"), String(int(measurementsData.temperature)));
         message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
-        message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
+        message.replace(F("{MQTT_HUMI}"), String(int(measurementsData.humidity)));
         message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", mqttSettings.humiTopic));
 
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
@@ -2091,10 +2091,10 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
 
     if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       if (checkDHT22Status() == true) {
-        message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+        message.replace(F("{MQTT_TEMP}"), String(int(measurementsData.temperature)));
         message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
-        message.replace(F("{MQTT_HUMI}"), String(int(currentHumidity)));
+        message.replace(F("{MQTT_HUMI}"), String(int(measurementsData.humidity)));
         message.replace(F("{MQTT_TOPIC_HUMI}"), _addMQTTTextInput("MQTT_TOPIC_HUMI", mqttSettings.humiTopic));
 
         message.replace(F("<b>{TEXT_PRESS_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_PRESS}/{MQTT_PRESS}<br />"), "");
@@ -2124,7 +2124,7 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       if (checkDS18B20Status()) {
 
-        message.replace(F("{MQTT_TEMP}"), String(int(currentTemperature)));
+        message.replace(F("{MQTT_TEMP}"), String(int(measurementsData.temperature)));
         message.replace(F("{MQTT_TOPIC_TEMP}"), _addMQTTTextInput("MQTT_TOPIC_TEMP", mqttSettings.tempTopic));
 
         message.replace(F("<b>{TEXT_HUMI_TOPIC}: </b>/{MQTT_IP}{MQTT_DEVICENAME}{MQTT_TOPIC_HUMI}/{MQTT_HUMI}<br />"), "");
@@ -2172,22 +2172,22 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   }
 
   if (strcmp(sensorsSettings.dustModel, "Non")) {
-    message.replace(F("{MQTT_PM1}"), String(int(averagePM1)));
+    message.replace(F("{MQTT_PM1}"), String(int(measurementsData.averagePM1)));
     message.replace(F("{MQTT_TOPIC_PM1}"), _addMQTTTextInput("MQTT_TOPIC_PM1", mqttSettings.pm1Topic));
-    message.replace(F("{MQTT_PM25}"), String(int(averagePM25)));
+    message.replace(F("{MQTT_PM25}"), String(int(measurementsData.averagePM25)));
     message.replace(F("{MQTT_TOPIC_PM25}"), _addMQTTTextInput("MQTT_TOPIC_PM25", mqttSettings.pm25Topic));
-    message.replace(F("{MQTT_PM10}"), String(int(averagePM10)));
+    message.replace(F("{MQTT_PM10}"), String(int(measurementsData.averagePM10)));
     message.replace(F("{MQTT_TOPIC_PM10}"), _addMQTTTextInput("MQTT_TOPIC_PM10", mqttSettings.pm10Topic));
 
-    if (averagePM25 <= 10) {
+    if (measurementsData.averagePM25 <= 10) {
       message.replace(F("{MQTT_AIRQUALITY}"), "EXCELLENT");
-    } else if (averagePM25 > 10 && averagePM25 <= 20) {
+    } else if (measurementsData.averagePM25 > 10 && measurementsData.averagePM25 <= 20) {
       message.replace(F("{MQTT_AIRQUALITY}"), "GOOD");
-    } else if (averagePM25 > 20 && averagePM25 <= 25) {
+    } else if (measurementsData.averagePM25 > 20 && measurementsData.averagePM25 <= 25) {
       message.replace(F("{MQTT_AIRQUALITY}"), "FAIR");
-    } else if (averagePM25 > 25 && averagePM25 <= 50) {
+    } else if (measurementsData.averagePM25 > 25 && measurementsData.averagePM25 <= 50) {
       message.replace(F("{MQTT_AIRQUALITY}"), "INFERIOR");
-    } else if (averagePM25 > 50) {
+    } else if (measurementsData.averagePM25 > 50) {
       message.replace(F("{MQTT_AIRQUALITY}"), "POOR");
     } else {
       message.replace(F("{MQTT_AIRQUALITY}"), "UNKNOWN");
@@ -3174,49 +3174,49 @@ static void handle_api(AsyncWebServerRequest *request) {
 
   json[F("device_name")] = device_name;
   if (strcmp(sensorsSettings.dustModel, "Non")) {
-    json[F("pm1")] = averagePM1;
-    json[F("pm25")] = averagePM25;
+    json[F("pm1")] = measurementsData.averagePM1;
+    json[F("pm25")] = measurementsData.averagePM25;
     if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
-      json[F("pm4")] = averagePM4;
+      json[F("pm4")] = measurementsData.averagePM4;
     }
-    json[F("pm10")] = averagePM10;
+    json[F("pm10")] = measurementsData.averagePM10;
   }
   if (strcmp(sensorsSettings.thpModel, "Non")) {
     takeTHPMeasurements();
   }
   if (!strcmp(sensorsSettings.thpModel, "BME280")) {
     if (checkBmeStatus()) {
-      json[F("temperature")] = float(currentTemperature);
-      json[F("pressure")] = int(currentPressure);
-      json[F("humidity")] = int(currentHumidity);
-      json[F("dewpoint")] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
+      json[F("temperature")] = float(measurementsData.temperature);
+      json[F("pressure")] = int(measurementsData.pressure);
+      json[F("humidity")] = int(measurementsData.humidity);
+      json[F("dewpoint")] = float(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112);
     }
   }
   if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
     if (checkBmpStatus()) {
-      json[F("temperature")] = float(currentTemperature);
-      json[F("pressure")] = int(currentPressure);
+      json[F("temperature")] = float(measurementsData.temperature);
+      json[F("pressure")] = int(measurementsData.pressure);
     }
   }
   if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
     if (checkHTU21DStatus()) {
-      json[F("temperature")] = float(currentTemperature);
-      json[F("humidity")] = int(currentHumidity);
-      json[F("dewpoint")] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
+      json[F("temperature")] = float(measurementsData.temperature);
+      json[F("humidity")] = int(measurementsData.humidity);
+      json[F("dewpoint")] = float(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112);
     }
   }
   if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
     if (checkDHT22Status()) {
-      json[F("temperature")] = float(currentTemperature);
-      json[F("humidity")] = int(currentHumidity);
-      json[F("dewpoint")] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
+      json[F("temperature")] = float(measurementsData.temperature);
+      json[F("humidity")] = int(measurementsData.humidity);
+      json[F("dewpoint")] = float(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112);
     }
   }
   if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
     if (checkSHT1xStatus()) {
-      json[F("temperature")] = float(currentTemperature);
-      json[F("humidity")] = int(currentHumidity);
-      json[F("dewpoint")] = float(pow((currentHumidity) / 100, 0.125) * (112 + 0.9 * (currentTemperature)) + 0.1 * (currentTemperature) - 112);
+      json[F("temperature")] = float(measurementsData.temperature);
+      json[F("humidity")] = int(measurementsData.humidity);
+      json[F("dewpoint")] = float(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112);
     }
   }
 

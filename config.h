@@ -117,6 +117,12 @@ struct MeasurementsData {
     float temperature = 0;
     unsigned short humidity = 0;
     unsigned short pressure = 0;
+    float first_temperature = 0;
+    unsigned short first_humidity = 0;
+    unsigned short first_pressure = 0;
+    float second_temperature = 0;
+    unsigned short second_humidity = 0;
+    unsigned short second_pressure = 0;
     unsigned short averagePM1 = 0;
     unsigned short averagePM25 = 0;
     unsigned short averagePM4 = 0;

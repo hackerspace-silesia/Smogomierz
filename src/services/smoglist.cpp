@@ -55,7 +55,7 @@ void sendSmoglistJson(JsonObject& json) {
 	}
 }
 
-void sendSmoglistData(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
+void sendSmoglistData() {
 	StaticJsonDocument<1024> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
 	
@@ -114,10 +114,10 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
 	if (!strcmp(sensorsSettings.dustModel, "Non")) {
 		json[F("DUST_MODEL")] = F("Non");
 	}
-	json[F("PM1")] = int(averagePM1);
-	json[F("PM25")] = int(averagePM25);
-	json[F("PM4")] = int(averagePM4);
-    json[F("PM10")] = int(averagePM10);
+	json[F("PM1")] = int(measurementsData.averagePM1);
+	json[F("PM25")] = int(measurementsData.averagePM25);
+	json[F("PM4")] = int(measurementsData.averagePM4);
+    json[F("PM10")] = int(measurementsData.averagePM10);
 	
 	// Temp/Humi/Pressure data
 	if (strcmp(sensorsSettings.thpModel, "Non")) {
@@ -134,9 +134,9 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
   		} else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
   			json[F("THP_MODEL")] = F("DS18B20");
   		}
-		json[F("Temperature")] = float(currentTemperature);
-		json[F("Humidity")] = float(currentHumidity);
-		json[F("Pressure")] = float(currentPressure);
+		json[F("Temperature")] = float(measurementsData.temperature);
+		json[F("Humidity")] = float(measurementsData.humidity);
+		json[F("Pressure")] = float(measurementsData.pressure);
 	} else {
 		json[F("THP_MODEL")] = F("Non");
 		json[F("Temperature")] = 0;
@@ -191,7 +191,7 @@ void sendSmoglistJson(JsonObject& json) {
 	}
 }
 
-void sendSmoglistData(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
+void sendSmoglistData() {
 	StaticJsonDocument<1024> jsonBuffer;
 	JsonObject json = jsonBuffer.to<JsonObject>();
 	
@@ -250,10 +250,10 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
 	if (!strcmp(sensorsSettings.dustModel, "Non")) {
 		json["DUST_MODEL"] = "Non";
 	}
-	json["PM1"] = int(averagePM1);
-	json["PM25"] = int(averagePM25);
-	json["PM4"] = int(averagePM4);
-    json["PM10"] = int(averagePM10);
+	json["PM1"] = int(measurementsData.averagePM1);
+	json["PM25"] = int(measurementsData.averagePM25);
+	json["PM4"] = int(measurementsData.averagePM4);
+    json["PM10"] = int(measurementsData.averagePM10);
 	
 	// Temp/Humi/Pressure data
 	if (strcmp(sensorsSettings.thpModel, "Non")) {
@@ -270,9 +270,9 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
   		} else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
   			json["THP_MODEL"] = "DS18B20";
   		}
-		json["Temperature"] = float(currentTemperature);
-		json["Humidity"] = float(currentHumidity);
-		json["Pressure"] = float(currentPressure);
+		json["Temperature"] = float(measurementsData.temperature);
+		json["Humidity"] = float(measurementsData.humidity);
+		json["Pressure"] = float(measurementsData.pressure);
 	} else {
 		json["THP_MODEL"] = "Non";
 		json["Temperature"] = 0;
@@ -284,9 +284,9 @@ void sendSmoglistData(float & currentTemperature, float & currentPressure, float
 #endif
 
 
-void sendDataToSmoglist(float & currentTemperature, float & currentPressure, float & currentHumidity, unsigned short & averagePM1, unsigned short & averagePM25, unsigned short & averagePM4, unsigned short & averagePM10) {
+void sendDataToSmoglist() {
     if (!(smoglistSettings.enabled)) {
         return;
     }
-    sendSmoglistData(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
+    sendSmoglistData();
 }

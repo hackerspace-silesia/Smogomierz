@@ -175,9 +175,9 @@ MQTTSettings mqttSettings;
 AQIEcoSettings aqiEcoSettings;
 HomeKitSettings homeKitSettings;
 AuthSettings authSettings;
+MeasurementsData measurementsData;
 
 #include "src/autoupdate.h"
-
 #ifndef DISABLE_SMOGLIST
 #include "src/services/smoglist.h"
 #endif
@@ -354,15 +354,10 @@ static unsigned short pmMeasurements[10][4];
 static unsigned short pmMeasurements[10][3];
 #endif
 
-//TODO - removed!
-static unsigned short averagePM1, averagePM25, averagePM4, averagePM10 = 0;
-static float currentTemperature, currentHumidity, currentPressure = 0;
-
 static float calib = 1;
 static bool need_update = false;
 char serverSoftwareVersion[32] = "";
 char currentSoftwareVersion[32] = "";
-
 
 AsyncWebServer server(80);
 WiFiClient espClient;
@@ -1348,7 +1343,7 @@ void loop() {
 void sendDataToExternalServices() {
 
   if (luftdatenSettings.enabled) {
-    sendDataToLuftdaten(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
+    sendDataToLuftdaten();
     if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the Sensor.Community service!\n"));
@@ -1360,7 +1355,7 @@ void sendDataToExternalServices() {
 
 #ifdef ARDUINO_ARCH_ESP32
   if (airMonitorSettings.enabled) {
-    sendDataToAirMonitor(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
+    sendDataToAirMonitor();
     if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the AirMonitor service!\n"));
@@ -1373,7 +1368,7 @@ void sendDataToExternalServices() {
 
 #ifndef DISABLE_SMOGLIST
   if (smoglistSettings.enabled) {
-    sendDataToSmoglist(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
+    sendDataToSmoglist();
     if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the Smoglist service!\n"));
@@ -1385,7 +1380,7 @@ void sendDataToExternalServices() {
 #endif
 
   if (aqiEcoSettings.enabled) {
-    sendDataToAqiEco(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
+    sendDataToAqiEco();
     if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the aqi.eco service!\n"));
@@ -1407,7 +1402,7 @@ void sendDataToExternalDBs() {
   }
 
   if (thingSpeakSettings.enabled) {
-    sendDataToThingSpeak(currentTemperature, currentPressure, currentHumidity, averagePM1, averagePM25, averagePM4, averagePM10);
+    sendDataToThingSpeak();
     if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the Thingspeak service!\n"));
@@ -1439,9 +1434,9 @@ void sendDataToExternalDBs() {
         Serial.println(("\nMeasurements from PMSx003!\n"));
 #endif
       }
-      row.addValue("pm1", averagePM1);
-      row.addValue("pm25", averagePM25);
-      row.addValue("pm10", averagePM10);
+      row.addValue("pm1", measurementsData.averagePM1);
+      row.addValue("pm25", measurementsData.averagePM25);
+      row.addValue("pm10", measurementsData.averagePM10);
     } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1450,9 +1445,9 @@ void sendDataToExternalDBs() {
         Serial.println(("\nMeasurements from SDS0x1!\n"));
 #endif
       }
-      row.addValue("pm1", averagePM1);
-      row.addValue("pm25", averagePM25);
-      row.addValue("pm10", averagePM10);
+      row.addValue("pm1", measurementsData.averagePM1);
+      row.addValue("pm25", measurementsData.averagePM25);
+      row.addValue("pm10", measurementsData.averagePM10);
     } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1461,9 +1456,9 @@ void sendDataToExternalDBs() {
         Serial.println(("\nMeasurements from SDS!\n"));
 #endif
       }
-      row.addValue("pm1", averagePM1);
-      row.addValue("pm25", averagePM25);
-      row.addValue("pm10", averagePM10);
+      row.addValue("pm1", measurementsData.averagePM1);
+      row.addValue("pm25", measurementsData.averagePM25);
+      row.addValue("pm10", measurementsData.averagePM10);
     } else if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1472,10 +1467,10 @@ void sendDataToExternalDBs() {
         Serial.println(("\nMeasurements from SPS30!\n"));
 #endif
       }
-      row.addValue("pm1", averagePM1);
-      row.addValue("pm25", averagePM25);
-      row.addValue("pm4", averagePM4);
-      row.addValue("pm10", averagePM10);
+      row.addValue("pm1", measurementsData.averagePM1);
+      row.addValue("pm25", measurementsData.averagePM25);
+      row.addValue("pm4", measurementsData.averagePM4);
+      row.addValue("pm10", measurementsData.averagePM10);
     } else {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1487,9 +1482,9 @@ void sendDataToExternalDBs() {
     }
     if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       if (checkBmeStatus() == true) {
-        row.addValue("temperature", (currentTemperature));
-        row.addValue("pressure", (currentPressure));
-        row.addValue("humidity", (currentHumidity));
+        row.addValue("temperature", (measurementsData.temperature));
+        row.addValue("pressure", (measurementsData.pressure));
+        row.addValue("humidity", (measurementsData.humidity));
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1501,8 +1496,8 @@ void sendDataToExternalDBs() {
       }
     } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       if (checkHTU21DStatus() == true) {
-        row.addValue("temperature", (currentTemperature));
-        row.addValue("humidity", (currentHumidity));
+        row.addValue("temperature", (measurementsData.temperature));
+        row.addValue("humidity", (measurementsData.humidity));
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1514,8 +1509,8 @@ void sendDataToExternalDBs() {
       }
     } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       if (checkBmpStatus() == true) {
-        row.addValue("temperature", (currentTemperature));
-        row.addValue("pressure", (currentPressure));
+        row.addValue("temperature", (measurementsData.temperature));
+        row.addValue("pressure", (measurementsData.pressure));
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1527,8 +1522,8 @@ void sendDataToExternalDBs() {
       }
     } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       if (checkDHT22Status() == true) {
-        row.addValue("temperature", (currentTemperature));
-        row.addValue("humidity", (currentHumidity));
+        row.addValue("temperature", (measurementsData.temperature));
+        row.addValue("humidity", (measurementsData.humidity));
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1540,8 +1535,8 @@ void sendDataToExternalDBs() {
       }
     } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       if (checkSHT1xStatus() == true) {
-        row.addValue("temperature", (currentTemperature));
-        row.addValue("humidity", (currentHumidity));
+        row.addValue("temperature", (measurementsData.temperature));
+        row.addValue("humidity", (measurementsData.humidity));
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1553,7 +1548,7 @@ void sendDataToExternalDBs() {
       }
     } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       if (checkDS18B20Status() == true) {
-        row.addValue("temperature", (currentTemperature));
+        row.addValue("temperature", (measurementsData.temperature));
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1635,19 +1630,19 @@ void sendDataToExternalDBs() {
 
     if (strcmp(sensorsSettings.dustModel, "Non")) {
 
-      mqttclient.publish((MQTT_FINAL_PM1).c_str(), String(averagePM1).c_str(), true);
-      mqttclient.publish((MQTT_FINAL_PM25).c_str(), String(averagePM25).c_str(), true);
-      mqttclient.publish((MQTT_FINAL_PM10).c_str(), String(averagePM10).c_str(), true);
+      mqttclient.publish((MQTT_FINAL_PM1).c_str(), String(measurementsData.averagePM1).c_str(), true);
+      mqttclient.publish((MQTT_FINAL_PM25).c_str(), String(measurementsData.averagePM25).c_str(), true);
+      mqttclient.publish((MQTT_FINAL_PM10).c_str(), String(measurementsData.averagePM10).c_str(), true);
 
-      if (averagePM25 <= 10) {
+      if (measurementsData.averagePM25 <= 10) {
         mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "EXCELLENT", true);
-      } else if (averagePM25 > 10 && averagePM25 <= 20) {
+      } else if (measurementsData.averagePM25 > 10 && measurementsData.averagePM25 <= 20) {
         mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "GOOD", true);
-      } else if (averagePM25 > 20 && averagePM25 <= 25) {
+      } else if (measurementsData.averagePM25 > 20 && measurementsData.averagePM25 <= 25) {
         mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "FAIR", true);
-      } else if (averagePM25 > 25 && averagePM25 <= 50) {
+      } else if (measurementsData.averagePM25 > 25 && measurementsData.averagePM25 <= 50) {
         mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "INFERIOR", true);
-      } else if (averagePM25 > 50) {
+      } else if (measurementsData.averagePM25 > 50) {
         mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "POOR", true);
       } else {
         mqttclient.publish((MQTT_FINAL_AIRQUALITY).c_str(), "UNKNOWN", true);
@@ -1656,9 +1651,9 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       if (checkBmeStatus() == true) {
-        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(currentHumidity).c_str(), true);
-        mqttclient.publish((MQTT_FINAL_PRESS).c_str(), String(currentPressure).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(measurementsData.temperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(measurementsData.humidity).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_PRESS).c_str(), String(measurementsData.pressure).c_str(), true);
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1672,8 +1667,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
       if (checkBmpStatus() == true) {
-        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish((MQTT_FINAL_PRESS).c_str(), String(currentPressure).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(measurementsData.temperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_PRESS).c_str(), String(measurementsData.pressure).c_str(), true);
       } else {
 
         if (deviceSettings.debug) {
@@ -1688,8 +1683,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
       if (checkHTU21DStatus() == true) {
-        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(measurementsData.temperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(measurementsData.humidity).c_str(), true);
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1703,8 +1698,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(measurementsData.temperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(measurementsData.humidity).c_str(), true);
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1718,8 +1713,8 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
       if (checkDHT22Status() == true) {
-        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
-        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(currentHumidity).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(measurementsData.temperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(measurementsData.humidity).c_str(), true);
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1733,7 +1728,7 @@ void sendDataToExternalDBs() {
 
     if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
       if (checkDS18B20Status() == true) {
-        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(currentTemperature).c_str(), true);
+        mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(measurementsData.temperature).c_str(), true);
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1767,11 +1762,7 @@ String addSlash(String receivedString, bool frontSlash, bool backSlash) {
 }
 
 void takeTHPMeasurements() {
-  float currentTemperature_THP1, currentHumidity_THP1, currentPressure_THP1 = 0;
-  float currentTemperature_THP2, currentHumidity_THP2, currentPressure_THP2 = 0;
-
   if (!strcmp(sensorsSettings.thpModel, "BME280")) {
-
 #ifdef ARDUINO_ARCH_ESP8266
     BMESensor.refresh(firstThpSettings.address_sda, firstThpSettings.address_scl);
 #elif defined ARDUINO_ARCH_ESP32
@@ -1791,13 +1782,13 @@ void takeTHPMeasurements() {
 #endif
       }
 #ifdef ARDUINO_ARCH_ESP8266
-      currentTemperature_THP1 = BMESensor.temperature;
-      currentPressure_THP1 = BMESensor.seaLevelForAltitude(deviceSettings.altitude);
-      currentHumidity_THP1 = BMESensor.humidity;
+      measurementsData.first_temperature = BMESensor.temperature;
+      measurementsData.first_pressure = BMESensor.seaLevelForAltitude(deviceSettings.altitude);
+      measurementsData.first_humidity = BMESensor.humidity;
 #elif defined ARDUINO_ARCH_ESP32
-      currentTemperature_THP1 = (bme.readTemperature()); // maybe *0.89 ?
-      currentPressure_THP1 = (bme.seaLevelForAltitude(deviceSettings.altitude, (bme.readPressure() / 100.0F)));
-      currentHumidity_THP1 = (bme.readHumidity()); // maybe *0.89 ?
+      measurementsData.first_temperature = (bme.readTemperature()); // maybe *0.89 ?
+      measurementsData.first_pressure = (bme.seaLevelForAltitude(deviceSettings.altitude, (bme.readPressure() / 100.0F)));
+      measurementsData.first_humidity = (bme.readHumidity()); // maybe *0.89 ?
 #endif
 
     } else {
@@ -1818,8 +1809,8 @@ void takeTHPMeasurements() {
         Serial.println(("Measurements from HTU21!\n"));
 #endif
       }
-      currentTemperature_THP1 = ht2x.readTemperature();
-      currentHumidity_THP1 = ht2x.readHumidity();
+      measurementsData.first_temperature = ht2x.readTemperature();
+      measurementsData.first_humidity = ht2x.readHumidity();
     } else {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1838,8 +1829,8 @@ void takeTHPMeasurements() {
         Serial.println(("Measurements from BMP280!\n"));
 #endif
       }
-      currentTemperature_THP1 = bmp.readTemperature();
-      currentPressure_THP1 = (bmp.readPressure()) / 100;
+      measurementsData.first_temperature = bmp.readTemperature();
+      measurementsData.first_pressure = (bmp.readPressure()) / 100;
     } else {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1858,8 +1849,8 @@ void takeTHPMeasurements() {
         Serial.println(("Measurements from DHT22!\n"));
 #endif
       }
-      currentTemperature_THP1 = dht.readTemperature();
-      currentHumidity_THP1 = dht.readHumidity();
+      measurementsData.first_temperature = dht.readTemperature();
+      measurementsData.first_humidity = dht.readHumidity();
     } else {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1878,8 +1869,8 @@ void takeTHPMeasurements() {
         Serial.println(("Measurements from SHT1x!\n"));
 #endif
       }
-      currentTemperature_THP1 = sht1x.readTemperatureC();
-      currentHumidity_THP1 = sht1x.readHumidity();
+      measurementsData.first_temperature = sht1x.readTemperatureC();
+      measurementsData.first_humidity = sht1x.readHumidity();
     } else {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1899,7 +1890,7 @@ void takeTHPMeasurements() {
 #endif
       }
       DS18B20.requestTemperatures();
-      currentTemperature_THP1 = DS18B20.getTempCByIndex(0);
+      measurementsData.first_temperature = DS18B20.getTempCByIndex(0);
     } else {
       if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1925,13 +1916,13 @@ void takeTHPMeasurements() {
 #endif
         }
 #ifdef ARDUINO_ARCH_ESP8266
-        currentTemperature_THP2 = BMESensor_2.temperature;
-        currentPressure_THP2 = BMESensor_2.seaLevelForAltitude(deviceSettings.altitude);
-        currentHumidity_THP2 = BMESensor_2.humidity;
+        measurementsData.second_temperature = BMESensor_2.temperature;
+        measurementsData.second_pressure = BMESensor_2.seaLevelForAltitude(deviceSettings.altitude);
+        measurementsData.second_humidity = BMESensor_2.humidity;
 #elif defined ARDUINO_ARCH_ESP32
-        currentTemperature_THP2 = (bme.readTemperature()); // maybe *0.89 ?
-        currentPressure_THP2 = (bme.seaLevelForAltitude(deviceSettings.altitude, (bme.readPressure() / 100.0F)));
-        currentHumidity_THP2 = (bme.readHumidity()); // maybe *0.89 ?
+        measurementsData.second_temperature = (bme.readTemperature()); // maybe *0.89 ?
+        measurementsData.second_pressure = (bme.seaLevelForAltitude(deviceSettings.altitude, (bme.readPressure() / 100.0F)));
+        measurementsData.second_humidity = (bme.readHumidity()); // maybe *0.89 ?
 #endif
       } else {
         if (deviceSettings.debug) {
@@ -1951,8 +1942,8 @@ void takeTHPMeasurements() {
           Serial.println(("Measurements from HTU21!\n"));
 #endif
         }
-        currentTemperature_THP2 = ht2x.readTemperature();
-        currentHumidity_THP2 = ht2x.readHumidity();
+        measurementsData.second_temperature = ht2x.readTemperature();
+        measurementsData.second_humidity = ht2x.readHumidity();
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1971,8 +1962,8 @@ void takeTHPMeasurements() {
           Serial.println(("Measurements from BMP280!\n"));
 #endif
         }
-        currentTemperature_THP2 = bmp.readTemperature();
-        currentPressure_THP2 = (bmp.readPressure()) / 100;
+        measurementsData.second_temperature = bmp.readTemperature();
+        measurementsData.second_pressure = (bmp.readPressure()) / 100;
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1991,8 +1982,8 @@ void takeTHPMeasurements() {
           Serial.println(("Measurements from DHT22!\n"));
 #endif
         }
-        currentTemperature_THP2 = dht.readTemperature();
-        currentHumidity_THP2 = dht.readHumidity();
+        measurementsData.second_temperature = dht.readTemperature();
+        measurementsData.second_humidity = dht.readHumidity();
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2011,8 +2002,8 @@ void takeTHPMeasurements() {
           Serial.println(("Measurements from SHT1x!\n"));
 #endif
         }
-        currentTemperature_THP2 = sht1x.readTemperatureC();
-        currentHumidity_THP2 = sht1x.readHumidity();
+        measurementsData.second_temperature = sht1x.readTemperatureC();
+        measurementsData.second_humidity = sht1x.readHumidity();
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2032,7 +2023,7 @@ void takeTHPMeasurements() {
 #endif
         }
         DS18B20.requestTemperatures();
-        currentTemperature_THP2 = DS18B20.getTempCByIndex(0);
+        measurementsData.second_temperature = DS18B20.getTempCByIndex(0);
       } else {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2046,15 +2037,15 @@ void takeTHPMeasurements() {
   }
 
   //temporary solution!
-  currentTemperature = currentTemperature_THP1;
-  currentHumidity = currentHumidity_THP1;
-  currentPressure = currentPressure_THP1;
+  measurementsData.temperature = measurementsData.first_temperature;
+  measurementsData.humidity = measurementsData.first_humidity;
+  measurementsData.pressure = measurementsData.first_pressure;
 
 #ifdef ARDUINO_ARCH_ESP32
   if (homeKitSettings.enabled) {
     /*
-    homekit_DeviceData.homekit_temperature = currentTemperature;
-    homekit_DeviceData.homekit_humidity = currentHumidity;
+    homekit_DeviceData.homekit_temperature = measurementsData.temperature;
+    homekit_DeviceData.homekit_humidity = measurementsData.humidity;
     notify_hap();
     */
   }
@@ -2385,25 +2376,25 @@ void pm_calibration() {
 }
 
 void averagePM() {
-  averagePM1 = 0;
-  averagePM25 = 0;
-  averagePM10 = 0;
+  measurementsData.averagePM1 = 0;
+  measurementsData.averagePM25 = 0;
+  measurementsData.averagePM10 = 0;
 #ifdef DUSTSENSOR_SPS30
-  averagePM4 = 0;
+  measurementsData.averagePM4 = 0;
 #endif
   for (int i = 0; i < sensorsSettings.numerOfMeasurements; i++) {
-    averagePM1 += pmMeasurements[i][0];
-    averagePM25 += pmMeasurements[i][1];
-    averagePM10  += pmMeasurements[i][2];
+    measurementsData.averagePM1 += pmMeasurements[i][0];
+    measurementsData.averagePM25 += pmMeasurements[i][1];
+    measurementsData.averagePM10  += pmMeasurements[i][2];
 #ifdef DUSTSENSOR_SPS30
-    averagePM4 += pmMeasurements[i][3];
+    measurementsData.averagePM4 += pmMeasurements[i][3];
 #endif
   }
-  averagePM1 = averagePM1 / sensorsSettings.numerOfMeasurements;
-  averagePM25 = averagePM25 / sensorsSettings.numerOfMeasurements;
-  averagePM10 = averagePM10 / sensorsSettings.numerOfMeasurements;
+  measurementsData.averagePM1 = measurementsData.averagePM1 / sensorsSettings.numerOfMeasurements;
+  measurementsData.averagePM25 = measurementsData.averagePM25 / sensorsSettings.numerOfMeasurements;
+  measurementsData.averagePM10 = measurementsData.averagePM10 / sensorsSettings.numerOfMeasurements;
 #ifdef DUSTSENSOR_SPS30
-  averagePM4 = averagePM4 / sensorsSettings.numerOfMeasurements;
+  measurementsData.averagePM4 = measurementsData.averagePM4 / sensorsSettings.numerOfMeasurements;
 #endif
 
   if (deviceSettings.debug) {
@@ -2411,15 +2402,15 @@ void averagePM() {
     Serial.print(F("\n"));
     Serial.print(F("========================================"));
     Serial.print(F("\n\nAverage PM1: "));
-    Serial.print(averagePM1);
+    Serial.print(measurementsData.averagePM1);
     Serial.print(F("\nAverage PM2.5: "));
-    Serial.print(averagePM25);
+    Serial.print(measurementsData.averagePM25);
 #ifdef DUSTSENSOR_SPS30
     Serial.print(F("\nAverage PM4: "));
-    Serial.print(averagePM4);
+    Serial.print(measurementsData.averagePM4);
 #endif
     Serial.print(F("\nAverage PM10: "));
-    Serial.print(averagePM10);
+    Serial.print(measurementsData.averagePM10);
     Serial.print(F("\n\n"));
     Serial.print(F("========================================"));
     Serial.print(F("\n"));
@@ -2427,15 +2418,15 @@ void averagePM() {
     Serial.print(("\n"));
     Serial.print(("========================================"));
     Serial.print(("\n\nAverage PM1: "));
-    Serial.print(averagePM1);
+    Serial.print(measurementsData.averagePM1);
     Serial.print(("\nAverage PM2.5: "));
-    Serial.print(averagePM25);
+    Serial.print(measurementsData.averagePM25);
 #ifdef DUSTSENSOR_SPS30
     Serial.print(("\nAverage PM4: "));
-    Serial.print(averagePM4);
+    Serial.print(measurementsData.averagePM4);
 #endif
     Serial.print(("\nAverage PM10: "));
-    Serial.print(averagePM10);
+    Serial.print(measurementsData.averagePM10);
     Serial.print(("\n\n"));
     Serial.print(("========================================"));
     Serial.print(("\n"));
@@ -2445,8 +2436,8 @@ void averagePM() {
 #ifdef ARDUINO_ARCH_ESP32
   if (homeKitSettings.enabled) {
     /*
-    homekit_DeviceData.homekit_pm10_level = averagePM10;
-    homekit_DeviceData.homekit_pm25_level = averagePM25;
+    homekit_DeviceData.homekit_pm10_level = measurementsData.averagePM10;
+    homekit_DeviceData.homekit_pm25_level = measurementsData.averagePM25;
     notify_hap();
     */
   }

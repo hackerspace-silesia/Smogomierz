@@ -223,34 +223,24 @@ char bufout[10];
 BME280<> BMESensor;
 BME280<> BMESensor_2;
 #elif defined ARDUINO_ARCH_ESP32 // VIN - 3V; GND - G; SCL - D17; SDA - D16
-//#define I2C_SDA = firstThpSettings.address_sda
-//#define I2C_SCL = firstThpSettings.address_scl
-// Adafruit_BME280 bme((uint8_t)firstThpSettings.address_sda, (uint8_t)firstThpSettings.address_scl); // I2C -- ONLY THE DEFAULT VALUES WORK
 // Adafruit_BME280 bme(18, 19); // I2C -- ONLY THE DEFAULT VALUES WORK
-// Adafruit_BME280 bme(4, 5);
 Adafruit_BME280 bme; // I2C
 #endif
 
 // BMP280 config
 Adafruit_BMP280 bmp; //I2C
-
-// Serial for SHT21/HTU21D config
-// HTU21D  myHTU21D(HTU21D_RES_RH12_TEMP14);
 HTU2xD_SHT2x_SI70xx ht2x(HTU2xD_SENSOR, HUMD_12BIT_TEMP_14BIT); //sensor type, resolution
 
 // DHT22 config
-//#define DHTPIN 13 // D7 on NodeMCU/WeMos board
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 DHT dht(firstThpSettings.address_sda, DHTTYPE);
 
 // SHT1x – Config
-//#define dataPin 14 //D5
-//#define clockPin 12 //D6
+// (14, 12) - (D5, D6)
 SHT1x sht1x(firstThpSettings.address_sda, firstThpSettings.address_scl);
 
 // DS18B20 – Config
 //const int DS18B20_WireBus = 14; // D5
-//OneWire oneWire(firstThpSettings.address_sda);
 OneWire oneWire(14);
 DallasTemperature DS18B20(&oneWire);
 // TEMP/HUMI/PRESS Sensor config - END
@@ -327,7 +317,6 @@ SoftwareSerial PMS_Serial(dustSettings.address_sda, dustSettings.address_scl); /
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
-// HardwareSerial PMS_Serial(1); // Change TX - D5 and RX - D4 pins
 HardwareSerial PMS_Serial(dustSettings.address_sda, dustSettings.address_scl); // Change TX - D5 and RX - D4 pins
 PMS pms(PMS_Serial);
 PMS::DATA data;
@@ -357,27 +346,23 @@ unsigned int previous_2sec_Millis = 0;
 static unsigned int REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
 unsigned int previous_REBOOT_Millis = 0;
 
-// unsigned long time_now_temp = 0;
 
+static unsigned char iPM = 0;
 #ifdef DUSTSENSOR_SPS30
 static unsigned short pmMeasurements[10][4];
 #else
 static unsigned short pmMeasurements[10][3];
 #endif
 
-static unsigned char iPM = 0;
+//TODO - removed!
 static unsigned short averagePM1, averagePM25, averagePM4, averagePM10 = 0;
 static float currentTemperature, currentHumidity, currentPressure = 0;
-// float currentTemperature_THP1, currentHumidity_THP1, currentPressure_THP1 = 0;
-// float currentTemperature_THP2, currentHumidity_THP2, currentPressure_THP2 = 0;
-static float calib = 1;
 
+static float calib = 1;
 static bool need_update = false;
 char serverSoftwareVersion[32] = "";
 char currentSoftwareVersion[32] = "";
 
-char SERVERSOFTWAREVERSION[32] = "";
-char CURRENTSOFTWAREVERSION[32] = "";
 
 AsyncWebServer server(80);
 WiFiClient espClient;
@@ -534,22 +519,6 @@ bool checkSHT1xStatus() {
 }
 
 bool checkDS18B20Status() {
-  /*
-    DS18B20.requestTemperatures();
-    int temperature_DS18B20_Int = DS18B20.getTempCByIndex(0);
-    if (temperature_DS18B20_Int == -127) {
-    if (deviceSettings.debug) {
-    #ifdef ARDUINO_ARCH_ESP8266
-      Serial.println(F("No data from DS18B20 sensor!\n"));
-    #elif defined ARDUINO_ARCH_ESP32
-      Serial.println(("No data from DS18B20 sensor!\n"));
-    #endif
-    }
-    return false;
-    } else {
-    return true;
-    }
-  */
   return true;
 }
 // check TEMP/HUMI/PRESS Sensor - END
@@ -641,111 +610,7 @@ const auto it = pin_map.find(THP_PIN);
     }
 
 }
-/*
-  void set_SERIAL_PINS(String DUST_PIN, int i) {
-  #ifdef ARDUINO_ARCH_ESP8266
-  if (i == 1) {
-    if (DUST_PIN == "D1") {
-      dustSettings.address_sda = 5;
-    } else if (DUST_PIN == "D2") {
-      dustSettings.address_sda = 4;
-    } else if (DUST_PIN == "D3") {
-      dustSettings.address_sda = 0;
-    } else if (DUST_PIN == "D4") {
-      dustSettings.address_sda = 2;
-    } else if (DUST_PIN == "D5") {
-      dustSettings.address_sda = 14;
-    } else if (DUST_PIN == "D6") {
-      dustSettings.address_sda = 12;
-    } else if (DUST_PIN == "D7") {
-      dustSettings.address_sda = 13;
-    } else if (DUST_PIN == "D8") {
-      dustSettings.address_sda = 15;
-    } else if (DUST_PIN == "D16") {
-      dustSettings.address_sda = 16;
-    } else if (DUST_PIN == "D17") {
-      dustSettings.address_sda = 17;
-    }
-  } else if (i == 2) {
-    if (DUST_PIN == "D1") {
-      dustSettings.address_scl = 5;
-    } else if (DUST_PIN == "D2") {
-      dustSettings.address_scl = 4;
-    } else if (DUST_PIN == "D3") {
-      dustSettings.address_scl = 0;
-    } else if (DUST_PIN == "D4") {
-      dustSettings.address_scl = 2;
-    } else if (DUST_PIN == "D5") {
-      dustSettings.address_scl = 14;
-    } else if (DUST_PIN == "D6") {
-      dustSettings.address_scl = 12;
-    } else if (DUST_PIN == "D7") {
-      dustSettings.address_scl = 13;
-    } else if (DUST_PIN == "D8") {
-      dustSettings.address_scl = 15;
-    } else if (DUST_PIN == "D16") {
-      dustSettings.address_scl = 16;
-    } else if (DUST_PIN == "D17") {
-      dustSettings.address_scl = 17;
-    }
-  }
-  #elif defined ARDUINO_ARCH_ESP32
-  if (i == 1) {
-    if (DUST_PIN == "D1") {
-      dustSettings.address_sda = 8;
-    } else if (DUST_PIN == "D2") {
-      dustSettings.address_sda = 9;
-    } else if (DUST_PIN == "D4") {
-      dustSettings.address_sda = 4;
-    } else if (DUST_PIN == "D5") {
-      dustSettings.address_sda = 5;
-    } else if (DUST_PIN == "D15") {
-      dustSettings.address_sda = 15;
-    } else if (DUST_PIN == "D16") {
-      dustSettings.address_sda = 16;
-    } else if (DUST_PIN == "D17") {
-      dustSettings.address_sda = 17;
-    } else if (DUST_PIN == "D18") {
-      dustSettings.address_sda = 18;
-    } else if (DUST_PIN == "D19") {
-      dustSettings.address_sda = 19;
-    } else if (DUST_PIN == "D21") {
-      dustSettings.address_sda = 21;
-    } else if (DUST_PIN == "D22") {
-      dustSettings.address_sda = 22;
-    } else if (DUST_PIN == "D23") {
-      dustSettings.address_sda = 23;
-    }
-  } else if (i == 2) {
-    if (DUST_PIN == "D1") {
-      dustSettings.address_scl = 8;
-    } else if (DUST_PIN == "D2") {
-      dustSettings.address_scl = 9;
-    } else if (DUST_PIN == "D4") {
-      dustSettings.address_scl = 4;
-    } else if (DUST_PIN == "D5") {
-      dustSettings.address_scl = 5;
-    } else if (DUST_PIN == "D15") {
-      dustSettings.address_scl = 15;
-    } else if (DUST_PIN == "D16") {
-      dustSettings.address_scl = 16;
-    } else if (DUST_PIN == "D17") {
-      dustSettings.address_scl = 17;
-    } else if (DUST_PIN == "D18") {
-      dustSettings.address_scl = 18;
-    } else if (DUST_PIN == "D19") {
-      dustSettings.address_scl = 19;
-    } else if (DUST_PIN == "D21") {
-      dustSettings.address_scl = 21;
-    } else if (DUST_PIN == "D22") {
-      dustSettings.address_scl = 22;
-    } else if (DUST_PIN == "D23") {
-      dustSettings.address_scl = 23;
-    }
-  }
-  #endif
-  }
-*/
+
 // default translation - english
 #ifdef INTL_OLD
 #include "intl/default_intl.h"
@@ -774,33 +639,7 @@ const auto it = pin_map.find(THP_PIN);
 
 
 void setup() {
-  // https://forum.arduino.cc/t/struct-xxxx-does-not-name-a-type/606767/4
-  /*
-#ifdef ARDUINO_ARCH_ESP8266
-   firstThpSettings.sda[4] = 'D3';
-   firstThpSettings.scl[4] = 'D4';
-   firstThpSettings.address_sda = 0; // D3
-   firstThpSettings.address_scl = 2; // D4
-#elif defined ARDUINO_ARCH_ESP32
-   firstThpSettings.sda[4] = 'D4';
-   firstThpSettings.scl[4] = 'D5';
-   firstThpSettings.address_sda = 4; // D16
-   firstThpSettings.address_scl = 5; // D17
-#endif
-
-#ifdef ARDUINO_ARCH_ESP8266
-   secondThpSettings.sda[4] = 'D5';
-   secondThpSettings.scl[4] = 'D6';
-   secondThpSettings.address_sda = 14; // D5
-   secondThpSettings.address_scl = 12; // D6
-#elif defined ARDUINO_ARCH_ESP32
-   secondThpSettings.sda[4] = 'D22';
-   secondThpSettings.scl[4] = 'D23';
-   secondThpSettings.address_sda = 22; // D5
-   secondThpSettings.address_scl = 23; // D6
-#endif
-*/
-
+/*
 #ifdef ARDUINO_ARCH_ESP8266
    dustSettings.sda[4] = 'D1';
    dustSettings.scl[4] = 'D2';
@@ -812,7 +651,7 @@ void setup() {
    dustSettings.address_sda = 18; // TX - D1
    dustSettings.address_scl = 19; // RX - D2
 #endif
-
+*/
   Serial.begin(115200);
   yield();
 
@@ -823,7 +662,6 @@ void setup() {
     yield();
   */
 
-  //temporary solution!
   if (sensorsSettings.secondThp) {
     strcpy(sensorsSettings.secondThpModel, sensorsSettings.thpModel);
   }

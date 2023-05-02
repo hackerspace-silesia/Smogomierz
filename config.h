@@ -1,5 +1,5 @@
-// sdeeaa
-// #pragma once
+// config.h file contain all settings for device and sensors
+#pragma once
 
 
 struct DeviceSettings {

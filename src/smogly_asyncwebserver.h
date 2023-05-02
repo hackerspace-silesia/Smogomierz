@@ -94,7 +94,7 @@ static String handle_root_processor(const String& var)
 		takeTHPMeasurements();
       message += String(WEB_ROOT_PAGE_MEASUREMENTS_THP1);
       message.replace(F("{TEXT_WEATHER}"), String(TEXT_WEATHER));
-
+      short dewpoint = (measurementsData.temperature - (14.55 + 0.114 * measurementsData.temperature) * (1 - (0.01 * measurementsData.humidity)) - pow(((2.5 + 0.007 * measurementsData.temperature) * (1 - (0.01 * measurementsData.humidity))),3) - (15.9 + 0.117 * measurementsData.temperature) * pow((1 - (0.01 * measurementsData.humidity)), 14));
       if (!strcmp(sensorsSettings.thpModel, "BME280")) {
         if (checkBmeStatus()) {
             message.replace(F("{TEXT_TEMPERATURE}"), String(TEXT_TEMPERATURE));
@@ -105,7 +105,7 @@ static String handle_root_processor(const String& var)
             message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
             message.replace(F("{Pressure}"), String(int(measurementsData.pressure)));
             message.replace(F("{Humidity}"), String(int(measurementsData.humidity)));
-            message.replace(F("{Dewpoint}"), String(int(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112)));
+            message.replace(F("{Dewpoint}"), String(dewpoint));
         } else {
           message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
@@ -121,7 +121,7 @@ static String handle_root_processor(const String& var)
           message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
           message.replace(F("{Humidity}"), String(int(measurementsData.humidity)));
-          message.replace(F("{Dewpoint}"), String(int(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112)));
+          message.replace(F("{Dewpoint}"), String(dewpoint));
         } else {
           message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
@@ -137,7 +137,7 @@ static String handle_root_processor(const String& var)
           message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
           message.replace(F("{Humidity}"), String(int(measurementsData.humidity)));
-          message.replace(F("{Dewpoint}"), String(int(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112)));
+          message.replace(F("{Dewpoint}"), String(dewpoint));
         } else {
           message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");
@@ -168,7 +168,7 @@ static String handle_root_processor(const String& var)
           message.replace(F("{Temperature}"), String(int(measurementsData.temperature)));
           message.replace(F("{TEXT_PRESSURE}: {Pressure} hPa"), "");
           message.replace(F("{Humidity}"), String(float(measurementsData.humidity)));
-          message.replace(F("{Dewpoint}"), String(int(pow((measurementsData.humidity) / 100, 0.125) * (112 + 0.9 * (measurementsData.temperature)) + 0.1 * (measurementsData.temperature) - 112)));
+          message.replace(F("{Dewpoint}"), String(dewpoint));
         } else {
           message.replace(F("{TEXT_TEMPERATURE}: {Temperature} °C"), "");
           message.replace(F("{TEXT_HUMIDITY}: {Humidity} %"), "");

@@ -19,6 +19,7 @@ struct DeviceSettings {
     char latitude[16] = "50.263911";
     char longitude[16] = "18.995711";
     short altitude = 271;
+    char email[64] = "email@mail.pl";
 };
 
 struct SensorsSettings {
@@ -53,7 +54,6 @@ struct AirMonitorSettings {
     bool enabled = false;
     bool graph = false;
     char apiKey[48] = "";
-    char email[64] = "email@mail.pl";
 };
 
 struct ThingSpeakSettings {

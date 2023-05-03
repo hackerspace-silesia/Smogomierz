@@ -85,6 +85,8 @@ bool loadConfig() {
   _safeCpy(deviceSettings.latitude, json["device_latitude"], "50.263911", 16);
   _safeCpy(deviceSettings.longitude, json["device_longitude"], "18.995711", 16);
   deviceSettings.altitude = json["device_altitude"];
+  _safeCpy(deviceSettings.email, json["device_email"], "email@mail.pl", 64);
+
 
   _safeCpy(sensorsSettings.thpModel, json["sensors_thpModel"], "Non", 12);
   sensorsSettings.secondThp = json["sensors_secondThp"];
@@ -118,7 +120,6 @@ bool loadConfig() {
   airMonitorSettings.enabled = json["airMonitor_enabled"];
   airMonitorSettings.graph = json["airMonitor_graph"];
   _safeCpy(airMonitorSettings.apiKey, json["airMonitor_apiKey"], "", 48);
-  _safeCpy(airMonitorSettings.email, json["airMonitor_email"], "email@mail.pl", 64);
 
   thingSpeakSettings.enabled = json["thingSpeak_enabled"];
   thingSpeakSettings.graph = json["thingSpeak_graph"];
@@ -164,110 +165,6 @@ bool loadConfig() {
   authSettings.enabled = json["auth_enabled"];
   _safeCpy(authSettings.username, json["auth_username"], "admin", 64);
   _safeCpy(authSettings.password, json["auth_password"], "admin", 128);
-
-/*
-  DEVICENAME_AUTO = json["DEVICENAME_AUTO"];
-  _safeCpy(DEVICENAME, json["DEVICENAME"], "smogly", 32);
-  _safeCpy(LANGUAGE, json["LANGUAGE"], "english", 12);
-  SELECTED_LANGUAGE = json["SELECTED_LANGUAGE"];
-
-  _safeCpy(THP_MODEL, json["THP_MODEL"], "Non", 12);
-  _safeCpy(DUST_MODEL, json["DUST_MODEL"], "Non", 12);
-  DISPLAY_PM1 = json["DISPLAY_PM1"];
-  FREQUENTMEASUREMENT = json["FREQUENTMEASUREMENT"];
-
-  SECOND_THP = json["SECOND_THP"];
-  _safeCpy(SECOND_THP_MODEL, json["SECOND_THP_MODEL"], "Non", 12);
-
-  FIRST_THP_SDA = json["FIRST_THP_SDA"];
-  FIRST_THP_SCL = json["FIRST_THP_SCL"];
-
-  SECOND_THP_SDA = json["SECOND_THP_SDA"];
-  SECOND_THP_SCL = json["SECOND_THP_SCL"];
-
-  DUST_TX = json["DUST_TX"];
-  DUST_RX = json["DUST_RX"];
-
-  _safeCpy(CONFIG_FIRST_THP_SDA, json["CONFIG_FIRST_THP_SDA"], "D3", 4);
-  _safeCpy(CONFIG_FIRST_THP_SCL, json["CONFIG_FIRST_THP_SCL"], "D4", 4);
-
-  _safeCpy(CONFIG_SECOND_THP_SDA, json["CONFIG_SECOND_THP_SDA"], "D5", 4);
-  _safeCpy(CONFIG_SECOND_THP_SCL, json["CONFIG_SECOND_THP_SCL"], "D6", 4);
-
-  _safeCpy(CONFIG_DUST_TX, json["CONFIG_DUST_TX"], "D1", 4);
-  _safeCpy(CONFIG_DUST_RX, json["CONFIG_DUST_RX"], "D2", 4);
-
-  DUST_TIME = json["DUST_TIME"];
-  NUMBEROFMEASUREMENTS = json["NUMBEROFMEASUREMENTS"];
-
-  LUFTDATEN_ON = json["LUFTDATEN_ON"];
-  LUFTDATEN_GRAPH_ON = json["LUFTDATEN_GRAPH_ON"];
-  LUFTDATEN_APIID = json["LUFTDATEN_APIID"];	  
-  SMOGLIST_ON = json["SMOGLIST_ON"];
-
-  AIRMONITOR_ON = json["AIRMONITOR_ON"];
-  AIRMONITOR_GRAPH_ON = json["AIRMONITOR_GRAPH_ON"];
-  _safeCpy(AIRMONITOR_API_KEY, json["AIRMONITOR_API_KEY"], "", 48);
-  _safeCpy(LATITUDE, json["LATITUDE"], "50.263911", 16);
-  _safeCpy(LONGITUDE, json["LONGITUDE"], "18.995711", 16);
-  _safeCpy(EMAIL, json["EMAIL"], "email@mail.pl", 64);
-  MYALTITUDE = json["MYALTITUDE"];
-
-  THINGSPEAK_ON = json["THINGSPEAK_ON"];
-  THINGSPEAK_GRAPH_ON = json["THINGSPEAK_GRAPH_ON"];
-  _safeCpy(THINGSPEAK_API_KEY, json["THINGSPEAK_API_KEY"], "WRITE_API_KEY", 32);
-  THINGSPEAK_CHANNEL_ID = json["THINGSPEAK_CHANNEL_ID"];
-  _safeCpy(THINGSPEAK_READ_API_KEY, json["THINGSPEAK_READ_API_KEY"], "READ_API_KEY", 32);
-
-  INFLUXDB_ON = json["INFLUXDB_ON"];
-  _safeCpy(INFLUXDB_VERSION, json["INFLUXDB_VERSION"], "1", 4);
-  _safeCpy(INFLUXDB_HOST, json["INFLUXDB_HOST"], "host", 128);
-  INFLUXDB_PORT = json["INFLUXDB_PORT"];
-  _safeCpy(INFLUXDB_DATABASE, json["INFLUXDB_DATABASE"], "mydb", 32);
-  _safeCpy(INFLUXDB_USER, json["INFLUXDB_USER"], "user", 32);
-  _safeCpy(INFLUXDB_PASSWORD, json["INFLUXDB_PASSWORD"], "password", 64);
-  _safeCpy(INFLUXDB_ORG, json["INFLUXDB_ORG"], "myOrg", 32);
-  _safeCpy(INFLUXDB_BUCKET, json["INFLUXDB_BUCKET"], "myBucket", 32);
-  _safeCpy(INFLUXDB_TOKEN, json["INFLUXDB_TOKEN"], "myToken", 128);
-
-  MQTT_ON = json["MQTT_ON"];
-  _safeCpy(MQTT_HOST, json["MQTT_HOST"], "host", 128);
-  MQTT_PORT = json["MQTT_PORT"];
-  _safeCpy(MQTT_USER, json["MQTT_USER"], "user", 32);
-  _safeCpy(MQTT_PASSWORD, json["MQTT_PASSWORD"], "password", 64);
-
-  MQTT_IP_IN_TOPIC = json["MQTT_IP_IN_TOPIC"];
-  MQTT_DEVICENAME_IN_TOPIC = json["MQTT_DEVICENAME_IN_TOPIC"];
-  MQTT_SLASH_AT_THE_BEGINNING = json["MQTT_SLASH_AT_THE_BEGINNING"];
-  MQTT_SLASH_AT_THE_END = json["MQTT_SLASH_AT_THE_END"];
-
-  _safeCpy(MQTT_TOPIC_TEMP, json["MQTT_TOPIC_TEMP"], "MQTT_TOPIC_TEMP", 64);
-  _safeCpy(MQTT_TOPIC_HUMI, json["MQTT_TOPIC_HUMI"], "MQTT_TOPIC_HUMI", 64);
-  _safeCpy(MQTT_TOPIC_PRESS, json["MQTT_TOPIC_PRESS"], "MQTT_TOPIC_PRESS", 64);
-  _safeCpy(MQTT_TOPIC_PM1, json["MQTT_TOPIC_PM1"], "MQTT_TOPIC_PM1", 64);
-  _safeCpy(MQTT_TOPIC_PM25, json["MQTT_TOPIC_PM25"], "MQTT_TOPIC_PM25", 64);
-  _safeCpy(MQTT_TOPIC_PM10, json["MQTT_TOPIC_PM10"], "MQTT_TOPIC_PM10", 64);
-  _safeCpy(MQTT_TOPIC_AIRQUALITY, json["MQTT_TOPIC_AIRQUALITY"], "MQTT_TOPIC_AIRQUALITY", 32);
-
-  AQI_ECO_ON = json["AQI_ECO_ON"];
-  _safeCpy(AQI_ECO_HOST, json["AQI_ECO_HOST"], "host", 64);
-  _safeCpy(AQI_ECO_PATH, json["AQI_ECO_PATH"], "path", 64);
-
-  SENDING_FREQUENCY = json["SENDING_FREQUENCY"];
-  SENDING_DB_FREQUENCY = json["SENDING_DB_FREQUENCY"];
-  DEEPSLEEP_ON = json["DEEPSLEEP_ON"];
-
-  deviceSettings.debug = json["DEBUG"];
-  AUTOUPDATE_ON = json["AUTOUPDATE_ON"];
-
-  CONFIG_AUTH = json["CONFIG_AUTH"];
-  _safeCpy(CONFIG_USERNAME, json["CONFIG_USERNAME"], "admin", 64);
-  _safeCpy(CONFIG_PASSWORD, json["CONFIG_PASSWORD"], "password", 128);
-
-  _safeCpy(MODEL, json["MODEL"], "black", 12);
-
-  HOMEKIT_SUPPORT = json["HOMEKIT_SUPPORT"];
-*/
 
   // Real world application would store these values in some variables for
   // later use.
@@ -352,7 +249,7 @@ bool loadConfig() {
       Serial.print(F("Loaded LONGITUDE: "));
       Serial.println(deviceSettings.longitude);
       Serial.print(F("Loaded EMAIL: "));
-      Serial.println(airMonitorSettings.email);
+      Serial.println(deviceSettings.email);
       Serial.print(F("Loaded MYALTITUDE: "));
       Serial.println(deviceSettings.altitude);
 
@@ -544,7 +441,7 @@ bool loadConfig() {
       Serial.print("Loaded LONGITUDE: ");
       Serial.println(deviceSettings.longitude);
       Serial.print("Loaded EMAIL: ");
-      Serial.println(airMonitorSettings.email);
+      Serial.println(deviceSettings.email);
       Serial.print("Loaded MYALTITUDE: ");
       Serial.println(deviceSettings.altitude);
 
@@ -741,7 +638,7 @@ bool saveConfig() {
     Serial.print(F("Saved LONGITUDE: "));
     Serial.println(deviceSettings.longitude);
     Serial.print(F("Saved EMAIL: "));
-    Serial.println(airMonitorSettings.email);
+    Serial.println(deviceSettings.email);
     Serial.print(F("Saved MYALTITUDE: "));
     Serial.println(deviceSettings.altitude);
 	
@@ -886,6 +783,7 @@ bool saveConfig() {
   json["device_latitude"] = String(deviceSettings.latitude);
   json["device_longitude"] = String(deviceSettings.longitude);
   json["device_altitude"] = short(deviceSettings.altitude);
+  json["device_email"] = String(deviceSettings.email);
 
   json["sensors_thpModel"] = String(sensorsSettings.thpModel);
   json["sensors_secondThp"] = bool(sensorsSettings.secondThp);
@@ -919,7 +817,6 @@ bool saveConfig() {
   json["airMonitor_enabled"] = bool(airMonitorSettings.enabled);
   json["airMonitor_graph"] = bool(airMonitorSettings.graph);
   json["airMonitor_apiKey"] = String(airMonitorSettings.apiKey);
-  json["airMonitor_email"] = String(airMonitorSettings.email);
 
   json["thingSpeak_enabled"] = bool(thingSpeakSettings.enabled);
   json["thingSpeak_graph"] = bool(thingSpeakSettings.graph);
@@ -966,111 +863,6 @@ bool saveConfig() {
   json["auth_username"] = String(authSettings.username);
   json["auth_password"] = String(authSettings.password);
 
-/*
-  json["DEVICENAME_AUTO"] = bool(DEVICENAME_AUTO);
-  json["DEVICENAME"] = String(DEVICENAME);
-  json["LANGUAGE"] = String(LANGUAGE);
-  json["SELECTED_LANGUAGE"] = int(SELECTED_LANGUAGE);
-
-  json["THP_MODEL"] = String(THP_MODEL);
-  json["DUST_MODEL"] = String(DUST_MODEL);
-  json["DISPLAY_PM1"] = bool(DISPLAY_PM1);
-  json["FREQUENTMEASUREMENT"] = bool(FREQUENTMEASUREMENT);
-
-  json["SECOND_THP"] = bool(SECOND_THP);
-  json["SECOND_THP_MODEL"] = String(SECOND_THP_MODEL);
-
-  json["FIRST_THP_SDA"] = int(FIRST_THP_SDA);
-  json["FIRST_THP_SCL"] = int(FIRST_THP_SCL);
-
-  json["SECOND_THP_SDA"] = int(SECOND_THP_SDA);
-  json["SECOND_THP_SCL"] = int(SECOND_THP_SCL);
-
-  json["DUST_TX"] = int(DUST_TX);
-  json["DUST_RX"] = int(DUST_RX);
-
-  json["CONFIG_FIRST_THP_SDA"] = String(CONFIG_FIRST_THP_SDA);
-  json["CONFIG_FIRST_THP_SCL"] = String(CONFIG_FIRST_THP_SCL);
-
-  json["CONFIG_SECOND_THP_SDA"] = String(CONFIG_SECOND_THP_SDA);
-  json["CONFIG_SECOND_THP_SCL"] = String(CONFIG_SECOND_THP_SCL);
-
-  json["CONFIG_DUST_TX"] = String(CONFIG_DUST_TX);
-  json["CONFIG_DUST_RX"] = String(CONFIG_DUST_RX);
-
-  json["DUST_TIME"] = int(DUST_TIME);
-  json["NUMBEROFMEASUREMENTS"] = int(NUMBEROFMEASUREMENTS);
-
-  json["LUFTDATEN_ON"] = bool(LUFTDATEN_ON);
-  json["LUFTDATEN_GRAPH_ON"] = bool(LUFTDATEN_GRAPH_ON);
-  json["LUFTDATEN_APIID"] = int(LUFTDATEN_APIID);
-  
-  json["SMOGLIST_ON"] = bool(SMOGLIST_ON);
-
-  json["AIRMONITOR_ON"] = bool(AIRMONITOR_ON);
-  json["AIRMONITOR_GRAPH_ON"] = bool(AIRMONITOR_GRAPH_ON);
-  json["AIRMONITOR_API_KEY"] = String(AIRMONITOR_API_KEY);
-
-  json["LATITUDE"] = String(LATITUDE);
-  json["LONGITUDE"] = String(LONGITUDE);
-  json["EMAIL"] = String(EMAIL);
-  json["MYALTITUDE"] = int(MYALTITUDE);
-
-  json["THINGSPEAK_ON"] = bool(THINGSPEAK_ON);
-  json["THINGSPEAK_GRAPH_ON"] = bool(THINGSPEAK_GRAPH_ON);
-  json["THINGSPEAK_API_KEY"] = String(THINGSPEAK_API_KEY);
-  json["THINGSPEAK_CHANNEL_ID"] = int(THINGSPEAK_CHANNEL_ID);
-  json["THINGSPEAK_READ_API_KEY"] = String(THINGSPEAK_READ_API_KEY);
-
-  json["INFLUXDB_ON"] = bool(INFLUXDB_ON);
-  json["INFLUXDB_VERSION"] = String(INFLUXDB_VERSION);
-  json["INFLUXDB_HOST"] = String(INFLUXDB_HOST);
-  json["INFLUXDB_PORT"] = uint16_t(INFLUXDB_PORT);
-  json["INFLUXDB_DATABASE"] = String(INFLUXDB_DATABASE);
-  json["INFLUXDB_USER"] = String(INFLUXDB_USER);
-  json["INFLUXDB_PASSWORD"] = String(INFLUXDB_PASSWORD);
-  json["INFLUXDB_ORG"] = String(INFLUXDB_ORG);
-  json["INFLUXDB_BUCKET"] = String(INFLUXDB_BUCKET);
-  json["INFLUXDB_TOKEN"] = String(INFLUXDB_TOKEN);
-
-  json["MQTT_ON"] = bool(MQTT_ON);
-  json["MQTT_HOST"] = String(MQTT_HOST);
-  json["MQTT_PORT"] = uint16_t(MQTT_PORT);
-  json["MQTT_USER"] = String(MQTT_USER);
-  json["MQTT_PASSWORD"] = String(MQTT_PASSWORD);
-
-  json["MQTT_IP_IN_TOPIC"] = bool(MQTT_IP_IN_TOPIC);
-  json["MQTT_DEVICENAME_IN_TOPIC"] = bool(MQTT_DEVICENAME_IN_TOPIC);
-  json["MQTT_SLASH_AT_THE_BEGINNING"] = bool(MQTT_SLASH_AT_THE_BEGINNING);
-  json["MQTT_SLASH_AT_THE_END"] = bool(MQTT_SLASH_AT_THE_END);
-
-  json["MQTT_TOPIC_TEMP"] = String(MQTT_TOPIC_TEMP);
-  json["MQTT_TOPIC_HUMI"] = String(MQTT_TOPIC_HUMI);
-  json["MQTT_TOPIC_PRESS"] = String(MQTT_TOPIC_PRESS);
-  json["MQTT_TOPIC_PM1"] = String(MQTT_TOPIC_PM1);
-  json["MQTT_TOPIC_PM25"] = String(MQTT_TOPIC_PM25);
-  json["MQTT_TOPIC_PM10"] = String(MQTT_TOPIC_PM10);
-  json["MQTT_TOPIC_AIRQUALITY"] = String(MQTT_TOPIC_AIRQUALITY);
-
-  json["AQI_ECO_ON"] = bool(AQI_ECO_ON);
-  json["AQI_ECO_HOST"] = String(AQI_ECO_HOST);
-  json["AQI_ECO_PATH"] = String(AQI_ECO_PATH);
-
-  json["SENDING_FREQUENCY"] = int(SENDING_FREQUENCY);
-  json["SENDING_DB_FREQUENCY"] = int(SENDING_DB_FREQUENCY);
-  json["DEEPSLEEP_ON"] = bool(DEEPSLEEP_ON);
-
-  json["DEBUG"] = bool(deviceSettings.debug);
-  json["AUTOUPDATE_ON"] = bool(AUTOUPDATE_ON);
-
-  json["CONFIG_AUTH"] = bool(CONFIG_AUTH);
-  json["CONFIG_USERNAME"] = String(CONFIG_USERNAME);
-  json["CONFIG_PASSWORD"] = String(CONFIG_PASSWORD);
-
-  json["MODEL"] = String(MODEL);
-
-  json["HOMEKIT_SUPPORT"] = bool(HOMEKIT_SUPPORT);
-*/
 #ifdef ARDUINO_ARCH_ESP8266
   File configFile = SPIFFS.open("/config.json", "w");
 #elif defined ARDUINO_ARCH_ESP32

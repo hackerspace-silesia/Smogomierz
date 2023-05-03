@@ -21,9 +21,9 @@ const int airMonitorPort PROGMEM = 80; // HTTP
 const int airMonitorPort PROGMEM = 443; // HTTPS!
 #endif
 /*
-   This is lets-encrypt-x3-cross-signed.pem
-    Certificate - airmonitor.pl at https://certlogik.com/ssl-checker/
-    UPDATED: 12.07.2021
+  This is lets-encrypt-x3-cross-signed.pem
+  Certificate - airmonitor.pl at https://certlogik.com/ssl-checker/
+  UPDATED: 12.07.2021
 */
 
 #ifdef ARDUINO_ARCH_ESP8266
@@ -72,37 +72,8 @@ const int airMonitorPort PROGMEM = 443; // HTTPS!
 #ifdef ARDUINO_ARCH_ESP8266
 const char fingerprint_airMonitor[] PROGMEM = "EC 15 73 25 AF 1C DD 01 10 24 03 3D A6 46 C8 40 51 12 5C 13"; // https://airmonitor.pl/prod/measurements
 #elif defined ARDUINO_ARCH_ESP32
-
 #endif
 
-// Set time via NTP, as required for x.509 validation
-/*
-  void setUpdateClock_airmonitor() {
-  #ifdef ARDUINO_ARCH_ESP8266
-  configTime(TZ_Europe_Warsaw, "pool.ntp.org");
-    //configTime(0, 0, "pool.ntp.org", "pool.ntp.org");  // UTC
-  #elif defined ARDUINO_ARCH_ESP32
-  configTime(0, 0, "pool.ntp.org", "pool.ntp.org");  // UTC
-  #endif
-
-  Serial.print(F("Waiting for NTP time sync: "));
-  time_t now = time(nullptr);
-  while (now < 8 * 3600 * 2) {
-    yield();
-    delay(500);
-    Serial.print(F("."));
-    now = time(nullptr);
-  }
-
-  Serial.println(F(""));
-  struct tm timeinfo;
-  gmtime_r(&now, &timeinfo);
-  Serial.print(F("Current time: "));
-  Serial.print(asctime(&timeinfo));
-  }
-*/
-
-#ifdef ARDUINO_ARCH_ESP8266
 void sendJson(JsonObject& json) {
     WiFiClient client;
 
@@ -191,126 +162,6 @@ void sendTHPData() {
     sendJson(json);
   }
 }
-
-#elif defined ARDUINO_ARCH_ESP32
-void sendJson(JsonObject& json) {
-	
-  Serial.print("\nconnecting to ");
-  Serial.println(airMonitorServerName);
-  
-  String JSONoutput = "";
-  serializeJson(json, JSONoutput);
-
-	// setUpdateClock_airmonitor();
-  WiFiClientSecure client;
-  /*
-  if (deviceSettings.debug) {
-    Serial.print("\nUsing fingerprint: '%s'\n", fingerprint_airMonitor);
-  }
-  */
-  client.setInsecure();
-  //client.setCACert(trustRoot_airmonitor);
-  //client.setFingerprint(fingerprint_airMonitor);
-  client.setTimeout(15000); // 15 Seconds
-  delay(1000);
-
-  // Serial.print("\nHTTPS Connecting...");
-  if (!client.connect(airMonitorServerName, airMonitorPort)) {
-    Serial.println("connection failed");
-    Serial.println("wait 1 sec...\n");
-    delay(1000);
-    return;
-  }
-  delay(100);
-  
-  String Link = "/prod/measurements";  
-  client.print(String("POST ") + Link + " HTTP/1.1\r\n" +
-               "Host: " + String(airMonitorServerName) + "\r\n" +
-               "Content-Type: application/json\r\n" +
-               "Content-Length: " + String(measureJson(json)) + "\r\n" +
-               "X-Api-Key: " + String(airMonitorSettings.apiKey) + "\r\n\r\n" +
-               String(JSONoutput) + "\r\n\r\n");
-    
-  /*
-  if (deviceSettings.debug) {
-    Serial.print("\n\n\t\t====================\n\n");
-    Serial.print(String("POST ") + Link + " HTTP/1.1\r\n" +
-                 "Host: " + String(airMonitorServerName) + "\r\n" +
-                 "Content-Type: application/json\r\n" +
-                 "Content-Length: " + String(measureJson(json)) + "\r\n" +
-                 "X-Api-Key: " + String(airMonitorSettings.apiKey) + "\r\n\r\n" +
-                 String(JSONoutput) + "\r\n\r\n");
-    Serial.print("\n\t\t====================\n\n");
-  }
-  */
-  
-  String line = client.readStringUntil('\r');
-  
-  if (deviceSettings.debug) {
-      Serial.print("Length:");
-  	  Serial.println(measureJson(json));
-  	  serializeJsonPretty(json, Serial);
-      Serial.println(line);
-  }
-  
-  client.stop();
-}
-
-void sendDUSTData() {
-  if (strcmp(sensorsSettings.dustModel, "Non")) {
-    StaticJsonDocument<400> jsonBuffer;
-    JsonObject json = jsonBuffer.to<JsonObject>();
-    json["lat"] = String(deviceSettings.latitude);
-    json["long"] = String(deviceSettings.longitude);
-    json["pm1"] = float(measurementsData.averagePM1);
-    json["pm25"] = float(measurementsData.averagePM25);
-    json["pm10"] = float(measurementsData.averagePM10);
-    if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
-      json["sensor"] = "PMS7003";
-    }
-    if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
-      json["sensor"] = "HPMA115S0";
-    }
-    if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
-      json["sensor"] = "SDS021";
-    }
-    if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
-      json["sensor"] = "SPS30";
-    }
-    sendJson(json);
-  }
-}
-
-void sendTHPData() {
-  if (strcmp(sensorsSettings.thpModel, "Non")) {
-    StaticJsonDocument<400> jsonBuffer;
-    JsonObject json = jsonBuffer.to<JsonObject>();
-    json["lat"] = String(deviceSettings.latitude);
-    json["long"] = String(deviceSettings.longitude);
-    json["temperature"] = float(measurementsData.temperature);
-    if (!strcmp(sensorsSettings.thpModel, "BME280")) {
-      json["pressure"] = float(measurementsData.pressure);
-      json["humidity"] = float(measurementsData.humidity);
-      json["sensor"] = "BME280";
-    } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
-      json["pressure"] = float(measurementsData.pressure);
-      json["sensor"] = "BMP280";
-    } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
-      json["humidity"] = float(measurementsData.humidity);
-      json["sensor"] = "HTU21";
-    } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
-      json["humidity"] = float(measurementsData.humidity);
-      json["sensor"] = "DHT22";
-    } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
-      json["humidity"] = float(measurementsData.humidity);
-      json["sensor"] = "SHT1x";
-    } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
-      json["sensor"] = "DS18B20";
-    }
-    sendJson(json);
-  }
-}
-#endif
 
 void sendDataToAirMonitor() {
   if (!(airMonitorSettings.enabled)) {

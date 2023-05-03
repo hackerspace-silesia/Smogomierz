@@ -112,7 +112,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   REFAKTOR_1.05.2023:
-  Szkic używa 1303497 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1302693 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 66504 bajtów (20%) pamięci dynamicznej, pozostawiając 261176 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   *** init homekit support:

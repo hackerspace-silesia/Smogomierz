@@ -292,7 +292,7 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
     int dotIndexCurrentSoftVer1 = Data[2].indexOf('.');
     int dotIndexCurrentSoftVer2 = Data[2].indexOf('.', dotIndexCurrentSoftVer1 + 1);
     String CurrentSoftVer = Data[2].substring(0, dotIndexCurrentSoftVer1) + Data[2].substring(dotIndexCurrentSoftVer1 + 1, dotIndexCurrentSoftVer2) + Data[2].substring(dotIndexCurrentSoftVer2 + 1);
-
+/*
     if (RepoSoftVer.toInt() > CurrentSoftVer.toInt()) {
       if (deviceSettings.debug) {
         Serial.println(F("\nFirmware upgrade required!\n"));
@@ -313,6 +313,26 @@ bool checkUpdate(unsigned char & checkUpdateSW) {
     }
   } else {
     return true;
+  }
+  */
+    if (RepoSoftVer == CurrentSoftVer) {
+      if (deviceSettings.debug) {
+        Serial.println(F("\nYou have the current version of the firmware!\n"));
+      }
+      return false;
+    } else if (RepoSoftVer > CurrentSoftVer) {
+      if (deviceSettings.debug) {
+        Serial.println(F("\nFirmware upgrade required!\n"));
+      }
+      return true;
+    } else {
+      if (deviceSettings.debug) {
+        Serial.println(F("\nYou have newer firmware installed than it is available in the official repository!\n"));
+      }
+      return false;
+    }
+  } else {
+    return false;
   }
 }
 

@@ -25,7 +25,48 @@ void sendDataToAqiEco() {
   json[F("software_version")] = F("Smogly_") + String(serverSoftwareVersion);
   JsonArray sensordatavalues = json.createNestedArray(F("sensordatavalues"));
 
-  // create a dictionary to map sensor models to their respective values
+#ifdef ARDUINO_ARCH_ESP8266
+  // TODO
+  if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
+    JsonObject P0 = sensordatavalues.createNestedObject();
+    P0[F("value_type")] = F("PMS_P0");
+    P0[F("value")] = measurementsData.averagePM1;
+    JsonObject P1 = sensordatavalues.createNestedObject();
+    P1[F("value_type")] = F("PMS_P1");
+    P1[F("value")] = measurementsData.averagePM10;
+    JsonObject P2 = sensordatavalues.createNestedObject();
+    P2[F("value_type")] = F("PMS_P2");
+    P2[F("value")] = measurementsData.averagePM25;
+  } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
+    JsonObject P1 = sensordatavalues.createNestedObject();
+    P1[F("value_type")] = F("SDS_P1");
+    P1[F("value")] = measurementsData.averagePM10;
+    JsonObject P2 = sensordatavalues.createNestedObject();
+    P2[F("value_type")] = F("SDS_P2");
+    P2[F("value")] = measurementsData.averagePM25;
+  } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
+    JsonObject P1 = sensordatavalues.createNestedObject();
+    P1[F("value_type")] = F("HPM_P1");
+    P1[F("value")] = measurementsData.averagePM10;
+    JsonObject P2 = sensordatavalues.createNestedObject();
+    P2[F("value_type")] = F("HPM_P2");
+    P2[F("value")] = measurementsData.averagePM25;
+  } else if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
+    JsonObject P0 = sensordatavalues.createNestedObject();
+    P0[F("value_type")] = F("SPS30_P0");
+    P0[F("value")] = measurementsData.averagePM1;
+    JsonObject P1 = sensordatavalues.createNestedObject();
+    P1[F("value_type")] = F("SPS30_P1");
+    P1[F("value")] = measurementsData.averagePM10;
+    JsonObject P2 = sensordatavalues.createNestedObject();
+    P2[F("value_type")] = F("SPS30_P2");
+    P2[F("value")] = measurementsData.averagePM25;
+    JsonObject P4 = sensordatavalues.createNestedObject();
+    P4[F("value_type")] = F("SPS30_P4");
+    P4[F("value")] = measurementsData.averagePM4;
+}
+#elif defined ARDUINO_ARCH_ESP32
+        // create a dictionary to map sensor models to their respective values
   std::map<std::string, std::vector<std::pair<std::string, float>>> sensor_map{
     {F("PMS7003"), {{F("PMS_P0"), measurementsData.averagePM1}, {F("PMS_P1"), measurementsData.averagePM10}, {F("PMS_P2"), measurementsData.averagePM25}}},
     {F("SDS011/21"), {{F("SDS_P1"), measurementsData.averagePM10}, {F("SDS_P2"), measurementsData.averagePM25}}},
@@ -45,6 +86,7 @@ void sendDataToAqiEco() {
     default:
       break;
   }
+#endif
 
   JsonObject temperature = sensordatavalues.createNestedObject();
   JsonObject humidity = sensordatavalues.createNestedObject();

@@ -89,12 +89,6 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 
   ASYNC_WEBSERVER_ON + INTL_OLD
 
-  Szkic używa 694529 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 46688 bajtów (56%) pamięci dynamicznej, pozostawiając 35232 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
-  Szkic używa 695897 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
-  Zmienne globalne używają 46800 bajtów (57%) pamięci dynamicznej, pozostawiając 35120 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
-
   Szkic używa 691393 bajtów (66%) pamięci programu. Maksimum to 1044464 bajtów.
   Zmienne globalne używają 46876 bajtów (57%) pamięci dynamicznej, pozostawiając 35044 bajtów dla zmiennych lokalnych. Maksimum to 81920 bajtów.
 

@@ -403,7 +403,14 @@ void sendTHPDatatoMadavide() {
 }
 
 bool getLuftdatenJSON() {
+#ifdef ARDUINO_ARCH_ESP8266
+  // TODO -  test this for ESP8266
+  float LATITUDE = atof(deviceSettings.latitude);
+  float LONGITUDE = atof(deviceSettings.longitude);
+	String url_string = ("http://data.sensor.community/airrohr/v1/filter/box=" + String(LATITUDE, 6) + "00000," + String(LONGITUDE, 6) + "00000," + String(LATITUDE, 6) + "00000," + String(LONGITUDE, 6) + "00000");
+#elif defined ARDUINO_ARCH_ESP32
 	String url_string = ("http://data.sensor.community/airrohr/v1/filter/box=" + String(deviceSettings.latitude, 6) + "00000," + String(deviceSettings.longitude, 6) + "00000," + String(deviceSettings.latitude, 6) + "00000," + String(deviceSettings.longitude, 6) + "00000");
+#endif
 		
     // Check WiFi Status
     if (WiFi.status() == WL_CONNECTED) {

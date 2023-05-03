@@ -175,6 +175,7 @@ MQTTSettings mqttSettings;
 AQIEcoSettings aqiEcoSettings;
 HomeKitSettings homeKitSettings;
 AuthSettings authSettings;
+Intervals intervals;
 MeasurementsData measurementsData;
 
 #include "src/autoupdate.h"
@@ -327,26 +328,6 @@ PMS::DATA data;
 // DUST Sensor config - END
 
 static char device_name[20];
-
-static unsigned int DUST_interval = 60 * 1000; // 1 minute
-unsigned int previous_DUST_Millis = 0;
-
-static unsigned int SENDING_FREQUENCY_interval = 60 * 1000; // 1 minute
-unsigned int previous_SENDING_FREQUENCY_Millis = 0;
-
-static unsigned int SENDING_FREQUENCY_AIRMONITOR_interval = 60 * 1000; // 1 minute
-unsigned int previous_SENDING_FREQUENCY_AIRMONITOR_Millis = 0;
-
-static unsigned int SENDING_DB_FREQUENCY_interval = 60 * 1000; // 1 minute
-unsigned int previous_SENDING_DB_FREQUENCY_Millis = 0;
-
-static unsigned short TwoSec_interval = 2 * 1000; // 2 second
-unsigned int previous_2sec_Millis = 0;
-
-static unsigned int REBOOT_interval = 24 * 60 * 60 * 1000; // 24 hours
-unsigned int previous_REBOOT_Millis = 0;
-
-
 static unsigned char iPM = 0;
 #ifdef DUSTSENSOR_SPS30
 static unsigned short pmMeasurements[10][4];
@@ -519,9 +500,9 @@ bool checkDS18B20Status() {
 // check TEMP/HUMI/PRESS Sensor - END
 
 void minutesToSeconds() {
-  DUST_interval = 1000; // 1 second
-  SENDING_FREQUENCY_interval = 1000;
-  SENDING_DB_FREQUENCY_interval = 1000;
+  intervals.dust = 1000; // 1 second
+  intervals.sendingServices = 1000;
+  intervals.sendingDB = 1000;
 }
 
 void MQTTreconnect() {
@@ -886,37 +867,37 @@ void setup() {
   }
 
   if (strcmp(sensorsSettings.dustModel, "Non")) {
-    DUST_interval = DUST_interval * sensorsSettings.dustTime;
+    intervals.dust = intervals.dust * sensorsSettings.dustTime;
   }
   if (deviceSettings.deepSleep == true) {
     if (luftdatenSettings.enabled or aqiEcoSettings.enabled or airMonitorSettings.enabled or smoglistSettings.enabled or thingSpeakSettings.enabled or influxDBSettings.enabled or mqttSettings.enabled) {
-      SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * deviceSettings.sendingServicesFrequency;
+      intervals.sendingServices = intervals.sendingServices * deviceSettings.sendingServicesFrequency;
     }
 #ifdef ARDUINO_ARCH_ESP32
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP  int(SENDING_FREQUENCY_interval/1000)        /* Time ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP  int(intervals.sendingServices/1000)        /* Time ESP32 will go to sleep (in seconds) */
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
     Serial.println(("Setup ESP32 to sleep for every ") + String(TIME_TO_SLEEP) + (" Seconds\n"));
 #endif
   } else {
     if (luftdatenSettings.enabled or aqiEcoSettings.enabled or airMonitorSettings.enabled or smoglistSettings.enabled) {
-      SENDING_FREQUENCY_interval = SENDING_FREQUENCY_interval * deviceSettings.sendingServicesFrequency;
+      intervals.sendingServices = intervals.sendingServices * deviceSettings.sendingServicesFrequency;
       if (airMonitorSettings.enabled) {
         if (deviceSettings.sendingServicesFrequency < 3) {
-          SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * 3; // * 3 -- API restriction - <28 requests per hour
+          intervals.sendingAirMonitor = intervals.sendingAirMonitor * 3; // * 3 -- API restriction - <28 requests per hour
         } else {
-          SENDING_FREQUENCY_AIRMONITOR_interval = SENDING_FREQUENCY_AIRMONITOR_interval * deviceSettings.sendingServicesFrequency;
+          intervals.sendingAirMonitor = intervals.sendingAirMonitor * deviceSettings.sendingServicesFrequency;
         }
       }
     }
     if (thingSpeakSettings.enabled or influxDBSettings.enabled or mqttSettings.enabled) {
-      SENDING_DB_FREQUENCY_interval = SENDING_DB_FREQUENCY_interval * deviceSettings.sendingDBFrequency;
+      intervals.sendingDB = intervals.sendingDB * deviceSettings.sendingDBFrequency;
     }
   }
   /*
     Serial.println("deviceSettings.sendingServicesFrequency: " + String(deviceSettings.sendingServicesFrequency));
-    Serial.println("SENDING_FREQUENCY_AIRMONITOR_interval: " + String(SENDING_FREQUENCY_AIRMONITOR_interval));
-    Serial.println("SENDING_FREQUENCY_interval: " + String(SENDING_FREQUENCY_interval));
+    Serial.println("SENDING_FREQUENCY_AIRMONITOR_interval: " + String(intervals.sendingAirMonitor));
+    Serial.println("SENDING_FREQUENCY_interval: " + String(intervals.sendingServices));
     Serial.println("sensorsSettings.dustTime: " + String(sensorsSettings.dustTime));
     Serial.println("deviceSettings.sendingDBFrequency: " + String(deviceSettings.sendingDBFrequency));
     Serial.println("");
@@ -1175,7 +1156,7 @@ void loop() {
   if (strcmp(sensorsSettings.dustModel, "Non")) {
     unsigned int current_DUST_Millis = millis();
     if (sensorsSettings.continuousMeasurement == true ) {
-      if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
+      if (current_DUST_Millis - intervals.previousDustMillis >= intervals.dust) {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("\nFREQUENT MEASUREMENT Mode!"));
@@ -1184,7 +1165,7 @@ void loop() {
 #endif
         }
         takeNormalnPMMeasurements();
-        previous_DUST_Millis = millis();
+        intervals.previousDustMillis = millis();
       }
     }
     if (deviceSettings.deepSleep == true) {
@@ -1221,7 +1202,7 @@ void loop() {
 #endif
 
     } else {
-      if (current_DUST_Millis - previous_DUST_Millis >= DUST_interval) {
+      if (current_DUST_Millis - intervals.previousDustMillis >= intervals.dust) {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("\nNormal Mode!"));
@@ -1230,7 +1211,7 @@ void loop() {
 #endif
         }
         takeSleepPMMeasurements();
-        previous_DUST_Millis = millis();
+        intervals.previousDustMillis = millis();
       }
     }
   } else {
@@ -1241,9 +1222,9 @@ void loop() {
       Serial.println(("\nDeepSleep Mode!\n"));
 #endif
       unsigned int current_2sec_Millis = millis();
-      previous_2sec_Millis = millis();
-      while (previous_2sec_Millis - current_2sec_Millis <= TwoSec_interval * 10) {
-        previous_2sec_Millis = millis();
+      intervals.previousTwoSecMillis = millis();
+      while (intervals.previousTwoSecMillis - current_2sec_Millis <= intervals.twoSec * 10) {
+        intervals.previousTwoSecMillis = millis();
       }
       if (luftdatenSettings.enabled or aqiEcoSettings.enabled or airMonitorSettings.enabled or smoglistSettings.enabled) {
         takeTHPMeasurements();
@@ -1271,47 +1252,47 @@ void loop() {
   }
 
   if (airMonitorSettings.enabled) {
-    // Serial.println("SENDING_FREQUENCY_AIRMONITOR_interval: " + String(SENDING_FREQUENCY_AIRMONITOR_interval));
-    // Serial.println("previous_SENDING_FREQUENCY_AIRMONITOR_Millis: " + String(previous_SENDING_FREQUENCY_AIRMONITOR_Millis));
+    // Serial.println("SENDING_FREQUENCY_AIRMONITOR_interval: " + String(intervals.sendingAirMonitor));
+    // Serial.println("previous_SENDING_FREQUENCY_AIRMONITOR_Millis: " + String(intervals.previousSendingAirMonitorMillis));
 
     unsigned int current_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
     // Serial.println("current_SENDING_FREQUENCY_AIRMONITOR_Millis: " + String(current_SENDING_FREQUENCY_AIRMONITOR_Millis));
 
-    if (current_SENDING_FREQUENCY_AIRMONITOR_Millis - previous_SENDING_FREQUENCY_AIRMONITOR_Millis >= SENDING_FREQUENCY_AIRMONITOR_interval) {
+    if (current_SENDING_FREQUENCY_AIRMONITOR_Millis - intervals.previousSendingAirMonitorMillis >= intervals.sendingAirMonitor) {
       takeTHPMeasurements();
       // Serial.println("SEND DATA TO AIRMONITOR");
       sendDataToExternalServices();
-      previous_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
+      intervals.previousSendingAirMonitorMillis = millis();
     }
   }
 
   if (luftdatenSettings.enabled or aqiEcoSettings.enabled or smoglistSettings.enabled) {
     unsigned int current_SENDING_FREQUENCY_Millis = millis();
-    if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
+    if (current_SENDING_FREQUENCY_Millis - intervals.previousSendingServicesMillis >= intervals.sendingServices) {
       takeTHPMeasurements();
       sendDataToExternalServices();
-      previous_SENDING_FREQUENCY_Millis = millis();
+      intervals.previousSendingServicesMillis = millis();
     }
   }
 
   if (thingSpeakSettings.enabled or influxDBSettings.enabled or mqttSettings.enabled) {
     unsigned int current_SENDING_DB_FREQUENCY_Millis = millis();
-    if (current_SENDING_DB_FREQUENCY_Millis - previous_SENDING_DB_FREQUENCY_Millis >= SENDING_DB_FREQUENCY_interval) {
+    if (current_SENDING_DB_FREQUENCY_Millis - intervals.previousSendingDBMillis >= intervals.sendingDB) {
       takeTHPMeasurements();
       sendDataToExternalDBs();
-      previous_SENDING_DB_FREQUENCY_Millis = millis();
+      intervals.previousSendingDBMillis = millis();
     }
   }
 
   unsigned int current_REBOOT_Millis = millis();
-  if (current_REBOOT_Millis - previous_REBOOT_Millis >= REBOOT_interval) {
+  if (current_REBOOT_Millis - intervals.previousRebootMillis >= intervals.reboot) {
 #ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("autoreboot..."));
 #elif defined ARDUINO_ARCH_ESP32
     Serial.println(("autoreboot..."));
 #endif
     delay(1000);
-    previous_REBOOT_Millis = millis();
+    intervals.previousRebootMillis = millis();
 
 #ifdef ARDUINO_ARCH_ESP8266
     ESP.reset();
@@ -1324,7 +1305,7 @@ void loop() {
 
   /*
     unsigned int current_SENDING_FREQUENCY_Millis = millis();
-    if (current_SENDING_FREQUENCY_Millis - previous_SENDING_FREQUENCY_Millis >= SENDING_FREQUENCY_interval) {
+    if (current_SENDING_FREQUENCY_Millis - intervals.previousSendingServicesMillis >= intervals.sendingServices) {
     #ifdef ARDUINO_ARCH_ESP32
       if (homeKitSettings.enabled) {
         homekit_DeviceData.homekit_temperature = float(random(-11.00, 45));
@@ -1334,7 +1315,7 @@ void loop() {
         notify_hap();
       }
     #endif
-      previous_SENDING_FREQUENCY_Millis = millis();
+      intervals.previousSendingServicesMillis = millis();
     }
   */
 

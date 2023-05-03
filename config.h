@@ -113,6 +113,21 @@ struct AuthSettings {
     char password[128] = "admin";
 };
 
+struct Intervals {
+    unsigned int dust = 60 * 1000; // 1 minute
+    unsigned int previousDustMillis = 0;
+    unsigned int sendingServices = 60 * 1000; // 1 minute
+    unsigned int previousSendingServicesMillis = 0;
+    unsigned int sendingDB = 60 * 1000; // 1 minute
+    unsigned int previousSendingDBMillis = 0;
+    unsigned int twoSec = 2 * 1000; // 2 seconds
+    unsigned int previousTwoSecMillis = 0;
+    unsigned int reboot = 24 * 60 * 60 * 1000; // 24 hours
+    unsigned int previousRebootMillis = 0;
+    unsigned int sendingAirMonitor = 60 * 1000; // 1 minute
+    unsigned int previousSendingAirMonitorMillis = 0;
+};
+
 struct MeasurementsData {
     float temperature = 0;
     unsigned short humidity = 0;
@@ -143,6 +158,7 @@ extern MQTTSettings mqttSettings;
 extern AQIEcoSettings aqiEcoSettings;
 extern HomeKitSettings homeKitSettings;
 extern AuthSettings authSettings;
+extern Intervals intervals;
 extern MeasurementsData measurementsData;
 
 

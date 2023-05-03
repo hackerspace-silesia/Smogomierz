@@ -24,31 +24,34 @@
       measurements must be >= 0.5 seconds apart to keep self-heating below 0.1C
 
    This device uses I2C bus to communicate, specials pins are required to interface
-   Board:                                    SDA              SCL              Level
+   Board                                     SDA              SCL              Level
    Uno, Mini, Pro, ATmega168, ATmega328..... A4               A5               5v
    Mega2560................................. 20               21               5v
    Due, SAM3X8E............................. 20               21               3.3v
    Leonardo, Micro, ATmega32U4.............. 2                3                5v
-   Digistump, Trinket, ATtiny85............. PB0              PB2              5v
-   Blue Pill, STM32F103xxxx boards.......... PB9/PB7*         PB8/PB6*         3.3v/5v
-   ESP8266 ESP-01........................... GPIO0**          GPIO2**          3.3v/5v
-   NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2         GPIO5/D1         3.3v/5v
-   ESP32.................................... GPIO21/D21       GPIO22/D22       3.3v
-                                             *hardware I2C Wire mapped to Wire1 in stm32duino
-                                              see https://github.com/stm32duino/wiki/wiki/API#i2c
-                                            **most boards has 10K..12K pullup-up resistor
-                                              on GPIO0/D3, GPIO2/D4/LED & pullup-down on
-                                              GPIO15/D8 for flash & boot
+   Digistump, Trinket, Gemma, ATtiny85...... PB0/D0           PB2/D2           3.3v/5v
+   Blue Pill*, STM32F103xxxx boards*........ PB7/PB9          PB6/PB8          3.3v/5v
+   ESP8266 ESP-01**......................... GPIO0            GPIO2            3.3v/5v
+   NodeMCU 1.0**, WeMos D1 Mini**........... GPIO4/D2         GPIO5/D1         3.3v/5v
+   ESP32***................................. GPIO21/D21       GPIO22/D22       3.3v
+                                             GPIO16/D16       GPIO17/D17       3.3v
+                                            *hardware I2C Wire mapped to Wire1 in stm32duino
+                                             see https://github.com/stm32duino/wiki/wiki/API#I2C
+                                           **most boards has 10K..12K pullup-up resistor
+                                             on GPIO0/D3, GPIO2/D4/LED & pullup-down on
+                                             GPIO15/D8 for flash & boot
+                                          ***hardware I2C Wire mapped to TwoWire(0) aka GPIO21/GPIO22 in Arduino ESP32
 
-   Frameworks & Libraries:
-   ATtiny  Core  - https://github.com/SpenceKonde/ATTinyCore
-   ESP32   Core  - https://github.com/espressif/arduino-esp32
-   ESP8266 Core  - https://github.com/esp8266/Arduino
-   STM32   Core  - https://github.com/stm32duino/Arduino_Core_STM32
+   Supported frameworks:
+   Arduino Core - https://github.com/arduino/Arduino/tree/master/hardware
+   ATtiny  Core - https://github.com/SpenceKonde/ATTinyCore
+   ESP8266 Core - https://github.com/esp8266/Arduino
+   ESP32   Core - https://github.com/espressif/arduino-esp32
+   STM32   Core - https://github.com/stm32duino/Arduino_Core_STM32
 
 
    GNU GPL license, all text above must be included in any redistribution,
-   see link for details  - https://www.gnu.org/licenses/licenses.html
+   see link for details - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
 
@@ -63,7 +66,7 @@
 #include <avr/pgmspace.h>              //for Arduino AVR PROGMEM support
 #elif defined (ESP8266)
 #include <pgmspace.h>                  //for Arduino ESP8266 PROGMEM support
-#elif defined (_VARIANT_ARDUINO_STM32_)
+#elif defined (ARDUINO_ARCH_STM32)
 #include <avr/pgmspace.h>              //for Arduino STM32 PROGMEM support
 #endif
 
@@ -105,7 +108,7 @@
 #define SI70FF_SERIAL2_READ_CTRL_CHIP_ID        0xFF    //Si70xx engineering device ID, 1-st byte in second memory access
 
 /* speed & delay */
-#define HTU2XD_SHT2X_SI70XX_I2C_SPEED_100KHZ    100000  //sensor I2C speed 100KHz..400KHz, in Hz
+#define HTU2XD_SHT2X_SI70XX_I2C_SPEED_HZ        100000  //sensor I2C speed 100KHz..400KHz, in Hz
 #define HTU2XD_SHT2X_SI70XX_I2C_STRETCH_USEC    1000    //I2C stretch time, in usec
 
 #define HTU2XD_SHT2X_POWER_ON_DELAY             15      //wait for HTU2xD/SHT2x to initialize after power-on, in milliseconds
@@ -131,10 +134,10 @@
 /* list of user registers controls, continue */
 typedef enum : uint8_t
 {
-  HUMD_12BIT_TEMP_14BIT     = 0x00,                     //resolution RH 12-bit / T 14-bit, bit[7:0] in user register (default after power-on or reset)
-  HUMD_08BIT_TEMP_12BIT     = 0x01,                     //resolution RH 8-bit  / T 12-bit, bit[7:0] in user register
-  HUMD_10BIT_TEMP_13BIT     = 0x80,                     //resolution RH 10-bit / T 13-bit, bit[7:0] in user register
-  HUMD_11BIT_TEMP_11BIT     = 0x81                      //resolution RH 11-bit / T 11-bit, bit[7:0] in user register
+  HUMD_12BIT_TEMP_14BIT = 0x00,                         //resolution RH 12-bit / T 14-bit, bit[7:0] in user register (default after power-on or reset)
+  HUMD_08BIT_TEMP_12BIT = 0x01,                         //resolution RH 8-bit  / T 12-bit, bit[7:0] in user register
+  HUMD_10BIT_TEMP_13BIT = 0x80,                         //resolution RH 10-bit / T 13-bit, bit[7:0] in user register
+  HUMD_11BIT_TEMP_11BIT = 0x81                          //resolution RH 11-bit / T 11-bit, bit[7:0] in user register
 }
 HTU2XD_SHT2X_SI70XX_USER_CTRL_RES;
 
@@ -176,18 +179,20 @@ class HTU2xD_SHT2x_SI70xx
    HTU2xD_SHT2x_SI70xx(HTU2XD_SHT2X_SI70XX_I2C_SENSOR = HTU2xD_SENSOR, HTU2XD_SHT2X_SI70XX_USER_CTRL_RES = HUMD_12BIT_TEMP_14BIT);
 
   #if defined (__AVR__)
-   bool     begin(uint32_t speed = HTU2XD_SHT2X_SI70XX_I2C_SPEED_100KHZ, uint32_t stretch = HTU2XD_SHT2X_SI70XX_I2C_STRETCH_USEC);
-  #elif defined (ESP8266) || defined (ESP32)
-   bool     begin(uint8_t sda = SDA, uint8_t scl = SCL, uint32_t speed = HTU2XD_SHT2X_SI70XX_I2C_SPEED_100KHZ, uint32_t stretch = HTU2XD_SHT2X_SI70XX_I2C_STRETCH_USEC);
-  #elif defined (_VARIANT_ARDUINO_STM32_)
-   bool     begin(uint8_t sda = SDA, uint8_t scl = SCL, uint32_t speed = HTU2XD_SHT2X_SI70XX_I2C_SPEED_100KHZ);
+   bool     begin(uint32_t speed = HTU2XD_SHT2X_SI70XX_I2C_SPEED_HZ, uint32_t stretch = HTU2XD_SHT2X_SI70XX_I2C_STRETCH_USEC);
+  #elif defined (ESP8266)
+   bool     begin(uint8_t sda = SDA, uint8_t scl = SCL, uint32_t speed = HTU2XD_SHT2X_SI70XX_I2C_SPEED_HZ, uint32_t stretch = HTU2XD_SHT2X_SI70XX_I2C_STRETCH_USEC);
+  #elif defined (ESP32)
+   bool     begin(int32_t sda = SDA, int32_t scl = SCL, uint32_t speed = HTU2XD_SHT2X_SI70XX_I2C_SPEED_HZ, uint32_t stretch = HTU2XD_SHT2X_SI70XX_I2C_STRETCH_USEC);
+  #elif defined (ARDUINO_ARCH_STM32)
+   bool     begin(uint32_t sda = SDA, uint32_t scl = SCL, uint32_t speed = HTU2XD_SHT2X_SI70XX_I2C_SPEED_HZ);
   #else
    bool     begin();
   #endif
 
-   float    readHumidity(HTU2XD_SHT2X_SI70XX_HUMD_OPERATION_MODE_REG = START_HUMD_HOLD_I2C);
+   float    readHumidity(HTU2XD_SHT2X_SI70XX_HUMD_OPERATION_MODE_REG = START_HUMD_HOLD_I2C); //ARDUINO_ARCH_STM32
    float    getCompensatedHumidity(float temperature);
-   float    readTemperature(HTU2XD_SHT2X_SI70XX_TEMP_OPERATION_MODE_REG = START_TEMP_HOLD_I2C);
+   float    readTemperature(HTU2XD_SHT2X_SI70XX_TEMP_OPERATION_MODE_REG = START_TEMP_HOLD_I2C); //ARDUINO_ARCH_STM32
 
    void     setType(HTU2XD_SHT2X_SI70XX_I2C_SENSOR = HTU2xD_SENSOR);
    void     setResolution(HTU2XD_SHT2X_SI70XX_USER_CTRL_RES sensorResolution);

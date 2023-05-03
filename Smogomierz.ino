@@ -131,7 +131,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 #include "src/libs/esp32/Adafruit_BME280.h" // https://github.com/adafruit/Adafruit_BME280_Library // CUSTOMIZED! 3.05.2023
 #endif
 
-#include "src/libs/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 5.11.2021
+#include "src/libs/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 3.05.2023
 #include "src/libs/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 5.11.2021
 #include "src/libs/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 3.05.2023
 #include "src/libs/DHT.h" // https://github.com/adafruit/DHT-sensor-library // 5.11.2021

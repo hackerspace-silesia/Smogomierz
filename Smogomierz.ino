@@ -22,11 +22,11 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
 
-#define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
+// #define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
 // #define DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMS5003 / PM§S7003 - BME280_0x77
 // #define DUSTSENSOR_SDS011_21 // Nova Fitness SDS011 / SDS021
 // #define DUSTSENSOR_HPMA115S0 // Honeywell HPMA115S0
-// #define DUSTSENSOR_SPS30 // Sensirion SPS30
+ #define DUSTSENSOR_SPS30 // Sensirion SPS30
 
 // *******************************************
 
@@ -120,37 +120,36 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 #include <map>
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 3.06.2023
+#include "src/WiFiManager/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 3.05.2023
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
-#include "src/libs/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
+#include "src/libs/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 3.05.2023
 #else
-#include "src/libs/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021
+#include "src/libs/esp8266/bme280_0x77.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 3.05.2023
 #endif
 #elif defined ARDUINO_ARCH_ESP32
-#include "src/libs/esp32/Adafruit_BME280.h" // https://github.com/adafruit/Adafruit_BME280_Library // CUSTOMIZED! 16.03.2022
+#include "src/libs/esp32/Adafruit_BME280.h" // https://github.com/adafruit/Adafruit_BME280_Library // CUSTOMIZED! 3.05.2023
 #endif
 
 #include "src/libs/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 5.11.2021
 #include "src/libs/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 5.11.2021
-#include "src/libs/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 5.11.2021
+#include "src/libs/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 3.05.2023
 #include "src/libs/DHT.h" // https://github.com/adafruit/DHT-sensor-library // 5.11.2021
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
-#include "src/libs/pms.h" // https://github.com/fu-hsi/PMS // 5.11.2021
+#include "src/libs/pms.h" // https://github.com/fu-hsi/PMS // 3.05.2023
 #elif defined DUSTSENSOR_SDS011_21
 #ifdef ARDUINO_ARCH_ESP8266
-#include "src/libs/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 5.11.2021
+#include "src/libs/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 3.05.2023
 #elif defined ARDUINO_ARCH_ESP32
-// #include "src/libs/esp8266/SdsDustSensor.h" // SDS011/SDS021 - https://github.com/lewapek/sds-dust-sensors-arduino-library // 5.11.2021
-#include "src/libs/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 5.11.2021
+#include "src/libs/esp32/SDS011.h" // https://github.com/ricki-z/SDS011 // 3.05.2023
 #endif
 #elif defined DUSTSENSOR_HPMA115S0
-#include "src/libs/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 5.11.2021
+#include "src/libs/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 3.05.2023
 #elif defined DUSTSENSOR_SPS30
 #include "src/libs/sps30.h" // https://github.com/paulvha/sps30 // CUSTOMIZED! 5.11.2021
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
-#include "src/libs/pms.h" // https://github.com/fu-hsi/PMS // 5.11.2021
+#include "src/libs/pms.h" // https://github.com/fu-hsi/PMS // 3.05.2023
 #endif
 
 #include "src/smogly_spiffs.h"

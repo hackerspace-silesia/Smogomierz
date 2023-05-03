@@ -1,14 +1,8 @@
 #ifndef __SDS_ABSTRACT_SERIAL_H__
 #define __SDS_ABSTRACT_SERIAL_H__
 
-#ifndef ARDUINO_SAMD_VARIANT_COMPLIANCE // there is no SoftwareSerial available (needed) on SAMD boards.
-
-#ifdef ARDUINO_ARCH_ESP8266
+#if !defined(ARDUINO_SAMD_VARIANT_COMPLIANCE) && !defined(ESP32)
 #include <SoftwareSerial.h>
-#elif defined ARDUINO_ARCH_ESP32
-#include <HardwareSerial.h>
-#endif
-	
 #endif
 #include <HardwareSerial.h>
 
@@ -42,7 +36,7 @@ namespace Serials {
     HardwareSerial &serial;
   };
 
-#ifndef ARDUINO_SAMD_VARIANT_COMPLIANCE // there is no SoftwareSerial available (needed) on SAMD boards.
+#if !defined(ARDUINO_SAMD_VARIANT_COMPLIANCE) && !defined(ESP32)
   struct Software: public AbstractSerial {
     Software(SoftwareSerial &serial): serial(serial) {}
 

@@ -22,11 +22,11 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******
 
-// #define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
+ #define DUSTSENSOR_PMS5003_7003_BME280_0x76 // PMS5003 / PMS7003 - BME280_0x76
 // #define DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMS5003 / PM§S7003 - BME280_0x77
 // #define DUSTSENSOR_SDS011_21 // Nova Fitness SDS011 / SDS021
 // #define DUSTSENSOR_HPMA115S0 // Honeywell HPMA115S0
- #define DUSTSENSOR_SPS30 // Sensirion SPS30
+// #define DUSTSENSOR_SPS30 // Sensirion SPS30
 
 // *******************************************
 
@@ -2432,7 +2432,7 @@ bool read_sps30_data()
     ret = sps30.GetValues(&val);
 
     // data might not have been ready
-    if (ret == ERR_DATALENGTH) {
+    if (ret == SPS30_ERR_DATALENGTH) {
 
       if (error_cnt++ > 3) {
         ErrtoMess("Error during reading values: ", ret);

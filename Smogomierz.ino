@@ -134,7 +134,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 #include "src/libs/HTU2xD_SHT2x_Si70xx.h" // https://github.com/enjoyneering/HTU2xD_SHT2x_Si70xx // 3.05.2023
 #include "src/libs/Adafruit_BMP280.h" // https://github.com/adafruit/Adafruit_BMP280_Library // 5.11.2021
 #include "src/libs/SHT1x.h" // https://github.com/practicalarduino/SHT1x // 3.05.2023
-#include "src/libs/DHT.h" // https://github.com/adafruit/DHT-sensor-library // 5.11.2021
+#include "src/libs/DHT.h" // https://github.com/adafruit/DHT-sensor-library // 3.05.2023
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
 #include "src/libs/pms.h" // https://github.com/fu-hsi/PMS // 3.05.2023

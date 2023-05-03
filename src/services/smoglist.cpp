@@ -8,6 +8,11 @@
 #include <ArduinoJson.h>
 #include "../../config.h"
 
+/*
+Smoglist - default disable
+TODO: Smoglist required fully rethink and rewritten
+*/
+
 const char *SmoglistServerName PROGMEM = "api.smoglist.pl"; // api.smoglist.pl:8090/postjson
 const uint16_t SmoglistPort = 8090;
 

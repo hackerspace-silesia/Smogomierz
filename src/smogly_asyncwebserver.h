@@ -231,8 +231,8 @@ static String handle_root_processor(const String& var)
   if (airMonitorSettings.graph) {
     if (var == F("{WEB_ROOT_PAGE_AIRMONITOR_GRAPH}")) {
       message += String(WEB_ROOT_PAGE_AIRMONITOR_GRAPH);
-      message.replace(F("{LATITUDE}"), String(deviceSettings.latitude));
-      message.replace(F("{LONGITUDE}"), String(deviceSettings.longitude));
+      message.replace(F("{LATITUDE}"), String(deviceSettings.latitude, 6));
+      message.replace(F("{LONGITUDE}"), String(deviceSettings.longitude, 6));
     }
   } else {
     if (var == F("{WEB_ROOT_PAGE_AIRMONITOR_GRAPH}")) {

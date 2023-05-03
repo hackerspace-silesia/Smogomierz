@@ -147,7 +147,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 #elif defined DUSTSENSOR_HPMA115S0
 #include "src/libs/hpma115S0.h" // https://github.com/hpsaturn/HPMA115S0 // 3.05.2023
 #elif defined DUSTSENSOR_SPS30
-#include "src/libs/sps30.h" // https://github.com/paulvha/sps30 // CUSTOMIZED! 5.11.2021
+#include "src/libs/sps30.h" // https://github.com/paulvha/sps30 // CUSTOMIZED! 3.05.2023
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
 #include "src/libs/pms.h" // https://github.com/fu-hsi/PMS // 3.05.2023
 #endif
@@ -181,7 +181,7 @@ MeasurementsData measurementsData;
 #endif
 #include "src/services/thing_speak.h"
 #include "src/services/aqieco.h"
-#include "src/services/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 5.11.2021
+#include "src/services/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 3.05.2023
 
 //        it would be nice to update the InfluxDB library to
 // #include "src/services/InfluxDB/InfluxDbClient.h" // https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino

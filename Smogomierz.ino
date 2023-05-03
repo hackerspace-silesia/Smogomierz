@@ -1,6 +1,6 @@
 /*
-  ESP8266 core for Arduino - 3.0.2 // NodeMCU 1.0; Flash Size: 4MB (FS:1MB OTA:~1019KB)
-  Arduino core for the ESP32 - 2.0.x
+  ESP8266 core for Arduino - 3.1.2 // NodeMCU 1.0; Flash Size: 4MB (FS:1MB OTA:~1019KB)
+  Arduino core for the ESP32 - 2.0.8 // ESP32 Dev Module 4MB (1.9MB APP with OTA - 190KB)
 
 @macOS only: 
 to fix "exec: "python": executable file not found in $PATH" error edit 
@@ -8,8 +8,8 @@ to fix "exec: "python": executable file not found in $PATH" error edit
 and replace "python" with "python3"
 https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 
-  Adafruit Unified Sensor - 1.1.4
-  DallasTemperature - 3.8.0
+  Adafruit Unified Sensor - 1.1.9
+  DallasTemperature - 3.9.0
 */
 
 // ****** CHOOSE(uncomment) ONLY ONE!!! ******

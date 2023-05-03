@@ -120,7 +120,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
 #include <map>
 #include "FS.h"
 #include <ArduinoJson.h> // 6.9.0 or later
-#include "src/WiFiManager/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 5.11.2021
+#include "src/WiFiManager/ESPAsyncWiFiManager.h" // https://github.com/alanswx/ESPAsyncWiFiManager // 3.06.2023
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef DUSTSENSOR_PMS5003_7003_BME280_0x77
 #include "src/libs/esp8266/bme280_0x76.h" // https://github.com/zen/BME280_light // CUSTOMIZED! 5.11.2021

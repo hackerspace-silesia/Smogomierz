@@ -608,7 +608,6 @@ const auto it = pin_map.find(THP_PIN);
 // library doesnt support arguments :/
 #include "src/smogly_asyncwebserver.h"
 
-
 void setup() {
   /*
   #ifdef ARDUINO_ARCH_ESP8266
@@ -1844,6 +1843,29 @@ void takeTHPMeasurements() {
   measurementsData.humidity = measurementsData.first_humidity;
   measurementsData.pressure = measurementsData.first_pressure;
 
+  // Check if THP values are in correct range
+  if (measurementsData.temperature < -50 || measurementsData.temperature > 100) {
+    if (deviceSettings.debug) {
+      Serial.println(F("temperature out of range(-50-100)!\n"));
+    }
+    strncpy(sensorsSettings.thpModel, "Non", 12);
+    measurementsData.temperature = 0;
+  }
+  if (measurementsData.humidity < 0 || measurementsData.humidity > 100) {
+    if (deviceSettings.debug) {
+      Serial.println(F("humidity out of range(0-100)!\n"));
+    }
+    strncpy(sensorsSettings.thpModel, "Non", 12);
+    measurementsData.humidity = 0;
+  }
+  if (measurementsData.pressure < 1000 || measurementsData.pressure > 3000) {
+    if (deviceSettings.debug) {
+      Serial.println(F("pressure out of range(1000-3000)!\n"));
+    }
+    strncpy(sensorsSettings.thpModel, "Non", 12);
+    measurementsData.pressure = 0;
+  }
+
 #ifdef ARDUINO_ARCH_ESP32
   if (homeKitSettings.enabled) {
     /*
@@ -1933,6 +1955,22 @@ void takeNormalnPMMeasurements() {
   if (++iPM == sensorsSettings.numerOfMeasurements) {
     averagePM();
     iPM = 0;
+  }
+
+  // Check if DUST values are in correct range
+  if (pmMeasurements[iPM][1] < 0 || pmMeasurements[iPM][1] > 3000) {
+    if (deviceSettings.debug) {
+      Serial.println(F("PM2.5 out of range(0-3000)!\n"));
+    }
+    strncpy(sensorsSettings.dustModel, "Non", 12);
+    pmMeasurements[iPM][1] = 0;
+  }
+  if (pmMeasurements[iPM][2] < 0 || pmMeasurements[iPM][1] > 3000) {
+    if (deviceSettings.debug) {
+      Serial.println(F("PM10 out of range(0-3000)!\n"));
+    }
+    strncpy(sensorsSettings.dustModel, "Non", 12);
+    pmMeasurements[iPM][2] = 0;
   }
 
 }

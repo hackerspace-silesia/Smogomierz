@@ -106,8 +106,8 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   REFAKTOR_1.05.2023:
-  Szkic używa 1302693 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
-  Zmienne globalne używają 66504 bajtów (20%) pamięci dynamicznej, pozostawiając 261176 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
+  Szkic używa 1303437 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  Zmienne globalne używają 66680 bajtów (20%) pamięci dynamicznej, pozostawiając 261000 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   *** init homekit support:
 
@@ -158,7 +158,7 @@ DeviceSettings deviceSettings;
 SensorsSettings sensorsSettings;
 I2CSettings firstThpSettings;
 I2CSettings secondThpSettings;
-I2CSettings dustSettings;
+SerialSettings dustSettings;
 SmoglistSettings smoglistSettings;
 LuftdatenSettings luftdatenSettings;
 AirMonitorSettings airMonitorSettings;
@@ -609,24 +609,6 @@ const auto it = pin_map.find(THP_PIN);
 #include "src/smogly_asyncwebserver.h"
 
 void setup() {
-  /*
-  #ifdef ARDUINO_ARCH_ESP8266
-    firstThpSettings.sda[4] = 'D3';
-    firstThpSettings.scl[4] = 'D4';
-    firstThpSettings.address_sda = 0; // D3
-    firstThpSettings.address_scl = 2; // D4
-
-    dustSettings.sda[4] = 'D1';
-    dustSettings.scl[4] = 'D2';
-    dustSettings.address_sda = 5; // D1
-    dustSettings.address_scl = 4; // D2
-  #elif defined ARDUINO_ARCH_ESP32
-    dustSettings.sda[4] = 'D18';
-    dustSettings.scl[4] = 'D19';
-    dustSettings.address_sda = 18; // TX - D1
-    dustSettings.address_scl = 19; // RX - D2
-  #endif
-  */
   Serial.begin(115200);
   yield();
 

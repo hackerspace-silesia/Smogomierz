@@ -33,12 +33,27 @@ struct SensorsSettings {
 };
 
 struct I2CSettings {
-    char sda[4] = ""; // TX - for dust senros
-    char scl[4] = ""; // RX - for dust senros
+    char sda[4] = "D3"; // TX - for dust senros
+    char scl[4] = "D4"; // RX - for dust senros
     unsigned short address_sda = 0;
     unsigned short address_scl = 2;
 };
 
+  #ifdef ARDUINO_ARCH_ESP8266
+struct SerialSettings {
+    char sda[4] = "D1"; // TX - for dust senros
+    char scl[4] = "D2"; // RX - for dust senros
+    unsigned short address_sda = 5;
+    unsigned short address_scl = 6;
+};
+  #elif defined ARDUINO_ARCH_ESP32
+struct SerialSettings {
+    char sda[4] = "D18"; // TX - for dust senros
+    char scl[4] = "D19"; // RX - for dust senros
+    unsigned short address_sda = 18;
+    unsigned short address_scl = 19;
+};
+  #endif
 
 struct SmoglistSettings {
     bool enabled = false;
@@ -148,7 +163,7 @@ extern DeviceSettings deviceSettings;
 extern SensorsSettings sensorsSettings;
 extern I2CSettings firstThpSettings;
 extern I2CSettings secondThpSettings;
-extern I2CSettings dustSettings;
+extern SerialSettings dustSettings;
 extern SmoglistSettings smoglistSettings;
 extern LuftdatenSettings luftdatenSettings;
 extern AirMonitorSettings airMonitorSettings;

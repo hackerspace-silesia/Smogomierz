@@ -229,16 +229,18 @@ static String handle_root_processor(const String& var)
   }
 
   if (airMonitorSettings.graph) {
+  #ifdef ARDUINO_ARCH_ESP32
     if (var == F("{WEB_ROOT_PAGE_AIRMONITOR_GRAPH}")) {
       message += String(WEB_ROOT_PAGE_AIRMONITOR_GRAPH);
-#ifdef ARDUINO_ARCH_ESP8266
-      message.replace(F("{LATITUDE}"), String(deviceSettings.latitude));
-      message.replace(F("{LONGITUDE}"), String(deviceSettings.longitude));
-#elif defined ARDUINO_ARCH_ESP32
-      message.replace(F("{LATITUDE}"), String(deviceSettings.latitude, 6));
-      message.replace(F("{LONGITUDE}"), String(deviceSettings.longitude, 6));
-#endif
+      #ifdef ARDUINO_ARCH_ESP8266
+        message.replace(F("{LATITUDE}"), String(deviceSettings.latitude));
+        message.replace(F("{LONGITUDE}"), String(deviceSettings.longitude));
+      #elif defined ARDUINO_ARCH_ESP32
+        message.replace(F("{LATITUDE}"), String(deviceSettings.latitude, 6));
+        message.replace(F("{LONGITUDE}"), String(deviceSettings.longitude, 6));
+      #endif
     }
+  #endif
   } else {
     if (var == F("{WEB_ROOT_PAGE_AIRMONITOR_GRAPH}")) {
       message += "";
@@ -307,12 +309,14 @@ static String _add_FIRST_THP_Option(const String &value, const String &label, co
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
     if (sensorsSettings.secondThp) {
+    #ifdef ARDUINO_ARCH_ESP32
       if (String(secondThpSettings.sda) == value) {
         option.replace(F("{srslyValue}"), F("disabled>"));
       }
       if (String(secondThpSettings.scl) == value) {
         option.replace(F("{srslyValue}"), F("disabled>"));
       }
+    #endif
     }
   }
   
@@ -326,6 +330,7 @@ static String _add_FIRST_THP_Option(const String &value, const String &label, co
   return option;
 }
 
+#ifdef ARDUINO_ARCH_ESP32
 static String _add_SECOND_THP_Option(const String &value, const String &label, const String &srslyValue) {
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
   option.replace(F("{value}"), value);
@@ -355,6 +360,7 @@ static String _add_SECOND_THP_Option(const String &value, const String &label, c
   option.replace(F("{label}"), label);
   return option;
 }
+#endif
 
 static String _add_DUST_Option(const String &value, const String &label, const String &srslyValue) {
   String option = FPSTR(WEB_CONFIG_PAGE_ADDOPTION);
@@ -447,7 +453,7 @@ static String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &val
     input += _add_FIRST_THP_Option(F("D5"), F("D5/GPIO14"), value);
     input += _add_FIRST_THP_Option(F("D6"), F("D6/GPIO12"), value);
     input += _add_FIRST_THP_Option(F("D7"), F("D7/GPIO13"), value);
-    //input += _addOption(F("D8"), F("D8/GPIO15"), value);
+    // input += _addOption(F("D8"), F("D8/GPIO15"), value);
 #elif defined ARDUINO_ARCH_ESP32
     input += _add_FIRST_THP_Option(F("D1"), F("D1/GPIO08"), value);
     input += _add_FIRST_THP_Option(F("D2"), F("D2/GPIO02"), value);
@@ -468,6 +474,7 @@ static String _add_FIRST_THP_SDA_SCL_Select(const String &key, const String &val
   return input;
 }
 
+#ifdef ARDUINO_ARCH_ESP32
 static String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
@@ -479,7 +486,7 @@ static String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &va
   input += _add_SECOND_THP_Option(F("D5"), F("D5/GPIO14"), value);
   input += _add_SECOND_THP_Option(F("D6"), F("D6/GPIO12"), value);
   input += _add_SECOND_THP_Option(F("D7"), F("D7/GPIO13"), value);
-  //input += _addOption(F("D8"), F("D8/GPIO15"), value);
+  // input += _addOption(F("D8"), F("D8/GPIO15"), value);
 #elif defined ARDUINO_ARCH_ESP32
   input += _add_SECOND_THP_Option(F("D1"), F("D1/GPIO08"), value);
   input += _add_SECOND_THP_Option(F("D2"), F("D2/GPIO02"), value);
@@ -498,15 +505,14 @@ static String _add_SECOND_THP_SDA_SCL_Select(const String &key, const String &va
   input += FPSTR(WEB_CONFIG_PAGE_SELECTEND);
   return input;
 }
+#endif 
 
 static String _add_DUST_TX_RX_Select(const String &key, const String &value) {
   String input = FPSTR(WEB_CONFIG_PAGE_SELECT);
   input.replace(F("{key}"), key);
   if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
-	  
     input += _add_DUST_Option(F("D1"), F("D1/GPIO05"), value);
     input += _add_DUST_Option(F("D2"), F("D2/GPIO04"), value);
-	
   } else {
 #ifdef ARDUINO_ARCH_ESP8266
     input += _add_DUST_Option(F("D1"), F("D1/GPIO05"), value);
@@ -516,7 +522,7 @@ static String _add_DUST_TX_RX_Select(const String &key, const String &value) {
     input += _add_DUST_Option(F("D5"), F("D5/GPIO14"), value);
     input += _add_DUST_Option(F("D6"), F("D6/GPIO12"), value);
     input += _add_DUST_Option(F("D7"), F("D7/GPIO13"), value);
-    //input += _addOption(F("D8"), F("D8/GPIO15"), value);
+    // input += _addOption(F("D8"), F("D8/GPIO15"), value);
 #elif defined ARDUINO_ARCH_ESP32
     // input += _add_DUST_Option(F("D1"), F("D1/GPIO08"), value);
     // input += _add_DUST_Option(F("D2"), F("D2/GPIO02"), value);
@@ -570,6 +576,7 @@ static String _addTextInput(const String &key, const String &value, const String
   return input;
 }
 
+#ifdef ARDUINO_ARCH_ESP32
 static String _addMQTTTextInput(const String &key, const String &value, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_MQTT_TEXTIMPUT);
   input.replace(F("{key}"), key);
@@ -577,6 +584,7 @@ static String _addMQTTTextInput(const String &key, const String &value, const St
   input.replace(F("{postfix}"), postfix);
   return input;
 }
+#endif
 
 static String _addPasswdInput(const String &key, const String &value, const String &postfix = "") {
   String input = FPSTR(WEB_CONFIG_PAGE_PASSWDINPUT);
@@ -614,11 +622,13 @@ static String _addSubmitServices() {
   return submitServices;
 }
 
+#ifdef ARDUINO_ARCH_ESP32
 static String _addSubmitAdvMQTT() {
   String submitAdvMQTT = FPSTR(WEB_CONFIG_ADVANCED_MQTT_PAGE_SUBMIT_SERVICES_BUTTON);
   submitAdvMQTT.replace(F("{TEXT_SAVE}"), (TEXT_SAVE));
   return submitAdvMQTT;
 }
+#endif
 
 static String _addWiFiErase() {
   String WiFiErase = FPSTR(WEB_CONFIG_PAGE_WIFIERASE);
@@ -860,6 +870,7 @@ static String handle_config_device_processor(const String& var)
 
   // SECOND_THP CONFIG
   /*
+  #ifdef ARDUINO_ARCH_ESP32
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_SECOND_T")) {
     if (strcmp(sensorsSettings.thpModel, "Non")) {
       message += String(WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS);
@@ -875,25 +886,60 @@ static String handle_config_device_processor(const String& var)
   }
   
   if (sensorsSettings.secondThp) {	
-   if (var == F("{SECOND_THP_PINS_CONFIG}")) {
+    if (var == F("{SECOND_THP_PINS_CONFIG}")) {
       message += String(WEB_CONFIG_DEVICE_PAGE_SECOND_THP_PINS_CONFIG);
     }
-  if (var == F("{TEXT_SECOND_THP_SDA_SCL}")) {
-    message += String(TEXT_SECOND_THP_SDA_SCL);
+    if (var == F("{TEXT_SECOND_THP_SDA_SCL}")) {
+      message += String(TEXT_SECOND_THP_SDA_SCL);
+    }
+    if (var == F("{TEXT_SECOND_THP_SDA}")) {
+      message += String(TEXT_SECOND_THP_SDA);
+    }
+    if (var == F("{SECOND_THP_SDA}")) {
+      message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SDA"), secondThpSettings.sda));
+    }
+    if (var == F("{TEXT_SECOND_THP_SCL}")) {
+      message += String(TEXT_SECOND_THP_SCL);
+    }
+    if (var == F("{SECOND_THP_SCL}")) {
+      message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SCL"), secondThpSettings.scl));
+    }	
   }
-  if (var == F("{TEXT_SECOND_THP_SDA}")) {
-    message += String(TEXT_SECOND_THP_SDA);
+  #endif
+  */
+
+/*
+  #ifdef ARDUINO_ARCH_ESP8266
+  if (var == F("{WEB_CONFIG_DEVICE_PAGE_SECOND_T")) {
+      message += ("");
   }
-  if (var == F("{SECOND_THP_SDA}")) {
-    message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SDA"), secondThpSettings.sda));
+  if (var == F("{TEXT_SECOND_THP}")) {
+      message += ("");
   }
-  if (var == F("{TEXT_SECOND_THP_SCL}")) {
-    message += String(TEXT_SECOND_THP_SCL);
+  if (var == F("{SECOND_THP}")) {
+      message += ("");
   }
-  if (var == F("{SECOND_THP_SCL}")) {
-    message += (_add_SECOND_THP_SDA_SCL_Select(F("CONFIG_SECOND_THP_SCL"), secondThpSettings.scl));
-  }	
-}
+  if (sensorsSettings.secondThp) {	
+    if (var == F("{SECOND_THP_PINS_CONFIG}")) {
+      message += ("");
+    }
+    if (var == F("{TEXT_SECOND_THP_SDA_SCL}")) {
+        message += ("");
+    }
+    if (var == F("{TEXT_SECOND_THP_SDA}")) {
+        message += ("");
+    }
+    if (var == F("{SECOND_THP_SDA}")) {
+        message += ("");
+    }
+    if (var == F("{TEXT_SECOND_THP_SCL}")) {
+        message += ("");
+    }
+    if (var == F("{SECOND_THP_SCL}")) {
+        message += ("");
+    }	
+  }
+  #endif
 */
 
   if (var == F("{WEB_CONFIG_DEVICE_PAGE_DUST_PIN")) {
@@ -966,19 +1012,19 @@ static String handle_config_device_processor(const String& var)
     message += (_addBoolSelect(F("DEEPSLEEP_ON"), deviceSettings.deepSleep));
   }
 
-  if (var == F("{WEB_CONFIG_DEVICE_SHOWING_PM1}")) {
-    if (!strcmp(sensorsSettings.dustModel, "PMS7003") or !strcmp(sensorsSettings.dustModel, "SPS30")) {
-      message += String(WEB_CONFIG_DEVICE_SHOWING_PM1);
-    } else {
-      message += ("");
+  if (!strcmp(sensorsSettings.dustModel, "PMS7003") or !strcmp(sensorsSettings.dustModel, "SPS30")) {
+    if (var == F("{WEB_CONFIG_DEVICE_SHOWING_PM1}")) {
+        message += String(WEB_CONFIG_DEVICE_SHOWING_PM1);
     }
-  }
-  if (var == F("{TEXT_DISPLAYPM1}")) {
-    message += String(TEXT_DISPLAYPM1);
-  }
-  if (var == F("{DISPLAY_PM1}")) {
-    message += (_addBoolSelect(F("DISPLAY_PM1"), deviceSettings.displayPM1));
-    message.replace(F("{TEXT_DISPLAYPM1}"), String(TEXT_DISPLAYPM1));
+    if (var == F("{TEXT_DISPLAYPM1}")) {
+      message += String(TEXT_DISPLAYPM1);
+    }
+    if (var == F("{DISPLAY_PM1}")) {
+      message += (_addBoolSelect(F("DISPLAY_PM1"), deviceSettings.displayPM1));
+      message.replace(F("{TEXT_DISPLAYPM1}"), String(TEXT_DISPLAYPM1));
+    }
+  } else {
+    message += ("");
   }
 
   if (var == F("{TEXT_SECURECONFIGUPDATEPAGE}")) {
@@ -1011,23 +1057,43 @@ static String handle_config_device_processor(const String& var)
   if (var == F("{DEBUG}")) {
     message += (_addBoolSelect(F("DEBUG"), deviceSettings.debug));
   }
-  if (var == F("{TEXT_CALIBMETHOD}")) {
-    message += String(TEXT_CALIBMETHOD);
-  }
-  if (var == F("{CalibrationModelSelect}")) {
-    message += (_addBoolSelect(F("MODEL"), deviceSettings.autoCalibration));
-  }
-  if (var == F("{TEXT_CALIB1}")) {
-    message += String(TEXT_CALIB1);
-  }
-  if (var == F("{calib1}")) {
-    message += (String(deviceSettings.calib1));
-  }
-  if (var == F("{TEXT_CALIB2}")) {
-    message += String(TEXT_CALIB2);
-  }
-  if (var == F("{calib2}")) {
-    message += (String(deviceSettings.calib2));
+
+  if (strcmp(sensorsSettings.thpModel, "Non")) {
+    if (var == F("{TEXT_CALIBMETHOD}")) {
+      message += String(TEXT_CALIBMETHOD);
+    }
+    if (var == F("{CalibrationModelSelect}")) {
+      message += (_addBoolSelect(F("MODEL"), deviceSettings.autoCalibration));
+    }
+    if (var == F("{TEXT_CALIB1}")) {
+      message += String(TEXT_CALIB1);
+    }
+    if (var == F("{calib1}")) {
+      message += (String(deviceSettings.calib1));
+    }
+    if (var == F("{TEXT_CALIB2}")) {
+      message += String(TEXT_CALIB2);
+    }
+    if (var == F("{calib2}")) {
+      message += (String(deviceSettings.calib2));
+    }
+  } else {
+    deviceSettings.autoCalibration = false;
+    if (var == F("{TEXT_CALIBMETHOD}")) {
+      message += ("</b>");
+      message += ("<!-- ");
+      message += ("");
+    }
+    if (var == F("{CalibrationModelSelect}")) {
+      message += ("");
+    }
+    if (var == F("{TEXT_CALIB1}")) {
+      message += ("");
+    }
+    if (var == F("{calib1}")) {
+      message += ("");
+      message += (" -->");
+    }
   }
 
   if (var == F("{TEXT_SOFTWATEVERSION}")) {
@@ -1051,7 +1117,7 @@ static String handle_config_device_processor(const String& var)
 #elif defined ARDUINO_ARCH_ESP32
   if (var == F("{WEB_CONFIG_DEVICE_HOMEKIT}")) {
 	  message += ("");
-    //message += String(WEB_CONFIG_DEVICE_HOMEKIT);
+    // message += String(WEB_CONFIG_DEVICE_HOMEKIT);
   }
   /*
   if (var == F("{TEXT_HOMEKIT_SUPPORT}")) {
@@ -1109,7 +1175,7 @@ static void handle_config_device(AsyncWebServerRequest *request) {
 
   if (deviceSettings.debug) {
     Serial.print(F("sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): "));
-    Serial.println(sizeof(WEB_CONFIG_DEVICE_PAGE_ALL)); // sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): ~3781
+    Serial.println(sizeof(WEB_CONFIG_DEVICE_PAGE_ALL)); // sizeof(WEB_CONFIG_DEVICE_PAGE_ALL): ~3897
     Serial.print(F("\n"));
   }
 
@@ -1520,11 +1586,17 @@ static String handle_config_services_processor(const String& var)
   }
   
   // SAVE / RESET / RESTORE SECTION - START
-  if (var == F("{AdvancedMQTTConfigButton}")) {
-    message += String(ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON);
-    message.replace(F("{TEXT_CONFIG_ADV_MQTT}"), String(TEXT_CONFIG_ADV_MQTT));
-  }
- 
+  #ifdef ARDUINO_ARCH_ESP32
+    if (var == F("{AdvancedMQTTConfigButton}")) {
+      message += String(ASW_WEB_GOTO_CONFIG_ADVANCED_MQTT_PAGE_BUTTON);
+      message.replace(F("{TEXT_CONFIG_ADV_MQTT}"), String(TEXT_CONFIG_ADV_MQTT));
+    }
+  #else
+    if (var == F("{AdvancedMQTTConfigButton}")) {
+      message += ("");
+    }
+  #endif
+
   if (var == F("{WiFiEraseButton}")) {
     message += (_addWiFiErase());
   }
@@ -1554,6 +1626,7 @@ static String handle_config_services_processor(const String& var)
   }
     
   /*
+    #ifdef ARDUINO_ARCH_ESP32
     if (var == F("{TEXT_MQTTSENDING}")) {
      message += (TEXT_MQTTSENDING);
     }
@@ -1630,6 +1703,7 @@ static String handle_config_services_processor(const String& var)
     if (var == F("{MQTT_TEMP}")) {
     message += (String(int(measurementsData.temperature)));
     }
+  #endif
   */
 
   return message;
@@ -1652,6 +1726,7 @@ static void handle_config_services(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", WEB_CONFIG_SERVICES_PAGE_ALL, handle_config_services_processor);
 }
 
+#ifdef ARDUINO_ARCH_ESP32
 static String handle_adv_mqtt_config_processor(const String& var)
 {
   // Serial.println(F("var: ") + var);
@@ -1880,7 +1955,9 @@ static String handle_adv_mqtt_config_processor(const String& var)
   return message;
   message = "";
 }
+#endif
 
+#ifdef ARDUINO_ARCH_ESP32
 static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
   if (authSettings.enabled == true) {
     if (!request->authenticate(authSettings.username, authSettings.password))
@@ -1893,9 +1970,9 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     Serial.print(F("\n"));
   }
   /*
-  request->send_P(200, "text/html", WEB_CONFIG_ADV_MQTT_PAGE_ALL, handle_adv_mqtt_config_processor);
-}
-*/
+    request->send_P(200, "text/html", WEB_CONFIG_ADV_MQTT_PAGE_ALL, handle_adv_mqtt_config_processor);
+  }
+  */
   String message;
   message = "";
 
@@ -2247,8 +2324,8 @@ static void handle_adv_mqtt_config(AsyncWebServerRequest *request) {
     Serial.print(F("\n"));
   }
   request->send(200, "text/html", message);
-  }
- 
+}
+#endif
 
 static bool _parseAsBool(String value) {
   return value == "yes";
@@ -2515,7 +2592,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
       reboot_required = true;
     }
   }
-  
+  #ifdef ARDUINO_ARCH_ESP32
   if (request->hasParam("SECOND_THP")) {
     sensorsSettings.secondThp = _parseAsBool(request->getParam("SECOND_THP")->value());
   }
@@ -2536,7 +2613,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
       reboot_required = true;
     }
   }
-
+  #endif
   if (request->hasParam("CONFIG_DUST_TX")) {
     char old_data[8];
     strcpy(old_data, dustSettings.sda);
@@ -2598,34 +2675,35 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   if (request->hasParam("AUTOUPDATE_ON")) {
     deviceSettings.autoUpdate = _parseAsBool(request->getParam("AUTOUPDATE_ON")->value());
   }
-
+#ifdef ARDUINO_ARCH_ESP32
   if (request->hasParam("HOMEKIT_SUPPORT")) {
     homeKitSettings.enabled = _parseAsBool(request->getParam("HOMEKIT_SUPPORT")->value());
   }
-
+#endif
   if (need_update != 0) {
     strcpy(sensorsSettings.thpModel, "Non");
     strcpy(sensorsSettings.dustModel, "Non");
     saveConfig();
     //_handle_config_device(true);
-	unsigned char x = 0;
-    if (need_update == 1) {
-      x = 1; // BME280-SparkFun
-    }
-    if (need_update == 2) {
-      x = 2; // SDS011
-    }
-    if (need_update == 3) {
-      x = 3; // HPMA115S0
-    }
-    if (need_update == 4) {
-      x = 4; // PMSx003
-    }
-    if (need_update >= 5) {
-      x = 5; // SPS30
-    }
-    if (need_update >= 6) {
-      x = 0; // CURRENT SERVERSOFTWARE VERSION
+	  unsigned char x = 0;
+    switch (need_update) {
+      case 1:
+          x = 1; // BME280-SparkFun
+          break;
+      case 2:
+          x = 2; // SDS011
+          break;
+      case 3:
+          x = 3; // HPMA115S0
+          break;
+      case 4:
+          x = 4; // PMSx003
+          break;
+      case 5:
+          x = 5; // SPS30
+          break;
+      default:
+          x = 0; // CURRENT SERVERSOFTWARE VERSION
     }
 	doUpdate(x);
   }
@@ -2638,7 +2716,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
 
   //_handle_config_device(true);
   // https://github.com/esp8266/Arduino/issues/1722
-  //ESP.reset();
+  // ESP.reset();
   delay(300);
   request->redirect("/");
   
@@ -2647,7 +2725,7 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
     unsigned long current_redirect_Millis = millis();
     unsigned long previous_redirect_Millis = millis();
     while (previous_redirect_Millis - current_redirect_Millis <= redirect_interval * 1) {
-    previous_redirect_Millis = millis();
+      previous_redirect_Millis = millis();
     }
   */
  if (reboot_required) {
@@ -2815,9 +2893,8 @@ static void handle_config_services_save(AsyncWebServerRequest *request) {
   delay(100);
   saveConfig();
 
-  //_handle_config_services(true);
+  // _handle_config_services(true);
   // https://github.com/esp8266/Arduino/issues/1722
-  //ESP.reset();
   delay(300);
   request->redirect("/");
   // delay(1000);
@@ -3073,6 +3150,7 @@ static void fwupdate(AsyncWebServerRequest *request) {
   delay(1000);
 }
 
+#ifdef ARDUINO_ARCH_ESP32
 static void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
   if (deviceSettings.debug) {
     Serial.println(F("handle_adv_mqtt_config_save!"));
@@ -3148,8 +3226,6 @@ static void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
 
   saveConfig();
   // delay(250);
-  // https://github.com/esp8266/Arduino/issues/1722
-  // ESP.reset();
   // yield();
 
   request->redirect("/");
@@ -3157,6 +3233,7 @@ static void handle_adv_mqtt_config_save(AsyncWebServerRequest *request) {
   // Serial.println(F("Restart"));
   // ESP.restart();
 }
+#endif
 
 static void autoupdate_on(AsyncWebServerRequest *request) {
   if (authSettings.enabled == true) {
@@ -3245,6 +3322,7 @@ static void homekit_reset(AsyncWebServerRequest *request) {
   ESP.restart();
 }
 
+#ifdef ARDUINO_ARCH_ESP32
 static void homekit_on(AsyncWebServerRequest *request) {
   if (authSettings.enabled == true) {
     if (!request->authenticate(authSettings.username, authSettings.password))
@@ -3260,7 +3338,9 @@ static void homekit_on(AsyncWebServerRequest *request) {
   Serial.println(F("Restart"));
   ESP.restart();
 }
+#endif
 
+#ifdef ARDUINO_ARCH_ESP32
 static void homekit_off(AsyncWebServerRequest *request) {
   if (authSettings.enabled == true) {
     if (!request->authenticate(authSettings.username, authSettings.password))
@@ -3276,6 +3356,7 @@ static void homekit_off(AsyncWebServerRequest *request) {
   Serial.println(F("Restart"));
   ESP.restart();
 }
+#endif
 /*
  static void logout(AsyncWebServerRequest *request) {
     if (authSettings.enabled == true) {

@@ -183,7 +183,7 @@ MeasurementsData measurementsData;
 #include "src/services/aqieco.h"
 #include "src/services/InfluxDbV2.h" // https://github.com/davidgs/ESP8266_Influx_DB_V2 // CUSTOMIZED! 3.05.2023
 
-//        it would be nice to update the InfluxDB library to
+// it would be nice to update the InfluxDB library to
 // #include "src/services/InfluxDB/InfluxDbClient.h" // https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino
 
 #ifdef ARDUINO_ARCH_ESP8266 // ESP8266 core for Arduino - 2.6.3 or later
@@ -600,7 +600,9 @@ const auto it = pin_map.find(THP_PIN);
 #include "html/html-config.h"
 #include "html/html-config-device.h"
 #include "html/html-config-services.h"
+#ifdef ARDUINO_ARCH_ESP32
 #include "html/html-config-adv-mqtt.h"
+#endif
 #include "html/html-update.h"
 
 // library doesnt support arguments :/
@@ -608,19 +610,24 @@ const auto it = pin_map.find(THP_PIN);
 
 
 void setup() {
-/*
-#ifdef ARDUINO_ARCH_ESP8266
-   dustSettings.sda[4] = 'D1';
-   dustSettings.scl[4] = 'D2';
-   dustSettings.address_sda = 5; // D1
-   dustSettings.address_scl = 4; // D2
-#elif defined ARDUINO_ARCH_ESP32
-   dustSettings.sda[4] = 'D18';
-   dustSettings.scl[4] = 'D19';
-   dustSettings.address_sda = 18; // TX - D1
-   dustSettings.address_scl = 19; // RX - D2
-#endif
-*/
+  /*
+  #ifdef ARDUINO_ARCH_ESP8266
+    firstThpSettings.sda[4] = 'D3';
+    firstThpSettings.scl[4] = 'D4';
+    firstThpSettings.address_sda = 0; // D3
+    firstThpSettings.address_scl = 2; // D4
+
+    dustSettings.sda[4] = 'D1';
+    dustSettings.scl[4] = 'D2';
+    dustSettings.address_sda = 5; // D1
+    dustSettings.address_scl = 4; // D2
+  #elif defined ARDUINO_ARCH_ESP32
+    dustSettings.sda[4] = 'D18';
+    dustSettings.scl[4] = 'D19';
+    dustSettings.address_sda = 18; // TX - D1
+    dustSettings.address_scl = 19; // RX - D2
+  #endif
+  */
   Serial.begin(115200);
   yield();
 
@@ -648,10 +655,10 @@ void setup() {
 
   set_I2C_PINS(firstThpSettings.sda, 1);
   set_I2C_PINS(firstThpSettings.scl, 2);
-
+#ifdef ARDUINO_ARCH_ESP32
   set_I2C_PINS(secondThpSettings.sda, 3);
   set_I2C_PINS(secondThpSettings.scl, 4);
-
+#endif
   // set_SERIAL_PINS(dustSettings.sda, 1);
   // set_SERIAL_PINS(dustSettings.scl, 2);
 
@@ -772,13 +779,10 @@ void setup() {
     if (sps30.reset() == false) {
       Errorloop("could not reset.", 0);
     }
-
     // read device info
     GetDeviceInfo();
-
     // do Auto Clean interval
     // SetAutoClean();
-
     // start measurement
     if (sps30.start() == true) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -846,19 +850,17 @@ void setup() {
   yield();
   // DUST SENSOR setup - END
 
+  // Setting timers and intervals
   if (deviceSettings.sendingServicesFrequency < sensorsSettings.dustTime) {
     deviceSettings.sendingServicesFrequency = sensorsSettings.dustTime;
   }
   if (deviceSettings.sendingDBFrequency == 0) {
     deviceSettings.sendingDBFrequency = deviceSettings.sendingServicesFrequency;
   }
-
   yield();
-
   if (sensorsSettings.continuousMeasurement == true) {
     minutesToSeconds();
   }
-
   if (strcmp(sensorsSettings.dustModel, "Non")) {
     intervals.dust = intervals.dust * sensorsSettings.dustTime;
   }
@@ -897,11 +899,10 @@ void setup() {
   */
   yield();
 
-  // TEMP/HUMI/PRESS Sensor seturp - START
+  // TEMP/HUMI/PRESS Sensor setup - START
   if (!strcmp(sensorsSettings.thpModel, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
-    //Wire.begin(0, 2);
-    //Wire.begin(firstThpSettings.address_sda, firstThpSettings.address_scl);
+    // Wire.begin(0, 2);
     BMESensor.begin(firstThpSettings.address_sda, firstThpSettings.address_scl);
     if (sensorsSettings.secondThp) {
       BMESensor_2.begin(secondThpSettings.address_sda, secondThpSettings.address_scl);
@@ -913,7 +914,6 @@ void setup() {
 #elif defined DUSTSENSOR_PMS5003_7003_BME280_0x77
     bool bmeStatus = bme.begin(0x77, &Wire1);
 #endif
-    // bool bmeStatus = bme.begin();
     if (!bmeStatus) {
       Serial.println("\nCould not find a valid BME280 sensor, check wiring!\n");
     }
@@ -934,7 +934,7 @@ void setup() {
   yield();
   // TEMP/HUMI/PRESS Sensor setup - END
 
-  // get ESP id
+  // get ESP id and device_name
   if (deviceSettings.autoName) {
     String ESPmacAddress = WiFi.macAddress();
     ESPmacAddress.replace(":", "");
@@ -947,7 +947,6 @@ void setup() {
   } else {
     strncpy(device_name, deviceSettings.name, 20);
   }
-
 #ifdef ARDUINO_ARCH_ESP8266
   Serial.print(F("Device name: "));
 #elif defined ARDUINO_ARCH_ESP32
@@ -955,22 +954,20 @@ void setup() {
 #endif
   Serial.println(device_name);
 
-  DNSServer dns;
-  AsyncWiFiManager wifiManager(&server, &dns);
-
+// wifiManager and WiFi Setup
+DNSServer dns;
+AsyncWiFiManager wifiManager(&server, &dns);
 #ifdef ARDUINO_ARCH_ESP8266
   WiFi.hostname(device_name);
 #elif defined ARDUINO_ARCH_ESP32
   WiFi.setHostname(device_name);
 #endif
-
   if (wifiManager.autoConnect(device_name)) {
 #ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("connected...yeey :)"));
 #elif defined ARDUINO_ARCH_ESP32
     Serial.println(("connected...yeey :)"));
 #endif
-    //wifiManager.setConfigPortalBlocking(false);
     WiFi.mode(WIFI_STA); // https://github.com/hackerspace-silesia/Smogomierz/issues/47#issue-496810438
 #ifdef ARDUINO_ARCH_ESP32
     WiFi.setSleep(false); // https://github.com/espressif/arduino-esp32/issues/962#issuecomment-522899519
@@ -985,6 +982,7 @@ void setup() {
   }
   yield();
 
+// Device IP Adress
 #ifdef ARDUINO_ARCH_ESP8266
   Serial.println(F("\nIP Address: ") + String(WiFi.localIP().toString()) + F("\n"));
   Serial.print(F("HTTPServer ready! http://") + String(device_name) + F(".local/\n"));
@@ -993,21 +991,25 @@ void setup() {
   Serial.print("HTTPServer ready! http://" + String(device_name) + ".local/\n");
 #endif
 
-  // check update
-  unsigned char checkUpdate_x = 0;
-  if (checkUpdate(checkUpdate_x) == true) {
-    need_update = true;
-  } else {
-    need_update = false;
-  }
+// Check for updates
+unsigned char checkUpdate_x = 0;
+if (checkUpdate(checkUpdate_x) == true) {
+  need_update = true;
+} else {
+  need_update = false;
+}
 
-  if (mqttSettings.enabled) {
-    mqttclient.setServer(mqttSettings.host, mqttSettings.port);
-  }
+// Setup MQTT
+#ifdef ARDUINO_ARCH_ESP32
+if (mqttSettings.enabled) {
+  mqttclient.setServer(mqttSettings.host, mqttSettings.port);
+}
+#endif
 
-  if (influxDBSettings.enabled) {
+// Setup InflucDB
+if (influxDBSettings.enabled) {
 
-  }
+}
 
   //  ASYNC_WebServer config - Start
   server.on("/", HTTP_GET, handle_root);
@@ -1016,8 +1018,10 @@ void setup() {
   server.on("/config_device", HTTP_GET, handle_config_device);
   server.on("/config_services_save", HTTP_GET, handle_config_services_save);
   server.on("/config_services", HTTP_GET, handle_config_services);
-  server.on("/config_adv_mqtt_save", HTTP_GET, handle_adv_mqtt_config_save);
-  server.on("/config_adv_mqtt", HTTP_GET, handle_adv_mqtt_config);
+  #ifdef ARDUINO_ARCH_ESP32
+    server.on("/config_adv_mqtt_save", HTTP_GET, handle_adv_mqtt_config_save);
+    server.on("/config_adv_mqtt", HTTP_GET, handle_adv_mqtt_config);
+  #endif
   server.on("/update", HTTP_GET, handle_update);
   server.on("/update_done", HTTP_POST, handle_update_done, handle_update_progress_cb);
   server.on("/api", HTTP_GET, handle_api);
@@ -1026,9 +1030,11 @@ void setup() {
   server.on("/fwupdate", HTTP_GET, fwupdate);
   server.on("/autoupdate_on", HTTP_GET, autoupdate_on);
   server.on("/homekit_reset", HTTP_GET, homekit_reset);
-  server.on("/homekit_on", HTTP_GET, homekit_on);
-  server.on("/homekit_off", HTTP_GET, homekit_off);
-  //server.on("/logout", HTTP_GET, logout);
+  #ifdef ARDUINO_ARCH_ESP32
+    server.on("/homekit_on", HTTP_GET, homekit_on);
+    server.on("/homekit_off", HTTP_GET, homekit_off);
+  #endif
+  // server.on("/logout", HTTP_GET, logout); // TODO
   server.onNotFound(handle_root);
 
   // Check if config.h exist in ESP data folder
@@ -1038,6 +1044,7 @@ void setup() {
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   server.begin();
 
+  // MDNS/Bonjour setup
   MDNS.begin(device_name);
   MDNS.addService("http", "tcp", 80);
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1118,11 +1125,9 @@ void loop() {
       delay(1000);
     }
   }
-
   yield();
 
   pm_calibration();
-
   // DUST SENSOR refresh data - START
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
@@ -1134,7 +1139,6 @@ void loop() {
 #endif
 #elif defined DUSTSENSOR_HPMA115S0
 #elif defined DUSTSENSOR_SPS30
-  //read_sps30_data();
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
     pms.read(data);
@@ -1146,15 +1150,16 @@ void loop() {
   MDNS.update();
 #endif
 
+// Setup PM sensor rorking mode
   if (strcmp(sensorsSettings.dustModel, "Non")) {
     unsigned int current_DUST_Millis = millis();
     if (sensorsSettings.continuousMeasurement == true ) {
       if (current_DUST_Millis - intervals.previousDustMillis >= intervals.dust) {
         if (deviceSettings.debug) {
 #ifdef ARDUINO_ARCH_ESP8266
-          Serial.println(F("\nFREQUENT MEASUREMENT Mode!"));
+          Serial.println(F("\nContinuous Measurement Mode!"));
 #elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("\nFREQUENT MEASUREMENT Mode!"));
+          Serial.println(("\nContinuous Measurement Mode!"));
 #endif
         }
         takeNormalnPMMeasurements();
@@ -1180,20 +1185,16 @@ void loop() {
         takeTHPMeasurements();
         sendDataToExternalDBs();
       }
-
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Going into deep sleep for ") + String(deviceSettings.sendingServicesFrequency) + F(" minutes!"));
       Serial.flush();
       ESP.deepSleep(deviceSettings.sendingServicesFrequency * 60 * 1000000); // *1000000 - secunds
-
       yield();
-
 #elif defined ARDUINO_ARCH_ESP32
       Serial.println(("Going to sleep now"));
       Serial.flush();
       esp_deep_sleep_start();
 #endif
-
     } else {
       if (current_DUST_Millis - intervals.previousDustMillis >= intervals.dust) {
         if (deviceSettings.debug) {
@@ -1227,9 +1228,7 @@ void loop() {
         takeTHPMeasurements();
         sendDataToExternalDBs();
       }
-
       yield();
-
 #ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Going into deep sleep for ") + String(deviceSettings.sendingServicesFrequency) + F(" minutes!"));
       Serial.flush();
@@ -1240,24 +1239,20 @@ void loop() {
       Serial.flush();
       esp_deep_sleep_start();
 #endif
-
     }
   }
 
+  // Send data to external services and DBs
+  #ifdef ARDUINO_ARCH_ESP32
   if (airMonitorSettings.enabled) {
-    // Serial.println("SENDING_FREQUENCY_AIRMONITOR_interval: " + String(intervals.sendingAirMonitor));
-    // Serial.println("previous_SENDING_FREQUENCY_AIRMONITOR_Millis: " + String(intervals.previousSendingAirMonitorMillis));
-
     unsigned int current_SENDING_FREQUENCY_AIRMONITOR_Millis = millis();
-    // Serial.println("current_SENDING_FREQUENCY_AIRMONITOR_Millis: " + String(current_SENDING_FREQUENCY_AIRMONITOR_Millis));
-
     if (current_SENDING_FREQUENCY_AIRMONITOR_Millis - intervals.previousSendingAirMonitorMillis >= intervals.sendingAirMonitor) {
       takeTHPMeasurements();
-      // Serial.println("SEND DATA TO AIRMONITOR");
       sendDataToExternalServices();
       intervals.previousSendingAirMonitorMillis = millis();
     }
   }
+  #endif
 
   if (luftdatenSettings.enabled or aqiEcoSettings.enabled or smoglistSettings.enabled) {
     unsigned int current_SENDING_FREQUENCY_Millis = millis();
@@ -1277,6 +1272,7 @@ void loop() {
     }
   }
 
+  // autoreboot setup
   unsigned int current_REBOOT_Millis = millis();
   if (current_REBOOT_Millis - intervals.previousRebootMillis >= intervals.reboot) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1286,20 +1282,19 @@ void loop() {
 #endif
     delay(1000);
     intervals.previousRebootMillis = millis();
-
 #ifdef ARDUINO_ARCH_ESP8266
     ESP.reset();
 #elif defined ARDUINO_ARCH_ESP32
     ESP.restart();
 #endif
-
     delay(5000);
   }
 
   /*
+  // homekit setup
+  #ifdef ARDUINO_ARCH_ESP32
     unsigned int current_SENDING_FREQUENCY_Millis = millis();
     if (current_SENDING_FREQUENCY_Millis - intervals.previousSendingServicesMillis >= intervals.sendingServices) {
-    #ifdef ARDUINO_ARCH_ESP32
       if (homeKitSettings.enabled) {
         homekit_DeviceData.homekit_temperature = float(random(-11.00, 45));
         homekit_DeviceData.homekit_humidity = float(random(0.0, 99));
@@ -1307,23 +1302,19 @@ void loop() {
         homekit_DeviceData.homekit_pm25_level = int(random(0, 2000));
         notify_hap();
       }
-    #endif
       intervals.previousSendingServicesMillis = millis();
     }
+  #endif
   */
-
 } // loop() - END
+
 
 void sendDataToExternalServices() {
 
   if (luftdatenSettings.enabled) {
     sendDataToLuftdaten();
     if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the Sensor.Community service!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-      Serial.println(("Sending measurement data to the Sensor.Community service!\n"));
-#endif
     }
   }
 
@@ -1331,11 +1322,7 @@ void sendDataToExternalServices() {
   if (airMonitorSettings.enabled) {
     sendDataToAirMonitor();
     if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the AirMonitor service!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-      Serial.println(("Sending measurement data to the AirMonitor service!\n"));
-#endif
     }
   }
 #endif
@@ -1344,11 +1331,7 @@ void sendDataToExternalServices() {
   if (smoglistSettings.enabled) {
     sendDataToSmoglist();
     if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the Smoglist service!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-      Serial.println(("Sending measurement data to the Smoglist service!\n"));
-#endif
     }
   }
 #endif
@@ -1356,33 +1339,26 @@ void sendDataToExternalServices() {
   if (aqiEcoSettings.enabled) {
     sendDataToAqiEco();
     if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the aqi.eco service!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-      Serial.println(("Sending measurement data to the aqi.eco service!\n"));
-#endif
     }
   }
 
 }
 
 void sendDataToExternalDBs() {
-
+#ifdef ARDUINO_ARCH_ESP32
   if (mqttSettings.enabled) {
     if (!mqttclient.connected()) {
       MQTTreconnect();
     }
     mqttclient.loop();
   }
+#endif
 
   if (thingSpeakSettings.enabled) {
     sendDataToThingSpeak();
     if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
       Serial.println(F("Sending measurement data to the Thingspeak service!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-      Serial.println(("Sending measurement data to the Thingspeak service!\n"));
-#endif
     }
   }
 
@@ -1400,46 +1376,31 @@ void sendDataToExternalDBs() {
     }
 
     InfluxDataV2 row(device_name);
+    /*
     if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("\nMeasurements from PMSx003!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("\nMeasurements from PMSx003!\n"));
-#endif
       }
       row.addValue("pm1", measurementsData.averagePM1);
       row.addValue("pm25", measurementsData.averagePM25);
       row.addValue("pm10", measurementsData.averagePM10);
     } else if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("\nMeasurements from SDS0x1!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("\nMeasurements from SDS0x1!\n"));
-#endif
       }
       row.addValue("pm1", measurementsData.averagePM1);
       row.addValue("pm25", measurementsData.averagePM25);
       row.addValue("pm10", measurementsData.averagePM10);
     } else if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("\nMeasurements from SDS!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("\nMeasurements from SDS!\n"));
-#endif
       }
       row.addValue("pm1", measurementsData.averagePM1);
       row.addValue("pm25", measurementsData.averagePM25);
       row.addValue("pm10", measurementsData.averagePM10);
     } else if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("\nMeasurements from SPS30!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("\nMeasurements from SPS30!\n"));
-#endif
       }
       row.addValue("pm1", measurementsData.averagePM1);
       row.addValue("pm25", measurementsData.averagePM25);
@@ -1447,13 +1408,28 @@ void sendDataToExternalDBs() {
       row.addValue("pm10", measurementsData.averagePM10);
     } else {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("\nNo measurements from Dust Sensor!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("\nNo measurements from Dust Sensor!\n"));
-#endif
       }
     }
+    */
+    if (strcmp(sensorsSettings.dustModel, "Non")) {
+    if (deviceSettings.debug) {
+      Serial.println(F("\nNo measurements from Dust Sensor!\n"));
+    }
+    } else {
+      if (deviceSettings.debug) {
+        Serial.print(F("\nMeasurements from "));
+        Serial.print(sensorsSettings.dustModel);
+        Serial.println(F("!\n"));
+      }
+      row.addValue("pm1", measurementsData.averagePM1);
+      row.addValue("pm25", measurementsData.averagePM25);
+      if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
+        row.addValue("pm4", measurementsData.averagePM4);
+      }
+      row.addValue("pm10", measurementsData.averagePM10);
+    }
+
     if (!strcmp(sensorsSettings.thpModel, "BME280")) {
       if (checkBmeStatus() == true) {
         row.addValue("temperature", (measurementsData.temperature));
@@ -1461,11 +1437,7 @@ void sendDataToExternalDBs() {
         row.addValue("humidity", (measurementsData.humidity));
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from BME280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from BME280!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
@@ -1474,11 +1446,7 @@ void sendDataToExternalDBs() {
         row.addValue("humidity", (measurementsData.humidity));
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from HTU21D!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from HTU21D!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
@@ -1487,11 +1455,7 @@ void sendDataToExternalDBs() {
         row.addValue("pressure", (measurementsData.pressure));
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from BMP280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from BMP280!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
@@ -1500,11 +1464,7 @@ void sendDataToExternalDBs() {
         row.addValue("humidity", (measurementsData.humidity));
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from DHT22!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from DHT22!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
@@ -1513,11 +1473,7 @@ void sendDataToExternalDBs() {
         row.addValue("humidity", (measurementsData.humidity));
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from SHT1x!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from SHT1x!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
@@ -1525,33 +1481,24 @@ void sendDataToExternalDBs() {
         row.addValue("temperature", (measurementsData.temperature));
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from DS18B20!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from DS18B20!\n"));
-#endif
         }
       }
     }
+
     if (influx.write(row)) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("Data sent to InfluxDB\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("Data sent to InfluxDB\n"));
-#endif
       }
     } else {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("Error sending data to InfluxDB\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("Error sending data to InfluxDB\n"));
-#endif
       }
     }
   }
 
+  // MQTT setup
+  #ifdef ARDUINO_ARCH_ESP32
   if (mqttSettings.enabled) {
     const size_t MAX_DEVICE_NAME_LENGTH = 20;
     char MQTT_DEVICE_NAME[MAX_DEVICE_NAME_LENGTH + 1];
@@ -1630,11 +1577,7 @@ void sendDataToExternalDBs() {
         mqttclient.publish((MQTT_FINAL_PRESS).c_str(), String(measurementsData.pressure).c_str(), true);
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from BME280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from BME280!\n"));
-#endif
         }
       }
     }
@@ -1644,13 +1587,8 @@ void sendDataToExternalDBs() {
         mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(measurementsData.temperature).c_str(), true);
         mqttclient.publish((MQTT_FINAL_PRESS).c_str(), String(measurementsData.pressure).c_str(), true);
       } else {
-
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from BMP280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from BMP280!\n"));
-#endif
         }
       }
     }
@@ -1661,11 +1599,7 @@ void sendDataToExternalDBs() {
         mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(measurementsData.humidity).c_str(), true);
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from HTU21!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from HTU21!\n"));
-#endif
         }
       }
     }
@@ -1676,11 +1610,7 @@ void sendDataToExternalDBs() {
         mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(measurementsData.humidity).c_str(), true);
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from DHT22!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from DHT22!\n"));
-#endif
         }
       }
     }
@@ -1691,11 +1621,7 @@ void sendDataToExternalDBs() {
         mqttclient.publish((MQTT_FINAL_HUMI).c_str(), String(measurementsData.humidity).c_str(), true);
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from SHT1x!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from SHT1x!\n"));
-#endif
         }
       }
     }
@@ -1705,22 +1631,18 @@ void sendDataToExternalDBs() {
         mqttclient.publish((MQTT_FINAL_TEMP).c_str(), String(measurementsData.temperature).c_str(), true);
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from DS18B20!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from DS18B20!\n"));
-#endif
         }
       }
     }
-
-    //if (deviceSettings.deepSleep == true) {
+    // if (deviceSettings.deepSleep == true) {
     mqttclient.disconnect();
-    //}
+    // }
   }
-
+  #endif
 }
 
+#ifdef ARDUINO_ARCH_ESP32
 String addSlash(String receivedString, bool frontSlash, bool backSlash) {
   if (frontSlash) {
     if (String(receivedString.charAt(0)) != ("/")) {
@@ -1734,6 +1656,7 @@ String addSlash(String receivedString, bool frontSlash, bool backSlash) {
   }
   return receivedString;
 }
+#endif
 
 void takeTHPMeasurements() {
   if (!strcmp(sensorsSettings.thpModel, "BME280")) {
@@ -1749,11 +1672,7 @@ void takeTHPMeasurements() {
 #endif
     if (checkBmeStatus() == true) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("Measurements from BME280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("Measurements from BME280!\n"));
-#endif
       }
 #ifdef ARDUINO_ARCH_ESP8266
       measurementsData.first_temperature = BMESensor.temperature;
@@ -1767,115 +1686,72 @@ void takeTHPMeasurements() {
 
     } else {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("No measurements from BME280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("No measurements from BME280!\n"));
-#endif
       }
     }
   } else if (!strcmp(sensorsSettings.thpModel, "HTU21")) {
     if (checkHTU21DStatus() == true) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("Measurements from HTU21!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("Measurements from HTU21!\n"));
-#endif
       }
       measurementsData.first_temperature = ht2x.readTemperature();
       measurementsData.first_humidity = ht2x.readHumidity();
     } else {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("No measurements from HTU21D!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("No measurements from HTU21D!\n"));
-#endif
       }
     }
   } else if (!strcmp(sensorsSettings.thpModel, "BMP280")) {
     if (checkBmpStatus() == true) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("Measurements from BMP280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("Measurements from BMP280!\n"));
-#endif
       }
       measurementsData.first_temperature = bmp.readTemperature();
       measurementsData.first_pressure = (bmp.readPressure()) / 100;
     } else {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("No measurements from BMP280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("No measurements from BMP280!\n"));
-#endif
       }
     }
   } else if (!strcmp(sensorsSettings.thpModel, "DHT22")) {
     if (checkDHT22Status() == true) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("Measurements from DHT22!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("Measurements from DHT22!\n"));
-#endif
       }
       measurementsData.first_temperature = dht.readTemperature();
       measurementsData.first_humidity = dht.readHumidity();
     } else {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("No measurements from DHT22!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("No measurements from DHT22!\n"));
-#endif
       }
     }
   } else if (!strcmp(sensorsSettings.thpModel, "SHT1x")) {
     if (checkSHT1xStatus() == true) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("Measurements from SHT1x!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("Measurements from SHT1x!\n"));
-#endif
       }
       measurementsData.first_temperature = sht1x.readTemperatureC();
       measurementsData.first_humidity = sht1x.readHumidity();
     } else {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("No measurements from SHT1x!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("No measurements from SHT1x!\n"));
-#endif
       }
     }
   } else if (!strcmp(sensorsSettings.thpModel, "DS18B20")) {
     if (checkDS18B20Status() == true) {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("Measurements from DS18B20!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("Measurements from DS18B20!\n"));
-#endif
       }
       DS18B20.requestTemperatures();
       measurementsData.first_temperature = DS18B20.getTempCByIndex(0);
     } else {
       if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
         Serial.println(F("No measurements from DS18B20!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-        Serial.println(("No measurements from DS18B20!\n"));
-#endif
       }
     }
   }
 
+#ifdef ARDUINO_ARCH_ESP32
   if (sensorsSettings.secondThp) {
     if (!strcmp(sensorsSettings.secondThpModel, "BME280")) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -1883,11 +1759,7 @@ void takeTHPMeasurements() {
 #endif
       if (checkBmeStatus() == true) {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("Measurements from BME280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("Measurements from BME280!\n"));
-#endif
         }
 #ifdef ARDUINO_ARCH_ESP8266
         measurementsData.second_temperature = BMESensor_2.temperature;
@@ -1900,117 +1772,74 @@ void takeTHPMeasurements() {
 #endif
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from BME280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from BME280!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.secondThpModel, "HTU21")) {
       if (checkHTU21DStatus() == true) {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("Measurements from HTU21!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("Measurements from HTU21!\n"));
-#endif
         }
         measurementsData.second_temperature = ht2x.readTemperature();
         measurementsData.second_humidity = ht2x.readHumidity();
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from HTU21D!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from HTU21D!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.secondThpModel, "BMP280")) {
       if (checkBmpStatus() == true) {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("Measurements from BMP280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("Measurements from BMP280!\n"));
-#endif
         }
         measurementsData.second_temperature = bmp.readTemperature();
         measurementsData.second_pressure = (bmp.readPressure()) / 100;
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from BMP280!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from BMP280!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.secondThpModel, "DHT22")) {
       if (checkDHT22Status() == true) {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("Measurements from DHT22!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("Measurements from DHT22!\n"));
-#endif
         }
         measurementsData.second_temperature = dht.readTemperature();
         measurementsData.second_humidity = dht.readHumidity();
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from DHT22!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from DHT22!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.secondThpModel, "SHT1x")) {
       if (checkSHT1xStatus() == true) {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("Measurements from SHT1x!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("Measurements from SHT1x!\n"));
-#endif
         }
         measurementsData.second_temperature = sht1x.readTemperatureC();
         measurementsData.second_humidity = sht1x.readHumidity();
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from SHT1x!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from SHT1x!\n"));
-#endif
         }
       }
     } else if (!strcmp(sensorsSettings.secondThpModel, "DS18B20")) {
       if (checkDS18B20Status() == true) {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("Measurements from DS18B20!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("Measurements from DS18B20!\n"));
-#endif
         }
         DS18B20.requestTemperatures();
         measurementsData.second_temperature = DS18B20.getTempCByIndex(0);
       } else {
         if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
           Serial.println(F("No measurements from DS18B20!\n"));
-#elif defined ARDUINO_ARCH_ESP32
-          Serial.println(("No measurements from DS18B20!\n"));
-#endif
         }
       }
     }
   }
+  #endif
 
-  //temporary solution!
+  // Temporary solution - data from firts THP sensor are main data source
   measurementsData.temperature = measurementsData.first_temperature;
   measurementsData.humidity = measurementsData.first_humidity;
   measurementsData.pressure = measurementsData.first_pressure;
@@ -2048,11 +1877,7 @@ void takeNormalnPMMeasurements() {
     pmMeasurements[iPM][1] = (calib * SDSdata.pm25);
     pmMeasurements[iPM][2] = (calib * SDSdata.pm10);
   } else {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("\nCould not read values from SDS sensor :( "));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.println(("\nCould not read values from SDS sensor :( "));
-#endif
   }
 #elif defined ARDUINO_ARCH_ESP32
   err = my_sds.read(&SDSpm25, &SDSpm10);
@@ -2061,11 +1886,7 @@ void takeNormalnPMMeasurements() {
     pmMeasurements[iPM][1] = (calib * SDSpm25);
     pmMeasurements[iPM][2] = (calib * SDSpm10);
   } else {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("\nCould not read values from SDS sensor :( "));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.println(("\nCould not read values from SDS sensor :( "));
-#endif
   }
 #endif
 #elif defined DUSTSENSOR_HPMA115S0
@@ -2096,7 +1917,6 @@ void takeNormalnPMMeasurements() {
 #endif
 
   if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\n\nPM measurement number: "));
     Serial.print(iPM);
     Serial.print(F("\nValue of PM1: "));
@@ -2109,21 +1929,6 @@ void takeNormalnPMMeasurements() {
 #endif
     Serial.print(F("\nValue of PM10: "));
     Serial.println(pmMeasurements[iPM][2]);
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("\n\nPM measurement number: "));
-    Serial.print(iPM);
-    Serial.print(("\nValue of PM1: "));
-    Serial.print(pmMeasurements[iPM][0]);
-    Serial.print(("\nValue of PM2.5: "));
-    Serial.print(pmMeasurements[iPM][1]);
-#ifdef DUSTSENSOR_SPS30
-    Serial.print(("\nValue of PM4: "));
-    Serial.print(pmMeasurements[iPM][3]);
-#endif
-    Serial.print(("\nValue of PM10: "));
-    Serial.println(pmMeasurements[iPM][2]);
-#endif
-
   }
   if (++iPM == sensorsSettings.numerOfMeasurements) {
     averagePM();
@@ -2134,11 +1939,7 @@ void takeNormalnPMMeasurements() {
 
 void takeSleepPMMeasurements() {
   if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\nTurning ON PM sensor..."));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("\nTurning ON PM sensor..."));
-#endif
   }
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMSx003
@@ -2146,7 +1947,6 @@ void takeSleepPMMeasurements() {
     pms.wakeUp();
     pms.requestRead();
   }
-
   int counterNM1 = 0;
   while (counterNM1 < sensorsSettings.numerOfMeasurements) {
     if (pms.readUntil(data)) {
@@ -2155,13 +1955,8 @@ void takeSleepPMMeasurements() {
     }
   }
   if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\nTurning OFF PM sensor...\n"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("\nTurning OFF PM sensor...\n"));
-#endif
   }
-
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
     pms.sleep();
   }
@@ -2175,7 +1970,6 @@ void takeSleepPMMeasurements() {
 
 #endif
   }
-
   int counterNM1 = 0;
   while (counterNM1 < sensorsSettings.numerOfMeasurements) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2185,13 +1979,8 @@ void takeSleepPMMeasurements() {
     counterNM1++;
   }
   if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\nTurning OFF PM sensor...\n"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("\nTurning OFF PM sensor...\n"));
-#endif
   }
-
   if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
 #ifdef ARDUINO_ARCH_ESP8266
     sds.setCustomWorkingPeriod(1);
@@ -2214,24 +2003,17 @@ void takeSleepPMMeasurements() {
     }
   }
   if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\nTurning OFF PM sensor...\n"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("\nTurning OFF PM sensor...\n"));
-#endif
   }
-
   if (!strcmp(sensorsSettings.dustModel, "HPMA115S0")) {
     hpma115S0.DisableAutoSend();
     hpma115S0.StopParticleMeasurement();
   }
 #elif defined DUSTSENSOR_SPS30
   if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
-
     // WAKE UP SPS30!!
     sps30.wakeup();
     // reset SPS30 connection
-
     if (sps30.reset() == false) {
       Errorloop((char *) "could not reset.", 0);
     }
@@ -2242,11 +2024,7 @@ void takeSleepPMMeasurements() {
     counterNM1++;
   }
   if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\nTurning OFF PM sensor...\n"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("\nTurning OFF PM sensor...\n"));
-#endif
   }
 
   if (!strcmp(sensorsSettings.dustModel, "SPS30")) {
@@ -2258,7 +2036,6 @@ void takeSleepPMMeasurements() {
     pms.wakeUp();
     pms.requestRead();
   }
-
   int counterNM1 = 0;
   while (counterNM1 < sensorsSettings.numerOfMeasurements) {
     if (pms.readUntil(data)) {
@@ -2267,29 +2044,19 @@ void takeSleepPMMeasurements() {
     }
   }
   if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\nTurning OFF PM sensor...\n"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("\nTurning OFF PM sensor...\n"));
-#endif
   }
-
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
     pms.sleep();
   }
 #endif
-
 }
 
 void pm_calibration() {
   // Automatic calibration - START
   if (!(deviceSettings.autoCalibration)) {
     if (deviceSettings.debug) {
-      #ifdef ARDUINO_ARCH_ESP8266
         // Serial.print(F("\nautoCalibration - OFF\n"));
-      #elif defined ARDUINO_ARCH_ESP32
-        // Serial.print(("\nautoCalibration - OFF\n"));
-      #endif
     }
   } else if (strcmp(sensorsSettings.thpModel, "BME280") == 0) {
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2336,7 +2103,6 @@ void pm_calibration() {
       }
     }
   // Automatic calibration - END
-
   const char *tph_models[] = {"BME280", "HTU21", "DHT22", "SHT1x", "BMP280", "DS18B20"};
   const int num_models = sizeof(tph_models)/sizeof(tph_models[0]);
   int calib = deviceSettings.calib1;
@@ -2372,7 +2138,6 @@ void averagePM() {
 #endif
 
   if (deviceSettings.debug) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("\n"));
     Serial.print(F("========================================"));
     Serial.print(F("\n\nAverage PM1: "));
@@ -2388,23 +2153,6 @@ void averagePM() {
     Serial.print(F("\n\n"));
     Serial.print(F("========================================"));
     Serial.print(F("\n"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("\n"));
-    Serial.print(("========================================"));
-    Serial.print(("\n\nAverage PM1: "));
-    Serial.print(measurementsData.averagePM1);
-    Serial.print(("\nAverage PM2.5: "));
-    Serial.print(measurementsData.averagePM25);
-#ifdef DUSTSENSOR_SPS30
-    Serial.print(("\nAverage PM4: "));
-    Serial.print(measurementsData.averagePM4);
-#endif
-    Serial.print(("\nAverage PM10: "));
-    Serial.print(measurementsData.averagePM10);
-    Serial.print(("\n\n"));
-    Serial.print(("========================================"));
-    Serial.print(("\n"));
-#endif
   }
 
 #ifdef ARDUINO_ARCH_ESP32
@@ -2421,19 +2169,14 @@ void averagePM() {
 #ifdef DUSTSENSOR_SPS30
 bool read_sps30_data()
 {
-
   static bool header = true;
   uint8_t ret, error_cnt = 0;
   struct sps_values val;
-
   // loop to get data
   do {
-
     ret = sps30.GetValues(&val);
-
     // data might not have been ready
     if (ret == SPS30_ERR_DATALENGTH) {
-
       if (error_cnt++ > 3) {
         ErrtoMess("Error during reading values: ", ret);
         return (false);
@@ -2446,21 +2189,16 @@ bool read_sps30_data()
       */
       yield();
     }
-
     // if other error
     else if (ret != SPS30_ERR_OK) {
       ErrtoMess("Error during reading values: ", ret);
       return (false);
     }
-
   } while (ret != SPS30_ERR_OK);
-
-
   SPS30_PM1 = val.MassPM1;
   SPS30_PM25 = val.MassPM2;
   SPS30_PM4 = val.MassPM4;
   SPS30_PM10 = val.MassPM10;
-
   /*
     pmMeasurements[iPM][0] = int(calib * SPS30_PM1);
     pmMeasurements[iPM][1] = int(calib * SPS30_PM25);
@@ -2475,117 +2213,64 @@ void GetDeviceInfo()
   char buf[32];
   uint8_t ret;
   SPS30_version v;
-
   //try to read serial number
   ret = sps30.GetSerialNumber(buf, 32);
   if (ret == SPS30_ERR_OK) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("Serial number: "));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("Serial number: "));
-#endif
     if (strlen(buf) > 0)  Serial.println(buf);
     else Serial.println(("not available"));
   }
   else
     ErrtoMess((char *) "could not get serial number ", ret);
-
   // try to get product name
   ret = sps30.GetProductName(buf, 32);
   if (ret == SPS30_ERR_OK)  {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("Product name: "));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("Product name: "));
-#endif
     if (strlen(buf) > 0)  Serial.println(buf);
     else Serial.println(("not available"));
   }
   else
     ErrtoMess((char *) "could not get product name ", ret);
-
   // try to get version info
   ret = sps30.GetVersion(&v);
   if (ret != SPS30_ERR_OK) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("Can not read version info"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.println(("Can not read version info"));
-#endif
     return;
   }
-
-#ifdef ARDUINO_ARCH_ESP8266
   Serial.print(F("Firmware level: "));
   Serial.print(v.major);
   Serial.print(F("."));
   Serial.println(v.minor);
-
   if (SP30_COMMS != I2C_COMMS) {
     Serial.print(F("Hardware level: "));
     Serial.println(v.HW_version);
-
     Serial.print(F("SHDLC protocol: "));
     Serial.print(v.SHDLC_major);
     Serial.print(F("."));
     Serial.println(v.SHDLC_minor);
   }
-
   Serial.print(F("Library level: "));
   Serial.print(v.DRV_major);
   Serial.print(F("."));
   Serial.println(v.DRV_minor);
-#elif defined ARDUINO_ARCH_ESP32
-  Serial.print(("Firmware level: "));
-  Serial.print(v.major);
-  Serial.print(("."));
-  Serial.println(v.minor);
-
-  if (SP30_COMMS != I2C_COMMS) {
-    Serial.print(("Hardware level: "));
-    Serial.println(v.HW_version);
-
-    Serial.print(("SHDLC protocol: "));
-    Serial.print(v.SHDLC_major);
-    Serial.print(("."));
-    Serial.println(v.SHDLC_minor);
-  }
-
-  Serial.print(("Library level: "));
-  Serial.print(v.DRV_major);
-  Serial.print(("."));
-  Serial.println(v.DRV_minor);
-#endif
 }
 
 void SetAutoClean()
 {
   uint32_t interval;
   uint8_t ret;
-
   // try to get interval
   ret = sps30.GetAutoCleanInt(&interval);
   if (ret == SPS30_ERR_OK) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("Current Auto Clean interval: "));
     Serial.print(interval);
     Serial.println(F(" seconds"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("Current Auto Clean interval: "));
-    Serial.print(interval);
-    Serial.println((" seconds"));
-#endif
   }
   else
     ErrtoMess((char *) "could not get clean interval ", ret);
-
   // only if requested
   if (SPS30_AUTOCLEANINTERVAL == -1) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("No Auto Clean interval change requested"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.println(("No Auto Clean interval change requested"));
-#endif
     return;
   }
 
@@ -2593,31 +2278,18 @@ void SetAutoClean()
   interval = SPS30_AUTOCLEANINTERVAL;
   ret = sps30.SetAutoCleanInt(interval);
   if (ret == SPS30_ERR_OK) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("Auto Clean interval now set: "));
     Serial.print(interval);
     Serial.println(F(" seconds"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("Auto Clean interval now set: "));
-    Serial.print(interval);
-    Serial.println((" seconds"));
-#endif
   }
   else
     ErrtoMess((char *) "could not set clean interval ", ret);
-
   // try to get interval
   ret = sps30.GetAutoCleanInt(&interval);
   if (ret == SPS30_ERR_OK) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.print(F("Current Auto Clean interval: "));
     Serial.print(interval);
     Serial.println(F(" seconds"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.print(("Current Auto Clean interval: "));
-    Serial.print(interval);
-    Serial.println((" seconds"));
-#endif
   }
   else
     ErrtoMess((char *) "could not get clean interval ", ret);
@@ -2627,8 +2299,8 @@ void Errorloop(char *mess, uint8_t r)
 {
   if (r) ErrtoMess(mess, r);
   else Serial.println(mess);
-  //Serial.println(F("Program on hold"));
-  //for (;;) delay(100000);
+  // Serial.println(F("Program on hold"));
+  // for (;;) delay(100000);
 }
 
 void ErrtoMess(char *mess, uint8_t r)
@@ -2638,7 +2310,6 @@ void ErrtoMess(char *mess, uint8_t r)
   sps30.GetErrDescription(r, buf, 80);
   Serial.println(buf);
 }
-
 #endif
 
 // HomeKit -- START
@@ -2666,11 +2337,7 @@ void init_hap_storage() {
 #endif
 
   if (!fsDAT) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("Failed to read pair.dat"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.println(("Failed to read pair.dat"));
-#endif
     return;
   }
   int size = hap_get_storage_size_ex();
@@ -2693,15 +2360,10 @@ void storage_changed(char * szstorage, int size) {
   File fsDAT = SPIFFS.open(pair_file_name, FILE_WRITE);
 #endif
   if (!fsDAT) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("Failed to open pair.dat"));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.println(("Failed to open pair.dat"));
-#endif
     return;
   }
   fsDAT.write((uint8_t*)szstorage, size);
-
   fsDAT.close();
 }
 

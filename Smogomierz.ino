@@ -106,7 +106,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   REFAKTOR_1.05.2023:
-  Szkic używa 1303437 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1303201 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 66680 bajtów (20%) pamięci dynamicznej, pozostawiając 261000 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   *** init homekit support:
@@ -247,7 +247,7 @@ DallasTemperature DS18B20(&oneWire);
 #ifdef ARDUINO_ESP8266_RELEASE_2_6_0
 SoftwareSerial PMS_Serial; // only for esp8266 core 2.6.0
 #else
-SoftwareSerial PMS_Serial(dustSettings.address_sda, dustSettings.address_scl); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
+SoftwareSerial PMS_Serial(dustSettings.address_tx, dustSettings.address_rx); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
 #endif
 PMS pms(PMS_Serial);
 PMS::DATA data;
@@ -261,7 +261,7 @@ PMS::DATA data;
 //***SDS0x1 - START***
 #ifdef ARDUINO_ARCH_ESP8266
 // SDS011/21 config
-SdsDustSensor sds(dustSettings.address_sda, dustSettings.address_scl); // Change TX - D1 and RX - D2 pins
+SdsDustSensor sds(dustSettings.address_tx, dustSettings.address_rx); // Change TX - D1 and RX - D2 pins
 #elif defined ARDUINO_ARCH_ESP32
 // SDS011/21 config
 HardwareSerial sds_port(2); // Change TX - D5 and RX - D4 pins
@@ -273,7 +273,7 @@ float SDSpm25, SDSpm10;
 #elif defined DUSTSENSOR_HPMA115S0
 //***HPMA115S0 - START***
 #ifdef ARDUINO_ARCH_ESP8266
-SoftwareSerial hpmaSerial(dustSettings.address_sda, dustSettings.address_scl); // TX/RX – D1/D2
+SoftwareSerial hpmaSerial(dustSettings.address_tx, dustSettings.address_rx); // TX/RX – D1/D2
 HPMA115S0 hpma115S0(hpmaSerial);
 #elif defined ARDUINO_ARCH_ESP32
 HardwareSerial hpmaSerial(1); // Change TX - D5 and RX - D4 pins
@@ -306,12 +306,12 @@ float SPS30_PM1, SPS30_PM25, SPS30_PM4, SPS30_PM10;
 #ifdef ARDUINO_ESP8266_RELEASE_2_6_0
 SoftwareSerial PMS_Serial; // only for esp8266 core 2.6.0
 #else
-SoftwareSerial PMS_Serial(dustSettings.address_sda, dustSettings.address_scl); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
+SoftwareSerial PMS_Serial(dustSettings.address_tx, dustSettings.address_rx); // Change TX - D1 and RX - D2 pins -- esp8266 core 2.6.1 or later
 #endif
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #elif defined ARDUINO_ARCH_ESP32
-HardwareSerial PMS_Serial(dustSettings.address_sda, dustSettings.address_scl); // Change TX - D5 and RX - D4 pins
+HardwareSerial PMS_Serial(dustSettings.address_tx, dustSettings.address_rx); // Change TX - D5 and RX - D4 pins
 PMS pms(PMS_Serial);
 PMS::DATA data;
 #endif
@@ -640,13 +640,13 @@ void setup() {
   set_I2C_PINS(secondThpSettings.sda, 3);
   set_I2C_PINS(secondThpSettings.scl, 4);
 #endif
-  // set_SERIAL_PINS(dustSettings.sda, 1);
-  // set_SERIAL_PINS(dustSettings.scl, 2);
+  // set_SERIAL_PINS(dustSettings.tx, 1);
+  // set_SERIAL_PINS(dustSettings.rx, 2);
 
 #ifdef ARDUINO_ARCH_ESP32
-  if (dustSettings.address_sda == 8 or dustSettings.address_scl == 9) {
-    dustSettings.address_sda = 22;
-    dustSettings.address_scl = 23;
+  if (dustSettings.address_tx == 8 or dustSettings.address_rx == 9) {
+    dustSettings.address_tx = 22;
+    dustSettings.address_rx = 23;
   }
 #endif
 
@@ -655,12 +655,12 @@ void setup() {
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
 #ifdef ARDUINO_ESP8266_RELEASE_2_6_0
-    PMS_Serial.begin(9600, dustSettings.address_sda, dustSettings.address_scl); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
+    PMS_Serial.begin(9600, dustSettings.address_tx, dustSettings.address_rx); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
 #else
     PMS_Serial.begin(9600); //PMSx003 serial -- esp8266 core 2.6.1 or later
 #endif
 #elif defined ARDUINO_ARCH_ESP32
-    PMS_Serial.begin(9600, SERIAL_8N1, dustSettings.address_sda, dustSettings.address_scl); //PMSx003 serial
+    PMS_Serial.begin(9600, SERIAL_8N1, dustSettings.address_tx, dustSettings.address_rx); //PMSx003 serial
 #endif
     if (sensorsSettings.continuousMeasurement == true) {
       pms.wakeUp();
@@ -679,7 +679,7 @@ void setup() {
 #ifdef ARDUINO_ARCH_ESP8266
     sds.begin();  //SDS011/21 sensor begin
 #elif defined ARDUINO_ARCH_ESP32
-    sds_port.begin(9600, SERIAL_8N1, dustSettings.address_sda, dustSettings.address_scl);  //SDS011/21 sensor begin
+    sds_port.begin(9600, SERIAL_8N1, dustSettings.address_tx, dustSettings.address_rx);  //SDS011/21 sensor begin
     my_sds.begin(&sds_port);
 #endif
     if (sensorsSettings.continuousMeasurement == true) {
@@ -712,7 +712,7 @@ void setup() {
 #ifdef ARDUINO_ARCH_ESP8266
     hpmaSerial.begin(9600); //HPMA115S0 serial
 #elif defined ARDUINO_ARCH_ESP32
-    hpmaSerial.begin(9600, SERIAL_8N1, dustSettings.address_sda, dustSettings.address_scl); //HPMA115S0 serial
+    hpmaSerial.begin(9600, SERIAL_8N1, dustSettings.address_tx, dustSettings.address_rx); //HPMA115S0 serial
 #endif
     yield();
     if (sensorsSettings.continuousMeasurement == true) {
@@ -739,7 +739,7 @@ void setup() {
     sps30.EnableDebugging(SPS30_DEBUG);
 
     // set pins to use for softserial and Serial1 on ESP32
-    if (dustSettings.address_sda != 0 && dustSettings.address_scl != 0) sps30.SetSerialPin(dustSettings.address_scl, dustSettings.address_sda);
+    if (dustSettings.address_tx != 0 && dustSettings.address_rx != 0) sps30.SetSerialPin(dustSettings.address_rx, dustSettings.address_tx);
 
     // Begin communication channel;
     if (sps30.begin(SP30_COMMS) == false) {
@@ -808,12 +808,12 @@ void setup() {
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
 #ifdef ARDUINO_ARCH_ESP8266
 #ifdef ARDUINO_ESP8266_RELEASE_2_6_0
-    PMS_Serial.begin(9600, dustSettings.address_sda, dustSettings.address_scl); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
+    PMS_Serial.begin(9600, dustSettings.address_tx, dustSettings.address_rx); // Change TX - D1 and RX - D2 pins -- only for esp8266 core 2.6.0
 #else
     PMS_Serial.begin(9600); //PMSx003 serial -- esp8266 core 2.6.1 or later
 #endif
 #elif defined ARDUINO_ARCH_ESP32
-    PMS_Serial.begin(9600, SERIAL_8N1, dustSettings.address_sda, dustSettings.address_scl); //PMSx003 serial
+    PMS_Serial.begin(9600, SERIAL_8N1, dustSettings.address_tx, dustSettings.address_rx); //PMSx003 serial
 #endif
     if (sensorsSettings.continuousMeasurement == true) {
       pms.wakeUp();
@@ -2121,6 +2121,11 @@ void pm_calibration() {
       } else {
         calib = deviceSettings.calib1;
       }
+    }
+
+    // Check if calib value is in correct range
+    if (calib < 0 || calib > 3) {
+      calib = 1;
     }
   // Automatic calibration - END
   const char *tph_models[] = {"BME280", "HTU21", "DHT22", "SHT1x", "BMP280", "DS18B20"};

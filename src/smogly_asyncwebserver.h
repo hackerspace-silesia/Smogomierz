@@ -302,10 +302,10 @@ static String _add_FIRST_THP_Option(const String &value, const String &label, co
   option.replace(F("{value}"), value);
     
   if (strcmp(sensorsSettings.dustModel, "Non")) {
-    if (String(dustSettings.sda) == value) {
+    if (String(dustSettings.tx) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
-    if (String(dustSettings.scl) == value) {
+    if (String(dustSettings.rx) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
     if (sensorsSettings.secondThp) {
@@ -336,10 +336,10 @@ static String _add_SECOND_THP_Option(const String &value, const String &label, c
   option.replace(F("{value}"), value);
 
   if (strcmp(sensorsSettings.dustModel, "Non")) {
-    if (String(dustSettings.sda) == value) {
+    if (String(dustSettings.tx) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
-    if (String(dustSettings.scl) == value) {
+    if (String(dustSettings.rx) == value) {
       option.replace(F("{srslyValue}"), F("disabled>"));
     }
     if (strcmp(sensorsSettings.dustModel, "Non")) {
@@ -960,13 +960,13 @@ static String handle_config_device_processor(const String& var)
     message += String(TEXT_DUST_TX);
   }
   if (var == F("{DUST_TX}")) {
-    message += (_add_DUST_TX_RX_Select(F("CONFIG_DUST_TX"), dustSettings.sda));
+    message += (_add_DUST_TX_RX_Select(F("CONFIG_DUST_TX"), dustSettings.tx));
   }
   if (var == F("{TEXT_DUST_RX}")) {
     message += String(TEXT_DUST_RX);
   }
   if (var == F("{DUST_RX}")) {
-    message += (_add_DUST_TX_RX_Select(F("CONFIG_DUST_RX"), dustSettings.scl));
+    message += (_add_DUST_TX_RX_Select(F("CONFIG_DUST_RX"), dustSettings.rx));
   }
 
   if (var == F("{TEXT_FREQUENTMEASUREMENTONOFF}")) {
@@ -2349,101 +2349,101 @@ void set_SERIAL_PINS(String DUST_PIN, int i) {
 #ifdef ARDUINO_ARCH_ESP8266
   if (i == 1) {
     if (DUST_PIN == "D1") {
-      dustSettings.address_sda = 5;
+      dustSettings.address_tx = 5;
     } else if (DUST_PIN == "D2") {
-      dustSettings.address_sda = 4;
+      dustSettings.address_tx = 4;
     } else if (DUST_PIN == "D3") {
-      dustSettings.address_sda = 0;
+      dustSettings.address_tx = 0;
     } else if (DUST_PIN == "D4") {
-      dustSettings.address_sda = 2;
+      dustSettings.address_tx = 2;
     } else if (DUST_PIN == "D5") {
-      dustSettings.address_sda = 14;
+      dustSettings.address_tx = 14;
     } else if (DUST_PIN == "D6") {
-      dustSettings.address_sda = 12;
+      dustSettings.address_tx = 12;
     } else if (DUST_PIN == "D7") {
-      dustSettings.address_sda = 13;
+      dustSettings.address_tx = 13;
     } else if (DUST_PIN == "D8") {
-      dustSettings.address_sda = 15;
+      dustSettings.address_tx = 15;
     } else if (DUST_PIN == "D16") {
-      dustSettings.address_sda = 16;
+      dustSettings.address_tx = 16;
     } else if (DUST_PIN == "D17") {
-      dustSettings.address_sda = 17;
+      dustSettings.address_tx = 17;
     }
   } else if (i == 2) {
     if (DUST_PIN == "D1") {
-      dustSettings.address_scl = 5;
+      dustSettings.address_rx = 5;
     } else if (DUST_PIN == "D2") {
-      dustSettings.address_scl = 4;
+      dustSettings.address_rx = 4;
     } else if (DUST_PIN == "D3") {
-      dustSettings.address_scl = 0;
+      dustSettings.address_rx = 0;
     } else if (DUST_PIN == "D4") {
-      dustSettings.address_scl = 2;
+      dustSettings.address_rx = 2;
     } else if (DUST_PIN == "D5") {
-      dustSettings.address_scl = 14;
+      dustSettings.address_rx = 14;
     } else if (DUST_PIN == "D6") {
-      dustSettings.address_scl = 12;
+      dustSettings.address_rx = 12;
     } else if (DUST_PIN == "D7") {
-      dustSettings.address_scl = 13;
+      dustSettings.address_rx = 13;
     } else if (DUST_PIN == "D8") {
-      dustSettings.address_scl = 15;
+      dustSettings.address_rx = 15;
     } else if (DUST_PIN == "D16") {
-      dustSettings.address_scl = 16;
+      dustSettings.address_rx = 16;
     } else if (DUST_PIN == "D17") {
-      dustSettings.address_scl = 17;
+      dustSettings.address_rx = 17;
     }
   }
 #elif defined ARDUINO_ARCH_ESP32
   if (i == 1) {
     if (DUST_PIN == "D1") {
-      dustSettings.address_sda = 8;
+      dustSettings.address_tx = 8;
     } else if (DUST_PIN == "D2") {
-      dustSettings.address_sda = 9;
+      dustSettings.address_tx = 9;
     } else if (DUST_PIN == "D4") {
-      dustSettings.address_sda = 4;
+      dustSettings.address_tx = 4;
     } else if (DUST_PIN == "D5") {
-      dustSettings.address_sda = 5;
+      dustSettings.address_tx = 5;
     } else if (DUST_PIN == "D15") {
-      dustSettings.address_sda = 15;
+      dustSettings.address_tx = 15;
     } else if (DUST_PIN == "D16") {
-      dustSettings.address_sda = 16;
+      dustSettings.address_tx = 16;
     } else if (DUST_PIN == "D17") {
-      dustSettings.address_sda = 17;
+      dustSettings.address_tx = 17;
     } else if (DUST_PIN == "D18") {
-      dustSettings.address_sda = 18;
+      dustSettings.address_tx = 18;
     } else if (DUST_PIN == "D19") {
-      dustSettings.address_sda = 19;
+      dustSettings.address_tx = 19;
     } else if (DUST_PIN == "D21") {
-      dustSettings.address_sda = 21;
+      dustSettings.address_tx = 21;
     } else if (DUST_PIN == "D22") {
-      dustSettings.address_sda = 22;
+      dustSettings.address_tx = 22;
     } else if (DUST_PIN == "D23") {
-      dustSettings.address_sda = 23;
+      dustSettings.address_tx = 23;
     }
   } else if (i == 2) {
     if (DUST_PIN == "D1") {
-      dustSettings.address_scl = 8;
+      dustSettings.address_rx = 8;
     } else if (DUST_PIN == "D2") {
-      dustSettings.address_scl = 9;
+      dustSettings.address_rx = 9;
     } else if (DUST_PIN == "D4") {
-      dustSettings.address_scl = 4;
+      dustSettings.address_rx = 4;
     } else if (DUST_PIN == "D5") {
-      dustSettings.address_scl = 5;
+      dustSettings.address_rx = 5;
     } else if (DUST_PIN == "D15") {
-      dustSettings.address_scl = 15;
+      dustSettings.address_rx = 15;
     } else if (DUST_PIN == "D16") {
-      dustSettings.address_scl = 16;
+      dustSettings.address_rx = 16;
     } else if (DUST_PIN == "D17") {
-      dustSettings.address_scl = 17;
+      dustSettings.address_rx = 17;
     } else if (DUST_PIN == "D18") {
-      dustSettings.address_scl = 18;
+      dustSettings.address_rx = 18;
     } else if (DUST_PIN == "D19") {
-      dustSettings.address_scl = 19;
+      dustSettings.address_rx = 19;
     } else if (DUST_PIN == "D21") {
-      dustSettings.address_scl = 21;
+      dustSettings.address_rx = 21;
     } else if (DUST_PIN == "D22") {
-      dustSettings.address_scl = 22;
+      dustSettings.address_rx = 22;
     } else if (DUST_PIN == "D23") {
-      dustSettings.address_scl = 23;
+      dustSettings.address_rx = 23;
     }
   }
 #endif
@@ -2616,20 +2616,20 @@ static void handle_config_device_save(AsyncWebServerRequest *request) {
   #endif
   if (request->hasParam("CONFIG_DUST_TX")) {
     char old_data[8];
-    strcpy(old_data, dustSettings.sda);
-    _parseAsCString(dustSettings.sda, request->getParam("CONFIG_DUST_TX")->value(), 4);
-	  set_SERIAL_PINS(dustSettings.sda, 1);
-    if (strcmp(dustSettings.sda, old_data)) {
+    strcpy(old_data, dustSettings.tx);
+    _parseAsCString(dustSettings.tx, request->getParam("CONFIG_DUST_TX")->value(), 4);
+	  set_SERIAL_PINS(dustSettings.tx, 1);
+    if (strcmp(dustSettings.tx, old_data)) {
       reboot_required = true;
     }
   }
   
   if (request->hasParam("CONFIG_DUST_RX")) {
     char old_data[8];
-    strcpy(old_data, dustSettings.scl);
-    _parseAsCString(dustSettings.scl, request->getParam("CONFIG_DUST_RX")->value(), 4);
-	  set_SERIAL_PINS(dustSettings.scl, 2);
-    if (strcmp(dustSettings.scl, old_data)) {
+    strcpy(old_data, dustSettings.rx);
+    _parseAsCString(dustSettings.rx, request->getParam("CONFIG_DUST_RX")->value(), 4);
+	  set_SERIAL_PINS(dustSettings.rx, 2);
+    if (strcmp(dustSettings.rx, old_data)) {
       reboot_required = true;
     }
   }

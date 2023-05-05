@@ -106,10 +106,10 @@ bool loadConfig() {
   secondThpSettings.address_sda = json["secondThp_address_sda"];
   secondThpSettings.address_scl = json["secondThp_address_scl"];
 
-  _safeCpy(dustSettings.sda, json["firtsDust_sda"], "D1", 4);
-  _safeCpy(dustSettings.scl, json["firtsDust_scl"], "D2", 4);
-  dustSettings.address_sda = json["firtsDust_address_sda"];
-  dustSettings.address_scl = json["firtsDust_address_scl"];
+  _safeCpy(dustSettings.tx, json["firtsDust_tx"], "D1", 4);
+  _safeCpy(dustSettings.rx, json["firtsDust_rx"], "D2", 4);
+  dustSettings.address_tx = json["firtsDust_address_tx"];
+  dustSettings.address_rx = json["firtsDust_address_rx"];
 
   smoglistSettings.enabled = json["smoglist_enabled"];
 
@@ -204,9 +204,9 @@ bool loadConfig() {
       Serial.println(secondThpSettings.address_scl);
 
       Serial.print(F("Loaded DUST_TX: "));
-      Serial.println(dustSettings.address_sda);
+      Serial.println(dustSettings.address_tx);
       Serial.print(F("Loaded DUST_RX: "));
-      Serial.println(dustSettings.address_scl);
+      Serial.println(dustSettings.address_rx);
 
       Serial.print(F("Loaded CONFIG_FIRST_THP_SDA: "));
       Serial.println(firstThpSettings.sda);
@@ -219,9 +219,9 @@ bool loadConfig() {
       Serial.println(secondThpSettings.scl);
 
       Serial.print(F("Loaded CONFIG_DUST_TX: "));
-      Serial.println(dustSettings.sda);
+      Serial.println(dustSettings.tx);
       Serial.print(F("Loaded CONFIG_DUST_RX: "));
-      Serial.println(dustSettings.scl);
+      Serial.println(dustSettings.rx);
 
       Serial.print(F("Loaded DUST_TIME: "));
       Serial.println(sensorsSettings.dustTime);
@@ -396,9 +396,9 @@ bool loadConfig() {
       Serial.println(secondThpSettings.address_scl);
 
       Serial.print("Loaded DUST_TX: ");
-      Serial.println(dustSettings.address_sda);
+      Serial.println(dustSettings.address_tx);
       Serial.print("Loaded DUST_RX: ");
-      Serial.println(dustSettings.address_scl);
+      Serial.println(dustSettings.address_rx);
 
       Serial.print("Loaded CONFIG_FIRST_THP_SDA: ");
       Serial.println(firstThpSettings.sda);
@@ -411,9 +411,9 @@ bool loadConfig() {
       Serial.println(secondThpSettings.scl);
 
       Serial.print("Loaded CONFIG_DUST_TX: ");
-      Serial.println(dustSettings.sda);
+      Serial.println(dustSettings.tx);
       Serial.print("Loaded CONFIG_DUST_RX: ");
-      Serial.println(dustSettings.scl);
+      Serial.println(dustSettings.rx);
 
       Serial.print("Loaded DUST_TIME: ");
       Serial.println(sensorsSettings.dustTime);
@@ -596,9 +596,9 @@ bool saveConfig() {
     Serial.println(secondThpSettings.address_scl);
 
     Serial.print(F("Saved DUST_TX: "));
-    Serial.println(dustSettings.address_sda);
+    Serial.println(dustSettings.address_tx);
     Serial.print(F("Saved DUST_RX: "));
-    Serial.println(dustSettings.address_scl);
+    Serial.println(dustSettings.address_rx);
 	
     Serial.print(F("Saved CONFIG_FIRST_THP_SDA: "));
     Serial.println(firstThpSettings.sda);
@@ -611,9 +611,9 @@ bool saveConfig() {
     Serial.println(secondThpSettings.scl);
 
     Serial.print(F("Saved CONFIG_DUST_TX: "));
-    Serial.println(dustSettings.sda);
+    Serial.println(dustSettings.tx);
     Serial.print(F("Saved CONFIG_DUST_RX: "));
-    Serial.println(dustSettings.scl);
+    Serial.println(dustSettings.rx);
 	
     Serial.print(F("Saved DUST_TIME: "));
     Serial.println(sensorsSettings.dustTime);
@@ -803,10 +803,10 @@ bool saveConfig() {
   json["secondThp_address_sda"] = (unsigned short)(secondThpSettings.address_sda);
   json["secondThp_address_scl"] = (unsigned short)(secondThpSettings.address_scl);
 
-  json["firtsDust_sda"] = String(dustSettings.sda);
-  json["firtsDust_scl"] = String(dustSettings.scl);
-  json["firtsDust_address_sda"] = (unsigned short)(dustSettings.address_sda);
-  json["firtsDust_address_scl"] = (unsigned short)(dustSettings.address_scl);
+  json["firtsDust_tx"] = String(dustSettings.tx);
+  json["firtsDust_rx"] = String(dustSettings.rx);
+  json["firtsDust_address_tx"] = (unsigned short)(dustSettings.address_tx);
+  json["firtsDust_address_rx"] = (unsigned short)(dustSettings.address_rx);
 
   json["smoglist_enabled"] = bool(smoglistSettings.enabled);
 

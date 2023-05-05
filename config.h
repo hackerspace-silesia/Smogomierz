@@ -33,25 +33,25 @@ struct SensorsSettings {
 };
 
 struct I2CSettings {
-    char sda[4] = "D3"; // TX - for dust senros
-    char scl[4] = "D4"; // RX - for dust senros
+    char sda[4] = "D3"; // for THP sensor
+    char scl[4] = "D4"; // for THP sensor
     unsigned short address_sda = 0;
     unsigned short address_scl = 2;
 };
 
   #ifdef ARDUINO_ARCH_ESP8266
 struct SerialSettings {
-    char sda[4] = "D1"; // TX - for dust senros
-    char scl[4] = "D2"; // RX - for dust senros
-    unsigned short address_sda = 5;
-    unsigned short address_scl = 6;
+    char tx[4] = "D1"; // for dust sensor
+    char rx[4] = "D2"; // for dust sensor
+    unsigned short address_tx = 5;
+    unsigned short address_rx = 6;
 };
   #elif defined ARDUINO_ARCH_ESP32
 struct SerialSettings {
-    char sda[4] = "D18"; // TX - for dust senros
-    char scl[4] = "D19"; // RX - for dust senros
-    unsigned short address_sda = 18;
-    unsigned short address_scl = 19;
+    char tx[4] = "D18"; // for dust sensor
+    char rx[4] = "D19"; // for dust sensor
+    unsigned short address_tx = 18;
+    unsigned short address_rx = 19;
 };
   #endif
 

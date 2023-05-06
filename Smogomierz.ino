@@ -663,6 +663,9 @@ void setup() {
     PMS_Serial.begin(9600, SERIAL_8N1, dustSettings.address_tx, dustSettings.address_rx); //PMSx003 serial
 #endif
     if (sensorsSettings.continuousMeasurement == true) {
+      #ifdef ARDUINO_ARCH_ESP8266
+        PMS_Serial.flush(); // IMPORTANT when using software serial - https://github.com/fu-hsi/PMS/issues/14#issuecomment-793594500
+      #endif
       pms.wakeUp();
       yield();
       delay(500);
@@ -671,7 +674,14 @@ void setup() {
       pms.passiveMode();
       yield();
       delay(500);
+      #ifdef ARDUINO_ARCH_ESP8266
+        PMS_Serial.flush(); // IMPORTANT when using software serial - https://github.com/fu-hsi/PMS/issues/14#issuecomment-793594500
+      #endif
       pms.sleep();
+      #ifdef ARDUINO_ARCH_ESP8266
+        yield();
+        delay(500);
+      #endif
     }
   }
 #elif defined DUSTSENSOR_SDS011_21
@@ -816,6 +826,9 @@ void setup() {
     PMS_Serial.begin(9600, SERIAL_8N1, dustSettings.address_tx, dustSettings.address_rx); //PMSx003 serial
 #endif
     if (sensorsSettings.continuousMeasurement == true) {
+      #ifdef ARDUINO_ARCH_ESP8266
+        PMS_Serial.flush(); // IMPORTANT when using software serial - https://github.com/fu-hsi/PMS/issues/14#issuecomment-793594500
+      #endif
       pms.wakeUp();
       yield();
       delay(500);
@@ -823,7 +836,14 @@ void setup() {
     } else {
       pms.passiveMode();
       yield();
+      #ifdef ARDUINO_ARCH_ESP8266
+        PMS_Serial.flush(); // IMPORTANT when using software serial - https://github.com/fu-hsi/PMS/issues/14#issuecomment-793594500
+      #endif
       pms.sleep();
+      #ifdef ARDUINO_ARCH_ESP8266
+        yield();
+        delay(500);
+      #endif
     }
   }
 #endif
@@ -1945,14 +1965,14 @@ void takeNormalnPMMeasurements() {
       Serial.println(F("PM2.5 out of range(0-3000)!\n"));
     }
     // strncpy(sensorsSettings.dustModel, "Non", 12);
-    pmMeasurements[iPM][1] = 0;
+    pmMeasurements[iPM][1] = 1;
   }
   if (pmMeasurements[iPM][2] < 0 || pmMeasurements[iPM][1] > 3000) {
     if (deviceSettings.debug) {
       Serial.println(F("PM10 out of range(0-3000)!\n"));
     }
-    strncpy(sensorsSettings.dustModel, "Non", 12);
-    // pmMeasurements[iPM][2] = 0;
+    // strncpy(sensorsSettings.dustModel, "Non", 12);
+    pmMeasurements[iPM][2] = 1;
   }
 
 }
@@ -1964,6 +1984,9 @@ void takeSleepPMMeasurements() {
 
 #ifdef DUSTSENSOR_PMS5003_7003_BME280_0x76 or DUSTSENSOR_PMS5003_7003_BME280_0x77 // PMSx003
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
+    #ifdef ARDUINO_ARCH_ESP8266
+      PMS_Serial.flush(); // IMPORTANT when using software serial - https://github.com/fu-hsi/PMS/issues/14#issuecomment-793594500
+    #endif
     pms.wakeUp();
     pms.requestRead();
   }
@@ -1978,7 +2001,14 @@ void takeSleepPMMeasurements() {
     Serial.print(F("\nTurning OFF PM sensor...\n"));
   }
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
+    #ifdef ARDUINO_ARCH_ESP8266
+      PMS_Serial.flush(); // IMPORTANT when using software serial - https://github.com/fu-hsi/PMS/issues/14#issuecomment-793594500
+    #endif
     pms.sleep();
+    #ifdef ARDUINO_ARCH_ESP8266
+      yield();
+      delay(500);
+    #endif
   }
 #elif defined DUSTSENSOR_SDS011_21 // SDSx1
   if (!strcmp(sensorsSettings.dustModel, "SDS011/21")) {
@@ -2053,6 +2083,9 @@ void takeSleepPMMeasurements() {
   }
 #else // If no dust sensor has been defined - use DUSTSENSOR_PMS5003_7003_BME280_0x76
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
+    #ifdef ARDUINO_ARCH_ESP8266
+      PMS_Serial.flush(); // IMPORTANT when using software serial - https://github.com/fu-hsi/PMS/issues/14#issuecomment-793594500
+    #endif
     pms.wakeUp();
     pms.requestRead();
   }
@@ -2067,7 +2100,14 @@ void takeSleepPMMeasurements() {
     Serial.print(F("\nTurning OFF PM sensor...\n"));
   }
   if (!strcmp(sensorsSettings.dustModel, "PMS7003")) {
+    #ifdef ARDUINO_ARCH_ESP8266
+      PMS_Serial.flush(); // IMPORTANT when using software serial - https://github.com/fu-hsi/PMS/issues/14#issuecomment-793594500
+    #endif
     pms.sleep();
+    #ifdef ARDUINO_ARCH_ESP8266
+      yield();
+      delay(500);
+    #endif
   }
 #endif
 }

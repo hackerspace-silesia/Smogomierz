@@ -39,21 +39,21 @@ struct I2CSettings {
     unsigned short address_scl = 2;
 };
 
-  #ifdef ARDUINO_ARCH_ESP8266
+#ifdef ARDUINO_ARCH_ESP8266
 struct SerialSettings {
     char tx[4] = "D1"; // for dust sensor
     char rx[4] = "D2"; // for dust sensor
     unsigned short address_tx = 5;
     unsigned short address_rx = 6;
 };
-  #elif defined ARDUINO_ARCH_ESP32
+#elif defined ARDUINO_ARCH_ESP32
 struct SerialSettings {
-    char tx[4] = "D18"; // for dust sensor
-    char rx[4] = "D19"; // for dust sensor
-    unsigned short address_tx = 18;
-    unsigned short address_rx = 19;
+    char tx[4] = "D22"; // for dust sensor
+    char rx[4] = "D23"; // for dust sensor
+    unsigned short address_tx = 22;
+    unsigned short address_rx = 23;
 };
-  #endif
+#endif
 
 struct SmoglistSettings {
     bool enabled = false;

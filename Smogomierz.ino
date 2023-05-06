@@ -106,7 +106,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   REFAKTOR_1.05.2023:
-  Szkic używa 1303201 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1303221 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 66680 bajtów (20%) pamięci dynamicznej, pozostawiając 261000 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   *** init homekit support:
@@ -2188,12 +2188,27 @@ void averagePM() {
   measurementsData.averagePM4 = 0;
 #endif
   for (int i = 0; i < sensorsSettings.numerOfMeasurements; i++) {
+    // Check if DUST values are in correct range
+    if (pmMeasurements[i][1] < 0 || pmMeasurements[i][1] > 3000) {
+      if (deviceSettings.debug) {
+        Serial.println(F("PM2.5 out of range(0-3000)!\n"));
+      }
+      // strncpy(sensorsSettings.dustModel, "Non", 12);
+      pmMeasurements[i][1] = 1;
+    }
+    if (pmMeasurements[i][2] < 0 || pmMeasurements[i][1] > 3000) {
+      if (deviceSettings.debug) {
+        Serial.println(F("PM10 out of range(0-3000)!\n"));
+      }
+      // strncpy(sensorsSettings.dustModel, "Non", 12);
+      pmMeasurements[i][2] = 1;
+    }
     measurementsData.averagePM1 += pmMeasurements[i][0];
     measurementsData.averagePM25 += pmMeasurements[i][1];
     measurementsData.averagePM10  += pmMeasurements[i][2];
-#ifdef DUSTSENSOR_SPS30
+  #ifdef DUSTSENSOR_SPS30
     measurementsData.averagePM4 += pmMeasurements[i][3];
-#endif
+  #endif
   }
   measurementsData.averagePM1 = measurementsData.averagePM1 / sensorsSettings.numerOfMeasurements;
   measurementsData.averagePM25 = measurementsData.averagePM25 / sensorsSettings.numerOfMeasurements;

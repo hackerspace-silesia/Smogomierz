@@ -106,7 +106,7 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   REFAKTOR_1.05.2023:
-  Szkic używa 1303221 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  Szkic używa 1303685 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 66680 bajtów (20%) pamięci dynamicznej, pozostawiając 261000 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   *** init homekit support:
@@ -328,8 +328,10 @@ static unsigned short pmMeasurements[10][4];
 static unsigned short pmMeasurements[10][3];
 #endif
 
+// Declaration of global variables
 static float calib = 1;
 static bool need_update = false;
+unsigned short dustErrorCounter = 0;
 char serverSoftwareVersion[32] = "";
 char currentSoftwareVersion[32] = "";
 
@@ -1117,6 +1119,17 @@ void loop() {
     Serial.println(F("Free Heap: " + String(ESP.getFreeHeap())));
     Serial.print(F("========================================\n"));
   */
+  if (dustErrorCounter > sensorsSettings.numerOfMeasurements) {
+    Serial.println(F("dustErrorCounter: ") + String(dustErrorCounter));
+    Serial.println(F("reboot..."));
+    delay(500);
+#ifdef ARDUINO_ARCH_ESP8266
+    ESP.reset();
+#elif defined ARDUINO_ARCH_ESP32
+    ESP.restart();
+#endif
+    delay(5000);
+  }
 
   if (need_update == true && deviceSettings.autoUpdate) {
     for (int i = 0; i < 5 ; i++) {
@@ -1276,11 +1289,7 @@ void loop() {
   // autoreboot setup
   unsigned int current_REBOOT_Millis = millis();
   if (current_REBOOT_Millis - intervals.previousRebootMillis >= intervals.reboot) {
-#ifdef ARDUINO_ARCH_ESP8266
     Serial.println(F("autoreboot..."));
-#elif defined ARDUINO_ARCH_ESP32
-    Serial.println(("autoreboot..."));
-#endif
     delay(1000);
     intervals.previousRebootMillis = millis();
 #ifdef ARDUINO_ARCH_ESP8266
@@ -2195,13 +2204,15 @@ void averagePM() {
       }
       // strncpy(sensorsSettings.dustModel, "Non", 12);
       pmMeasurements[i][1] = 1;
+      dustErrorCounter++;
     }
-    if (pmMeasurements[i][2] < 0 || pmMeasurements[i][1] > 3000) {
+    if (pmMeasurements[i][2] < 0 || pmMeasurements[i][2] > 3000) {
       if (deviceSettings.debug) {
         Serial.println(F("PM10 out of range(0-3000)!\n"));
       }
       // strncpy(sensorsSettings.dustModel, "Non", 12);
       pmMeasurements[i][2] = 1;
+      dustErrorCounter++;
     }
     measurementsData.averagePM1 += pmMeasurements[i][0];
     measurementsData.averagePM25 += pmMeasurements[i][1];

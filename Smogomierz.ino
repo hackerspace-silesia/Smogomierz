@@ -105,8 +105,8 @@ https://github.com/espressif/arduino-esp32/issues/4717#issue-785715330
   Szkic używa 1377866 bajtów (70%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 58656 bajtów (17%) pamięci dynamicznej, pozostawiając 269024 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
-  REFAKTOR_1.05.2023:
-  Szkic używa 1303685 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
+  REFAKTOR_8.05.2023:
+  Szkic używa 1303809 bajtów (66%) pamięci programu. Maksimum to 1966080 bajtów.
   Zmienne globalne używają 66680 bajtów (20%) pamięci dynamicznej, pozostawiając 261000 bajtów dla zmiennych lokalnych. Maksimum to 327680 bajtów.
 
   *** init homekit support:
@@ -1969,6 +1969,13 @@ void takeNormalnPMMeasurements() {
   }
 
   // Check if DUST values are in correct range
+  if (pmMeasurements[iPM][0] < 0 || pmMeasurements[iPM][0] > 3000) {
+    if (deviceSettings.debug) {
+      Serial.println(F("PM1 out of range(0-3000)!\n"));
+    }
+    // strncpy(sensorsSettings.dustModel, "Non", 12);
+    pmMeasurements[iPM][0] = 1;
+  }
   if (pmMeasurements[iPM][1] < 0 || pmMeasurements[iPM][1] > 3000) {
     if (deviceSettings.debug) {
       Serial.println(F("PM2.5 out of range(0-3000)!\n"));
@@ -1976,6 +1983,15 @@ void takeNormalnPMMeasurements() {
     // strncpy(sensorsSettings.dustModel, "Non", 12);
     pmMeasurements[iPM][1] = 1;
   }
+  #ifdef DUSTSENSOR_SPS30
+  if (pmMeasurements[iPM][3] < 0 || pmMeasurements[iPM][3] > 3000) {
+    if (deviceSettings.debug) {
+      Serial.println(F("PM4 out of range(0-3000)!\n"));
+    }
+    // strncpy(sensorsSettings.dustModel, "Non", 12);
+    pmMeasurements[iPM][3] = 1;
+  }
+#endif
   if (pmMeasurements[iPM][2] < 0 || pmMeasurements[iPM][1] > 3000) {
     if (deviceSettings.debug) {
       Serial.println(F("PM10 out of range(0-3000)!\n"));
@@ -2198,6 +2214,14 @@ void averagePM() {
 #endif
   for (int i = 0; i < sensorsSettings.numerOfMeasurements; i++) {
     // Check if DUST values are in correct range
+    if (pmMeasurements[i][0] < 0 || pmMeasurements[i][0] > 3000) {
+      if (deviceSettings.debug) {
+        Serial.println(F("PM1 out of range(0-3000)!\n"));
+      }
+      // strncpy(sensorsSettings.dustModel, "Non", 12);
+      pmMeasurements[i][0] = 1;
+      dustErrorCounter++;
+    }
     if (pmMeasurements[i][1] < 0 || pmMeasurements[i][1] > 3000) {
       if (deviceSettings.debug) {
         Serial.println(F("PM2.5 out of range(0-3000)!\n"));
@@ -2206,6 +2230,16 @@ void averagePM() {
       pmMeasurements[i][1] = 1;
       dustErrorCounter++;
     }
+    #ifdef DUSTSENSOR_SPS30
+    if (pmMeasurements[i][3] < 0 || pmMeasurements[i][3] > 3000) {
+      if (deviceSettings.debug) {
+        Serial.println(F("PM4 out of range(0-3000)!\n"));
+      }
+      // strncpy(sensorsSettings.dustModel, "Non", 12);
+      pmMeasurements[i][3] = 1;
+      dustErrorCounter++;
+    }
+    #endif
     if (pmMeasurements[i][2] < 0 || pmMeasurements[i][2] > 3000) {
       if (deviceSettings.debug) {
         Serial.println(F("PM10 out of range(0-3000)!\n"));
